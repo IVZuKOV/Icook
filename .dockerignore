@@ -9,7 +9,6 @@
 docker-compose*.yml
 Dockerfile
 .dockerignore
-docker/entrypoint.sh
 
 # Секреты и локальное окружение
 .env
