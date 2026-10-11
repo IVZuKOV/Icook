@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Корзина — Я готовлю</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Подключаем общие стили -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<style>
+/* Специфичные стили только для контента корзины */
+.cart-container{max-width:1200px;margin:0 auto;padding:40px 40px;}
+.cart-title{font-size:36px;font-weight:800;color:var(--neon-dark);margin-bottom:35px;text-shadow:0 0 8px var(--neon-glow);}
+.cart-layout{display:grid;grid-template-columns:1.8fr 1fr;gap:35px;align-items:start;}
+.cart-items{display:flex;flex-direction:column;gap:20px;}
+.cart-item{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:16px;display:flex;align-items:center;gap:20px;transition:0.3s;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.cart-item:hover{border-color:var(--neon);box-shadow:0 8px 30px var(--neon-glow);transform:translateY(-2px);}
+.item-img{width:100px;height:100px;border-radius:14px;object-fit:cover;flex-shrink:0;background:#e2e8f0;}
+.item-info{flex:1;}
+.item-name{font-size:20px;font-weight:700;margin-bottom:4px;color:var(--text-main);}
+.item-chef{color:var(--neon-dark);font-size:14px;font-weight:600;margin-bottom:8px;}
+.item-price{font-size:18px;font-weight:800;color:var(--neon-dark);}
+.item-controls{display:flex;flex-direction:column;align-items:flex-end;gap:12px;}
+.qty-control{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--border-color);border-radius:12px;padding:4px;}
+.qty-btn{width:32px;height:32px;border:none;border-radius:8px;background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:16px;transition:0.2s;display:flex;align-items:center;justify-content:center;}
+.qty-btn:hover{background:var(--neon);color:#003d33;}
+.qty-val{font-weight:700;font-size:16px;width:20px;text-align:center;}
+.remove-btn{background:none;border:none;color:#ef4444;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px;transition:0.2s;padding:4px 8px;border-radius:6px;}
+.remove-btn:hover{background:rgba(239,68,68,0.1);}
+.cart-summary{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:28px;position:sticky;top:110px;box-shadow:0 4px 25px rgba(0,0,0,0.06);}
+.summary-title{font-size:22px;font-weight:800;margin-bottom:20px;color:var(--neon-dark);}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:12px;font-size:15px;}
+.summary-row.total{font-size:20px;font-weight:800;color:var(--neon-dark);border-top:1px solid var(--border-color);padding-top:16px;margin-top:16px;}
+.promo-input{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--border-color);margin:18px 0 14px;font-size:14px;transition:0.3s;background:var(--card-bg);color:var(--text-main);}
+.promo-input:focus{border-color:var(--neon);outline:none;box-shadow:0 0 0 4px var(--neon-glow);}
+.pay-modal{position:fixed;inset:0;background:rgba(15,23,42,0.65);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(8px);padding:20px;}
+.pay-modal.active{display:flex;}
+.pay-box{width:100%;max-width:400px;background:var(--card-bg);border-radius:26px;padding:32px;box-shadow:0 25px 80px var(--neon-glow);position:relative;}
+.pay-box h2{margin-bottom:20px;color:var(--neon-dark);font-size:24px;font-weight:800;text-align:center;}
+.pay-opt{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border-color);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:0.2s;background:var(--card-bg);color:var(--text-main);}
+.pay-opt:hover{border-color:var(--neon);background:var(--neon-glow);box-shadow:0 4px 15px var(--neon-glow);}
+.pay-opt span{font-size:20px;}
+.empty-cart{text-align:center;padding:80px 20px;background:var(--card-bg);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.05);}
+@media(max-width:900px){
+header{padding:12px 16px;}
+.top-controls{display:none;}
+.cart-container{padding:20px 20px;}
+.cart-layout{grid-template-columns:1fr;}
+.cart-item{flex-direction:column;text-align:center;}
+.item-controls{align-items:center;flex-direction:row;justify-content:center;}
+.cart-summary{position:static;}
+}
+</style>
+
+<script>
+(function(){const t=localStorage.getItem('site-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');})();
+</script>
+</head>
+<body>
+<div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
+<div class="catalog-drawer" id="catalogDrawer">
+<h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Каталог сайта</h3>
+<a href="index.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная</a>
+<a href="restaurants.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>Рестораны/бары/кафе</a>
+<a href="menu.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Меню</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Контакты</a>
+<div class="catalog-divider thick"></div>
+<a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>Войти / Регистрация</a>
+<a href="cart.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Корзина</a>
+<div class="catalog-divider thick"></div>
+<h3 class="catalog-subheader"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Совместные проекты</h3>
+<a href="#" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Еду ем</a>
+<a href="cheap-honest.html" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><path d="M7 7h.01"/><path d="M10 13l2 2 4-4"/></svg>Дёшево! Честно!</a>
+</div>
+<header>
+<div class="header-left">
+<button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<div class="logo">
+<svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00ffd5"/><stop offset="50%" style="stop-color:#7fffd4"/><stop offset="100%" style="stop-color:#00b8a3"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
+Я готовлю — ты ешь!
+</div>
+</div>
+<div class="header-right">
+<div class="user-info" id="userInfo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg><span id="userName"></span></div>
+<button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+<a href="profile.html" id="userNameBtn" class="icon-btn logged" style="display:none;text-decoration:none;color:#006b5a;font-weight:700;font-size:13px;min-width:auto;padding:10px 16px;"></a>
+<button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></button>
+<button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+</div>
+</header>
+<main class="cart-container"><h1 class="cart-title">Ваша корзина</h1><div id="cartContent"></div></main>
+
+<!-- Модальное окно входа -->
+<div class="modal" id="authModal">
+    <div class="modal-box">
+        <div class="close" onclick="closeAuth()">✕</div>
+        <h2 id="authTitle">Личный кабинет</h2>
+        <form id="loginForm" onsubmit="login();return false;">
+            <input id="loginName" placeholder="Email" type="email">
+            <div class="error-msg" id="loginNameError"></div>
+            <input id="loginPassword" type="password" placeholder="Пароль" minlength="8">
+            <div class="error-msg" id="loginPasswordError"></div>
+            <button class="btn" style="width:100%;margin-top:6px;" id="loginBtn" type="submit">Войти</button>
+            <p style="text-align:center;margin-top:12px;font-size:14px;"><a href="#" onclick="switchTab('reset');return false;" style="color:#ef4444;font-weight:600;">Забыли пароль?</a></p>
+            <p style="text-align:center;margin-top:8px;font-size:14px;color:var(--text-muted);">Нет аккаунта? <a href="#" onclick="switchTab('register');return false;" style="color:var(--neon-dark);font-weight:600;">Создать</a></p>
+        </form>
+        <form id="registerForm" style="display:none;" onsubmit="register();return false;">
+            <input id="regName" placeholder="Ваше имя *" minlength="2">
+            <div class="error-msg" id="regNameError"></div>
+                <input id="regPhone" placeholder="Телефон *" type="tel">
+                <div class="error-msg" id="regPhoneError"></div>
+            <input id="regEmail" placeholder="Email">
+            <div class="error-msg" id="regEmailError"></div>
+            <input id="regPassword" type="password" placeholder="Пароль *" minlength="8">
+            <div class="error-msg" id="regPasswordError"></div>
+            <input id="regConfirm" type="password" placeholder="Повторите пароль *">
+            <div class="error-msg" id="regConfirmError"></div>
+            <button class="btn" style="width:100%;margin-top:6px;" id="registerBtn" type="submit">Зарегистрироваться</button>
+            <p style="text-align:center;margin-top:18px;color:var(--text-muted);font-size:14px;">Уже есть аккаунт? <a href="#" onclick="switchTab('login');return false;" style="color:var(--neon-dark);">Войти</a></p>
+        </form>
+        <form id="resetForm" style="display:none;" onsubmit="resetPassword();return false;">
+            <input id="resetEmail" placeholder="Ваш Email" type="email">
+            <div class="error-msg" id="resetEmailError"></div>
+            <button class="btn" style="width:100%;margin-top:6px;" id="resetBtn" type="submit">Отправить ссылку</button>
+            <p style="text-align:center;margin-top:18px;font-size:14px;color:var(--text-muted);">Вспомнили пароль? <a href="#" onclick="switchTab('login');return false;" style="color:var(--neon-dark);font-weight:600;">Войти</a></p>
+        </form>
+    </div>
+</div>
+
+<div class="pay-modal" id="payModal"><div class="pay-box">
+<div class="close" onclick="closePay()" style="position:absolute;top:16px;right:20px;font-size:28px;color:var(--text-muted);cursor:pointer;transition:0.3s;">✕</div>
+<h2>Способ оплаты</h2>
+<div class="pay-opt" onclick="pay('СБП')"><span>🏦</span> СБП (Россия)</div>
+<div class="pay-opt" onclick="pay('Карта')"><span>💳</span> Банковская карта (Visa/MC/Мир)</div>
+<div class="pay-opt" onclick="pay('ЮMoney')"><span>🟣</span> ЮMoney</div>
+<div class="pay-opt" onclick="pay('Stripe')"><span>🌍</span> Stripe / Apple Pay / Google Pay</div>
+<button class="btn" onclick="closePay()" style="width:100%;margin-top:10px;">Отмена</button>
+</div></div>
+<footer>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+            <path d="M7 2v20"/>
+            <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+        </svg>
+        © 2026 Я готовлю — ты ешь!
+    </footer>
+
+<script src="assets/js/main.js"></script>
+<script>
+// --- JS КОРЗИНЫ ---
+const DELIVERY_FEE = 250;
+const PROMOS = {'FOOD2026':10,'WELCOME':15,'NEON2026':20};
+let discount = 0;
+
+function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u && u.name){authBtn.style.display='none';nameBtn.style.display='flex';nameBtn.textContent=u.name;}else{authBtn.style.display='flex';nameBtn.style.display='none';nameBtn.textContent='';}}
+
+async function login(){
+const e = document.getElementById('loginName').value.trim();
+const p = document.getElementById('loginPassword').value;
+clearErrors();
+if(!e) return showErr('loginNameError', 'Введите email');
+if(p.length < 8) return showErr('loginPasswordError', 'Минимум 8 символов');
+setLoading('loginBtn', true);
+try {
+const res = await fetch('/api/login.php', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ email: e, password: p })
+});
+const data = await res.json();
+if (data.error) throw new Error(data.error);
+localStorage.setItem('user', JSON.stringify({name: data.name, email: e}));
+closeAuth();
+updateUI();
+showToast('✅ Вход выполнен');
+setTimeout(() => location.reload(), 800);
+} catch(err) {
+showErr('loginPasswordError', err.message);
+} finally {
+setLoading('loginBtn', false);
+}
+}
+
+async function register(){const n=document.getElementById('regName').value.trim();const e=document.getElementById('regEmail').value.trim();const p=document.getElementById('regPassword').value;const c=document.getElementById('regConfirm').value;clearErrors();if(n.length<2)return showErr('regNameError','Минимум 2 символа');if(e&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))return showErr('regEmailError','Некорректный email');if(p.length<8)return showErr('regPasswordError','Минимум 8 символов');if(p!==c)return showErr('regConfirmError','Пароли не совпадают');var ph=document.getElementById('regPhone').value.trim();if(!ph)return showErr('regPhoneError','Укажите телефон');setLoading('registerBtn',true);try{const res=await fetch('/api/register.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,password:p,phone:ph})});const data=await res.json();if(data.error)throw new Error(data.error);await fetch('/api/send_verify.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});closeAuth();showToast('✅ Письмо для подтверждения отправлено на '+e);}catch(err){showErr('regNameError',err.message);}finally{setLoading('registerBtn',false);}}
+
+async function resetPassword(){const e=document.getElementById('resetEmail').value.trim();clearErrors();if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))return showErr('resetEmailError','Некорректный email');setLoading('resetBtn',true);try{const res=await fetch('/api/reset_password.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});const data=await res.json();if(data.error)throw new Error(data.error);closeAuth();showToast('✅ Письмо для сброса пароля отправлено на '+e);}catch(err){showErr('resetEmailError',err.message);}finally{setLoading('resetBtn',false);}}
+
+function renderCart(){
+    const c = document.getElementById('cartContent');
+    if(!c) return; 
+    
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    if(cart.length === 0){
+        c.innerHTML = `<div class="empty-cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:80px;height:80px;opacity:0.6;margin-bottom:20px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <h3>Корзина пуста</h3>
+            <p>Добавьте что-нибудь вкусное из нашего меню</p>
+            <button class="btn" onclick="window.location.href='menu.html'">Перейти в меню</button>
+        </div>`;
+        return;
+    }
+
+    let h = cart.map(i => `
+    <div class="cart-item">
+        <img src="${i.img}" class="item-img">
+        <div class="item-info">
+            <div class="item-name">${i.name}</div>
+            <div class="item-chef">👨‍🍳 ${i.chef}</div>
+            <div class="item-price">${(i.price*i.qty).toLocaleString()} ₽</div>
+        </div>
+        <div class="item-controls">
+            <div class="qty-control">
+                <button class="qty-btn" onclick="chgQty(${i.id},-1)">−</button>
+                <span class="qty-val">${i.qty}</span>
+                <button class="qty-btn" onclick="chgQty(${i.id},1)">+</button>
+            </div>
+            <button class="remove-btn" onclick="removeFromCart(${i.id})">✕ Удалить</button>
+        </div>
+    </div>`).join('');
+
+    const sub = cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const total = sub - discount + DELIVERY_FEE;
+
+    c.innerHTML = `
+    <div class="cart-layout">
+        <div class="cart-items">${h}</div>
+        <div class="cart-summary">
+            <h3 class="summary-title">Итого</h3>
+            <div class="summary-row"><span>Товары (${cart.length})</span><span>${sub.toLocaleString()} ₽</span></div>
+            <div class="summary-row"><span>Доставка</span><span>${DELIVERY_FEE} ₽</span></div>
+            <div class="summary-row" style="color:#10b981;"><span>Скидка</span><span>- ${discount.toLocaleString()} ₽</span></div>
+            <input type="text" class="promo-input" id="pIn" placeholder="Промокод (FOOD2026)">
+            <div class="summary-row total"><span>К оплате</span><span>${total.toLocaleString()} ₽</span></div>
+            <button class="btn" onclick="openPay()" style="width:100%;padding:16px;">Оформить заказ</button>
+        </div>
+    </div>`;
+
+    document.getElementById('pIn').addEventListener('input', e=>{
+        const v = e.target.value.trim().toUpperCase();
+        if(PROMOS[v]){
+            discount = Math.round(sub * PROMOS[v]/100);
+            e.target.style.borderColor = 'var(--neon)';
+        } else {
+            discount = 0;
+            e.target.style.borderColor = 'var(--border-color)';
+        }
+        renderCart();
+    });
+}
+
+// Глобальные функции для кнопок
+function chgQty(id, d){
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const i = cart.find(x=>x.id===id);
+    if(i){
+        i.qty += d;
+        if(i.qty <= 0) removeFromCart(id);
+        else localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartBadge();
+        renderCart();
+    }
+}
+
+function removeFromCart(id){
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart = cart.filter(i=>i.id!==id);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartBadge();
+    renderCart();
+}
+
+function openPay(){document.getElementById('payModal').classList.add('active');}
+function closePay(){document.getElementById('payModal').classList.remove('active');}
+async function pay(m){
+    closePay();
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if(cart.length === 0) return;
+    try {
+        var res = await fetch('/api/create_order.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({items: cart, payment_method: m})
+        });
+        var data = await res.json();
+        if(data.success) {
+            if(typeof showToastMsg === 'function') showToastMsg('Заказ оформлен!');
+            else if(typeof showToast === 'function') showToast('✅ Заказ оформлен!');
+            localStorage.removeItem('cart');
+            updateCartBadge();
+            setTimeout(function(){ window.location.href = 'profile.html'; }, 1500);
+        } else {
+            if(typeof showToastMsg === 'function') showToastMsg(data.error || 'Ошибка');
+            else alert(data.error || 'Ошибка оформления заказа');
+        }
+    } catch(e) {
+        alert('Ошибка связи с сервером');
+    }
+}
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function(){
+    updateCartBadge();
+    updateUI();
+    if(typeof hideCurrentPageInCatalog === 'function') hideCurrentPageInCatalog();
+    renderCart();
+});
+</script>
+</body>
+</html>

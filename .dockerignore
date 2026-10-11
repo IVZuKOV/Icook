@@ -1,0 +1,35 @@
+# Файлы и папки, которые НЕ попадают в образ при сборке
+.git
+.gitignore
+.gitattributes
+.github
+.editorconfig
+
+# Инфраструктурные файлы, не нужные внутри образа
+docker-compose*.yml
+Dockerfile
+.dockerignore
+docker/entrypoint.sh
+
+# Секреты и локальное окружение
+.env
+.env.*
+!.env.example
+
+# Документация
+*.md
+
+# Мусор Dreamweaver
+_notes
+**/_notes
+**/dwsync.xml
+
+# Логи и временные файлы
+*.log
+logs/
+*.tmp
+*.bak
+
+# Загрузки: содержимое монтируется томом, в образ кладём только заглушку
+uploads/*
+!uploads/.gitkeep

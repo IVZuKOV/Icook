@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Дёшево! Честно! — Я готовлю</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Подключаем общие стили -->
+<link rel="stylesheet" href="assets/css/main.css">
+
+<style>
+/* Специфичные стили только для контента "Дёшево" */
+.page-header{text-align:center;padding:50px 20px 30px;background:linear-gradient(135deg,rgba(0,255,213,0.05) 0%,var(--bg) 100%);}
+.page-title{font-size:clamp(32px, 5vw, 48px);font-weight:900;color:var(--neon-dark);text-shadow:0 0 15px var(--neon-glow);margin-bottom:8px;}
+.page-slogan{font-size:clamp(16px, 3vw, 22px);color:var(--text-muted);font-weight:500;}
+.product-img{width:100%;height:160px;object-fit:cover;background:var(--neon-glow);}
+.venue-btn{width:100%;padding:10px;border:none;border-radius:8px;background:var(--neon);color:#003d33;font-weight:700;cursor:pointer;transition:0.3s;margin-top:10px;}
+.venue-btn:hover{transform:scale(1.03);box-shadow:0 0 15px var(--neon-glow);}
+</style>
+
+<script>
+(function(){const t=localStorage.getItem('site-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');})();
+</script>
+</head>
+<body>
+<div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
+<div class="catalog-drawer" id="catalogDrawer">
+<h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Каталог сайта</h3>
+<a href="index.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная</a>
+<a href="restaurants.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>Рестораны/бары/кафе</a>
+<a href="menu.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Меню</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Контакты</a>
+<div class="catalog-divider thick"></div>
+<a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>Войти / Регистрация</a>
+<a href="cart.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Корзина</a>
+<div class="catalog-divider thick"></div>
+<h3 class="catalog-subheader"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Совместные проекты</h3>
+<a href="#" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Еду ем</a>
+<a href="cheap-honest.html" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><path d="M7 7h.01"/><path d="M10 13l2 2 4-4"/></svg>Дёшево! Честно!</a>
+</div>
+<header>
+<div class="header-left">
+<button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<div class="logo">
+<svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00ffd5"/><stop offset="50%" style="stop-color:#7fffd4"/><stop offset="100%" style="stop-color:#00b8a3"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
+Я готовлю — ты ешь!
+</div>
+</div>
+<div class="header-right">
+<div class="user-info" id="userInfo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg><span id="userName"></span></div>
+<button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+<a href="profile.html" id="userNameBtn" class="icon-btn logged" style="display:none;text-decoration:none;color:#006b5a;font-weight:700;font-size:13px;min-width:auto;padding:10px 16px;"></a>
+<button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></button>
+<button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+</div>
+</header>
+<div class="page-header"><h1 class="page-title">Дёшево! Честно!</h1><p class="page-slogan">Цена приятна — покупка понятна!</p></div>
+<div class="orbit-wrapper" id="orbitContainer">
+<button class="nav-btn nav-prev" onclick="moveOrbit(-1)">‹</button>
+<div id="orbitTrack"></div>
+<button class="nav-btn nav-next" onclick="moveOrbit(1)">›</button>
+</div>
+
+<!-- Модальное окно входа -->
+<div class="modal" id="authModal">
+    <div class="modal-box">
+        <div class="close" onclick="closeAuth()">✕</div>
+        <h2 id="authTitle">Личный кабинет</h2>
+        <form id="loginForm" onsubmit="login();return false;">
+            <input id="loginName" placeholder="Email" type="email">
+            <div class="error-msg" id="loginNameError"></div>
+            <input id="loginPassword" type="password" placeholder="Пароль" minlength="8">
+            <div class="error-msg" id="loginPasswordError"></div>
+            <button class="btn" style="width:100%;margin-top:6px;" id="loginBtn" type="submit">Войти</button>
+            <p style="text-align:center;margin-top:12px;font-size:14px;"><a href="#" onclick="switchTab('reset');return false;" style="color:#ef4444;font-weight:600;">Забыли пароль?</a></p>
+            <p style="text-align:center;margin-top:8px;font-size:14px;color:var(--text-muted);">Нет аккаунта? <a href="#" onclick="switchTab('register');return false;" style="color:var(--neon-dark);font-weight:600;">Создать</a></p>
+        </form>
+        <form id="registerForm" style="display:none;" onsubmit="register();return false;">
+            <input id="regName" placeholder="Ваше имя *" minlength="2">
+            <div class="error-msg" id="regNameError"></div>
+                <input id="regPhone" placeholder="Телефон *" type="tel">
+                <div class="error-msg" id="regPhoneError"></div>
+            <input id="regEmail" placeholder="Email">
+            <div class="error-msg" id="regEmailError"></div>
+            <input id="regPassword" type="password" placeholder="Пароль *" minlength="8">
+            <div class="error-msg" id="regPasswordError"></div>
+            <input id="regConfirm" type="password" placeholder="Повторите пароль *">
+            <div class="error-msg" id="regConfirmError"></div>
+            <button class="btn" style="width:100%;margin-top:6px;" id="registerBtn" type="submit">Зарегистрироваться</button>
+            <p style="text-align:center;margin-top:18px;color:var(--text-muted);font-size:14px;">Уже есть аккаунт? <a href="#" onclick="switchTab('login');return false;" style="color:var(--neon-dark);">Войти</a></p>
+        </form>
+        <form id="resetForm" style="display:none;" onsubmit="resetPassword();return false;">
+            <input id="resetEmail" placeholder="Ваш Email" type="email">
+            <div class="error-msg" id="resetEmailError"></div>
+            <button class="btn" style="width:100%;margin-top:6px;" id="resetBtn" type="submit">Отправить ссылку</button>
+            <p style="text-align:center;margin-top:18px;font-size:14px;color:var(--text-muted);">Вспомнили пароль? <a href="#" onclick="switchTab('login');return false;" style="color:var(--neon-dark);font-weight:600;">Войти</a></p>
+        </form>
+    </div>
+</div>
+
+<footer>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+            <path d="M7 2v20"/>
+            <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+        </svg>
+        © 2026 Я готовлю — ты ешь! | Светлые цены для честных покупок</footer>
+
+<script src="assets/js/main.js"></script>
+<script>
+// --- JS ДЁШЕВО ---
+const products = [{name:"Молоко 3.2% 1л",price:79,store:"Пятёрочка",addr:"ул. Ленина, 45"},{name:"Хлеб Дарницкий 500г",price:35,store:"Магнит",addr:"пр. Мира, 12"},{name:"Яйца С0 10 шт",price:89,store:"Дикси",addr:"ул. Советская, 8"},{name:"Сыр Российский 200г",price:145,store:"Лента",addr:"ул. Гагарина, 33"},{name:"Масло сливочное 182.5г",price:119,store:"Ашан",addr:"ТЦ Европа, 2 этаж"},{name:"Куриное филе 1кг",price:289,store:"Пятёрочка",addr:"ул. Ленина, 45"},{name:"Картофель 1кг",price:29,store:"Дикси",addr:"ул. Советская, 8"},{name:"Лук репчатый 1кг",price:35,store:"Пятёрочка",addr:"ул. Ленина, 45"},{name:"Морковь 1кг",price:39,store:"Магнит",addr:"пр. Мира, 12"},{name:"Капуста белокочанная 1кг",price:45,store:"Ашан",addr:"ТЦ Европа, 2 этаж"},{name:"Огурцы свежие 1кг",price:129,store:"Лента",addr:"ул. Гагарина, 33"},{name:"Помидоры свежие 1кг",price:159,store:"Пятёрочка",addr:"ул. Ленина, 45"},{name:"Яблоки Голден 1кг",price:89,store:"Магнит",addr:"пр. Мира, 12"},{name:"Бананы 1кг",price:79,store:"Дикси",addr:"ул. Советская, 8"},{name:"Рис круглозерный 900г",price:65,store:"Пятёрочка",addr:"ул. Ленина, 45"}];
+let orbitIndex = 0;
+const track = document.getElementById('orbitTrack');
+
+function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u && u.name){authBtn.style.display='none';nameBtn.style.display='flex';nameBtn.textContent=u.name;}else{authBtn.style.display='flex';nameBtn.style.display='none';nameBtn.textContent='';}}
+
+async function login(){
+const e = document.getElementById('loginName').value.trim();
+const p = document.getElementById('loginPassword').value;
+clearErrors();
+if(!e) return showErr('loginNameError', 'Введите email');
+if(p.length < 8) return showErr('loginPasswordError', 'Минимум 8 символов');
+setLoading('loginBtn', true);
+try {
+const res = await fetch('/api/login.php', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ email: e, password: p })
+});
+const data = await res.json();
+if (data.error) throw new Error(data.error);
+localStorage.setItem('user', JSON.stringify({name: data.name, email: e}));
+closeAuth();
+updateUI();
+showToast('✅ Вход выполнен');
+setTimeout(() => location.reload(), 800);
+} catch(err) {
+showErr('loginPasswordError', err.message);
+} finally {
+setLoading('loginBtn', false);
+}
+}
+
+async function register(){const n=document.getElementById('regName').value.trim();const e=document.getElementById('regEmail').value.trim();const p=document.getElementById('regPassword').value;const c=document.getElementById('regConfirm').value;clearErrors();if(n.length<2)return showErr('regNameError','Минимум 2 символа');if(e&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))return showErr('regEmailError','Некорректный email');if(p.length<8)return showErr('regPasswordError','Минимум 8 символов');if(p!==c)return showErr('regConfirmError','Пароли не совпадают');var ph=document.getElementById('regPhone').value.trim();if(!ph)return showErr('regPhoneError','Укажите телефон');setLoading('registerBtn',true);try{const res=await fetch('/api/register.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,password:p,phone:ph})});const data=await res.json();if(data.error)throw new Error(data.error);await fetch('/api/send_verify.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});closeAuth();showToast('✅ Письмо для подтверждения отправлено на '+e);}catch(err){showErr('regNameError',err.message);}finally{setLoading('registerBtn',false);}}
+
+async function resetPassword(){const e=document.getElementById('resetEmail').value.trim();clearErrors();if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))return showErr('resetEmailError','Некорректный email');setLoading('resetBtn',true);try{const res=await fetch('/api/reset_password.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});const data=await res.json();if(data.error)throw new Error(data.error);closeAuth();showToast('✅ Письмо для сброса пароля отправлено на '+e);}catch(err){showErr('resetEmailError',err.message);}finally{setLoading('resetBtn',false);}}
+
+function renderOrbit() {
+track.innerHTML = '';
+products.forEach((p, i) => {
+let status = 'hidden';
+const dist = (i - orbitIndex + products.length) % products.length;
+if(dist === 0) status = 'active';
+else if(dist === 1) status = 'right';
+else if(dist === products.length - 1) status = 'left';
+
+track.innerHTML += `
+<div class="venue-card ${status}" onclick="setOrbit(${i})">
+<img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=400" class="product-img">
+<div class="venue-info">
+<div class="venue-name">${p.name}</div>
+<div class="venue-type">💰 ${p.price} ₽</div>
+<div class="venue-address">📍 ${p.store}<br>${p.addr}</div>
+<button class="venue-btn" onclick="event.stopPropagation();addToCart(${i+100},'${p.name}','${p.store}',${p.price},'')">В корзину</button>
+</div>
+</div>
+`;
+});
+}
+function setOrbit(index) {orbitIndex = index;renderOrbit();}
+function moveOrbit(dir) {orbitIndex = (orbitIndex + dir + products.length) % products.length;renderOrbit();}
+
+document.addEventListener('DOMContentLoaded', function(){
+    updateUI();
+    updateCartBadge();
+    if(typeof hideCurrentPageInCatalog === 'function') hideCurrentPageInCatalog();
+    renderOrbit();
+});
+</script>
+</body>
+</html>

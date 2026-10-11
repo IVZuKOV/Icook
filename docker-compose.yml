@@ -1,0 +1,99 @@
+name: icook
+
+# ---------------------------------------------------------------------------
+# iCook — локальное окружение разработки
+#   web        -> приложение (Apache + PHP 8.2)   http://localhost:8080
+#   db         -> MySQL 8                          localhost:3307
+#   phpmyadmin -> веб-интерфейс к БД               http://localhost:8081
+#   mailpit    -> перехват писем от PHP mail()     http://localhost:8025
+# ---------------------------------------------------------------------------
+
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: icook-web:local
+    container_name: icook-web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:-icook_db}
+      DB_USER: ${DB_USER:-icook}
+      DB_PASSWORD: ${DB_PASSWORD:-icook_secret}
+    volumes:
+      # Live-редактирование кода без пересборки образа
+      - ./:/var/www/html
+      # Загрузки хранятся в отдельном томе и не теряются при пересборке
+      - uploads:/var/www/html/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - icook
+
+  db:
+    image: mysql:8.0
+    container_name: icook-db
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-icook_db}
+      MYSQL_USER: ${DB_USER:-icook}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-icook_secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-icook_root_secret}
+    ports:
+      - "${DB_HOST_PORT:-3307}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # SQL-скрипты выполняются ТОЛЬКО при первой инициализации (пустой том db_data)
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    networks:
+      - icook
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: icook-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "${PMA_PORT:-8081}:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: "3306"
+      UPLOAD_LIMIT: ${PMA_UPLOAD_LIMIT:-64M}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - icook
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: icook-mailpit
+    restart: unless-stopped
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+    networks:
+      - icook
+
+volumes:
+  db_data:
+  uploads:
+
+networks:
+  icook:
+    driver: bridge

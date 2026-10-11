@@ -1,0 +1,22 @@
+# Нормализация переводов строк (LF во всех текстовых файлах)
+* text=auto eol=lf
+
+# Скрипты — всегда LF
+*.sh text eol=lf
+
+# Windows-скрипты — CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Бинарники — без обработки
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.apk binary
+*.pdf binary
+*.gz binary
+*.woff binary
+*.woff2 binary
