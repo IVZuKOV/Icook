@@ -17,6 +17,11 @@ $stmt->execute([$email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($user && password_verify($password, $user['password'])) {
+    // Миграция: если is_seller не установлен или 0 - ставим 1
+    if (!isset($user['is_seller']) || $user['is_seller'] != 1) {
+        $pdo->prepare("UPDATE users SET is_seller = 1 WHERE id = ?")->execute([$user['id']]);
+    }
+    
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_name'] = $user['name'];
     $_SESSION['user_email'] = $user['email'];

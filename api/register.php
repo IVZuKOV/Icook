@@ -7,9 +7,10 @@ $data = json_decode(file_get_contents('php://input'), true);
 $name = trim($data['name'] ?? '');
 $email = trim($data['email'] ?? '');
 $password = $data['password'] ?? '';
+$phone = trim($data['phone'] ?? '');
 
 if (!$name || !$email || !$password) {
-    echo json_encode(['error' => 'Заполните все поля']);
+    echo json_encode(['error' => 'Заполните обязательные поля']);
     exit;
 }
 
@@ -20,18 +21,11 @@ if ($stmt->fetch()) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT id FROM users WHERE name = ?");
-$stmt->execute([$name]);
-if ($stmt->fetch()) {
-    echo json_encode(['error' => 'Пользователь с таким именем уже зарегистрирован']);
-    exit;
-}
-
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-    $stmt->execute([$name, $email, $hash]);
+    $stmt = $pdo->prepare("INSERT INTO users (name, email, password, phone, is_seller) VALUES (?, ?, ?, ?, 1)");
+    $stmt->execute([$name, $email, $hash, $phone]);
 
     $userId = $pdo->lastInsertId();
     $_SESSION['user_id']    = $userId;

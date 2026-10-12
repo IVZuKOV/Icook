@@ -22,10 +22,11 @@ if (!$user) {
 $token = bin2hex(random_bytes(32));
 $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
+$pdo->exec("DELETE FROM email_verifications WHERE expires_at < NOW()");
 $stmt = $pdo->prepare("INSERT INTO email_verifications (email, token, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE token=?, expires_at=?");
 $stmt->execute([$email, $token, $expires, $token, $expires]);
 
-$link = "http://icook.com.ru:8081/reset_password.html?token=$token";
+$link = "https://icook.com.ru/reset_password.html?token=$token";
 $subject = "Сброс пароля — Я готовлю";
 $message = "Вы запросили сброс пароля. Перейдите по ссылке:\n\n$link\n\nСсылка действительна 1 час.\n\nЕсли вы не запрашивали сброс — проигнорируйте это письмо.";
 $headers = "From: noreply@icook.ru\r\nContent-Type: text/plain; charset=utf-8";

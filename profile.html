@@ -6,11 +6,11 @@
 <title>Личный кабинет — Я готовлю</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/main.css?v=20260928b">
 
 <style>
 .profile-header{display:flex;gap:28px;align-items:center;flex-wrap:wrap;padding:24px 0;border-bottom:1px solid var(--border-color);}
-.avatar{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon-dark));display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;color:#003d33;box-shadow:0 0 20px rgba(0,255,213,0.3);}
+.avatar{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon-dark));display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;color:#ffffff;box-shadow:0 0 20px rgba(30,64,175,0.3);}
 .profile-stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;}
 .stat{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:10px 18px;min-width:110px;text-align:center;transition:0.3s;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
 .stat:hover{transform:translateY(-3px);border-color:var(--neon);box-shadow:0 8px 25px var(--neon-glow);}
@@ -20,7 +20,8 @@
 .tabs::-webkit-scrollbar{display:none;}
 .tab{padding:10px 18px;border:none;border-radius:8px 8px 0 0;background:transparent;color:var(--text-muted);cursor:pointer;font-size:14px;font-weight:500;transition:0.3s;white-space:nowrap;font-family:'Montserrat',sans-serif;}
 .tab:hover{color:var(--neon-dark);}
-.tab.active{background:var(--neon);color:#003d33;font-weight:700;box-shadow:0 0 15px var(--neon-glow);}
+.tab.active{background:var(--neon);color:#ffffff;font-weight:700;box-shadow:0 0 15px var(--neon-glow);}
+[data-theme="dark"] .tab.active{color:#0f172a;}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
 .orders-list{display:flex;flex-direction:column;gap:10px;}
@@ -31,14 +32,14 @@
 .status.pending{background:rgba(255,180,0,0.15);color:#d97706;}
 .status.confirmed{background:rgba(59,130,246,0.15);color:#2563eb;}
 .status.cooking{background:rgba(168,85,247,0.15);color:#7c3aed;}
-.status.ready{background:rgba(0,255,213,0.15);color:var(--neon-dark);}
+.status.ready{background:rgba(30,64,175,0.15);color:var(--neon-dark);}
 .status.cancelled{background:rgba(239,68,68,0.1);color:#ef4444;}
 .settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
 .setting-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:18px;transition:0.3s;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
 .setting-card h4{color:var(--neon-dark);margin-bottom:10px;}
 .setting-card label{display:block;color:var(--text-muted);margin:6px 0 4px;font-size:13px;}
 .setting-card input,.setting-card textarea,.setting-card select{width:100%;padding:9px 12px;border-radius:8px;border:2px solid #e2e8f0;background:var(--bg);color:var(--text-main);transition:0.3s;font-family:'Montserrat',sans-serif;font-size:14px;}
-.setting-card input:focus,.setting-card textarea:focus,.setting-card select:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(0,255,213,0.15);}
+.setting-card input:focus,.setting-card textarea:focus,.setting-card select:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(30,64,175,0.15);}
 .setting-card textarea{resize:vertical;min-height:60px;}
 .empty{text-align:center;padding:40px 20px;color:var(--text-muted);}
 .logout-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border:2px solid #ef4444;border-radius:12px;background:transparent;color:#ef4444;font-weight:700;font-size:13px;cursor:pointer;transition:0.3s;text-decoration:none;}
@@ -60,12 +61,12 @@
 .my-dish-card .dish-title{font-size:16px;font-weight:700;margin-bottom:4px;}
 .my-dish-card .dish-price{font-size:18px;font-weight:800;color:var(--neon-dark);margin-bottom:8px;}
 .dish-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:8px;}
-.dish-badge.on{background:rgba(0,255,213,0.15);color:var(--neon-dark);}
+.dish-badge.on{background:rgba(30,64,175,0.15);color:var(--neon-dark);}
 .dish-badge.off{background:rgba(239,68,68,0.1);color:#ef4444;}
 .dish-actions{display:flex;gap:6px;}
 .dish-actions button{flex:1;padding:8px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;border:none;transition:0.3s;font-family:'Montserrat',sans-serif;}
 .btn-toggle{background:var(--neon-glow);color:var(--neon-dark);border:1px solid var(--border-color);}
-.btn-toggle:hover{background:var(--neon);color:#003d33;}
+.btn-toggle:hover{background:var(--neon);color:#ffffff;}
 .btn-delete{background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);}
 .btn-delete:hover{background:#ef4444;color:#fff;}
 
@@ -75,7 +76,7 @@
 .form-group{margin-bottom:14px;}
 .form-group label{display:block;font-weight:600;margin-bottom:5px;font-size:13px;color:var(--text-main);}
 .form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 14px;border-radius:12px;border:2px solid #e2e8f0;background:var(--card-bg);color:var(--text-main);font-size:14px;outline:none;transition:0.3s;font-family:'Montserrat',sans-serif;}
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(0,255,213,0.15);}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(30,64,175,0.15);}
 .form-group textarea{resize:vertical;min-height:70px;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .file-upload{border:2px dashed var(--border-color);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:0.3s;color:var(--text-muted);}
@@ -131,7 +132,7 @@
 .info-modal-btn.error{background:#ef4444;color:#fff;}
 .info-modal-btn.error:hover{box-shadow:0 0 20px rgba(239,68,68,0.4);transform:scale(1.03);}
 
-.toast{position:fixed;bottom:30px;right:30px;padding:16px 28px;border-radius:14px;background:linear-gradient(135deg,#00ffd5,#7fffd4);color:#003d33;font-weight:700;font-size:15px;z-index:20000;transform:translateY(100px);opacity:0;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 8px 30px rgba(0,255,213,0.4);}
+.toast{position:fixed;bottom:30px;right:30px;padding:16px 28px;border-radius:14px;background:var(--card-bg);border:2px solid var(--neon);color:var(--neon-dark);font-weight:700;font-size:15px;z-index:20000;transform:translateY(100px);opacity:0;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 8px 30px var(--neon-glow);}
 .toast.show{transform:translateY(0);opacity:1;}
 
 [data-theme="dark"] .setting-card{background:#1e293b;border-color:rgba(255,255,255,0.1);}
@@ -145,8 +146,8 @@
 /* --- Карточка добавить блюдо (+) --- */
 .add-dish-card{background:var(--card-bg);border:2px dashed var(--neon);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;cursor:pointer;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);}
 .add-dish-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 8px 30px var(--neon-glow);background:var(--neon-glow);}
-.add-dish-card .plus-icon{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon-dark));display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 0 20px rgba(0,255,213,0.3);}
-.add-dish-card .plus-icon svg{width:32px;height:32px;stroke:#003d33;}
+.add-dish-card .plus-icon{width:64px;height:64px;border-radius:50%;background:transparent;border:2px solid var(--neon);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 0 20px var(--neon-glow);color:var(--neon-dark);}
+.add-dish-card .plus-icon svg{width:32px;height:32px;stroke:#ffffff;}
 .add-dish-card span{font-weight:700;color:var(--neon-dark);font-size:15px;}
 [data-theme="dark"] .add-dish-card{background:#1e293b;border-color:rgba(255,255,255,0.2);}
 [data-theme="dark"] .add-dish-card:hover{border-color:#ffffff;box-shadow:0 0 20px rgba(255,255,255,0.2);}
@@ -160,7 +161,7 @@
 header{padding:12px 16px;flex-direction:column;gap:8px;}
 .header-left{width:100%;justify-content:center;flex-wrap:wrap;gap:8px;}
 .logo{font-size:18px;gap:10px;order:1;width:100%;justify-content:center;}
-.catalog-btn{margin-right:0;width:46px;height:46px;order:-1;}
+
 .header-right{width:100%;justify-content:space-between;align-items:center;gap:8px;}
 }
 </style>
@@ -170,6 +171,22 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
 </script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+/* Разрешение копирования и вставки на мобильных */
+input, textarea, [contenteditable="true"], select {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+}
+/* Убираем user-select:none с интерактивных элементов */
+button, .btn, a, label {
+    -webkit-user-select: auto !important;
+    user-select: auto !important;
+}
+</style>
 </head>
 <body>
 	<div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -193,14 +210,14 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
 <header>
 <div class="header-left">
 <div class="logo">
-<svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00ffd5"/><stop offset="50%" style="stop-color:#7fffd4"/><stop offset="100%" style="stop-color:#00b8a3"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
+<svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1e40af"/><stop offset="50%" style="stop-color:#7fffd4"/><stop offset="100%" style="stop-color:#1e3a8a"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
 Я готовлю — ты ешь!
 </div>
 </div>
 <div class="header-right">
 <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-<div style="display:flex;gap:8px;align-items:center;"><a href="index.html" class="icon-btn" aria-label="Главная"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
-<button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></button>
+<a href="index.html" class="icon-btn" aria-label="Главная"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+<div style="display:flex;gap:8px;align-items:center;"><button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></button>
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 <a href="#" class="logout-btn" onclick="openLogoutModal();return false;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Выйти</a>
 </div>
@@ -228,6 +245,7 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
 <button class="tab" onclick="switchTab('mydishes',this)">Мои блюда</button>
 <button class="tab" onclick="switchTab('sellerorders',this)">Заказы мне</button>
 <button class="tab" onclick="switchTab('settings',this)">Настройки</button>
+<button class="tab" id="adminTabBtn" onclick="switchTab('admin',this)" style="display:none;">🛡️ Админ</button>
 </div>
 
 <!-- === МОИ ЗАКАЗЫ (покупатель) === -->
@@ -330,6 +348,20 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
 </form>
 </div>
 </div>
+
+<!-- === АДМИН-ПАНЕЛЬ === -->
+<div class="tab-content" id="tab-admin">
+<h3 style="margin:18px 0 14px;color:var(--neon-dark)">🛡️ Панель суперпользователя</h3>
+
+<div class="tabs" style="margin-bottom:16px;">
+<button class="tab active" onclick="loadAdminSection('users',this)">Пользователи</button>
+<button class="tab" onclick="loadAdminSection('dishes',this)">Блюда</button>
+<button class="tab" onclick="loadAdminSection('orders',this)">Заказы</button>
+<button class="tab" onclick="loadAdminSection('categories',this)">Категории</button>
+</div>
+
+<div id="adminContent" style="overflow-x:auto;"></div>
+</div>
 </main>
 
 <footer>
@@ -381,7 +413,6 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
 
 <script src="assets/js/config.js"></script>
 <script src="assets/js/main.js"></script>
-<script src="assets/js/cart.js"></script>
 <script src="assets/js/theme.js"></script>
 <script>
 const currentUser = JSON.parse(localStorage.getItem('user')) || null;
@@ -417,6 +448,7 @@ async function switchTab(n, btn) {
     if(n === 'mydishes') { loadMyDishes(); }
     if(n === 'sellerorders') { loadSellerOrders(); }
     if(n === 'settings') { setTimeout(function(){ if(geoMap) geoMap.invalidateSize(); else initGeoMap(); }, 200); }
+    if(n === 'admin') { loadAdminSection('users'); }
 }
 
 // --- ПРОФИЛЬ ---
@@ -545,6 +577,7 @@ async function loadMyDishes() {
         }).join('');
     } else {
         document.getElementById('myDishesCount').textContent = '0';
+        dishesHtml = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:30px 10px;">У вас пока нет блюд. Добавьте первое блюдо ниже 👇</p>';
     }
     dishesHtml += '<div class="add-dish-card" onclick="openAddDishModal()">' +
         '<div class="plus-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>' +
@@ -687,7 +720,7 @@ async function confirmDelete(){
 // --- ВЫХОД ---
 function openLogoutModal(){ document.getElementById('logoutModal').classList.add('active'); }
 function closeLogoutModal(e){ if(!e||e.target===document.getElementById('logoutModal')) document.getElementById('logoutModal').classList.remove('active'); }
-function confirmLogout(){ localStorage.removeItem('user'); location.href='index.html'; }
+function confirmLogout(){ fetch('/api/logout.php',{method:'POST'}).catch(function(){}).finally(function(){ localStorage.removeItem('user'); location.href='index.html'; }); }
 
 // --- ИНИЦИАЛИЗАЦИЯ ---
 document.addEventListener('DOMContentLoaded', function(){
@@ -719,7 +752,7 @@ function initGeoMap(lat, lng){
     geoMarker = L.marker([lat, lng], {draggable:true}).addTo(geoMap);
     geoCircle = L.circle([lat, lng], {
         radius: (document.getElementById('geoRadius').value || 10) * 1000,
-        color: '#00ffd5', fillColor: '#00ffd5', fillOpacity: 0.15, weight: 2
+        color: '#1e40af', fillColor: '#1e40af', fillOpacity: 0.15, weight: 2
     }).addTo(geoMap);
     
     geoMarker.on('dragend', function(e){
@@ -858,6 +891,501 @@ document.addEventListener('DOMContentLoaded', function(){
     var user = JSON.parse(localStorage.getItem('user')||'{}');
     if(user.lat && user.lng) initGeoMap(parseFloat(user.lat), parseFloat(user.lng));
 });
+</script>
+
+
+<script>
+// Проверка роли админа
+async function checkAdminRole(){
+    try {
+        var res = await fetch('/api/admin.php?action=users');
+        var data = await res.json();
+        if(data.success){
+            document.getElementById('adminTabBtn').style.display = '';
+        }
+    } catch(e){}
+}
+
+var currentAdminSection = 'users';
+
+async function loadAdminSection(section, btn){
+    currentAdminSection = section;
+    if(btn){
+        btn.closest('.tabs').querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+        btn.classList.add('active');
+    }
+    var container = document.getElementById('adminContent');
+    container.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Загрузка...</p>';
+    
+    try {
+        var res = await fetch('/api/admin.php?action=' + section);
+        var data = await res.json();
+        if(!data.success){ container.innerHTML = '<p style="color:#ef4444;">' + (data.error||'Ошибка') + '</p>'; return; }
+        
+        var rows = data.data;
+        // Кэшируем пользователей для редактирования
+        if(section === 'users'){ 
+            adminUsersCache = {}; 
+            adminUsersAllRows = rows;
+            rows.forEach(function(r){ adminUsersCache[r.id] = r; }); 
+        }
+        if(!rows.length){ container.innerHTML = '<p style="text-align:center;padding:30px;">Нет данных</p>'; return; }
+        
+        var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>';
+        var keys = Object.keys(rows[0]);
+        keys.forEach(function(k){ html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);text-align:left;color:var(--neon-dark);white-space:nowrap;">' + k + '</th>'; });
+        html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
+        
+        rows.forEach(function(row){
+            html += '<tr style="border-bottom:1px solid var(--border-color);">';
+            keys.forEach(function(k){
+                var val = row[k] !== null ? row[k] : '—';
+                html += '<td style="padding:8px;white-space:nowrap;">' + val + '</td>';
+            });
+            html += '<td style="padding:8px;">';
+            
+            if(section === 'users'){
+                html += '<button onclick="openAdminViewLK(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #8b5cf6;background:transparent;color:#8b5cf6;cursor:pointer;font-size:12px;margin-right:4px;">👁️ ЛК</button>';
+                html += '<button onclick="openAdminEditUser(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--neon);background:transparent;color:var(--neon-dark);cursor:pointer;font-size:12px;">✏️ Изменить</button>';
+            } else if(section === 'dishes'){
+                html += '<button onclick="adminToggleDish(' + row.id + ',' + (row.is_available==1?0:1) + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:12px;">' + (row.is_available==1?'Скрыть':'Показать') + '</button>';
+                html += ' <button onclick="adminDeleteDish(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px;">Удалить</button>';
+            } else if(section === 'orders'){
+                html += '<select onchange="adminUpdateOrder(' + row.id + ',this.value)" style="padding:4px 8px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);font-size:12px;">';
+                ['pending','confirmed','cooking','ready','delivered','cancelled'].forEach(function(s){ html += '<option value="' + s + '"' + (row.status===s?' selected':'') + '>' + s + '</option>'; });
+                html += '</select>';
+            }
+            
+            html += '</td></tr>';
+        });
+        
+        html += '</tbody></table>';
+        // Для users разделяем поиск и таблицу
+        if(section === 'users'){
+            container.innerHTML = '<div style="margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">' +
+                '<input type="text" id="adminUserSearch" placeholder="🔍 Поиск по имени, телефону или email..." oninput="filterAdminUsers()" style="flex:1;min-width:200px;padding:10px 16px;border-radius:12px;border:2px solid #94a3b8;background:#ffffff;color:#1e293b;font-size:14px;outline:none;">' +
+                '<span id="adminSearchCount" style="font-size:12px;color:var(--text-muted);white-space:nowrap;"></span>' +
+                '</div>' +
+                '<div id="adminUsersTableWrap"></div>';
+            document.getElementById('adminUsersTableWrap').innerHTML = html;
+        } else {
+            container.innerHTML = html;
+        }
+    } catch(e){ container.innerHTML = '<p style="color:#ef4444;">Ошибка загрузки</p>'; }
+}
+
+async function adminUpdateUser(id, role){
+    await fetch('/api/admin.php?action=update_user', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id, role:role})});
+    showToast('Роль обновлена');
+}
+
+async function adminToggleDish(id, available){
+    await fetch('/api/admin.php?action=update_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id, is_available:available})});
+    showToast('Статус блюда обновлён');
+    loadAdminSection('dishes');
+}
+
+async function adminDeleteDish(id){
+    if(!confirm('Удалить это блюдо?')) return;
+    await fetch('/api/admin.php?action=delete_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id})});
+    showToast('Блюдо удалено');
+    loadAdminSection('dishes');
+}
+
+async function adminUpdateOrder(id, status){
+    await fetch('/api/admin.php?action=update_order_status', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id, status:status})});
+    showToast('Статус заказа обновлён');
+}
+
+// Проверяем роль при загрузке
+document.addEventListener('DOMContentLoaded', checkAdminRole);
+</script>
+
+
+<!-- Модальное окно редактирования пользователя -->
+<div id="adminEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:10001;align-items:center;justify-content:center;">
+<div style="background:var(--card-bg);border:2px solid var(--border-color);border-radius:20px;padding:30px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;">
+<h3 style="margin:0 0 16px;color:var(--neon-dark);">✏️ Редактировать пользователя</h3>
+<input type="hidden" id="aeId">
+<label style="font-size:13px;color:var(--text-muted);">Имя</label>
+<input type="text" id="aeName" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Email</label>
+<input type="email" id="aeEmail" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Телефон</label>
+<input type="text" id="aePhone" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Адрес</label>
+<input type="text" id="aeAddress" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Страна</label>
+<input type="text" id="aeCountry" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Город</label>
+<input type="text" id="aeCity" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Новый пароль (оставьте пустым чтобы не менять)</label>
+<input type="password" id="aePassword" placeholder="Новый пароль" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Роль</label>
+<select id="aeRole" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<option value="user">user</option><option value="admin">admin</option>
+</select>
+<label style="font-size:13px;color:var(--text-muted);">Продавец</label>
+<select id="aeSeller" style="width:100%;padding:10px;margin-bottom:16px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<option value="1">Да</option><option value="0">Нет</option>
+</select>
+<div style="display:flex;gap:10px;">
+<button class="btn" onclick="saveAdminUser()" style="flex:1;">Сохранить</button>
+<button class="btn" onclick="document.getElementById('adminEditModal').style.display='none'" style="flex:1;background:transparent;border:2px solid var(--border-color);color:var(--text-main);">Отмена</button>
+</div>
+</div>
+</div>
+
+<script>
+var adminUsersCache = {};
+
+function openAdminEditUser(id){
+    var u = adminUsersCache[id];
+    if(!u) return;
+    document.getElementById('aeId').value = u.id;
+    document.getElementById('aeName').value = u.name || '';
+    document.getElementById('aeEmail').value = u.email || '';
+    document.getElementById('aePhone').value = u.phone || '';
+    document.getElementById('aeAddress').value = u.address || '';
+    document.getElementById('aeCountry').value = u.country || '';
+    document.getElementById('aeCity').value = u.city || '';
+    document.getElementById('aePassword').value = '';
+    document.getElementById('aeRole').value = u.role || 'user';
+    document.getElementById('aeSeller').value = u.is_seller != null ? u.is_seller : '0';
+    document.getElementById('adminEditModal').style.display = 'flex';
+}
+
+async function saveAdminUser(){
+    var data = {
+        id: parseInt(document.getElementById('aeId').value),
+        name: document.getElementById('aeName').value,
+        email: document.getElementById('aeEmail').value,
+        phone: document.getElementById('aePhone').value,
+        address: document.getElementById('aeAddress').value,
+        country: document.getElementById('aeCountry').value,
+        city: document.getElementById('aeCity').value,
+        role: document.getElementById('aeRole').value,
+        is_seller: parseInt(document.getElementById('aeSeller').value)
+    };
+    var pw = document.getElementById('aePassword').value;
+    if(pw) data.new_password = pw;
+    
+    try {
+        var res = await fetch('/api/admin.php?action=update_user', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)});
+        var result = await res.json();
+        if(result.success){ showToast('Пользователь обновлён'); document.getElementById('adminEditModal').style.display='none'; loadAdminSection('users'); }
+        else showToast(result.error || 'Ошибка');
+    } catch(e){ showToast('Ошибка сети'); }
+}
+</script>
+
+
+<!-- === МОДАЛЬНОЕ ОКНО ПРОСМОТРА ЛК ПОЛЬЗОВАТЕЛЯ === -->
+<div id="adminLKModal" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:10002;overflow-y:auto;">
+<!-- Баннер -->
+<div style="position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(124,58,237,0.4);">
+<div style="display:flex;align-items:center;gap:10px;">
+<span style="font-size:20px;">🛡️</span>
+<span style="font-weight:700;font-size:15px;">ВЫ в ЛК: <span id="lkBannerName"></span></span>
+</div>
+<button onclick="closeAdminLK()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;">✕ Выйти</button>
+</div>
+
+<!-- Контент ЛК -->
+<div style="max-width:900px;margin:0 auto;padding:20px;">
+<!-- Инфо профиля -->
+<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:24px;margin-bottom:20px;">
+<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+<div id="lkAvatar" style="width:60px;height:60px;border-radius:50%;background:var(--neon);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#ffffff;"></div>
+<div>
+<h2 id="lkName" style="margin:0;color:var(--text-main);"></h2>
+<p id="lkEmail" style="margin:4px 0 0;color:var(--text-muted);font-size:14px;"></p>
+</div>
+</div>
+<div id="lkInfoGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;font-size:13px;"></div>
+</div>
+
+<!-- Табы ЛК -->
+<div class="tabs" id="lkTabs">
+<button class="tab active" onclick="switchLKTab('dishes',this)">🍽️ Блюда</button>
+<button class="tab" onclick="switchLKTab('buyer_orders',this)">🛒 Заказы</button>
+<button class="tab" onclick="switchLKTab('seller_orders',this)">📦 Заказы продавца</button>
+<button class="tab" onclick="switchLKTab('edit',this)">✏️ Редактировать</button>
+</div>
+
+<div id="lkTabContent" style="margin-top:16px;"></div>
+</div>
+</div>
+
+<script>
+var lkData = null;
+
+async function openAdminViewLK(userId){
+    showToast('Загрузка ЛК...');
+    try {
+        var res = await fetch('/api/admin.php?action=view_user&user_id=' + userId);
+        var text = await res.text();
+        console.log('Admin LK response:', res.status, text.substring(0,200));
+        var data;
+        try { data = JSON.parse(text); } catch(e){ showToast('Ошибка парсинга: ' + res.status); console.log('Raw:', text); return; }
+        if(!data.success){ showToast('Ошибка: ' + (data.error || JSON.stringify(data))); return; }
+        lkData = data;
+        
+        // Заполняем баннер и инфо
+        document.getElementById('lkBannerName').textContent = data.user.name;
+        document.getElementById('lkName').textContent = data.user.name;
+        document.getElementById('lkEmail').textContent = data.user.email;
+        document.getElementById('lkAvatar').textContent = data.user.name.charAt(0).toUpperCase();
+        
+        var info = '';
+        var fields = [
+            ['Телефон', data.user.phone], ['Город', data.user.city], ['Страна', data.user.country],
+            ['Адрес', data.user.address], ['Роль', data.user.role], ['Продавец', data.user.is_seller == 1 ? 'Да' : 'Нет'],
+            ['Радиус', data.user.search_radius ? data.user.search_radius + ' км' : '—'],
+            ['Регистрация', data.user.created_at ? data.user.created_at.substring(0,10) : '—']
+        ];
+        fields.forEach(function(f){ 
+            info += '<div style="background:var(--bg);padding:10px 14px;border-radius:10px;"><span style="color:var(--text-muted);">' + f[0] + ':</span> <strong style="color:var(--text-main);">' + (f[1]||'—') + '</strong></div>'; 
+        });
+        document.getElementById('lkInfoGrid').innerHTML = info;
+        
+        document.getElementById('adminLKModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        switchLKTab('dishes');
+    } catch(e){ showToast('Ошибка загрузки'); console.log(e); }
+}
+
+function closeAdminLK(){
+    document.getElementById('adminLKModal').style.display = 'none';
+    document.body.style.overflow = '';
+    lkData = null;
+}
+
+function switchLKTab(tab, btn){
+    if(btn){
+        document.querySelectorAll('#lkTabs .tab').forEach(function(t){ t.classList.remove('active'); });
+        btn.classList.add('active');
+    }
+    var container = document.getElementById('lkTabContent');
+    
+    if(tab === 'dishes'){
+        if(!lkData.dishes.length){ container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:30px;">Нет блюд</p>'; return; }
+        var html = '<div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button onclick="deleteAllUserDishes()" style="padding:8px 16px;border-radius:10px;border:2px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:13px;font-weight:700;">🗑️ Удалить ВСЕ блюда</button></div>';
+        html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">';
+        lkData.dishes.forEach(function(d){
+            html += '<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:16px;">';
+            html += '<div style="font-weight:700;color:var(--text-main);margin-bottom:4px;">' + d.title + '</div>';
+            html += '<div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">' + (d.category_name||'') + ' | ' + (d.weight||'—') + 'г</div>';
+            html += '<div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">' + (d.description ? d.description.substring(0,80) : '') + '</div>';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+            html += '<span style="font-weight:700;color:var(--neon-dark);">' + d.price + ' ₽</span>';
+            html += '<span style="font-size:11px;padding:3px 8px;border-radius:6px;background:' + (d.is_available==1?'rgba(0,255,100,0.15);color:#10b981':'rgba(239,68,68,0.15);color:#ef4444') + ';">' + (d.is_available==1?'Активно':'Скрыто') + '</span>';
+            html += '</div>';
+            html += '<div style="display:flex;gap:6px;">';
+            html += '<button onclick="editLKDish(' + d.id + ')" style="flex:1;padding:6px;border-radius:8px;border:1px solid var(--neon);background:transparent;color:var(--neon-dark);cursor:pointer;font-size:12px;">✏️ Изменить</button>';
+            html += '<button onclick="toggleLKDish(' + d.id + ',' + (d.is_available==1?0:1) + ')" style="flex:1;padding:6px;border-radius:8px;border:1px solid var(--border-color);background:transparent;color:var(--text-main);cursor:pointer;font-size:12px;">' + (d.is_available==1?'Скрыть':'Показать') + '</button>';
+            html += '<button onclick="deleteLKDish(' + d.id + ')" style="padding:6px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px;">🗑️</button>';
+            html += '</div></div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+    else if(tab === 'buyer_orders'){
+        renderLKOrders(lkData.buyer_orders, 'seller_name', 'Продавец', container, 'buyer');
+    }
+    else if(tab === 'seller_orders'){
+        renderLKOrders(lkData.seller_orders, 'buyer_name', 'Покупатель', container, 'seller');
+    }
+    else if(tab === 'edit'){
+        renderLKEditForm(container);
+    }
+}
+
+function renderLKOrders(orders, nameField, nameLabel, container, orderType){
+    if(!orders.length){ container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:30px;">Нет заказов</p>'; return; }
+    var html = '<div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button onclick="deleteAllUserOrders(\'' + orderType + '\')" style="padding:8px 16px;border-radius:10px;border:2px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:13px;font-weight:700;">🗑️ Удалить ВСЕ заказы</button></div>';
+    html += '<div style="display:flex;flex-direction:column;gap:10px;">';
+    orders.forEach(function(o){
+        var statusColors = {'new':'#d97706',confirmed:'#2563eb',cooking:'#7c3aed',ready:'#059669',delivered:'#10b981',cancelled:'#ef4444'};
+        var color = statusColors[o.status] || '#64748b';
+        html += '<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:14px 18px;">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">';
+        html += '<div><strong style="color:var(--text-main);">Заказ #' + o.id + '</strong><br><span style="font-size:12px;color:var(--text-muted);">' + nameLabel + ': ' + (o[nameField]||'—') + '</span></div>';
+        html += '<div style="text-align:right;"><span style="font-weight:700;color:var(--text-main);">' + o.total_price + ' ₽</span></div>';
+        html += '</div>';
+        html += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">';
+        html += '<select onchange="updateLKOrder(' + o.id + ',this.value)" style="padding:5px 8px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);font-size:12px;">';
+        ['new','confirmed','cooking','ready','delivered','cancelled'].forEach(function(s){ html += '<option value="' + s + '"' + (o.status===s?' selected':'') + '>' + s + '</option>'; });
+        html += '</select>';
+        html += '<button onclick="deleteLKOrder(' + o.id + ')" style="padding:5px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px;">🗑️ Удалить</button>';
+        html += '</div></div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function renderLKEditForm(container){
+    var u = lkData.user;
+    var html = '<form onsubmit="saveLKEdit(event)" style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:24px;">';
+    var fields = [
+        ['ae_lk_Name','Имя','text',u.name],['ae_lk_Email','Email','email',u.email],
+        ['ae_lk_Phone','Телефон','text',u.phone],['ae_lk_Address','Адрес','text',u.address],
+        ['ae_lk_Country','Страна','text',u.country],['ae_lk_City','Город','text',u.city]
+    ];
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;">';
+    fields.forEach(function(f){
+        html += '<div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">' + f[1] + '</label>';
+        html += '<input type="' + f[2] + '" id="' + f[0] + '" value="' + (f[3]||'') + '" style="width:100%;padding:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);box-sizing:border-box;"></div>';
+    });
+    html += '</div>';
+    
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">';
+    html += '<div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">Роль</label><select id="ae_lk_Role" style="width:100%;padding:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);"><option value="user"' + (u.role==='user'?' selected':'') + '>user</option><option value="admin"' + (u.role==='admin'?' selected':'') + '>admin</option></select></div>';
+    html += '<div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">Продавец</label><select id="ae_lk_Seller" style="width:100%;padding:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);"><option value="1"' + (u.is_seller==1?' selected':'') + '>Да</option><option value="0"' + (u.is_seller!=1?' selected':'') + '>Нет</option></select></div>';
+    html += '</div>';
+    
+    html += '<div style="margin-top:12px;"><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">Новый пароль (пусто = не менять)</label><input type="password" id="ae_lk_Password" placeholder="Новый пароль" style="width:100%;padding:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);box-sizing:border-box;"></div>';
+    
+    html += '<button class="btn" type="submit" style="margin-top:16px;width:100%;">💾 Сохранить изменения</button>';
+    html += '</form>';
+    container.innerHTML = html;
+}
+
+
+async function editLKDish(dishId){
+    var d = lkData.dishes.find(function(x){ return x.id == dishId; });
+    if(!d) return;
+    var title = prompt('Название блюда:', d.title);
+    if(title === null) return;
+    var price = prompt('Цена:', d.price);
+    if(price === null) return;
+    var desc = prompt('Описание:', d.description || '');
+    if(desc === null) return;
+    await fetch('/api/admin.php?action=update_user_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:dishId, user_id:lkData.user.id, title:title, price:parseFloat(price), description:desc})});
+    showToast('Блюдо обновлено');
+    refreshLK();
+}
+
+async function toggleLKDish(dishId, available){
+    await fetch('/api/admin.php?action=update_user_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:dishId, user_id:lkData.user.id, is_available:available})});
+    showToast('Статус изменён');
+    refreshLK();
+}
+
+async function deleteLKDish(dishId){
+    if(!confirm('Удалить это блюдо?')) return;
+    await fetch('/api/admin.php?action=delete_user_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:dishId, user_id:lkData.user.id})});
+    showToast('Блюдо удалено');
+    refreshLK();
+}
+
+async function deleteAllUserDishes(){
+    if(!confirm('УДАЛИТЬ ВСЕ БЛЮДА этого пользователя? Это необратимо!')) return;
+    await fetch('/api/admin.php?action=delete_all_user_dishes', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({user_id:lkData.user.id})});
+    showToast('Все блюда удалены');
+    refreshLK();
+}
+
+async function updateLKOrder(orderId, status){
+    await fetch('/api/admin.php?action=update_user_order', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:orderId, user_id:lkData.user.id, status:status})});
+    showToast('Статус заказа обновлён');
+}
+
+async function deleteLKOrder(orderId){
+    if(!confirm('Удалить этот заказ?')) return;
+    await fetch('/api/admin.php?action=delete_user_order', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:orderId, user_id:lkData.user.id})});
+    showToast('Заказ удалён');
+    refreshLK();
+}
+
+async function deleteAllUserOrders(type){
+    var label = type === 'seller' ? 'заказы продавца' : 'заказы покупателя';
+    if(!confirm('УДАЛИТЬ ВСЕ ' + label.toUpperCase() + ' этого пользователя? Это необратимо!')) return;
+    await fetch('/api/admin.php?action=delete_all_user_orders', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({user_id:lkData.user.id, type:type})});
+    showToast('Все заказы удалены');
+    refreshLK();
+}
+
+
+var adminUsersAllRows = [];
+
+function filterAdminUsers(){
+    var q = (document.getElementById('adminUserSearch').value || '').toLowerCase().trim();
+    var filtered = adminUsersAllRows.filter(function(r){
+        if(!q) return true;
+        return (r.name || '').toLowerCase().indexOf(q) !== -1 
+            || (r.email || '').toLowerCase().indexOf(q) !== -1 
+            || (r.phone || '').toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById('adminSearchCount').textContent = filtered.length + ' из ' + adminUsersAllRows.length;
+    renderAdminUsersTable(filtered);
+}
+
+function renderAdminUsersTable(rows){
+    var tableContainer = document.getElementById('adminUsersTableWrap');
+    if(!tableContainer) return;
+    
+    if(!rows.length){ tableContainer.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Ничего не найдено</p>'; return; }
+    
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>';
+    var keys = Object.keys(rows[0]);
+    keys.forEach(function(k){ html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);text-align:left;color:var(--neon-dark);white-space:nowrap;">' + k + '</th>'; });
+    html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
+    
+    rows.forEach(function(row){
+        html += '<tr style="border-bottom:1px solid var(--border-color);">';
+        keys.forEach(function(k){
+            var val = row[k] !== null ? row[k] : '—';
+            html += '<td style="padding:8px;white-space:nowrap;">' + val + '</td>';
+        });
+        html += '<td style="padding:8px;">';
+        html += '<button onclick="openAdminViewLK(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #8b5cf6;background:transparent;color:#8b5cf6;cursor:pointer;font-size:12px;margin-right:4px;">👁️ ЛК</button> ';
+        html += '<button onclick="openAdminEditUser(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--neon);background:transparent;color:var(--neon-dark);cursor:pointer;font-size:12px;">✏️ Изменить</button>';
+        html += '</td></tr>';
+    });
+    
+    html += '</tbody></table>';
+    tableContainer.innerHTML = html;
+}
+
+async function refreshLK(){
+    if(!lkData) return;
+    await openAdminViewLK(lkData.user.id);
+}
+
+async function saveLKEdit(e){
+    e.preventDefault();
+    var data = {
+        id: lkData.user.id,
+        name: document.getElementById('ae_lk_Name').value,
+        email: document.getElementById('ae_lk_Email').value,
+        phone: document.getElementById('ae_lk_Phone').value,
+        address: document.getElementById('ae_lk_Address').value,
+        country: document.getElementById('ae_lk_Country').value,
+        city: document.getElementById('ae_lk_City').value,
+        role: document.getElementById('ae_lk_Role').value,
+        is_seller: parseInt(document.getElementById('ae_lk_Seller').value)
+    };
+    var pw = document.getElementById('ae_lk_Password').value;
+    if(pw) data.new_password = pw;
+    
+    try {
+        var res = await fetch('/api/admin.php?action=update_user', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)});
+        var result = await res.json();
+        if(result.success){ 
+            showToast('Данные пользователя сохранены!'); 
+            // Обновляем данные в модалке
+            Object.assign(lkData.user, data);
+            document.getElementById('lkBannerName').textContent = data.name;
+            document.getElementById('lkName').textContent = data.name;
+            document.getElementById('lkEmail').textContent = data.email;
+            document.getElementById('lkAvatar').textContent = data.name.charAt(0).toUpperCase();
+            switchLKTab('edit');
+        }
+        else showToast(result.error || 'Ошибка');
+    } catch(e){ showToast('Ошибка сети'); }
+}
 </script>
 
 </body>

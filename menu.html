@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/menu.css">
+    <link rel="stylesheet" href="assets/css/main.css?v=20261012a">
+    <link rel="stylesheet" href="assets/css/menu.css?v=20260930a">
     
     <script>
         (function(){
@@ -38,64 +38,80 @@
     }
     .menu-search input:focus {
         border-color: var(--neon);
-        box-shadow: 0 0 0 4px rgba(0,255,213,0.15), 0 0 20px rgba(0,255,213,0.25);
+        box-shadow: 0 0 0 4px rgba(30,64,175,0.15), 0 0 20px rgba(30,64,175,0.25);
     }
+    .menu-search {
+        position: relative;
+    }
+    .search-clear {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 0;
+        display: none;
+        opacity: 0.35;
+        transition: opacity 0.2s;
+    }
+    .search-clear:hover { opacity: 0.7; }
+    .search-clear svg { width: 20px; height: 20px; stroke: var(--text-main); }
 
-    /* --- Категории с прокруткой --- */
-    .categories-bar {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 50px 40px 0;
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    cursor: grab;
-    scrollbar-width: thin;
-    scrollbar-color: var(--neon) transparent;
-}
-    .categories-bar:active {
-        cursor: grabbing;
+    .filters-bar {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px 40px 0;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
     }
-    .categories-bar::-webkit-scrollbar {
-        height: 6px;
-    }
-    .categories-bar::-webkit-scrollbar-track {
-        background: var(--border-color);
-        border-radius: 10px;
-    }
-    .categories-bar::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg,#00ffd5,#00b8a3);
-        border-radius: 10px;
-    }
-    .categories-bar::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg,#7fffd4,#00ffd5);
-    }
-    .cat-btn {
-        padding: 10px 22px;
-        border-radius: 20px;
+    .filters-bar select {
+        padding: 12px 40px 12px 18px;
         border: 2px solid var(--border-color);
+        border-radius: 14px;
+        background-color: var(--card-bg);
+        color: var(--text-main);
+        font-size: 14px;
+        font-weight: 600;
+        font-family: 'Montserrat', sans-serif;
+        cursor: pointer;
+        transition: 0.3s;
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-size: 12px;
+        min-width: 180px;
+    }
+    .filters-bar select:focus {
+        border-color: var(--neon);
+        box-shadow: 0 0 0 4px rgba(30,64,175,0.15), 0 0 20px rgba(30,64,175,0.25);
+    }
+    .filters-bar select option {
         background: var(--card-bg);
         color: var(--text-main);
-        font-weight: 600;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
-        font-size: 14px;
-        font-family: 'Montserrat', sans-serif;
-        user-select: none;
+        padding: 8px;
     }
-    .cat-btn:hover, .cat-btn.active {
-        background: linear-gradient(135deg,#00ffd5,#7fffd4,#00e6c2);
-        color: #003d33;
-        border-color: var(--neon);
-        transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(0,255,213,0.3);
+    [data-theme="dark"] .filters-bar select {
+        background-color: #1e293b;
+        color: #f8fafc;
+        border-color: rgba(255,255,255,0.15);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23e2e8f0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    }
+    [data-theme="dark"] .filters-bar select option {
+        background: #1e293b;
+        color: #f8fafc;
     }
 
-    /* --- Секция каталога блюд --- */
+
     .catalog-section {
         padding: 40px 0 60px;
         position: relative;
@@ -108,7 +124,7 @@
         font-size: 32px;
         font-weight: 800;
         color: var(--neon-dark);
-        text-shadow: 0 0 8px rgba(0,255,213,0.3);
+        text-shadow: 0 0 8px rgba(30,64,175,0.3);
         display: flex;
         align-items: center;
         gap: 10px;
@@ -117,85 +133,177 @@
         width: 26px;
         height: 26px;
         flex-shrink: 0;
-        filter: drop-shadow(0 0 3px rgba(0,255,213,0.5));
+        filter: drop-shadow(0 0 3px rgba(30,64,175,0.5));
     }
 
-    /* --- Горизонтальная прокрутка блюд --- */
-    .dishes-scroll-wrapper {
-        position: relative;
+    .dishes-grid-wrapper {
         max-width: 1280px;
         margin: 0 auto;
-        padding: 0 70px;
+        padding: 0 40px;
     }
-    .dishes-scroll {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    padding: 50px 0 20px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--neon) transparent;
-    cursor: grab;
-}
-    .dishes-scroll:active {
-        cursor: grabbing;
+    .dishes-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 20px 0;
     }
-    .dishes-scroll::-webkit-scrollbar {
-        height: 8px;
+    .dishes-grid .card {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
-    .dishes-scroll::-webkit-scrollbar-track {
-        background: var(--border-color);
-        border-radius: 10px;
+    .dishes-grid .card img {
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 4/3;
+        object-fit: cover;
+        display: block;
     }
-    .dishes-scroll::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg,#00ffd5,#00b8a3);
-        border-radius: 10px;
+    .dishes-grid .card .card-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
     }
-    .dishes-scroll::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg,#7fffd4,#00ffd5);
+    .dishes-grid .card .dish {
+        font-size: clamp(13px, 1.2vw, 18px);
+        line-height: 1.3;
     }
-    .dishes-scroll .card {
-        min-width: 280px;
-        max-width: 280px;
-        flex-shrink: 0;
+    .dishes-grid .card .chef {
+        font-size: clamp(11px, 0.9vw, 14px);
+    }
+    .dishes-grid .card .desc {
+        font-size: clamp(10px, 0.8vw, 13px);
+        line-height: 1.4;
+    }
+    .dishes-grid .card .price {
+        font-size: clamp(14px, 1.3vw, 20px);
+    }
+    .dishes-grid .card .btn {
+        margin-top: auto;
+        padding: clamp(8px, 0.8vw, 14px) clamp(12px, 1vw, 20px);
+        font-size: clamp(11px, 0.9vw, 15px);
     }
 
-    /* Стрелки прокрутки для ПК */
-    .scroll-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        border: 2px solid var(--neon);
+    .dishes-grid.cols-1 { grid-template-columns: 1fr; }
+    .dishes-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .dishes-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+    @media (max-width: 768px) {
+        .dishes-grid { gap: 10px !important; }
+        .dishes-grid.cols-1 { grid-template-columns: 1fr !important; }
+        .dishes-grid.cols-2 { grid-template-columns: repeat(2, 1fr) !important; }
+        .dishes-grid.cols-4 { grid-template-columns: repeat(4, 1fr) !important; }
+        .dishes-grid .card .card-content { padding: 8px !important; }
+        .dishes-grid .card .btn { padding: 8px 10px !important; font-size: 12px !important; }
+        .filters-bar { gap: 8px; padding: 14px 16px 0; }
+        .filters-bar select { min-width: 0; flex: 1; font-size: 13px; padding: 10px 30px 10px 12px; }
+        .dishes-grid-wrapper { padding: 0 12px; }
+    }
+    @media (max-width: 768px) {
+        .dishes-grid.cols-4 { gap: 4px !important; }
+        .dishes-grid.cols-4 .card {
+            border-radius: 8px !important;
+            overflow: hidden !important;
+        }
+        .dishes-grid.cols-4 .card img {
+            aspect-ratio: 1/1 !important;
+            height: auto !important;
+        }
+        .dishes-grid.cols-4 .card .card-content {
+            padding: 1.5vw !important;
+            overflow: hidden !important;
+        }
+        .dishes-grid.cols-4 .card .dish {
+            font-size: 2vw !important;
+            line-height: 1.1 !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+        }
+        .dishes-grid.cols-4 .card .chef {
+            font-size: 1.6vw !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+        }
+        .dishes-grid.cols-4 .card .desc {
+            display: none !important;
+        }
+        .dishes-grid.cols-4 .card .price {
+            font-size: 2vw !important;
+            margin: 1vw 0 !important;
+        }
+        .dishes-grid.cols-4 .card .btn,
+        .dishes-grid.cols-4 .card button {
+            padding: 2vw 0 !important;
+            font-size: 2.4vw !important;
+            border-radius: 1.5vw !important;
+            width: 90% !important;
+            min-width: 0 !important;
+            max-width: 90% !important;
+            margin: 0 auto !important;
+            display: block !important;
+            box-sizing: border-box !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            min-height: 0 !important;
+            line-height: 1.2 !important;
+        }
+    }
+
+
+    .qty-control {
+        display: flex;
+        align-items: center;
+        gap: 0;
         background: var(--card-bg);
+        border: 2px solid var(--neon);
+        border-radius: 12px;
+        padding: 2px;
+        margin-top: auto;
+        width: fit-content;
+        align-self: center;
+    }
+    .qty-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
         color: var(--neon-dark);
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 700;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        z-index: 10;
-        transition: all 0.3s;
-        box-shadow: 0 4px 20px var(--neon-glow);
+        transition: 0.2s;
+        padding: 0;
+        min-width: 32px;
     }
-    .scroll-arrow:hover {
+    .qty-btn:hover {
+        background: var(--neon-glow);
+        color: var(--neon-dark);
+    }
+    .qty-btn:active {
         background: var(--neon);
-        color: #003d33;
-        transform: translateY(-50%) scale(1.1);
-        box-shadow: 0 0 25px rgba(0,255,213,0.5);
+        color: #ffffff;
+        transform: scale(0.9);
     }
-    .scroll-arrow svg {
-        width: 22px;
-        height: 22px;
+    .qty-val {
+        font-weight: 700;
+        font-size: 16px;
+        width: 28px;
+        text-align: center;
+        color: var(--text-main);
     }
-    .scroll-arrow-left {
-        left: 8px;
-    }
-    .scroll-arrow-right {
-        right: 8px;
+    @media (max-width: 768px) {
+        .dishes-grid.cols-4 .qty-control { border-radius: 1vw; padding: 1px; width: 100%; justify-content: space-between; }
+        .dishes-grid.cols-4 .qty-btn { width: 5vw; height: 5vw; min-width: 5vw; font-size: 3vw; border-radius: 0.8vw; }
+        .dishes-grid.cols-4 .qty-val { font-size: 2.4vw; width: auto; flex: 1; text-align: center; }
     }
 
     .empty-msg {
@@ -222,10 +330,7 @@
         align-items: center;
         z-index: 1000;
     }
-    .order-modal.active {
-        display: flex;
-        animation: modalFadeIn 0.3s ease;
-    }
+    .order-modal.active { display: flex; animation: modalFadeIn 0.3s ease; }
     .order-box {
         width: 420px;
         max-width: 92%;
@@ -233,67 +338,31 @@
         border: 2px solid var(--border-color);
         border-radius: 24px;
         padding: 35px;
-        box-shadow: 0 20px 60px var(--neon-glow), 0 0 50px rgba(0,255,213,0.15);
+        box-shadow: 0 20px 60px var(--neon-glow);
         position: relative;
         max-height: 90vh;
         overflow-y: auto;
     }
-    .order-box h2 {
-        margin-bottom: 20px;
-        color: var(--neon-dark);
-        font-size: 28px;
-        font-weight: 800;
-    }
-    .order-dish-info {
-        background: var(--neon-glow);
-        border-radius: 14px;
-        padding: 16px;
-        margin-bottom: 16px;
-    }
-    .order-dish-info .dish-name {
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 4px;
-    }
-    .order-dish-info .dish-price {
-        font-size: 24px;
-        font-weight: 800;
-        color: var(--neon-dark);
-    }
-    .order-box label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 6px;
-        margin-top: 14px;
-        font-size: 14px;
-        color: var(--text-main);
-    }
+    .order-box h2 { margin-bottom: 20px; color: var(--neon-dark); font-size: 28px; font-weight: 800; }
+    .order-dish-info { background: var(--neon-glow); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+    .order-dish-info .dish-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .order-dish-info .dish-price { font-size: 24px; font-weight: 800; color: var(--neon-dark); }
+    .order-box label { display: block; font-weight: 600; margin-bottom: 6px; margin-top: 14px; font-size: 14px; color: var(--text-main); }
     .order-box input, .order-box textarea {
         width: 100%;
         padding: 14px 16px;
         border-radius: 14px;
-        border: 2px solid #e2e8f0;
+        border: 2px solid var(--border-color);
         background: var(--card-bg);
         color: var(--text-main);
         font-size: 15px;
         outline: none;
         transition: 0.3s;
-        margin-bottom: 0;
         font-family: 'Montserrat', sans-serif;
     }
-    .order-box input:focus, .order-box textarea:focus {
-        border-color: var(--neon);
-        box-shadow: 0 0 0 4px rgba(0,255,213,0.15);
-    }
-    .order-box textarea {
-        resize: vertical;
-        min-height: 80px;
-    }
-    .order-btns {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-    }
+    .order-box input:focus, .order-box textarea:focus { border-color: var(--neon); box-shadow: 0 0 0 4px rgba(30,64,175,0.15); }
+    .order-box textarea { resize: vertical; min-height: 80px; }
+    .order-btns { display: flex; gap: 10px; margin-top: 20px; }
     .order-btns button {
         flex: 1;
         padding: 14px;
@@ -302,154 +371,84 @@
         font-size: 15px;
         cursor: pointer;
         border: none;
-        transition: all 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+        transition: 0.3s;
         font-family: 'Montserrat', sans-serif;
     }
-    .btn-order-primary {
-        background: linear-gradient(135deg,#00ffd5,#7fffd4,#00e6c2);
-        color: #003d33;
-    }
-    .btn-order-primary:hover {
-        transform: scale(1.05) translateY(-2px);
-        box-shadow: 0 0 20px rgba(0,255,213,0.6);
-    }
-    .btn-order-secondary {
-        background: var(--border-color);
-        color: var(--text-main);
-    }
-    .btn-order-secondary:hover {
-        transform: scale(1.03);
-    }
+    .btn-order-primary { background: transparent; border: 2px solid var(--neon); color: var(--neon-dark); }
+    .btn-order-primary:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(30,64,175,0.6); }
+    .btn-order-secondary { background: var(--border-color); color: var(--text-main); }
+    .btn-order-secondary:hover { transform: scale(1.03); }
+
     .toast {
         position: fixed;
         bottom: 30px;
         right: 30px;
         padding: 16px 28px;
         border-radius: 14px;
-        background: linear-gradient(135deg,#00ffd5,#7fffd4);
-        color: #003d33;
+        background: var(--card-bg);
+        border: 2px solid var(--neon);
+        color: var(--neon-dark);
         font-weight: 700;
         font-size: 15px;
         z-index: 2000;
         transform: translateY(100px);
         opacity: 0;
         transition: 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-        box-shadow: 0 8px 30px rgba(0,255,213,0.4);
+        box-shadow: 0 8px 30px var(--neon-glow);
     }
-    .toast.show {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
     @media(max-width:900px) {
         .menu-search { padding: 20px 16px 0; }
-        .categories-bar { padding: 14px 16px 0; }
+        .filters-bar { padding: 14px 16px 0; }
+        .dishes-grid-wrapper { padding: 0 16px; }
         .catalog-section .section-title { padding: 0 16px; font-size: 26px; }
-        .dishes-scroll-wrapper { padding: 0 16px; }
-        .dishes-scroll .card { min-width: 220px; max-width: 220px; }
-        .scroll-arrow { display: none; }
+        .dishes-grid-wrapper { padding: 0 16px; }
+        
+        
     }
     @media(max-width:900px){
-header{padding:12px 16px;flex-direction:column;gap:8px;}
-.header-left{width:100%;justify-content:center;flex-wrap:wrap;gap:8px;}
-.logo{font-size:18px;gap:10px;order:1;width:100%;justify-content:center;}
-.catalog-btn{margin-right:0;width:46px;height:46px;order:-1;}
-.header-right{width:100%;justify-content:space-between;align-items:center;gap:8px;}
-}
-</style>
+        header{padding:12px 16px;flex-direction:column;gap:8px;}
+        .header-left{width:100%;justify-content:center;flex-wrap:wrap;gap:8px;}
+        .logo{font-size:18px;gap:10px;order:1;width:100%;justify-content:center;}
+        .header-right{width:100%;justify-content:space-between;align-items:center;gap:8px;}
+    }
+    </style>
+
+    <style>
+    input, textarea, [contenteditable="true"], select {
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+        user-select: text !important;
+        -webkit-touch-callout: default !important;
+    }
+    button, .btn, a, label {
+        -webkit-user-select: auto !important;
+        user-select: auto !important;
+    }
+    </style>
 </head>
 <body>
     <!-- Каталог (выдвижное меню) -->
     <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
     <div class="catalog-drawer" id="catalogDrawer">
         <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
             Каталог сайта
         </h3>
-        <a href="index.html" class="catalog-link" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
-            Главная
-        </a>
-        <a href="restaurants.html" class="catalog-link" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/>
-                <path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>
-            </svg>
-            Рестораны/бары/кафе
-        </a>
-        <a href="menu.html" class="catalog-link" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
-                <path d="M7 2v20"/>
-                <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
-            </svg>
-            Меню
-        </a>
-        <a href="#" class="catalog-link" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-            </svg>
-            Повара
-        </a>
-        <a href="#" class="catalog-link" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            </svg>
-            Отзывы
-        </a>
-        <a href="#" class="catalog-link" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                <circle cx="12" cy="10" r="3"/>
-            </svg>
-            Контакты
-        </a>
+            <a href="index.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная</a>
+        <a href="restaurants.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>Рестораны/бары/кафе</a>
+        <a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
+        <a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
+        <a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Контакты</a>
         <div class="catalog-divider thick"></div>
-        <a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                <path d="M10 17l5-5-5-5"/>
-                <path d="M15 12H3"/>
-            </svg>
-            Войти / Регистрация
-        </a>
-        <a href="cart.html" class="catalog-link" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="9" cy="21" r="1"/>
-                <circle cx="20" cy="21" r="1"/>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
-            Корзина
-        </a>
+        <a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>Войти / Регистрация</a>
+        <a href="cart.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Корзина</a>
         <div class="catalog-divider thick"></div>
-        <h3 class="catalog-subheader">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            Совместные проекты
-        </h3>
-        <a href="#" class="catalog-link secondary" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
-            </svg>
-            Еду ем
-        </a>
-        <a href="cheap-honest.html" class="catalog-link secondary" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                <path d="M7 7h.01"/>
-                <path d="M10 13l2 2 4-4"/>
-            </svg>
-            Дёшево! Честно!
-        </a>
+        <h3 class="catalog-subheader"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Совместные проекты</h3>
+        <a href="#" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Еду ем</a>
+        <a href="cheap-honest.html" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><path d="M7 7h.01"/><path d="M10 13l2 2 4-4"/></svg>Дёшево! Честно!</a>
     </div>
 
     <!-- Шапка -->
@@ -459,16 +458,13 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
                 <svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#00ffd5"/>
+                            <stop offset="0%" style="stop-color:#1e40af"/>
                             <stop offset="50%" style="stop-color:#7fffd4"/>
-                            <stop offset="100%" style="stop-color:#00b8a3"/>
+                            <stop offset="100%" style="stop-color:#1e3a8a"/>
                         </linearGradient>
                         <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
                             <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
-                            <feMerge>
-                                <feMergeNode in="blur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
+                            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
                         </filter>
                     </defs>
                     <path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/>
@@ -481,71 +477,61 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
             </a>
         </div>
         <div class="header-right">
-<button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+            <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+            <a href="index.html" class="icon-btn" aria-label="Главная"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
             <button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </button>
             <a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;text-decoration:none;"><span class="user-btn-letter" id="userLetter"></span><span class="user-btn-marquee"><span id="userMarquee"></span></span></a>
             <button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"/>
-                    <circle cx="20" cy="21" r="1"/>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                </svg>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                 <span id="cartBadge" style="display:none;"></span>
             </button>
             <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема">
-                <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                </svg>
-                <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="5"/>
-                    <line x1="12" y1="1" x2="12" y2="3"/>
-                    <line x1="12" y1="21" x2="12" y2="23"/>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                    <line x1="1" y1="12" x2="3" y2="12"/>
-                    <line x1="21" y1="12" x2="23" y2="12"/>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                </svg>
+                <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             </button>
         </div>
     </header>
 
-    <!-- Поиск -->
-    <div class="menu-search">
-        <input type="text" id="searchInput" placeholder="Поиск блюд...">
-    </div>
-
-    <!-- Категории -->
-    <div class="categories-bar" id="categoriesList"></div>
-
-    <!-- Блюда с горизонтальной прокруткой -->
-    <div class="catalog-section">
-        <h2 class="section-title">
-            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <!-- Заголовок -->
+    <div style="max-width:1200px;margin:0 auto;padding:30px 40px 0;">
+        <h2 class="section-title" style="margin:0;font-size:32px;font-weight:800;color:var(--neon-dark);text-shadow:0 0 8px rgba(30,64,175,0.3);display:flex;align-items:center;gap:10px;">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:26px;height:26px;flex-shrink:0;filter:drop-shadow(0 0 3px rgba(30,64,175,0.5));">
                 <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
                 <path d="M7 2v20"/>
                 <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
             </svg>
             Каталог блюд
         </h2>
-        <div class="dishes-scroll-wrapper">
-            <button class="scroll-arrow scroll-arrow-left" onclick="scrollDishes(-300)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="15 18 9 12 15 6"/>
-                </svg>
-            </button>
-            <div class="dishes-scroll" id="dishesGrid"></div>
-            <button class="scroll-arrow scroll-arrow-right" onclick="scrollDishes(300)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6"/>
-                </svg>
-            </button>
+    </div>
+
+    <!-- Поиск -->
+    <div class="menu-search">
+        <input type="text" id="searchInput" placeholder="Поиск блюд...">
+        <button class="search-clear" id="searchClear" onclick="document.getElementById('searchInput').value='';this.style.display='none';loadDishes();" aria-label="Очистить">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="filters-bar">
+        <select id="categorySelect" onchange="filterCategorySelect(this.value)">
+            <option value="0">Все категории</option>
+        </select>
+        <select id="colsSelect" onchange="changeCols(this.value)">
+            <option value="1">Показать 1</option>
+            <option value="2" selected>Показать 2</option>
+            <option value="4">Показать 4</option>
+
+        </select>
+    </div>
+
+    <!-- Каталог блюд -->
+    <div class="catalog-section">
+
+        <div class="dishes-grid-wrapper">
+            <div class="dishes-grid cols-2" id="dishesGrid"></div>
         </div>
         <div class="empty-msg" id="emptyMsg" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -555,9 +541,6 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
             </svg>
             <p>Блюд пока нет. Будьте первым продавцом!</p>
         </div>
-    </div>
-
-    
     </div>
 
     <div class="toast" id="toast"></div>
@@ -611,7 +594,6 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/main.js"></script>
-    <script src="assets/js/cart.js"></script>
     <script src="assets/js/theme.js"></script>
     <script>
     function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');const marquee=document.getElementById('userMarquee');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();if(marquee)marquee.textContent=u.name;setTimeout(function(){nameBtn.classList.add('expanded');},5000);}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}
@@ -625,95 +607,125 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
 
     // --- КАТАЛОГ БЛЮД ---
     let currentCategory = 0;
-    
-    function scrollDishes(amount) {
-        document.getElementById('dishesGrid').scrollBy({ left: amount, behavior: 'smooth' });
-    }
-
-    // Drag-скролл мышкой для категорий + колёсико
-    (function() {
-        var catBar = document.getElementById('categoriesList');
-        var isDown = false, startX, scrollLeft;
-        catBar.addEventListener('mousedown', function(e) {
-            isDown = true; startX = e.pageX - catBar.offsetLeft; scrollLeft = catBar.scrollLeft;
-        });
-        catBar.addEventListener('mouseleave', function() { isDown = false; });
-        catBar.addEventListener('mouseup', function() { isDown = false; });
-        catBar.addEventListener('mousemove', function(e) {
-            if (!isDown) return; e.preventDefault();
-            var x = e.pageX - catBar.offsetLeft;
-            catBar.scrollLeft = scrollLeft - (x - startX);
-        });
-        catBar.addEventListener('wheel', function(e) {
-            e.preventDefault();
-            catBar.scrollLeft += e.deltaY;
-        }, { passive: false });
-    })();
-
-    // Drag-скролл мышкой для блюд
-    (function() {
-        var slider = document.getElementById('dishesGrid');
-        var isDown = false, startX, scrollLeft;
-        slider.addEventListener('mousedown', function(e) {
-            isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft;
-        });
-        slider.addEventListener('mouseleave', function() { isDown = false; });
-        slider.addEventListener('mouseup', function() { isDown = false; });
-        slider.addEventListener('mousemove', function(e) {
-            if (!isDown) return; e.preventDefault();
-            var x = e.pageX - slider.offsetLeft;
-            slider.scrollLeft = scrollLeft - (x - startX);
-        });
-    })();
 
     async function loadCategories() {
-        var res = await fetch('/api/categories.php');
-        var data = await res.json();
-        if (data.success) {
-            var container = document.getElementById('categoriesList');
-            container.innerHTML = '<button class="cat-btn active" onclick="filterCategory(0,this)">Все</button>';
-            data.categories.forEach(function(c) {
-                container.innerHTML += '<button class="cat-btn" onclick="filterCategory(' + c.id + ',this)">' + c.name + '</button>';
-            });
+        try {
+            var res = await fetch('/api/categories.php');
+            var data = await res.json();
+            if (data.success) {
+                var sel = document.getElementById('categorySelect');
+                sel.innerHTML = '<option value="0">Все категории</option>';
+                data.categories.forEach(function(c) {
+                    sel.innerHTML += '<option value="' + c.id + '">' + c.name + '</option>';
+                });
+            }
+        } catch(e) { console.error('loadCategories error:', e); }
+    }
+
+    function addToCartMenuBtn(btn) {
+        var id = parseInt(btn.dataset.id);
+        var name = btn.dataset.name;
+        var chef = btn.dataset.chef;
+        var price = parseFloat(btn.dataset.price);
+        addToCart(id, name, chef, price);
+        var item = cart.find(function(c){ return c.id == id; });
+        var qty = item ? item.qty : 1;
+        var div = document.createElement('div');
+        div.className = 'qty-control';
+        div.id = 'qty-' + id;
+        div.innerHTML = '<button class="qty-btn" onclick="menuChgQty(' + id + ',-1)">&minus;</button>' +
+            '<span class="qty-val">' + qty + '</span>' +
+            '<button class="qty-btn" onclick="menuChgQty(' + id + ',1)">+</button>';
+        btn.replaceWith(div);
+    }
+
+    function menuChgQty(id, delta) {
+        var item = cart.find(function(c){ return c.id == id; });
+        if (!item) return;
+        var savedName = item.name;
+        var savedChef = item.chef;
+        var savedPrice = item.price;
+        item.qty += delta;
+        if (item.qty <= 0) {
+            cart = cart.filter(function(c){ return c.id != id; });
+            var qtyDiv = document.getElementById('qty-' + id);
+            if (qtyDiv) {
+                var btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.id = 'cartBtn-' + id;
+                btn.dataset.id = id;
+                btn.dataset.name = savedName;
+                btn.dataset.chef = savedChef;
+                btn.dataset.price = savedPrice;
+                btn.textContent = 'В корзину';
+                btn.onclick = function(){ addToCartMenuBtn(btn); };
+                qtyDiv.replaceWith(btn);
+            }
+        } else {
+            var valSpan = document.querySelector('#qty-' + id + ' .qty-val');
+            if (valSpan) valSpan.textContent = item.qty;
         }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartBadge();
+    }
+
+    function filterCategorySelect(id) {
+        currentCategory = parseInt(id);
+        loadDishes();
+    }
+
+    function changeCols(n) {
+        var grid = document.getElementById('dishesGrid');
+        if (!grid) return;
+        n = parseInt(n);
+        grid.className = 'dishes-grid cols-' + n;
+        grid.style.gridTemplateColumns = '';
     }
 
     async function loadDishes() {
-        var search = document.getElementById('searchInput').value;
-        var url = '/api/dishes.php?page=1';
-        if (currentCategory) url += '&category_id=' + currentCategory;
-        if (search) url += '&search=' + encodeURIComponent(search);
-        var res = await fetch(url);
-        var data = await res.json();
-        var grid = document.getElementById('dishesGrid');
-        var empty = document.getElementById('emptyMsg');
-        if (data.success && data.dishes.length > 0) {
-            empty.style.display = 'none';
-            grid.innerHTML = data.dishes.map(function(d) {
-                var imgSrc = d.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop';
-                return '<div class="card">' +
-                    '<img src="' + imgSrc + '" alt="' + d.title + '">' +
-                    '<div class="card-content">' +
-                        '<div class="dish">' + d.title + '</div>' +
-                        '<div class="chef">' + (d.seller_name || 'Продавец') + '</div>' +
-                        '<div class="desc">' + (d.description ? d.description.substring(0,80) : '') + '</div>' +
-                        (d.weight ? '<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">' + d.weight + '</div>' : '') +
-                        '<div class="price">' + d.price + ' \u20BD</div>' +
-                        '<button class="btn" onclick="addToCart(' + d.id + ",'" + d.title.replace(/'/g, "\\'") + "','" + (d.seller_name||'Продавец').replace(/'/g, "\\'") + "'," + d.price + ')">В корзину</button>' +
-                    '</div></div>';
-            }).join('');
-        } else {
-            grid.innerHTML = '';
-            empty.style.display = 'block';
-        }
+        try {
+            var search = document.getElementById('searchInput').value;
+            var url = '/api/dishes.php?page=1';
+            if (currentCategory) url += '&category_id=' + currentCategory;
+            if (search) url += '&search=' + encodeURIComponent(search);
+            var res = await fetch(url);
+            var data = await res.json();
+            var grid = document.getElementById('dishesGrid');
+            var empty = document.getElementById('emptyMsg');
+            if (data.success && data.dishes && data.dishes.length > 0) {
+                empty.style.display = 'none';
+                grid.innerHTML = data.dishes.map(function(d) {
+                    var imgSrc = d.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop';
+                    var inCart = cart.find(function(c){ return c.id == d.id; });
+                    var btnHtml;
+                    if (inCart) {
+                        btnHtml = '<div class="qty-control" id="qty-' + d.id + '">' +
+                            '<button class="qty-btn" onclick="menuChgQty(' + d.id + ',-1)">&minus;</button>' +
+                            '<span class="qty-val">' + inCart.qty + '</span>' +
+                            '<button class="qty-btn" onclick="menuChgQty(' + d.id + ',1)">+</button>' +
+                            '</div>';
+                    } else {
+                        btnHtml = '<button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g, '&quot;') + '" data-chef="' + (d.seller_name||'Продавец').replace(/"/g, '&quot;') + '" data-price="' + d.price + '" onclick="addToCartMenuBtn(this)">В корзину</button>';
+                    }
+                    return '<div class="card">' +
+                        '<img src="' + imgSrc + '" alt="' + d.title + '">' +
+                        '<div class="card-content">' +
+                            '<div class="dish">' + d.title + '</div>' +
+                            '<div class="chef">' + (d.seller_name || 'Продавец') + '</div>' +
+                            '<div class="desc">' + (d.description ? d.description.substring(0,80) : '') + '</div>' +
+                            (d.weight ? '<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">' + d.weight + '</div>' : '') +
+                            '<div class="price">' + d.price + ' \u20BD</div>' +
+                            btnHtml +
+                        '</div></div>';
+                }).join('');
+            } else {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+            }
+        } catch(e) { console.error('loadDishes error:', e); }
     }
 
-    function filterCategory(id, btn) {
-        currentCategory = id;
-        document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-        loadDishes();
-    }
+
 
 
 
@@ -723,9 +735,22 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
     }
 
     var searchTimeout;
+    var searchClearBtn = document.getElementById('searchClear');
     document.getElementById('searchInput').addEventListener('input', function() {
+        searchClearBtn.style.display = this.value ? 'block' : 'none';
         clearTimeout(searchTimeout); searchTimeout = setTimeout(loadDishes, 400);
     });
+
+    function hideCurrentPageInCatalog() {
+        var user = JSON.parse(localStorage.getItem('user'));
+        var links = document.querySelectorAll('.catalog-link');
+        links.forEach(function(link) {
+            // Скрываем "Войти / Регистрация" если залогинен
+            if (user && link.getAttribute('onclick') && link.getAttribute('onclick').indexOf('openAuth') !== -1) {
+                link.style.display = 'none';
+            }
+        });
+    }
 
     document.addEventListener('DOMContentLoaded', function(){
         updateUI(); updateCartBadge(); loadCategories(); loadDishes();
