@@ -43,6 +43,18 @@ header{width:100%;padding:16px 40px;display:flex;align-items:center;justify-cont
 .user-info{display:none;align-items:center;gap:8px;font-weight:600;color:var(--neon-dark);font-size:14px;}
 .user-info svg{width:20px;height:20px;}
 .user-info.active{display:flex;}
+/* user chip — вид как в IKSpirit */
+.user-btn-wrap{position:relative;display:none;align-items:center;overflow:hidden;border-radius:12px;border:2px solid var(--border-color);background:var(--card-bg);height:44px;min-width:44px;max-width:44px;transition:max-width .6s cubic-bezier(.4,0,.2,1),border-color .3s,box-shadow .3s;cursor:pointer;text-decoration:none;}
+.user-btn-wrap:hover{border-color:var(--neon);box-shadow:0 0 12px var(--neon-glow);}
+.user-btn-wrap.expanded{max-width:180px;}
+.user-btn-letter{flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--neon-dark);background:linear-gradient(135deg,var(--neon-glow),transparent);border-radius:10px;}
+.user-btn-marquee{flex:1;overflow:hidden;white-space:nowrap;opacity:0;transition:opacity .4s;}
+.user-btn-wrap.expanded .user-btn-marquee{opacity:1;}
+.user-btn-marquee span{display:inline-block;padding-left:100%;animation:marqueeScroll 8s linear infinite;font-size:12px;font-weight:600;color:var(--text-main);}
+@keyframes marqueeScroll{0%{transform:translateX(0);}100%{transform:translateX(-100%);}}
+[data-theme="dark"] .user-btn-wrap{background:#1e293b;border-color:rgba(255,255,255,.2);}
+[data-theme="dark"] .user-btn-letter{color:#fff;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);}
+[data-theme="dark"] .user-btn-marquee span{color:#f8fafc;}
 .icon-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);border:2px solid var(--neon);border-radius:12px;cursor:pointer;transition:0.3s;color:var(--neon-dark);box-shadow:0 0 6px rgba(0,255,213,0.15);position:relative;}
 .icon-btn:hover{background:rgba(0,255,213,0.15);border-color:var(--neon);transform:scale(1.05);box-shadow:0 0 15px rgba(0,255,213,0.3);}
 .icon-btn.logged{background:var(--neon);color:#003d33;border-color:var(--neon);}
@@ -192,9 +204,9 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
 </div>
 <div class="header-right">
 <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-<div style="display:flex;gap:8px;align-items:center;"><div class="user-info" id="userInfo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg><span id="userName"></span></div>
+<div style="display:flex;gap:8px;align-items:center;">
 <button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
-<a href="profile.html" id="userNameBtn" class="icon-btn logged" style="display:none;text-decoration:none;color:#006b5a;font-weight:700;font-size:13px;min-width:auto;padding:10px 16px;"></a>
+<a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;text-decoration:none;"><span class="user-btn-letter" id="userLetter"></span><span class="user-btn-marquee"><span id="userMarquee"></span></span></a>
 <button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></button>
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div>
 </div>
@@ -291,7 +303,7 @@ function openAuth(){document.getElementById('authModal').classList.add('active')
 function closeAuth(){document.getElementById('authModal').classList.remove('active');}
 function switchTab(tab){document.getElementById('loginForm').style.display=tab==='login'?'block':'none';document.getElementById('registerForm').style.display=tab==='register'?'block':'none';document.getElementById('resetForm').style.display=tab==='reset'?'block':'none';document.getElementById('authTitle').textContent=tab==='login'?'Личный кабинет':tab==='register'?'Создать аккаунт':'Восстановление пароля';}
 async function resetPassword(){const e=document.getElementById('resetEmail').value.trim();clearErrors();if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))return showErr('resetEmailError','Некорректный email');setLoading('resetBtn',true);try{const res=await fetch('/api/reset_password.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});const data=await res.json();if(data.error)throw new Error(data.error);closeAuth();showToast('Письмо для сброса пароля отправлено на '+e);}catch(err){showErr('resetEmailError',err.message);}finally{setLoading('resetBtn',false);}}
-function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u && u.name){authBtn.style.display='none';nameBtn.style.display='flex';nameBtn.textContent=u.name;}else{authBtn.style.display='flex';nameBtn.style.display='none';nameBtn.textContent='';}}
+function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');const marquee=document.getElementById('userMarquee');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();if(marquee)marquee.textContent=u.name;setTimeout(function(){nameBtn.classList.add('expanded');},5000);}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}
 function showErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.classList.add('show');}
 function clearErrors(){document.querySelectorAll('.error-msg').forEach(e=>{e.textContent='';e.classList.remove('show');});}
 function setLoading(id, state){const b=document.getElementById(id);state?b.classList.add('loading'):b.classList.remove('loading');}

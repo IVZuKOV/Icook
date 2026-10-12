@@ -482,20 +482,13 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
         </div>
         <div class="header-right">
 <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-            <div class="user-info" id="userInfo">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                    <circle cx="12" cy="8" r="4"/>
-                    <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-                </svg>
-                <span id="userName"></span>
-            </div>
             <button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                     <circle cx="12" cy="7" r="4"/>
                 </svg>
             </button>
-            <a href="profile.html" id="userNameBtn" class="icon-btn logged" style="display:none;text-decoration:none;color:#006b5a;font-weight:700;font-size:13px;min-width:auto;padding:10px 16px;"></a>
+            <a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;text-decoration:none;"><span class="user-btn-letter" id="userLetter"></span><span class="user-btn-marquee"><span id="userMarquee"></span></span></a>
             <button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="9" cy="21" r="1"/>
@@ -621,7 +614,7 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
     <script src="assets/js/cart.js"></script>
     <script src="assets/js/theme.js"></script>
     <script>
-    function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u && u.name){authBtn.style.display='none';nameBtn.style.display='flex';nameBtn.textContent=u.name;}else{authBtn.style.display='flex';nameBtn.style.display='none';nameBtn.textContent='';}}
+    function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');const marquee=document.getElementById('userMarquee');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();if(marquee)marquee.textContent=u.name;setTimeout(function(){nameBtn.classList.add('expanded');},5000);}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}
 
     async function login(){
     const e=document.getElementById('loginName').value.trim();const p=document.getElementById('loginPassword').value;clearErrors();if(!e)return showErr('loginNameError','Введите email');if(p.length<8)return showErr('loginPasswordError','Минимум 8 символов');setLoading('loginBtn',true);try{const res=await fetch('/api/login.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,password:p})});const data=await res.json();if(data.error)throw new Error(data.error);localStorage.setItem('user',JSON.stringify({name:data.name,email:e}));closeAuth();updateUI();showToastMsg('Вход выполнен');setTimeout(()=>location.reload(),800);}catch(err){showErr('loginPasswordError',err.message);}finally{setLoading('loginBtn',false);}}
