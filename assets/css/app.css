@@ -202,3 +202,7 @@ button:focus{outline:none;}
 .bottom-bar .header-right{flex-wrap:nowrap;align-items:center;}
 .bottom-bar .header-right a,.bottom-bar .header-right button{align-self:center;vertical-align:middle;margin:0;}
 .bottom-bar{overflow-x:auto;}
+
+
+.bottom-bar button,.bottom-bar a{-webkit-tap-highlight-color:transparent;appearance:none;outline:0 !important;box-shadow:none !important;}
+.bottom-bar button:focus,.bottom-bar button:active,.bottom-bar a:focus,.bottom-bar a:active{outline:0 !important;box-shadow:none !important;}
