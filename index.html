@@ -33,13 +33,13 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .catalog-link:hover{background:var(--neon-glow);color:var(--neon-dark);transform:translateX(5px);}
 .catalog-divider{height:1px;background:linear-gradient(90deg,transparent,var(--neon-glow),transparent);margin:16px 0;}
 .catalog-divider.thick{height:2px;background:linear-gradient(90deg,transparent,rgba(30,64,175,0.4),transparent);margin:18px 0;}
-.catalog-subheader{font-size:19px;font-weight:800;color:var(--neon-dark);margin:26px 0 16px;padding-left:6px;display:flex;align-items:center;gap:8px;}
+.catalog-sub.site-header{font-size:19px;font-weight:800;color:var(--neon-dark);margin:26px 0 16px;padding-left:6px;display:flex;align-items:center;gap:8px;}
 .catalog-subheader svg{width:22px;height:22px;}
 .catalog-link.secondary{color:var(--text-main);font-weight:600;padding-left:18px;}
 .catalog-link.secondary svg{width:20px;height:20px;stroke:var(--text-main);fill:none;flex-shrink:0;}
 .catalog-link.secondary:hover{background:rgba(15,23,42,0.06);color:var(--neon-dark);transform:translateX(3px);}
 .catalog-link.secondary:hover svg{stroke:var(--neon-dark);}
-header{width:100%;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);background:var(--header-bg);border-bottom:1px solid var(--border-color);box-shadow:0 4px 30px rgba(30,64,175,0.1);}
+.site-header{width:100%;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);background:var(--header-bg);border-bottom:1px solid var(--border-color);box-shadow:0 4px 30px rgba(30,64,175,0.1);}
 .header-left{display:flex;align-items:center;}
 .logo{font-size:clamp(16px, 3.5vw, 28px);font-weight:800;color:var(--neon-dark);text-shadow:0 0 8px rgba(30,64,175,0.4),0 0 20px rgba(30,64,175,0.2);display:flex;align-items:center;gap:12px;white-space:nowrap;}
 .logo-icon{width:44px;height:44px;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(30,64,175,1)) drop-shadow(0 0 20px rgba(30,64,175,0.6));animation:logoPulse 3s ease-in-out infinite;}
@@ -122,14 +122,14 @@ input:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(30,64,175,0.15),0
 @keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
 footer{margin-top:40px;border-top:1px solid var(--border-color);padding:25px;text-align:center;color:var(--text-muted);background:var(--card-bg);z-index:3;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;}
 footer svg{width:20px;height:20px;}
-.qr-container{position:fixed;top:82px;right:40px;z-index:95;display:flex;gap:16px;}
+.qr-container{position:relative;top:auto;right:auto;z-index:95;display:flex;gap:16px;justify-content:center;margin:16px auto;flex-wrap:wrap;}
 .qr-card{display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:transform 0.3s;}
 .qr-card:hover{transform:scale(1.03);}
 .qr-wrapper{position:relative;width:110px;height:110px;border-radius:14px;overflow:hidden;box-shadow:0 6px 20px var(--neon-glow);background:var(--card-bg);border:1px solid var(--border-color);}
 .qr-wrapper img{width:100%;height:100%;display:block;}
 .qr-btn{padding:5px 6px;border:2px solid var(--neon);border-radius:8px;background:var(--card-bg);color:var(--neon-dark);font-size:9px;font-weight:700;cursor:pointer;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);text-align:center;line-height:1.2;white-space:normal;word-break:break-word;overflow-wrap:break-word;box-shadow:0 0 8px var(--neon-glow);width:110px;min-height:34px;display:flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:0.3px;}
 .qr-btn:hover{transform:scale(1.05);background:var(--neon);color:#ffffff;box-shadow:0 0 20px var(--neon-glow),0 0 40px rgba(30,64,175,0.3);border-color:var(--neon);}
-[data-theme="dark"] header{background:rgba(11,17,32,0.98);border-bottom-color:var(--border-color);}
+[data-theme="dark"] .site-header{background:rgba(11,17,32,0.98);border-bottom-color:var(--border-color);}
 [data-theme="dark"] .catalog-btn,[data-theme="dark"] .icon-btn{background:var(--card-bg);color:var(--neon-dark);border-color:var(--border-color);}
 [data-theme="dark"] .catalog-btn:hover,[data-theme="dark"] .icon-btn:hover{border-color:var(--neon);background:var(--neon-glow);}
 [data-theme="dark"] .logo{color:#ffffff;text-shadow:0 0 10px rgba(255,255,255,0.5),0 0 25px rgba(255,255,255,0.25);}
@@ -165,7 +165,7 @@ footer svg{width:20px;height:20px;}
 [data-theme="dark"] .share-link-input{background:#0f172a;border-color:rgba(255,255,255,0.2);color:#f8fafc;}
 
 @media(max-width:900px){
-header{padding:12px 16px;flex-direction:column;gap:8px;}
+.site-.site-header{padding:12px 16px;flex-direction:column;gap:8px;}
 .header-left{width:100%;justify-content:center;flex-wrap:wrap;gap:8px;}
 .logo{font-size:18px;gap:10px;order:1;width:100%;justify-content:center;}
 .logo-icon{width:36px;height:36px;}
@@ -183,6 +183,20 @@ header{padding:12px 16px;flex-direction:column;gap:8px;}
 .qr-btn{width:90px;font-size:8px;min-height:28px;}
 }
 /* --- CSS КОНЕЦ --- */
+
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
+.bottom-bar .header-right{width:100%;justify-content:center;flex-wrap:wrap;gap:8px;}
+.site-header{transition:transform 0.35s ease;}
+.site-header.hidden{transform:translateY(-100%);}
+body{padding-bottom:88px;}
+
+
+.bottom-bar .catalog-btn,.bottom-bar .icon-btn,.bottom-bar .user-btn-wrap{width:40px;height:40px;background:transparent;border:none;border-radius:50%;box-shadow:none;}
+.bottom-bar .catalog-btn:hover,.bottom-bar .icon-btn:hover{background:var(--neon-glow);transform:scale(1.05);}
+.bottom-bar .user-btn-wrap{height:40px;min-width:40px;max-width:40px;}
+.bottom-bar .user-btn-letter{border-radius:50%;background:transparent;}
+.bottom-bar .catalog-btn svg,.bottom-bar .icon-btn svg{width:20px;height:20px;}
+
 </style>
 
 <script>
@@ -218,7 +232,8 @@ button, .btn, a, label {
 <a href="restaurants.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>Рестораны/бары/кафе</a>
 <a href="menu.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Меню</a>
 <a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
-<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
+<a href="reviews.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
+<a href="about.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 11v5"></path><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"></circle></svg>О нас</a>
 <a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Контакты</a>
 <div class="catalog-divider thick"></div>
 <a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>Войти / Регистрация</a>
@@ -228,21 +243,22 @@ button, .btn, a, label {
 <a href="#" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Еду ем</a>
 <a href="cheap-honest.html" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><path d="M7 7h.01"/><path d="M10 13l2 2 4-4"/></svg>Дёшево! Честно!</a>
 </div>
-<header>
-<div class="header-left">
+<header class="site-header">
+  <div class="header-left">
 <div class="logo">
 <svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1e40af"/><stop offset="50%" style="stop-color:#7fffd4"/><stop offset="100%" style="stop-color:#1e3a8a"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
 Я готовлю — ты&nbsp; ешь!</div>
 </div>
-<div class="header-right">
+</header>
+<nav class="bottom-bar">
+  <div class="header-right">
 <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
 <div style="display:flex;gap:8px;align-items:center;">
 <button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
 <a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;text-decoration:none;"><span class="user-btn-letter" id="userLetter"></span><span class="user-btn-marquee"><span id="userMarquee"></span></span></a>
 <button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></button>
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div>
-</div>
-</header>
+</nav>
 <div class="qr-container">
 <div class="qr-card" onclick="openShareAppModal()">
     <div class="qr-wrapper" style="width:auto;height:auto;padding:10px;background:rgba(255,255,255,1);border-radius:8px;">
@@ -624,5 +640,20 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
     }
 })();
 </script>
+
+<script>
+(function(){
+  var header=document.querySelector('.site-header');
+  if(!header) return;
+  var lastY=window.scrollY;
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    if(y>lastY && y>60) header.classList.add('hidden');
+    else header.classList.remove('hidden');
+    lastY=y;
+  },{passive:true});
+})();
+</script>
+
 </body>
 </html>

@@ -44,6 +44,25 @@ switch ($action) {
         echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
         break;
 
+    case 'stats':
+        $stats = [];
+        foreach (['users' => 'users', 'dishes' => 'dishes', 'orders' => 'orders', 'categories' => 'categories'] as $key => $table) {
+            $stats[$key] = (int) $pdo->query("SELECT COUNT(*) FROM $table")->fetchColumn();
+        }
+        try {
+            $stats['reviews_total'] = (int) $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn();
+            $stats['reviews_pending'] = (int) $pdo->query("SELECT COUNT(*) FROM reviews WHERE status = 'pending'")->fetchColumn();
+            $stats['reviews_approved'] = (int) $pdo->query("SELECT COUNT(*) FROM reviews WHERE status = 'approved'")->fetchColumn();
+            $stats['reviews_rejected'] = (int) $pdo->query("SELECT COUNT(*) FROM reviews WHERE status = 'rejected'")->fetchColumn();
+        } catch (PDOException $e) {
+            $stats['reviews_total'] = 0;
+            $stats['reviews_pending'] = 0;
+            $stats['reviews_approved'] = 0;
+            $stats['reviews_rejected'] = 0;
+        }
+        echo json_encode(['success' => true, 'data' => $stats]);
+        break;
+
     // === РЕДАКТИРОВАНИЕ ===
     case 'update_user':
         $data = json_decode(file_get_contents('php://input'), true);

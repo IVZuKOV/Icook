@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Отзывы — Я готовлю</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Подключаем общие стили -->
+<link rel="stylesheet" href="assets/css/main.css?v=20261012a">
+
+<style>
+/* Стили страницы отзывов */
+.reviews-container{max-width:1100px;margin:0 auto;padding:40px 40px;}
+.intro{margin-bottom:24px;}
+.reviews-title{font-size:36px;font-weight:800;color:var(--neon-dark);margin:0 0 8px;text-shadow:0 0 8px var(--neon-glow);}
+.intro p{margin:0;color:var(--text-muted);}
+.reviews-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;}
+.review-list{display:grid;gap:14px;}
+.review-card,.review-form{padding:20px;border:1px solid var(--border-color);border-radius:16px;background:var(--card-bg);box-shadow:0 4px 18px var(--neon-glow);}
+.review-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;}
+.review-author{font-weight:700;color:var(--neon-dark);}
+.review-date{color:var(--text-muted);font-size:12px;white-space:nowrap;}
+.review-rating{color:#f59e0b;letter-spacing:2px;}
+.review-text{margin:8px 0 0;overflow-wrap:anywhere;white-space:pre-wrap;color:var(--text-main);}
+.review-form h2{margin:0 0 4px;font-size:20px;color:var(--neon-dark);}
+.review-form>p{margin:0 0 16px;color:var(--text-muted);font-size:13px;}
+.field-label{display:block;margin:12px 0 6px;font-size:13px;font-weight:600;color:var(--text-main);}
+.rating-select,.review-input{width:100%;padding:10px 12px;border:2px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;transition:0.2s;}
+.rating-select{display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;}
+.rating-select:hover,.rating-select:focus-visible,.review-input:focus{border-color:var(--neon);outline:none;box-shadow:0 0 0 3px var(--neon-glow);}
+.rating-option-stars{color:#f59e0b;white-space:nowrap;letter-spacing:1px;}
+.review-input{min-height:140px;resize:vertical;}
+.submit-button{width:100%;margin-top:12px;padding:12px 14px;border:0;border-radius:10px;background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:0.2s;}
+.submit-button:hover{box-shadow:0 6px 20px var(--neon-glow);}
+.submit-button:disabled{opacity:.6;cursor:wait;}
+.form-message{min-height:20px;margin:10px 0 0;color:var(--text-muted);font-size:13px;}
+.state-message{padding:32px 16px;text-align:center;color:var(--text-muted);}
+.load-more{display:none;margin:20px auto 0;padding:10px 18px;border:2px solid var(--neon);border-radius:10px;background:transparent;color:var(--neon-dark);font-weight:700;cursor:pointer;transition:0.2s;}
+.load-more:hover{background:var(--neon-glow);}
+.signin-prompt{padding:14px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);font-size:14px;color:var(--text-main);}
+.signin-prompt a{color:var(--neon-dark);font-weight:700;text-decoration:underline;cursor:pointer;}
+.rating-modal-overlay{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.65);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s;}
+.rating-modal-overlay.active{display:flex;opacity:1;}
+.rating-modal{width:min(100%,400px);padding:28px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:20px;box-shadow:0 20px 60px var(--neon-glow);transform:scale(.9);transition:transform .3s;}
+.rating-modal-overlay.active .rating-modal{transform:scale(1);}
+.rating-modal h2{margin:0 0 16px;text-align:center;font-size:20px;color:var(--neon-dark);}
+.rating-options{display:grid;gap:8px;}
+.rating-option{display:flex;align-items:center;gap:12px;width:100%;padding:11px 14px;border:2px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);text-align:left;cursor:pointer;transition:.2s;font:inherit;}
+.rating-option:hover,.rating-option:focus-visible{border-color:var(--neon);background:var(--neon-glow);outline:none;}
+@media(max-width:900px){
+.reviews-container{padding:20px;}
+.reviews-layout{grid-template-columns:1fr;}
+.review-form{grid-row:1;}
+.reviews-title{font-size:28px;}
+}
+
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
+.bottom-bar .header-right{width:100%;justify-content:center;flex-wrap:wrap;gap:8px;}
+.site-header{transition:transform 0.35s ease;}
+.site-header.hidden{transform:translateY(-100%);}
+body{padding-bottom:88px;}
+
+
+.bottom-bar .catalog-btn,.bottom-bar .icon-btn,.bottom-bar .user-btn-wrap{width:40px;height:40px;background:transparent;border:none;border-radius:50%;box-shadow:none;}
+.bottom-bar .catalog-btn:hover,.bottom-bar .icon-btn:hover{background:var(--neon-glow);transform:scale(1.05);}
+.bottom-bar .user-btn-wrap{height:40px;min-width:40px;max-width:40px;}
+.bottom-bar .user-btn-letter{border-radius:50%;background:transparent;}
+.bottom-bar .catalog-btn svg,.bottom-bar .icon-btn svg{width:20px;height:20px;}
+
+</style>
+
+<script>
+(function(){const t=localStorage.getItem('site-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');})();
+</script>
+
+<style>
+/* Разрешение копирования и вставки на мобильных */
+input, textarea, [contenteditable="true"], select {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+}
+button, .btn, a, label {
+    -webkit-user-select: auto !important;
+    user-select: auto !important;
+}
+</style>
+</head>
+<body>
+<div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
+<div class="catalog-drawer" id="catalogDrawer">
+<h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Каталог сайта</h3>
+<a href="index.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная</a>
+<a href="restaurants.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>Рестораны/бары/кафе</a>
+<a href="menu.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Меню</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
+<a href="reviews.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
+<a href="about.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 11v5"></path><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"></circle></svg>О нас</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Контакты</a>
+<div class="catalog-divider thick"></div>
+<a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>Войти / Регистрация</a>
+<a href="cart.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Корзина</a>
+<div class="catalog-divider thick"></div>
+<h3 class="catalog-subheader"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Совместные проекты</h3>
+<a href="#" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Еду ем</a>
+<a href="cheap-honest.html" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><path d="M7 7h.01"/><path d="M10 13l2 2 4-4"/></svg>Дёшево! Честно!</a>
+</div>
+<header class="site-header">
+  <div class="header-left">
+<div class="logo">
+<svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1e40af"/><stop offset="50%" style="stop-color:#7fffd4"/><stop offset="100%" style="stop-color:#1e3a8a"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
+Я готовлю — ты ешь!
+</div>
+</div>
+</header>
+<nav class="bottom-bar">
+  <div class="header-right">
+<button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<a href="index.html" class="icon-btn" aria-label="Главная"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+<div style="display:flex;gap:8px;align-items:center;">
+<button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+<a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;text-decoration:none;"><span class="user-btn-letter" id="userLetter"></span><span class="user-btn-marquee"><span id="userMarquee"></span></span></a>
+<button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></button>
+<button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+</div>
+</nav>
+
+<main class="reviews-container">
+  <section class="intro">
+    <h1 class="reviews-title">Отзывы</h1>
+    <p>Расскажите о своём опыте и узнайте, что думают другие гости.</p>
+  </section>
+  <div class="reviews-layout">
+    <section>
+      <div class="review-list" id="reviewList" aria-live="polite"></div>
+      <button class="load-more" id="loadMore" type="button">Показать ещё</button>
+    </section>
+    <aside class="review-form" id="reviewFormPanel">
+      <h2>Оставить отзыв</h2>
+      <p>Отзыв появится на сайте после проверки модератором.</p>
+      <div id="signInPrompt" class="signin-prompt" style="display:none;">Чтобы оставить отзыв, <a onclick="openAuth();return false;">войдите в аккаунт</a>.</div>
+      <form id="reviewForm">
+        <span class="field-label" id="ratingFieldLabel">Ваша оценка</span>
+        <input type="hidden" id="reviewRating" value="5">
+        <button class="rating-select" id="ratingSelectButton" type="button" aria-labelledby="ratingFieldLabel selectedRatingLabel" aria-haspopup="dialog" aria-controls="ratingModal">
+          <span id="selectedRatingLabel"><span class="rating-option-stars">★★★★★</span> — Отлично</span><span aria-hidden="true">⌄</span>
+        </button>
+        <label class="field-label" for="reviewText">Ваш отзыв</label>
+        <textarea class="review-input" id="reviewText" minlength="10" maxlength="2000" required placeholder="Поделитесь впечатлениями (от 10 до 2000 символов)"></textarea>
+        <button class="submit-button" id="submitReview" type="submit">Отправить отзыв</button>
+        <p class="form-message" id="formMessage" aria-live="polite"></p>
+      </form>
+    </aside>
+  </div>
+</main>
+
+<div class="rating-modal-overlay" id="ratingModal" role="presentation">
+  <section class="rating-modal" role="dialog" aria-modal="true" aria-labelledby="ratingModalTitle">
+    <h2 id="ratingModalTitle">Выберите оценку</h2>
+    <div class="rating-options">
+      <button class="rating-option" type="button" data-rating="5"><span class="rating-option-stars">★★★★★</span><span>Отлично</span></button>
+      <button class="rating-option" type="button" data-rating="4"><span class="rating-option-stars">★★★★☆</span><span>Хорошо</span></button>
+      <button class="rating-option" type="button" data-rating="3"><span class="rating-option-stars">★★★☆☆</span><span>Нормально</span></button>
+      <button class="rating-option" type="button" data-rating="2"><span class="rating-option-stars">★★☆☆☆</span><span>Плохо</span></button>
+      <button class="rating-option" type="button" data-rating="1"><span class="rating-option-stars">★☆☆☆☆</span><span>Очень плохо</span></button>
+    </div>
+  </section>
+</div>
+
+<!-- Модальное окно входа -->
+<div class="modal" id="authModal">
+    <div class="modal-box">
+        <div class="close" onclick="closeAuth()">✕</div>
+        <h2 id="authTitle">Личный кабинет</h2>
+        <form id="loginForm" onsubmit="login();return false;">
+            <input id="loginName" placeholder="Email" type="email">
+            <div class="error-msg" id="loginNameError"></div>
+            <input id="loginPassword" type="password" placeholder="Пароль" minlength="8">
+            <div class="error-msg" id="loginPasswordError"></div>
+            <button class="btn" style="width:100%;margin-top:6px;" id="loginBtn" type="submit">Войти</button>
+            <p style="text-align:center;margin-top:12px;font-size:14px;"><a href="#" onclick="switchTab('reset');return false;" style="color:#ef4444;font-weight:600;">Забыли пароль?</a></p>
+            <p style="text-align:center;margin-top:8px;font-size:14px;color:var(--text-muted);">Нет аккаунта? <a href="#" onclick="switchTab('register');return false;" style="color:var(--neon-dark);font-weight:600;">Создать</a></p>
+        </form>
+        <form id="registerForm" style="display:none;" onsubmit="register();return false;">
+            <input id="regName" placeholder="Ваше имя *" minlength="2">
+            <div class="error-msg" id="regNameError"></div>
+            <input id="regPhone" placeholder="Телефон *" type="tel">
+            <div class="error-msg" id="regPhoneError"></div>
+            <input id="regEmail" placeholder="Email">
+            <div class="error-msg" id="regEmailError"></div>
+            <input id="regPassword" type="password" placeholder="Пароль *" minlength="8">
+            <div class="error-msg" id="regPasswordError"></div>
+            <input id="regConfirm" type="password" placeholder="Повторите пароль *">
+            <div class="error-msg" id="regConfirmError"></div>
+            <button class="btn" style="width:100%;margin-top:6px;" id="registerBtn" type="submit">Зарегистрироваться</button>
+            <p style="text-align:center;margin-top:18px;color:var(--text-muted);font-size:14px;">Уже есть аккаунт? <a href="#" onclick="switchTab('login');return false;" style="color:var(--neon-dark);">Войти</a></p>
+        </form>
+        <form id="resetForm" style="display:none;" onsubmit="resetPassword();return false;">
+            <input id="resetEmail" placeholder="Ваш Email" type="email">
+            <div class="error-msg" id="resetEmailError"></div>
+            <button class="btn" style="width:100%;margin-top:6px;" id="resetBtn" type="submit">Отправить ссылку</button>
+            <p style="text-align:center;margin-top:18px;font-size:14px;color:var(--text-muted);">Вспомнили пароль? <a href="#" onclick="switchTab('login');return false;" style="color:var(--neon-dark);font-weight:600;">Войти</a></p>
+        </form>
+    </div>
+</div>
+
+<footer>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+            <path d="M7 2v20"/>
+            <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+        </svg>
+        © 2026 Я готовлю — ты ешь!
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script>
+// === Переключатель вкладок формы входа (login/register/reset) ===
+function switchTab(tab){
+  var map={login:'loginForm',register:'registerForm',reset:'resetForm'};
+  for(var k in map){var el=document.getElementById(map[k]); if(el) el.style.display=(k===tab)?'block':'none';}
+  var t=document.getElementById('authTitle');
+  if(t) t.textContent = tab==='register' ? 'Создать аккаунт' : (tab==='reset' ? 'Сброс пароля' : 'Личный кабинет');
+}
+
+async function login(){
+  var e=document.getElementById('loginName').value.trim();
+  var p=document.getElementById('loginPassword').value;
+  clearErrors();
+  if(!e) return showErr('loginNameError','Введите email');
+  if(p.length<8) return showErr('loginPasswordError','Минимум 8 символов');
+  setLoading('loginBtn',true);
+  try{
+    var res=await fetch('/api/login.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,password:p})});
+    var data=await res.json();
+    if(data.error) throw new Error(data.error);
+    localStorage.setItem('user',JSON.stringify({name:data.name,email:e}));
+    closeAuth(); updateUI();
+    showToast('✅ Вход выполнен');
+    setTimeout(function(){location.reload();},700);
+  }catch(err){ showErr('loginPasswordError',err.message); }
+  finally{ setLoading('loginBtn',false); }
+}
+
+async function register(){
+  var n=document.getElementById('regName').value.trim();
+  var e=document.getElementById('regEmail').value.trim();
+  var p=document.getElementById('regPassword').value;
+  var c=document.getElementById('regConfirm').value;
+  var ph=document.getElementById('regPhone').value.trim();
+  clearErrors();
+  if(n.length<2) return showErr('regNameError','Минимум 2 символа');
+  if(e&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) return showErr('regEmailError','Некорректный email');
+  if(p.length<8) return showErr('regPasswordError','Минимум 8 символов');
+  if(p!==c) return showErr('regConfirmError','Пароли не совпадают');
+  if(!ph) return showErr('regPhoneError','Укажите телефон');
+  setLoading('registerBtn',true);
+  try{
+    var res=await fetch('/api/register.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,password:p,phone:ph})});
+    var data=await res.json();
+    if(data.error) throw new Error(data.error);
+    await fetch('/api/send_verify.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});
+    closeAuth();
+    showToast('✅ Письмо для подтверждения отправлено на '+e);
+  }catch(err){ showErr('regNameError',err.message); }
+  finally{ setLoading('registerBtn',false); }
+}
+
+async function resetPassword(){
+  var e=document.getElementById('resetEmail').value.trim();
+  clearErrors();
+  if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) return showErr('resetEmailError','Некорректный email');
+  setLoading('resetBtn',true);
+  try{
+    var res=await fetch('/api/reset_password.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});
+    var data=await res.json();
+    if(data.error) throw new Error(data.error);
+    closeAuth();
+    showToast('✅ Письмо для сброса пароля отправлено на '+e);
+  }catch(err){ showErr('resetEmailError',err.message); }
+  finally{ setLoading('resetBtn',false); }
+}
+
+// === ОТЗЫВЫ ===
+const PAGE_SIZE = 24;
+const reviewList = document.getElementById('reviewList');
+const loadMoreButton = document.getElementById('loadMore');
+const reviewForm = document.getElementById('reviewForm');
+const formMessage = document.getElementById('formMessage');
+const ratingModal = document.getElementById('ratingModal');
+const ratingSelectButton = document.getElementById('ratingSelectButton');
+let offset = 0, total = 0, loading = false;
+
+function closeRatingModal(){ ratingModal.classList.remove('active'); ratingSelectButton.focus(); }
+ratingSelectButton.addEventListener('click', function(){ ratingModal.classList.add('active'); ratingModal.querySelector('.rating-option').focus(); });
+ratingModal.addEventListener('click', function(e){ if(e.target===ratingModal) closeRatingModal(); });
+document.addEventListener('keydown', function(e){ if(e.key==='Escape' && ratingModal.classList.contains('active')) closeRatingModal(); });
+ratingModal.querySelectorAll('.rating-option').forEach(function(option){
+  option.addEventListener('click', function(){
+    document.getElementById('reviewRating').value = option.dataset.rating;
+    var label = document.getElementById('selectedRatingLabel');
+    label.replaceChildren();
+    var stars = document.createElement('span');
+    stars.className = 'rating-option-stars';
+    stars.textContent = option.querySelector('.rating-option-stars').textContent;
+    label.append(stars, document.createTextNode(' — ' + option.lastElementChild.textContent));
+    closeRatingModal();
+  });
+});
+
+function currentUser(){ try{ return JSON.parse(localStorage.getItem('user')||'null'); }catch(e){ return null; } }
+
+function showEmpty(message){
+  var item = document.createElement('p');
+  item.className = 'state-message';
+  item.textContent = message;
+  reviewList.replaceChildren(item);
+}
+
+function makeReviewCard(review){
+  var card = document.createElement('article');
+  card.className = 'review-card';
+  var meta = document.createElement('div');
+  meta.className = 'review-meta';
+  var author = document.createElement('div');
+  author.className = 'review-author';
+  author.textContent = review.user_name || 'Гость';
+  var date = document.createElement('time');
+  date.className = 'review-date';
+  var parsedDate = new Date(String(review.created_at).replace(' ','T'));
+  if(!Number.isNaN(parsedDate.getTime())){
+    date.dateTime = parsedDate.toISOString();
+    date.textContent = parsedDate.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+  }
+  meta.append(author, date);
+  var rating = document.createElement('div');
+  rating.className = 'review-rating';
+  var r = Math.max(0, Math.min(5, Number(review.rating)));
+  rating.setAttribute('aria-label','Оценка: '+r+' из 5');
+  rating.textContent = '★'.repeat(r) + '☆'.repeat(5-r);
+  var text = document.createElement('p');
+  text.className = 'review-text';
+  text.textContent = review.review_text || '';
+  card.append(meta, rating, text);
+  return card;
+}
+
+async function loadReviews(reset){
+  if(loading) return;
+  if(reset){ offset=0; total=0; showEmpty('Загружаем отзывы…'); }
+  loading = true;
+  loadMoreButton.disabled = true;
+  try{
+    var params = new URLSearchParams({limit:String(PAGE_SIZE), offset:String(offset)});
+    var response = await fetch('/api/reviews.php?' + params.toString(), {credentials:'same-origin'});
+    var data = await response.json();
+    if(!response.ok || !data.success) throw new Error(data.error || 'Не удалось загрузить отзывы');
+    var reviews = Array.isArray(data.reviews) ? data.reviews : [];
+    total = Number(data.total) || 0;
+    if(offset===0) reviewList.replaceChildren();
+    if(reviews.length===0 && offset===0){
+      showEmpty('Пока отзывов нет. Вы можете оставить первый.');
+    } else {
+      reviews.forEach(function(review){ reviewList.append(makeReviewCard(review)); });
+    }
+    offset += reviews.length;
+    loadMoreButton.style.display = offset < total ? 'block' : 'none';
+  }catch(error){
+    console.error('Reviews load failed:', error);
+    if(offset===0) showEmpty('Не удалось загрузить отзывы. Попробуйте обновить страницу.');
+  }finally{
+    loading = false;
+    loadMoreButton.disabled = false;
+  }
+}
+
+async function checkReviewAuth(){
+  var signInPrompt = document.getElementById('signInPrompt');
+  reviewForm.style.display = 'none';
+  signInPrompt.style.display = 'none';
+  try{
+    var response = await fetch('/api/reviews.php?action=me', {credentials:'same-origin'});
+    var data = await response.json();
+    if(!response.ok || !data.success) throw new Error(data.error || 'Не удалось проверить вход');
+    reviewForm.style.display = data.authenticated ? '' : 'none';
+    signInPrompt.style.display = data.authenticated ? 'none' : '';
+  }catch(error){
+    console.error('Review authentication check failed:', error);
+    formMessage.textContent = 'Не удалось проверить вход. Обновите страницу.';
+  }
+}
+
+loadMoreButton.addEventListener('click', function(){ loadReviews(); });
+reviewForm.addEventListener('submit', async function(event){
+  event.preventDefault();
+  formMessage.textContent = '';
+  var submitButton = document.getElementById('submitReview');
+  submitButton.disabled = true;
+  try{
+    var response = await fetch('/api/reviews.php', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'same-origin',
+      body:JSON.stringify({
+        rating:Number(document.getElementById('reviewRating').value),
+        review_text:document.getElementById('reviewText').value.trim()
+      })
+    });
+    var data = await response.json();
+    if(!response.ok || !data.success) throw new Error(data.error || 'Не удалось отправить отзыв');
+    reviewForm.reset();
+    document.getElementById('reviewRating').value = '5';
+    var label = document.getElementById('selectedRatingLabel');
+    label.replaceChildren();
+    var stars = document.createElement('span');
+    stars.className = 'rating-option-stars';
+    stars.textContent = '★★★★★';
+    label.append(stars, document.createTextNode(' — Отлично'));
+    formMessage.textContent = data.message || 'Отзыв отправлен на модерацию.';
+    showToast('✅ Отзыв отправлен на модерацию');
+  }catch(error){
+    formMessage.textContent = error.message || 'Ошибка сети при отправке отзыва.';
+  }finally{
+    submitButton.disabled = false;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  if(typeof hideCurrentPageInCatalog === 'function') hideCurrentPageInCatalog();
+  loadReviews(true);
+  checkReviewAuth();
+});
+</script>
+
+<script>
+(function(){
+  var header=document.querySelector('.site-header');
+  if(!header) return;
+  var lastY=window.scrollY;
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    if(y>lastY && y>60) header.classList.add('hidden');
+    else header.classList.remove('hidden');
+    lastY=y;
+  },{passive:true});
+})();
+</script>
+
+</body>
+</html>
