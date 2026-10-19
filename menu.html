@@ -499,7 +499,7 @@ body{padding-bottom:88px;}
             <button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </button>
-            <a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;text-decoration:none;"><span class="user-btn-letter" id="userLetter"></span><span class="user-btn-marquee"><span id="userMarquee"></span></span></a>
+            <a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;text-decoration:none;"><span class="user-btn-letter" id="userLetter"></span></a>
             <button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                 <span id="cartBadge" style="display:none;"></span>
@@ -613,7 +613,7 @@ body{padding-bottom:88px;}
     <script src="assets/js/main.js"></script>
     <script src="assets/js/theme.js"></script>
     <script>
-    function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');const marquee=document.getElementById('userMarquee');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();if(marquee)marquee.textContent=u.name;setTimeout(function(){nameBtn.classList.add('expanded');},5000);}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}
+    function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}
 
     async function login(){
     const e=document.getElementById('loginName').value.trim();const p=document.getElementById('loginPassword').value;clearErrors();if(!e)return showErr('loginNameError','Введите email');if(p.length<8)return showErr('loginPasswordError','Минимум 8 символов');setLoading('loginBtn',true);try{const res=await fetch('/api/login.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,password:p})});const data=await res.json();if(data.error)throw new Error(data.error);localStorage.setItem('user',JSON.stringify({name:data.name,email:e}));closeAuth();updateUI();showToastMsg('Вход выполнен');setTimeout(()=>location.reload(),800);}catch(err){showErr('loginPasswordError',err.message);}finally{setLoading('loginBtn',false);}}
