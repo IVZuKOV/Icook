@@ -44,7 +44,6 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 @keyframes marqueeScroll{0%{transform:translateX(0);}100%{transform:translateX(-100%);}}
 [data-theme="dark"] .user-btn-wrap{background:#1e293b;border-color:rgba(255,255,255,.2);}
 [data-theme="dark"] .user-btn-letter{color:#fff;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);}
-[data-theme="dark"] 
 .icon-btn{width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);border:2px solid var(--neon);border-radius:12px;cursor:pointer;transition:0.3s;color:var(--neon-dark);box-shadow:0 0 6px rgba(30,64,175,0.15);position:relative;flex-shrink:0;}
 .icon-btn:hover{background:rgba(30,64,175,0.15);border-color:var(--neon);transform:scale(1.05);box-shadow:0 0 15px rgba(30,64,175,0.3);}
 .icon-btn.logged{background:var(--neon);color:#ffffff;border-color:var(--neon);}
