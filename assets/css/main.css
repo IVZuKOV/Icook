@@ -188,3 +188,13 @@ body{padding-bottom:88px;}
 .icon-btn:focus,.icon-btn:active{outline:none;}
 .fav-btn:focus,.fav-btn:active{outline:none;}
 button:focus{outline:none;}
+
+
+.bottom-bar .header-right{align-items:center;}
+.bottom-bar .header-right a,.bottom-bar .header-right button{vertical-align:middle;line-height:1;}
+.bottom-bar .icon-btn,.bottom-bar .fav-btn{outline:none !important;box-shadow:none !important;border:none;}
+.bottom-bar .icon-btn:focus,.bottom-bar .icon-btn:active,.bottom-bar .fav-btn:focus,.bottom-bar .fav-btn:active{outline:none !important;box-shadow:none !important;}
+
+
+.fav-btn{-webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none;outline:0 !important;box-shadow:none !important;background:transparent !important;border:0 !important;}
+.fav-btn:focus,.fav-btn:active,.fav-btn:focus-visible{-webkit-tap-highlight-color:transparent;outline:0 !important;box-shadow:none !important;}
