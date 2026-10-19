@@ -86,3 +86,15 @@ function toggleTheme(){const html = document.documentElement;const next = html.g
 function updateQr(){const isDark = document.documentElement.getAttribute('data-theme') === 'dark';const fg = isDark ? 'ffffff' : '00b8a3';const bg = isDark ? '0f172a' : 'ffffff';const url = location.href;const qrPath = `/webhook/qr-gen?url=${encodeURIComponent(url)}&fg=${fg}&bg=${bg}`;const qa=document.getElementById('qrApp');const qh=document.getElementById('qrHome');if(qa)qa.src=qrPath;if(qh)qh.src=qrPath;}
 function shareSite(){const u=location.href;if(navigator.share){navigator.share({title:'Я готовлю — ты ешь!',url:u}).catch(()=>{});}else{navigator.clipboard.writeText(u);showToast('📋 Ссылка скопирована');}}
 window.onload = () => { try{updateCartBadge();}catch(e){} try{updateUI();}catch(e){} try{updateQr();}catch(e){} };
+
+function getFavorites(){return JSON.parse(localStorage.getItem('favorites')||'[]');}
+function isFavorite(id){return getFavorites().indexOf(Number(id))!==-1;}
+function toggleFavorite(id){
+  id=Number(id);
+  let favs=getFavorites();
+  const i=favs.indexOf(id);
+  if(i===-1){favs.push(id);if(typeof showToast==='function')showToast('Добавлено в избранное');}
+  else{favs.splice(i,1);if(typeof showToast==='function')showToast('Удалено из избранного');}
+  localStorage.setItem('favorites',JSON.stringify(favs));
+  document.querySelectorAll('.fav-btn[data-id="'+id+'"]').forEach(function(b){b.classList.toggle('active',isFavorite(id));});
+}
