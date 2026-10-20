@@ -24,6 +24,7 @@ $migrations = [
     "lat" => "ALTER TABLE users ADD COLUMN lat DECIMAL(10,7) DEFAULT NULL AFTER address",
     "lng" => "ALTER TABLE users ADD COLUMN lng DECIMAL(10,7) DEFAULT NULL AFTER lat",
     "search_radius" => "ALTER TABLE users ADD COLUMN search_radius INT DEFAULT 10 AFTER lng",
+    "lang" => "ALTER TABLE users ADD COLUMN lang VARCHAR(10) DEFAULT 'ru' AFTER search_radius",
 ];
 foreach ($migrations as $col => $sql) {
     try {
@@ -44,7 +45,8 @@ $allowed = [
     'address' => 'address',
     'lat' => 'lat',
     'lng' => 'lng',
-    'search_radius' => 'search_radius'
+    'search_radius' => 'search_radius',
+    'lang' => 'lang'
 ];
 
 foreach ($allowed as $key => $column) {

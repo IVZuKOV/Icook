@@ -99,6 +99,34 @@ const LANGS = [
     }
   }
 
+  function applyGoogleTranslate(lang){
+    if(!lang || lang === 'ru') return;
+    var tries = 0;
+    var iv = setInterval(function(){
+      var combo = document.querySelector('.goog-te-combo');
+      if(combo){
+        clearInterval(iv);
+        if(Array.from(combo.options).some(function(o){return o.value===lang;})){
+          combo.value = lang;
+          combo.dispatchEvent(new Event('change'));
+        }
+      }
+      if(++tries > 60) clearInterval(iv);
+    }, 200);
+  }
+
+  function syncLangToServer(lang){
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('user')||'null'); } catch(e){}
+    if(!user) return Promise.resolve();
+    return fetch('/api/update_profile.php', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'include',
+      body: JSON.stringify({lang: lang})
+    }).catch(function(){});
+  }
+
   function setLanguage(lang){
     localStorage.setItem(STORAGE_KEY, lang);
     var combo = document.querySelector('.goog-te-combo');
@@ -106,7 +134,28 @@ const LANGS = [
       combo.value = lang;
       combo.dispatchEvent(new Event('change'));
     }
-    location.reload();
+    syncLangToServer(lang).finally(function(){ location.reload(); });
+  }
+
+  function syncFromProfile(){
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('user')||'null'); } catch(e){}
+    if(!user) return;
+    fetch('/api/profile.php', {credentials:'include'})
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(data && data.success && data.user && data.user.lang){
+          var serverLang = data.user.lang;
+          var localLang = savedLang() || 'ru';
+          if(serverLang && serverLang !== localLang){
+            setLanguage(serverLang);
+          } else {
+            if(!savedLang() && serverLang){
+              localStorage.setItem(STORAGE_KEY, serverLang);
+            }
+          }
+        }
+      }).catch(function(){});
   }
 
   function injectLangWrapper(){
@@ -178,22 +227,6 @@ const LANGS = [
     document.head.appendChild(script);
   }
 
-  function applyGoogleTranslate(lang){
-    if(!lang || lang === 'ru') return;
-    var tries = 0;
-    var iv = setInterval(function(){
-      var combo = document.querySelector('.goog-te-combo');
-      if(combo){
-        clearInterval(iv);
-        if(Array.from(combo.options).some(function(o){return o.value===lang;})){
-          combo.value = lang;
-          combo.dispatchEvent(new Event('change'));
-        }
-      }
-      if(++tries > 60) clearInterval(iv);
-    }, 200);
-  }
-
   function init(){
     injectLangWrapper();
     initGoogleTranslate();
@@ -201,12 +234,12 @@ const LANGS = [
     try { document.documentElement.lang = lang; } catch(e){}
     setTimeout(function(){ syncCatalogLang(lang); }, 150);
     applyGoogleTranslate(lang);
+    syncFromProfile();
   }
 
   window.toggleCatalogLangDropdown = toggleCatalogLangDropdown;
   window.setLanguage = setLanguage;
 
-  // inject CSS
   var style = document.createElement('style');
   style.textContent = `
     .skiptranslate,.goog-te-banner-frame{display:none!important}

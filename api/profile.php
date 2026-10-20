@@ -39,6 +39,7 @@ $migrations = [
     "lng" => "ALTER TABLE users ADD COLUMN lng DECIMAL(10,7) DEFAULT NULL AFTER lat",
     "search_radius" => "ALTER TABLE users ADD COLUMN search_radius INT DEFAULT 10 AFTER lng",
     "seller_description" => "ALTER TABLE users ADD COLUMN seller_description TEXT DEFAULT NULL",
+    "lang" => "ALTER TABLE users ADD COLUMN lang VARCHAR(10) DEFAULT 'ru' AFTER search_radius",
 ];
 foreach ($migrations as $col => $sql) {
     try {
@@ -65,6 +66,7 @@ echo json_encode(['success' => true, 'user' => [
     'lng' => $user['lng'] ?? '',
     'search_radius' => $user['search_radius'] ?? 10,
     'seller_description' => $user['seller_description'] ?? '',
+    'lang' => $user['lang'] ?? 'ru',
     'is_seller' => intval($user['is_seller'] ?? 1),
 ]]);
 ?>
