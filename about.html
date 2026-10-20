@@ -292,11 +292,35 @@ button, .btn, a, label {
         <img src="assets/images/barcode_apk.gif" alt="Штрих-код" loading="lazy" style="width:100%;max-width:200px;height:auto;object-fit:contain;display:block;margin:0 auto;">
     </div>
     <div class="qr-btn">Поделиться<br>приложением</div>
+</div>
 <div class="qr-card" onclick="openSharePageModal()">
      <div class="qr-wrapper" style="width:auto;height:auto;padding:10px;background:rgba(255,255,255,1);border-radius:8px;">
         <img src="assets/images/barcode.gif" alt="QR приложения" loading="lazy" style="width:100%;max-width:200px;height:auto;object-fit:contain;display:block;margin:0 auto;">
     </div>
     <div class="qr-btn">Поделиться<br>страничкой</div>
+</div>
+</div>
+
+<!-- Модальное окно: Поделиться приложением -->
+<div class="share-modal-overlay" id="shareAppModal" onclick="closeShareModal(event,'shareAppModal')">
+    <div class="share-modal-box" onclick="event.stopPropagation()">
+        <div class="share-modal-title">Поделиться приложением</div>
+        <div class="share-modal-desc">Выберите способ поделиться</div>
+        <div class="share-options" id="shareAppOptions"></div>
+        <button class="share-modal-close" onclick="closeShareModal(null,'shareAppModal')">Закрыть</button>
+    </div>
+</div>
+
+<!-- Модальное окно: Поделиться страничкой -->
+<div class="share-modal-overlay" id="sharePageModal" onclick="closeShareModal(event,'sharePageModal')">
+    <div class="share-modal-box" onclick="event.stopPropagation()">
+        <div class="share-modal-title">Поделиться страничкой</div>
+        <div class="share-modal-desc">Ссылка на главную страницу сайта</div>
+        <input class="share-link-input" id="sharePageLink" readonly>
+        <button class="share-copy-btn" onclick="copyShareLink()">Скопировать ссылку</button>
+        <div class="share-options" id="sharePageOptions"></div>
+        <button class="share-modal-close" onclick="closeShareModal(null,'sharePageModal')">Закрыть</button>
+    </div>
 </div>
 
 <footer>
