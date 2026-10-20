@@ -16,6 +16,24 @@ if (!$data) {
     exit;
 }
 
+// Миграция: гарантируем наличие колонок гео-профиля
+$migrations = [
+    "country" => "ALTER TABLE users ADD COLUMN country VARCHAR(100) DEFAULT 'Россия' AFTER phone",
+    "city" => "ALTER TABLE users ADD COLUMN city VARCHAR(100) DEFAULT NULL AFTER country",
+    "address" => "ALTER TABLE users ADD COLUMN address TEXT DEFAULT NULL AFTER city",
+    "lat" => "ALTER TABLE users ADD COLUMN lat DECIMAL(10,7) DEFAULT NULL AFTER address",
+    "lng" => "ALTER TABLE users ADD COLUMN lng DECIMAL(10,7) DEFAULT NULL AFTER lat",
+    "search_radius" => "ALTER TABLE users ADD COLUMN search_radius INT DEFAULT 10 AFTER lng",
+    "lang" => "ALTER TABLE users ADD COLUMN lang VARCHAR(10) DEFAULT 'ru' AFTER search_radius",
+];
+foreach ($migrations as $col => $sql) {
+    try {
+        $pdo->query("SELECT $col FROM users LIMIT 1");
+    } catch (PDOException $e) {
+        try { $pdo->exec($sql); } catch (PDOException $e2) {}
+    }
+}
+
 $fields = [];
 $params = [];
 
@@ -27,7 +45,8 @@ $allowed = [
     'address' => 'address',
     'lat' => 'lat',
     'lng' => 'lng',
-    'search_radius' => 'search_radius'
+    'search_radius' => 'search_radius',
+    'lang' => 'lang'
 ];
 
 foreach ($allowed as $key => $column) {
