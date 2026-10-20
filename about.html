@@ -120,7 +120,8 @@ input:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(30,64,175,0.15),0
 .error-msg{color:#ef4444;font-size:13px;min-height:18px;margin-bottom:8px;display:none;}
 .error-msg.show{display:block;animation:fadeIn 0.2s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
-footer{position:fixed;bottom:78px;left:0;right:0;z-index:99;margin:0;padding:10px;text-align:center;background:var(--card-bg);border-top:1px solid var(--border-color);border-top:1px solid var(--border-color);padding:25px;text-align:center;color:var(--text-muted);background:var(--card-bg);z-index:3;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;}
+footer{margin-top:0;padding:10px;text-align:center;transition:opacity 0.35s ease,transform 0.35s ease;opacity:0 !important;transform:translateY(20px) !important;pointer-events:none !important;}
+footer.footer-visible{opacity:1 !important;transform:translateY(0) !important;pointer-events:auto !important;}border-top:1px solid var(--border-color);padding:25px;text-align:center;color:var(--text-muted);background:var(--card-bg);z-index:3;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;}
 footer svg{width:20px;height:20px;}
 .qr-container{position:relative;top:auto;right:auto;z-index:95;display:flex;gap:16px;justify-content:center;margin:16px auto;flex-wrap:nowrap;}
 .qr-card{display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:transform 0.3s;}
@@ -188,7 +189,7 @@ footer svg{width:20px;height:20px;}
 .bottom-bar .header-right{width:100%;justify-content:center;flex-wrap:nowrap;gap:8px;}
 .site-header{transition:transform 0.35s ease;}
 .site-header.hidden{transform:translateY(-100%);}
-body{padding-bottom:130px;}
+body{padding-bottom:88px;}
 
 
 .bottom-bar .catalog-btn,.bottom-bar .icon-btn,.bottom-bar .user-btn-wrap{width:40px;height:40px;background:transparent;border:none;border-radius:50%;box-shadow:none;}
@@ -265,6 +266,7 @@ button, .btn, a, label {
 <nav class="bottom-bar">
   <div class="header-right">
 <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<a href="index.html" class="icon-btn" aria-label="Главная"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
 
 <button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
 <a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;text-decoration:none;"><span class="user-btn-letter" id="userLetter"></span></a>
@@ -630,6 +632,24 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
     else header.classList.remove('hidden');
     lastY=y;
   },{passive:true});
+})();
+</script>
+
+<script>
+(function(){
+  console.log('footer script loaded, footer=', document.querySelector('footer'));
+  var footer=document.querySelector('footer');
+  if(!footer) return;
+  function updateFooter(){
+    var scrollY=window.scrollY||window.pageYOffset;
+    var winH=window.innerHeight||document.documentElement.clientHeight;
+    var docH=document.documentElement.scrollHeight;
+    if(scrollY + winH >= docH - 60){ footer.classList.add('footer-visible'); }
+    else { footer.classList.remove('footer-visible'); }
+  }
+  window.addEventListener('scroll', updateFooter, {passive:true});
+  window.addEventListener('resize', updateFooter);
+  updateFooter();
 })();
 </script>
 
