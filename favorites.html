@@ -198,10 +198,12 @@ body{padding-bottom:88px;}
 .bottom-bar .catalog-btn svg,.bottom-bar .icon-btn svg{width:20px;height:20px;}
 
 
-.fav-btn{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:0.2s;}
+.fav-btn{position:absolute;top:10px;right:10px;width:32px;height:32px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;outline:none;box-shadow:none;padding:0;-webkit-tap-highlight-color:transparent;appearance:none;transition:0.2s;}
 .fav-btn svg{width:20px;height:20px;stroke:#94a3b8;fill:none;transition:0.2s;}
 .fav-btn.active svg{stroke:#e74c3c;fill:#e74c3c;}
 .fav-btn:hover{transform:scale(1.1);}
+.fav-btn:active svg{stroke:#e74c3c;fill:#e74c3c;}
+.fav-btn:focus,.fav-btn:active{outline:none;box-shadow:none;background:transparent;}
 
 
 .bottom-bar button,.bottom-bar a{-webkit-tap-highlight-color:transparent;appearance:none;outline:0 !important;box-shadow:none !important;}
