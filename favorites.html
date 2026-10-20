@@ -244,7 +244,6 @@ button, .btn, a, label {
     .qty-btn:active{background:var(--neon);color:#fff;transform:scale(0.9);}
     .qty-val{font-weight:700;font-size:16px;width:28px;text-align:center;color:var(--text-main);}
 </style>
-<link rel="stylesheet" href="assets/css/favorites.css">
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -282,25 +281,10 @@ button, .btn, a, label {
 
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 </nav>
-<main class="fav-page">
-  <div class="fav-hero">
-    <div>
-      <h1>Избранное</h1>
-      <p id="favSubtitle">Ваши любимые блюда, сохранённые для быстрого заказа</p>
-    </div>
-    <span class="fav-count" id="favCount" hidden>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      <span id="favCountText">0</span>
-    </span>
-  </div>
-  <div class="fav-grid" id="favoritesGrid" aria-live="polite"></div>
-  <section class="fav-empty" id="favoritesEmpty" hidden>
-    <div class="fav-empty-icon">♡</div>
-    <h2 id="favEmptyTitle">Нет избранных блюд</h2>
-    <p id="favEmptyText">Добавьте блюда в избранное, нажав на сердечко на карточке блюда — они появятся здесь.</p>
-    <a class="fav-empty-link" href="menu.html">Перейти в меню</a>
-  </section>
-</main>
+<section class="section-transparent"><h2 class="section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Избранное</h2>
+<div class="cards" id="favoritesGrid"></div>
+<p id="favoritesEmpty" style="text-align:center;color:var(--text-muted);padding:40px;display:none;">В избранном пока ничего нет</p>
+</section>
 <footer>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
             <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
@@ -605,16 +589,8 @@ async function loadFavorites(){
   const favs=getFavorites();
   const grid=document.getElementById('favoritesGrid');
   const empty=document.getElementById('favoritesEmpty');
-  const countEl=document.getElementById('favCount');
-  const countText=document.getElementById('favCountText');
-  const subtitle=document.getElementById('favSubtitle');
   if(!grid) return;
-  if(favs.length===0){
-    if(empty) empty.hidden=false;
-    if(countEl) countEl.hidden=true;
-    if(subtitle) subtitle.textContent='Сохраняйте любимые блюда, чтобы быстро находить их и заказывать снова.';
-    return;
-  }
+  if(favs.length===0){ if(empty) empty.style.display='block'; return; }
   let all=[]; let page=1; let pages=1;
   do {
     try {
@@ -625,38 +601,23 @@ async function loadFavorites(){
     page++;
   } while(page<=pages);
   const favDishes=all.filter(function(d){return favs.indexOf(Number(d.id))!==-1;});
-  if(favDishes.length===0){
-    if(empty) empty.hidden=false;
-    if(countEl) countEl.hidden=true;
-    if(subtitle) subtitle.textContent='Сохраняйте любимые блюда, чтобы быстро находить их и заказывать снова.';
-    return;
-  }
-  if(countEl){ countEl.hidden=false; }
-  if(countText) countText.textContent=String(favDishes.length);
-  if(subtitle) subtitle.textContent='Ваши любимые блюда, сохранённые для быстрого заказа';
-  if(empty) empty.hidden=true;
+  if(favDishes.length===0){ if(empty) empty.style.display='block'; return; }
   let html='';
   favDishes.forEach(function(d){
     const imgSrc=d.image?('/uploads/dishes/'+d.image):'assets/images/logo.svg';
-    const chef=d.seller_name||'Шеф';
+    const chef=d.seller_name||'Продавец';
     const desc=d.description?d.description.substring(0,80):'';
     const weight=d.weight?(' • '+d.weight):'';
-    const price=parseFloat(d.price||0).toFixed(0);
-    html += '<article class="fav-card">' +
-      '<button class="fav-btn active" type="button" data-id="'+d.id+'" onclick="toggleFavorite('+d.id+');return false;" aria-label="Убрать из избранного" aria-pressed="true">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
-      '</button>' +
-      '<img class="fav-card-img" src="'+imgSrc+'" alt="'+d.title+'" loading="lazy">' +
-      '<div class="fav-card-body">' +
-        '<span class="fav-card-cat">🍽 '+(d.category_name||'Блюдо')+'</span>' +
-        '<h2>'+d.title+'</h2>' +
-        (desc?'<p class="fav-card-desc">'+desc+'</p>':'') +
-        '<div class="fav-card-meta">' +
-          '<span>👨‍🍳 '+chef+'</span>' +
-          '<span class="fav-card-price">'+price+' ₽'+weight+'</span>' +
-        '</div>' +
-        '<button class="btn" onclick="window.location.href='cart.html'">В корзину</button>' +
-      '</div></article>';
+    html += '<div class="card">' +
+      '<button class="fav-btn active" onclick="toggleFavorite('+d.id+');return false;" data-id="'+d.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>' +
+      '<img src="'+imgSrc+'" alt="'+d.title+'">' +
+      '<div class="card-content">' +
+      '<div class="dish">'+d.title+'</div>' +
+      '<div class="chef">'+chef+'</div>' +
+      '<div class="desc">'+desc+'</div>' +
+      '<div class="price">'+parseFloat(d.price).toFixed(0)+' ₽'+weight+'</div>' +
+      '<button class="btn" onclick="window.location.href=&quot;cart.html&quot;">В корзину</button>' +
+      '</div></div>';
   });
   grid.innerHTML=html;
 }
