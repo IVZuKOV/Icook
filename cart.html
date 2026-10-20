@@ -16,7 +16,7 @@
 .cart-title{font-size:36px;font-weight:800;color:var(--neon-dark);margin-bottom:35px;text-shadow:0 0 8px var(--neon-glow);}
 .cart-layout{display:grid;grid-template-columns:1.8fr 1fr;gap:35px;align-items:start;}
 .cart-items{display:flex;flex-direction:column;gap:20px;}
-.cart-item{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:16px;display:flex;align-items:center;gap:20px;transition:0.3s;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.cart-item{position:relative;background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:16px;display:flex;align-items:center;gap:20px;transition:0.3s;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
 .cart-item:hover{border-color:var(--neon);box-shadow:0 8px 30px var(--neon-glow);transform:translateY(-2px);}
 .item-img{width:100px;height:100px;border-radius:14px;object-fit:cover;flex-shrink:0;background:#e2e8f0;}
 .item-info{flex:1;}
@@ -50,6 +50,14 @@
 .cart-container{padding:20px 20px;}
 .cart-layout{grid-template-columns:1fr;}
 .cart-item{flex-direction:column;text-align:center;}
+.fav-btn{position:absolute;top:10px;right:10px;width:32px;height:32px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;outline:none;box-shadow:none;padding:0;-webkit-tap-highlight-color:transparent;appearance:none;}
+.fav-btn svg{width:22px;height:22px;stroke:#94a3b8;fill:none;transition:0.2s;}
+.fav-btn.active svg{stroke:#e74c3c;fill:#e74c3c;}
+.fav-btn:hover{transform:scale(1.1);}
+.fav-btn:hover svg{stroke:#e74c3c;}
+.fav-btn:active svg{stroke:#e74c3c;fill:#e74c3c;}
+.fav-btn:focus,.fav-btn:active{outline:none;box-shadow:none;background:transparent;}
+
 .item-controls{align-items:center;flex-direction:row;justify-content:center;}
 .cart-summary{position:static;}
 }
@@ -233,6 +241,18 @@ async function register(){const n=document.getElementById('regName').value.trim(
 
 async function resetPassword(){const e=document.getElementById('resetEmail').value.trim();clearErrors();if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))return showErr('resetEmailError','Некорректный email');setLoading('resetBtn',true);try{const res=await fetch('/api/reset_password.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});const data=await res.json();if(data.error)throw new Error(data.error);closeAuth();showToast('✅ Письмо для сброса пароля отправлено на '+e);}catch(err){showErr('resetEmailError',err.message);}finally{setLoading('resetBtn',false);}}
 
+function getFavorites(){return JSON.parse(localStorage.getItem('favorites')||'[]');}
+function isFavorite(id){return getFavorites().indexOf(Number(id))!==-1;}
+function toggleFavorite(id){
+  id=Number(id);
+  let favs=getFavorites();
+  const i=favs.indexOf(id);
+  if(i===-1){favs.push(id);if(typeof showToast==='function')showToast('Добавлено в избранное');}
+  else{favs.splice(i,1);if(typeof showToast==='function')showToast('Удалено из избранного');}
+  localStorage.setItem('favorites',JSON.stringify(favs));
+  document.querySelectorAll('.fav-btn[data-id="'+id+'"]').forEach(function(b){b.classList.toggle('active',isFavorite(id));});
+}
+
 function renderCart(){
     const c = document.getElementById('cartContent');
     if(!c) return; 
@@ -251,6 +271,7 @@ function renderCart(){
 
     let h = cart.map(i => `
     <div class="cart-item">
+        <button class="fav-btn ${isFavorite(i.id)?'active':''}" onclick="toggleFavorite(${i.id});return false;" data-id="${i.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
         <img src="${i.img}" class="item-img">
         <div class="item-info">
             <div class="item-name">${i.name}</div>

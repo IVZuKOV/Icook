@@ -70,7 +70,7 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border:2px solid var(--border-color);border-radius:var(--radius-md);background:transparent;color:var(--text-main);font-weight:700;font-size:14px;cursor:pointer;transition:all 0.35s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:none;position:relative;overflow:hidden;text-decoration:none;min-width:100px;}
 .btn:hover{transform:translateX(4px);border-color:var(--neon);background:var(--neon-glow);color:var(--neon-dark);box-shadow:0 0 15px var(--neon-glow);}
 .btn:active{transform:scale(0.98);}
-.hero{position:relative;min-height:85vh;display:flex;align-items:center;justify-content:space-between;padding:120px 40px 60px;gap:40px;overflow:hidden;}
+.hero{position:relative;min-height:0;display:flex;align-items:center;justify-content:space-between;padding:120px 40px 30px;gap:40px;overflow:hidden;}
 .hero-bg{position:fixed;inset:0;z-index:0;background-image:url();background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:scroll;filter:grayscale(85%) contrast(1.15) brightness(1.05);opacity:0.55;}
 .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.25) 0%,rgba(248,250,252,0.55) 45%,rgba(248,250,252,0.92) 100%);}
 [data-theme="dark"] .hero-bg::after{background:linear-gradient(180deg,rgba(15,23,42,0.4) 0%,#0f172a 100%);}
@@ -174,7 +174,7 @@ footer svg{width:20px;height:20px;}
 .icon-btn{width:38px;height:38px;}
 .user-btn-wrap{height:38px;min-width:38px;max-width:38px;}
 .user-btn-letter{width:38px;height:38px;font-size:14px;}
-.hero{flex-direction:column;text-align:center;padding:140px 16px 40px;}
+.hero{flex-direction:column;text-align:center;padding:120px 16px 30px;}
 .section-transparent{padding:25px 16px;}
 .search{flex-direction:column;}
 .section-title{font-size:26px;}
@@ -307,25 +307,9 @@ button, .btn, a, label {
 <a href="favorites.html" class="icon-btn" aria-label="Избранное"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 </nav>
-<div class="qr-container">
-<div class="qr-card" onclick="openShareAppModal()">
-    <div class="qr-wrapper" style="width:auto;height:auto;padding:10px;background:rgba(255,255,255,1);border-radius:8px;">
-        <img src="assets/images/barcode_apk.gif" alt="Штрих-код" loading="lazy" style="width:100%;max-width:200px;height:auto;object-fit:contain;display:block;margin:0 auto;">
-    </div>
-    <div class="qr-btn">Поделиться<br>приложением</div>
-</div>
-<div class="qr-card" onclick="openSharePageModal()">
-     <div class="qr-wrapper" style="width:auto;height:auto;padding:10px;background:rgba(255,255,255,1);border-radius:8px;">
-        <img src="assets/images/barcode.gif" alt="QR приложения" loading="lazy" style="width:100%;max-width:200px;height:auto;object-fit:contain;display:block;margin:0 auto;">
-    </div>
-    <div class="qr-btn">Поделиться<br>страничкой</div>
-</div>
-</div>
 <section class="hero"><div class="hero-bg"></div><div class="hero-glow hero-glow-1"></div><div class="hero-glow hero-glow-2"></div>
 <div class="hero-text">
-  <h1>Домашняя еда <br>
-    от лучших <span>кулинаров</span></h1>
-<p>Платформа, где повара и кулинары публикуют свои блюда, а люди заказывают домашнюю свежую и вкусную еду рядом с собой.</p><div class="search"><input type="text" id="heroSearch" placeholder="Поиск блюд..."><button class="search-clear" id="heroSearchClear" onclick="document.getElementById('heroSearch').value='';this.style.display='none';if(typeof loadRestaurants==='function')loadRestaurants();" aria-label="Очистить"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+<div class="search"><input type="text" id="heroSearch" placeholder="Поиск блюд..."><button class="search-clear" id="heroSearchClear" onclick="document.getElementById('heroSearch').value='';this.style.display='none';if(typeof loadRestaurants==='function')loadRestaurants();" aria-label="Очистить"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
 </section>
 <section class="section-transparent"><h2 class="section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Популярные блюда</h2>
 <div class="cards" id="popularDishes"></div></section>
