@@ -20,6 +20,8 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .icon-btn:hover{background:rgba(30,64,175,0.15);border-color:var(--neon);transform:scale(1.05);box-shadow:0 0 15px rgba(30,64,175,0.3);}
 .icon-btn svg{width:20px;height:20px;}
 
+
+
 .catalog-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.4);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:0.3s;z-index:998;}
 .catalog-overlay.active{opacity:1;pointer-events:auto;}
 .catalog-drawer{position:fixed;top:0;left:0;width:320px;height:100%;background:var(--card-bg);backdrop-filter:blur(16px);box-shadow:4px 0 30px rgba(0,0,0,0.08);transform:translateX(-100%);transition:0.4s cubic-bezier(0.25,0.8,0.25,1);z-index:999;padding:28px 20px;border-right:1px solid var(--border-color);}
@@ -188,11 +190,19 @@ footer svg{width:20px;height:20px;}
 .site-header.hidden{transform:translateY(-100%);}
 body{padding-bottom:88px;}
 
+
 .bottom-bar .catalog-btn,.bottom-bar .icon-btn,.bottom-bar .user-btn-wrap{width:40px;height:40px;background:transparent;border:none;border-radius:50%;box-shadow:none;}
 .bottom-bar .catalog-btn:hover,.bottom-bar .icon-btn:hover{background:var(--neon-glow);transform:scale(1.05);}
 .bottom-bar .user-btn-wrap{height:40px;min-width:40px;max-width:40px;}
 .bottom-bar .user-btn-letter{border-radius:50%;background:transparent;}
 .bottom-bar .catalog-btn svg,.bottom-bar .icon-btn svg{width:20px;height:20px;}
+
+
+
+
+
+
+
 
 .fav-btn{position:absolute;top:10px;right:10px;width:32px;height:32px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;outline:none;box-shadow:none;padding:0;}
 .fav-btn:focus,.fav-btn:active{outline:none;box-shadow:none;}
@@ -202,27 +212,34 @@ body{padding-bottom:88px;}
 .fav-btn:hover svg{stroke:#e74c3c;}
 .fav-btn:active svg{stroke:#e74c3c;fill:#e74c3c;}
 
+
 .icon-btn:focus,.icon-btn:active{outline:none;}
 .fav-btn:focus,.fav-btn:active{outline:none;}
 button:focus{outline:none;}
+
 
 .bottom-bar .header-right{align-items:center;}
 .bottom-bar .header-right a,.bottom-bar .header-right button{vertical-align:middle;line-height:1;}
 .bottom-bar .icon-btn,.bottom-bar .fav-btn{outline:none !important;box-shadow:none !important;border:none;}
 .bottom-bar .icon-btn:focus,.bottom-bar .icon-btn:active,.bottom-bar .fav-btn:focus,.bottom-bar .fav-btn:active{outline:none !important;box-shadow:none !important;}
 
+
 .fav-btn{-webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none;outline:0 !important;box-shadow:none !important;background:transparent !important;border:0 !important;}
 .fav-btn:focus,.fav-btn:active,.fav-btn:focus-visible{-webkit-tap-highlight-color:transparent;outline:0 !important;box-shadow:none !important;}
+
 
 .bottom-bar .header-right{flex-wrap:nowrap;align-items:center;}
 .bottom-bar .header-right a,.bottom-bar .header-right button{align-self:center;vertical-align:middle;margin:0;}
 .bottom-bar{overflow-x:auto;}
 
+
 .bottom-bar button,.bottom-bar a{-webkit-tap-highlight-color:transparent;appearance:none;outline:0 !important;box-shadow:none !important;}
 .bottom-bar button:focus,.bottom-bar button:active,.bottom-bar a:focus,.bottom-bar a:active{outline:0 !important;box-shadow:none !important;}
 
+
 .bottom-bar .catalog-btn:active,.bottom-bar .icon-btn:active,.bottom-bar .fav-btn:active,.bottom-bar .logout-btn:active{background:var(--neon-glow);border-radius:50%;}
 .bottom-bar .catalog-btn:focus,.bottom-bar .icon-btn:focus,.bottom-bar .fav-btn:focus,.bottom-bar .logout-btn:focus{background:var(--neon-glow);border-radius:50%;}
+
 
 .bottom-bar .catalog-btn:active,.bottom-bar .icon-btn:active,.bottom-bar .fav-btn:active,.bottom-bar .user-btn-wrap:active,.bottom-bar .logout-btn:active{background:var(--neon-glow);border-radius:50%;}
 .bottom-bar .catalog-btn:focus,.bottom-bar .icon-btn:focus,.bottom-bar .fav-btn:focus,.bottom-bar .user-btn-wrap:focus,.bottom-bar .logout-btn:focus{background:var(--neon-glow);border-radius:50%;}
@@ -290,12 +307,9 @@ button, .btn, a, label {
 <a href="favorites.html" class="icon-btn" aria-label="Избранное"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 </nav>
-
 <section class="hero"><div class="hero-bg"></div><div class="hero-glow hero-glow-1"></div><div class="hero-glow hero-glow-2"></div>
 <div class="hero-text">
-  <h1>Домашняя еда <br>
-    от лучших <span>кулинаров</span></h1>
-<p>Платформа, где повара и кулинары публикуют свои блюда, а люди заказывают домашнюю свежую и вкусную еду рядом с собой.</p><div class="search"><input type="text" id="heroSearch" placeholder="Поиск блюд..."><button class="search-clear" id="heroSearchClear" onclick="document.getElementById('heroSearch').value='';this.style.display='none';if(typeof loadRestaurants==='function')loadRestaurants();" aria-label="Очистить"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+<div class="search"><input type="text" id="heroSearch" placeholder="Поиск блюд..."><button class="search-clear" id="heroSearchClear" onclick="document.getElementById('heroSearch').value='';this.style.display='none';if(typeof loadRestaurants==='function')loadRestaurants();" aria-label="Очистить"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
 </section>
 <section class="section-transparent"><h2 class="section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Популярные блюда</h2>
 <div class="cards" id="popularDishes"></div></section>
@@ -314,6 +328,28 @@ button, .btn, a, label {
 <p style="text-align:center;margin-top:8px;font-size:14px;color:var(--text-muted);">Нет аккаунта? <a href="#" onclick="switchTab('register');return false;" style="color:var(--neon-dark);font-weight:600;">Создать</a></p></form><form id="registerForm" style="display:none;" onsubmit="register();return false;"><input id="regName" placeholder="Ваше имя *" minlength="2"><div class="error-msg" id="regNameError"></div>
                 <input id="regPhone" placeholder="Телефон *" type="tel">
                 <div class="error-msg" id="regPhoneError"></div><input id="regEmail" placeholder="Email"><div class="error-msg" id="regEmailError"></div><input id="regPassword" type="password" placeholder="Пароль *" minlength="8"><div class="error-msg" id="regPasswordError"></div><input id="regConfirm" type="password" placeholder="Повторите пароль *"><div class="error-msg" id="regConfirmError"></div><button class="btn" style="width:100%;margin-top:6px;" id="registerBtn" type="submit">Зарегистрироваться</button><p style="text-align:center;margin-top:18px;color:var(--text-muted);font-size:14px;">Уже есть аккаунт? <a href="#" onclick="switchTab('login');return false;" style="color:var(--neon-dark);">Войти</a></p></form><form id="resetForm" style="display:none;" onsubmit="resetPassword();return false;"><input id="resetEmail" placeholder="Ваш Email" type="email"><div class="error-msg" id="resetEmailError"></div><button class="btn" style="width:100%;margin-top:6px;" id="resetBtn" type="submit">Отправить ссылку</button><p style="text-align:center;margin-top:18px;font-size:14px;color:var(--text-muted);">Вспомнили пароль? <a href="#" onclick="switchTab('login');return false;" style="color:var(--neon-dark);font-weight:600;">Войти</a></p></form></div></div>
+
+<!-- Модальное окно: Поделиться приложением -->
+<div class="share-modal-overlay" id="shareAppModal" onclick="closeShareModal(event,'shareAppModal')">
+    <div class="share-modal-box" onclick="event.stopPropagation()">
+        <div class="share-modal-title">Поделиться приложением</div>
+        <div class="share-modal-desc">Выберите способ поделиться</div>
+        <div class="share-options" id="shareAppOptions"></div>
+        <button class="share-modal-close" onclick="closeShareModal(null,'shareAppModal')">Закрыть</button>
+    </div>
+</div>
+
+<!-- Модальное окно: Поделиться страничкой -->
+<div class="share-modal-overlay" id="sharePageModal" onclick="closeShareModal(event,'sharePageModal')">
+    <div class="share-modal-box" onclick="event.stopPropagation()">
+        <div class="share-modal-title">Поделиться страничкой</div>
+        <div class="share-modal-desc">Ссылка на главную страницу сайта</div>
+        <input class="share-link-input" id="sharePageLink" readonly>
+        <button class="share-copy-btn" onclick="copyShareLink()">Скопировать ссылку</button>
+        <div class="share-options" id="sharePageOptions"></div>
+        <button class="share-modal-close" onclick="closeShareModal(null,'sharePageModal')">Закрыть</button>
+    </div>
+</div>
 
 <footer>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
@@ -664,5 +700,6 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 })();
 </script>
 
+<script src="assets/js/lang.js"></script>
 </body>
 </html>
