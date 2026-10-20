@@ -20,6 +20,8 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .icon-btn:hover{background:rgba(30,64,175,0.15);border-color:var(--neon);transform:scale(1.05);box-shadow:0 0 15px rgba(30,64,175,0.3);}
 .icon-btn svg{width:20px;height:20px;}
 
+
+
 .catalog-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.4);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:0.3s;z-index:998;}
 .catalog-overlay.active{opacity:1;pointer-events:auto;}
 .catalog-drawer{position:fixed;top:0;left:0;width:320px;height:100%;background:var(--card-bg);backdrop-filter:blur(16px);box-shadow:4px 0 30px rgba(0,0,0,0.08);transform:translateX(-100%);transition:0.4s cubic-bezier(0.25,0.8,0.25,1);z-index:999;padding:28px 20px;border-right:1px solid var(--border-color);}
@@ -126,7 +128,7 @@ footer svg{width:20px;height:20px;}
 .qr-card:hover{transform:scale(1.03);}
 .qr-wrapper{position:relative;width:110px;height:110px;border-radius:14px;overflow:hidden;box-shadow:0 6px 20px var(--neon-glow);background:var(--card-bg);border:1px solid var(--border-color);}
 .qr-wrapper img{width:100%;height:100%;display:block;}
-.qr-btn{padding:5px 6px;border:2px solid var(--neon);border-radius:8px;background:var(--card-bg);color:var(--neon-dark);font-size:9px;font-weight:700;cursor:pointer;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);text-align:center;line-height:1.2;white-space:normal;word-break:break-word;overflow-wrap:break-word;box-shadow:0 0 8px var(--neon-glow);width:110px;min-height:34px;display:flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:0.3px;}
+.qr-btn{padding:5px 12px;border:2px solid var(--neon);border-radius:8px;background:var(--card-bg);color:var(--neon-dark);font-size:9px;font-weight:700;cursor:pointer;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);text-align:center;line-height:1.2;white-space:normal;word-break:normal;overflow-wrap:normal;box-shadow:0 0 8px var(--neon-glow);min-width:110px;max-width:100%;min-height:34px;display:flex;align-items:center;justify-content:center;text-transform:uppercase;letter-spacing:0.3px;}
 .qr-btn:hover{transform:scale(1.05);background:var(--neon);color:#ffffff;box-shadow:0 0 20px var(--neon-glow),0 0 40px rgba(30,64,175,0.3);border-color:var(--neon);}
 [data-theme="dark"] .site-header{background:rgba(11,17,32,0.98);border-bottom-color:var(--border-color);}
 [data-theme="dark"] .catalog-btn,[data-theme="dark"] .icon-btn{background:var(--card-bg);color:var(--neon-dark);border-color:var(--border-color);}
@@ -179,7 +181,7 @@ footer svg{width:20px;height:20px;}
 .section-title{font-size:26px;}
 .qr-container{top:auto;position:relative;right:auto;justify-content:center;margin-top:10px;z-index:2;}
 .qr-wrapper{width:90px;height:90px;}
-.qr-btn{width:90px;font-size:8px;min-height:28px;}
+.qr-btn{min-width:90px;max-width:100%;font-size:8px;min-height:28px;}
 }
 /* --- CSS КОНЕЦ --- */
 
@@ -189,17 +191,21 @@ footer svg{width:20px;height:20px;}
 .site-header.hidden{transform:translateY(-100%);}
 body{padding-bottom:88px;}
 
+
 .bottom-bar .catalog-btn,.bottom-bar .icon-btn,.bottom-bar .user-btn-wrap{width:40px;height:40px;background:transparent;border:none;border-radius:50%;box-shadow:none;}
 .bottom-bar .catalog-btn:hover,.bottom-bar .icon-btn:hover{background:var(--neon-glow);transform:scale(1.05);}
 .bottom-bar .user-btn-wrap{height:40px;min-width:40px;max-width:40px;}
 .bottom-bar .user-btn-letter{border-radius:50%;background:transparent;}
 .bottom-bar .catalog-btn svg,.bottom-bar .icon-btn svg{width:20px;height:20px;}
 
+
 .bottom-bar button,.bottom-bar a{-webkit-tap-highlight-color:transparent;appearance:none;outline:0 !important;box-shadow:none !important;}
 .bottom-bar button:focus,.bottom-bar button:active,.bottom-bar a:focus,.bottom-bar a:active{outline:0 !important;box-shadow:none !important;}
 
+
 .bottom-bar .catalog-btn:active,.bottom-bar .icon-btn:active,.bottom-bar .fav-btn:active,.bottom-bar .logout-btn:active{background:var(--neon-glow);border-radius:50%;}
 .bottom-bar .catalog-btn:focus,.bottom-bar .icon-btn:focus,.bottom-bar .fav-btn:focus,.bottom-bar .logout-btn:focus{background:var(--neon-glow);border-radius:50%;}
+
 
 .bottom-bar .catalog-btn:active,.bottom-bar .icon-btn:active,.bottom-bar .fav-btn:active,.bottom-bar .user-btn-wrap:active,.bottom-bar .logout-btn:active{background:var(--neon-glow);border-radius:50%;}
 .bottom-bar .catalog-btn:focus,.bottom-bar .icon-btn:focus,.bottom-bar .fav-btn:focus,.bottom-bar .user-btn-wrap:focus,.bottom-bar .logout-btn:focus{background:var(--neon-glow);border-radius:50%;}
@@ -286,35 +292,11 @@ button, .btn, a, label {
         <img src="assets/images/barcode_apk.gif" alt="Штрих-код" loading="lazy" style="width:100%;max-width:200px;height:auto;object-fit:contain;display:block;margin:0 auto;">
     </div>
     <div class="qr-btn">Поделиться<br>приложением</div>
-</div>
 <div class="qr-card" onclick="openSharePageModal()">
      <div class="qr-wrapper" style="width:auto;height:auto;padding:10px;background:rgba(255,255,255,1);border-radius:8px;">
         <img src="assets/images/barcode.gif" alt="QR приложения" loading="lazy" style="width:100%;max-width:200px;height:auto;object-fit:contain;display:block;margin:0 auto;">
     </div>
     <div class="qr-btn">Поделиться<br>страничкой</div>
-</div>
-</div>
-
-<!-- Модальное окно: Поделиться приложением -->
-<div class="share-modal-overlay" id="shareAppModal" onclick="closeShareModal(event,'shareAppModal')">
-    <div class="share-modal-box" onclick="event.stopPropagation()">
-        <div class="share-modal-title">Поделиться приложением</div>
-        <div class="share-modal-desc">Выберите способ поделиться</div>
-        <div class="share-options" id="shareAppOptions"></div>
-        <button class="share-modal-close" onclick="closeShareModal(null,'shareAppModal')">Закрыть</button>
-    </div>
-</div>
-
-<!-- Модальное окно: Поделиться страничкой -->
-<div class="share-modal-overlay" id="sharePageModal" onclick="closeShareModal(event,'sharePageModal')">
-    <div class="share-modal-box" onclick="event.stopPropagation()">
-        <div class="share-modal-title">Поделиться страничкой</div>
-        <div class="share-modal-desc">Ссылка на главную страницу сайта</div>
-        <input class="share-link-input" id="sharePageLink" readonly>
-        <button class="share-copy-btn" onclick="copyShareLink()">Скопировать ссылку</button>
-        <div class="share-options" id="sharePageOptions"></div>
-        <button class="share-modal-close" onclick="closeShareModal(null,'sharePageModal')">Закрыть</button>
-    </div>
 </div>
 
 <footer>
@@ -670,5 +652,6 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 })();
 </script>
 
+<script src="assets/js/lang.js"></script>
 </body>
 </html>
