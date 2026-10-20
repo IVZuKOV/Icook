@@ -403,6 +403,7 @@ function toggleFavorite(id){
   else{favs.splice(i,1);if(typeof showToast==='function')showToast('Удалено из избранного');}
   localStorage.setItem('favorites',JSON.stringify(favs));
   document.querySelectorAll('.fav-btn[data-id="'+id+'"]').forEach(function(b){b.classList.toggle('active',isFavorite(id));});
+  if(typeof updateFavBadge==='function') updateFavBadge();
 }
 
 function showToast(msg){const t=document.createElement('div');t.textContent=msg;Object.assign(t.style,{position:'fixed',bottom:'24px',right:'24px',background:'var(--card-bg)',color:'var(--neon-dark)',padding:'14px 20px',borderRadius:'12px',border:'1px solid var(--border-color)',boxShadow:'0 10px 30px var(--neon-glow)',zIndex:'10001',fontWeight:'600',transition:'all 0.3s',transform:'translateY(20px)',opacity:'0'});document.body.appendChild(t);requestAnimationFrame(()=>{t.style.transform='translateY(0)';t.style.opacity='1';});setTimeout(()=>{t.style.transform='translateY(20px)';t.style.opacity='0';setTimeout(()=>t.remove(),300);},3000);}
@@ -702,5 +703,6 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 
 <script src="assets/js/lang.js"></script>
 <script src="assets/js/notifications.js"></script>
+<script src="assets/js/fav-badge.js"></script>
 </body>
 </html>
