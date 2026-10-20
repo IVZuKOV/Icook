@@ -498,6 +498,16 @@ async function loadProfile() {
                 document.getElementById('geoLat').value = data.user.lat;
                 document.getElementById('geoLng').value = data.user.lng;
             }
+            // Синхронизируем localStorage с сервером
+            if(currentUser){
+                currentUser.country = data.user.country || currentUser.country;
+                currentUser.city = data.user.city || currentUser.city;
+                currentUser.address = data.user.address || currentUser.address;
+                currentUser.lat = data.user.lat || currentUser.lat;
+                currentUser.lng = data.user.lng || currentUser.lng;
+                currentUser.search_radius = data.user.search_radius || currentUser.search_radius;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+            }
             // Карта инициализируется при открытии вкладки настроек (switchTab)
             document.getElementById('avatarLetter').textContent = data.user.name.charAt(0).toUpperCase();
             document.getElementById('roleLabel').textContent = 'Покупатель и Продавец';
