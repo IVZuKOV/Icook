@@ -129,12 +129,18 @@ const LANGS = [
 
   function setLanguage(lang){
     localStorage.setItem(STORAGE_KEY, lang);
+    syncCatalogLang(lang);
+    var dd = document.getElementById('catalogLangDropdown');
+    if(dd) dd.classList.remove('active');
+    try { document.documentElement.lang = lang; } catch(e){}
     var combo = document.querySelector('.goog-te-combo');
     if(combo && Array.from(combo.options).some(function(o){return o.value===lang;})){
       combo.value = lang;
       combo.dispatchEvent(new Event('change'));
+    } else {
+      applyGoogleTranslate(lang);
     }
-    syncLangToServer(lang).finally(function(){ location.reload(); });
+    syncLangToServer(lang);
   }
 
   function syncFromProfile(){
@@ -242,8 +248,10 @@ const LANGS = [
 
   var style = document.createElement('style');
   style.textContent = `
-    .skiptranslate,.goog-te-banner-frame{display:none!important}
-    html,body{top:0!important}
+    .skiptranslate,.goog-te-banner-frame,.goog-te-banner,.goog-te-gadget,.goog-logo-link,#\\:1\\.container,.goog-te-menu-value span,.goog-te-menu2,.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,.VIpgJd-ZVi9od-xl07Ob-OEVmcd{display:none!important;height:0!important;visibility:hidden!important;overflow:hidden!important;position:absolute!important;top:-9999px!important;}
+    .goog-tooltip,.goog-tooltip:hover{display:none!important;}
+    html,body{top:0!important;margin-top:0!important;}
+    iframe.goog-te-banner-frame{display:none!important;}
     .lang-wrapper{position:relative;display:block;}
     .lang-btn{display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 10px;border-radius:12px;border:2px solid var(--neon,#1e40af);background:rgba(255,255,255,0.9);color:var(--neon-dark,#1e3a8a);cursor:pointer;font-size:14px;transition:0.3s;flex-shrink:0;}
     .lang-btn:hover{background:rgba(30,64,175,0.15);transform:scale(1.05);}
