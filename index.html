@@ -70,7 +70,7 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border:2px solid var(--border-color);border-radius:var(--radius-md);background:transparent;color:var(--text-main);font-weight:700;font-size:14px;cursor:pointer;transition:all 0.35s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:none;position:relative;overflow:hidden;text-decoration:none;min-width:100px;}
 .btn:hover{transform:translateX(4px);border-color:var(--neon);background:var(--neon-glow);color:var(--neon-dark);box-shadow:0 0 15px var(--neon-glow);}
 .btn:active{transform:scale(0.98);}
-.hero{position:relative;min-height:85vh;display:flex;align-items:center;justify-content:space-between;padding:120px 40px 60px;gap:40px;overflow:hidden;}
+.hero{position:relative;min-height:0;display:flex;align-items:center;justify-content:space-between;padding:120px 40px 30px;gap:40px;overflow:hidden;}
 .hero-bg{position:fixed;inset:0;z-index:0;background-image:url();background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:scroll;filter:grayscale(85%) contrast(1.15) brightness(1.05);opacity:0.55;}
 .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.25) 0%,rgba(248,250,252,0.55) 45%,rgba(248,250,252,0.92) 100%);}
 [data-theme="dark"] .hero-bg::after{background:linear-gradient(180deg,rgba(15,23,42,0.4) 0%,#0f172a 100%);}
@@ -174,7 +174,7 @@ footer svg{width:20px;height:20px;}
 .icon-btn{width:38px;height:38px;}
 .user-btn-wrap{height:38px;min-width:38px;max-width:38px;}
 .user-btn-letter{width:38px;height:38px;font-size:14px;}
-.hero{flex-direction:column;text-align:center;padding:140px 16px 40px;}
+.hero{flex-direction:column;text-align:center;padding:120px 16px 30px;}
 .section-transparent{padding:25px 16px;}
 .search{flex-direction:column;}
 .section-title{font-size:26px;}
@@ -701,5 +701,6 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 </script>
 
 <script src="assets/js/lang.js"></script>
+<script src="assets/js/notifications.js"></script>
 </body>
 </html>
