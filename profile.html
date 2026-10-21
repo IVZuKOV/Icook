@@ -57,7 +57,7 @@
 
 /* --- Мои блюда --- */
 .my-dishes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
-.my-dish-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:0.3s;box-shadow:0 4px 15px rgba(0,0,0,0.06);}
+.my-dish-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:0.3s;box-shadow:0 4px 15px rgba(0,0,0,0.06);position:relative;}
 .my-dish-card:hover{transform:translateY(-4px);border-color:var(--neon);box-shadow:0 8px 25px var(--neon-glow);}
 .my-dish-card img{width:100%;height:160px;object-fit:cover;}
 .my-dish-card .card-body{padding:14px;}
@@ -72,6 +72,9 @@
 .btn-toggle:hover{background:var(--neon);color:#ffffff;}
 .btn-delete{background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);}
 .btn-delete:hover{background:#ef4444;color:#fff;}
+.edit-pencil-icon{position:absolute;right:8px;top:66%;transform:translateY(-50%);width:16px;height:16px;opacity:0.7;filter:drop-shadow(0 0 6px rgba(255,255,255,0.8));cursor:pointer;transition:all 0.2s ease;pointer-events:auto;}
+.edit-pencil-icon:hover{opacity:1;filter:drop-shadow(0 0 12px #ffffff) drop-shadow(0 0 18px #ffffff);transform:translateY(-50%) scale(1.1);}
+.edit-pencil-icon:active{transform:translateY(-50%) scale(0.9);}
 
 /* --- Добавить блюдо --- */
 .add-form{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:24px;box-shadow:0 4px 15px rgba(0,0,0,0.06);}
@@ -324,6 +327,51 @@ button, .btn, a, label {
 <img class="file-preview" id="imagePreview">
 </div>
 <button class="btn" style="width:100%;padding:16px;font-size:16px;margin-top:10px;" onclick="addDish()">Добавить блюдо</button>
+</div>
+</div>
+<!-- Модальное окно редактирования блюда -->
+<div class="info-modal-overlay" id="editDishModal" style="z-index:10006;">
+<div class="info-modal-box" style="max-width:480px;text-align:left;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+<h2 style="color:var(--neon-dark);font-size:22px;font-weight:800;margin:0;">Редактировать блюдо</h2>
+<span style="cursor:pointer;font-size:28px;color:var(--text-muted);line-height:1;" onclick="closeEditDishModal()">&#10005;</span>
+</div>
+<input type="hidden" id="editDishId">
+<div class="form-group">
+<label>Название *</label>
+<input type="text" id="editDishTitle" placeholder="Название блюда">
+</div>
+<div class="form-group">
+<label>Описание</label>
+<textarea id="editDishDesc" placeholder="Опишите блюдо..."></textarea>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Цена (руб) *</label>
+<input type="number" id="editDishPrice" placeholder="350" min="1">
+</div>
+<div class="form-group">
+<label>Вес / объём</label>
+<input type="text" id="editDishWeight" placeholder="400 г">
+</div>
+</div>
+<div class="form-group">
+<label>Категория</label>
+<select id="editDishCategory"></select>
+</div>
+<div class="form-group">
+<label>Фото (оставить пустым — не менять)</label>
+<div class="file-upload" onclick="document.getElementById('editDishImage').click()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+<p>Нажмите для смены фото</p>
+<input type="file" id="editDishImage" accept="image/*">
+</div>
+<img class="file-preview" id="editImagePreview" style="display:none;margin-top:10px;max-width:200px;border-radius:10px;">
+</div>
+<div style="display:flex;gap:10px;margin-top:16px;">
+<button onclick="closeEditDishModal()" style="flex:1;padding:12px;border:2px solid var(--border-color);border-radius:12px;background:transparent;color:var(--text-main);font-weight:600;cursor:pointer;">Отмена</button>
+<button class="btn" style="flex:1;padding:12px;background:var(--neon);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;" onclick="editDish(document.getElementById('editDishId').value)">Сохранить</button>
+</div>
 </div>
 </div>
 <!-- === ЗАКАЗЫ МНЕ (продавец) === -->
@@ -596,6 +644,7 @@ async function loadMyDishes() {
     var dishesHtml = '';
     if(data.success && data.dishes.length > 0) {
         document.getElementById('myDishesCount').textContent = data.dishes.length;
+        window.myDishesData = data.dishes || [];
         dishesHtml = data.dishes.map(function(d){
             var imgSrc = d.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop';
             var badgeClass = d.is_available == 1 ? 'on' : 'off';
@@ -610,6 +659,7 @@ async function loadMyDishes() {
                         '<button class="btn-toggle" onclick="toggleDish(' + d.id + ')">' + (d.is_available == 1 ? 'Скрыть' : 'Показать') + '</button>' +
                         '<button class="btn-delete" onclick="deleteDish(' + d.id + ')">Удалить</button>' +
                     '</div>' +
+                    '<svg class="edit-pencil-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="openEditDish(' + d.id + ')"><path d="M4 20 16 8"/><path d="M16 8l-2 2 2 2"/><path d="M15 9l1-1" stroke="#cccccc" stroke-width="1.5"/><rect x="3" y="19" width="3" height="3" rx="0.5" stroke="#ffffff" stroke-width="2"/><path d="M6 19v3"/></svg>' +
                 '</div></div>';
         }).join('');
     } else {
@@ -636,6 +686,53 @@ async function deleteDish(id) {
     var data = await res.json();
     if(data.success) { showToastMsg('Блюдо удалено'); loadMyDishes(); }
     else showToastMsg(data.error);
+}
+
+// --- РЕДАКТИРОВАНИЕ БЛЮДА ---
+function openEditDish(id) {
+    var d = (window.myDishesData || []).find(function(x){ return x.id == id; });
+    if(!d) return;
+    document.getElementById('editDishId').value = d.id;
+    document.getElementById('editDishTitle').value = d.title || '';
+    document.getElementById('editDishDesc').value = d.description || '';
+    document.getElementById('editDishPrice').value = d.price || '';
+    document.getElementById('editDishWeight').value = d.weight || '';
+    document.getElementById('editDishCategory').value = d.category_id || '';
+    document.getElementById('editImagePreview').style.display = 'none';
+    document.getElementById('editImagePreview').src = '';
+    document.getElementById('editDishImage').value = '';
+    document.getElementById('editDishModal').classList.add('active');
+}
+function closeEditDishModal() {
+    document.getElementById('editDishModal').classList.remove('active');
+}
+async function editDish(id) {
+    var title = document.getElementById('editDishTitle').value.trim();
+    var desc = document.getElementById('editDishDesc').value.trim();
+    var price = document.getElementById('editDishPrice').value;
+    var weight = document.getElementById('editDishWeight').value.trim();
+    var catId = document.getElementById('editDishCategory').value;
+    var imageInput = document.getElementById('editDishImage');
+    if(!title) { showToastMsg('Введите название'); return; }
+    if(!price || price <= 0) { showToastMsg('Укажите цену'); return; }
+    var formData = new FormData();
+    formData.append('dish_id', id);
+    formData.append('action', 'update');
+    formData.append('title', title);
+    formData.append('description', desc);
+    formData.append('price', price);
+    formData.append('weight', weight);
+    formData.append('category_id', catId);
+    if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
+    var res = await fetch('/api/edit_dish.php', { method:'POST', body: formData });
+    var data = await res.json();
+    if(data.success) {
+        showToastMsg('Блюдо обновлено');
+        closeEditDishModal();
+        loadMyDishes();
+    } else {
+        showToastMsg(data.error || 'Ошибка');
+    }
 }
 
 // --- ЗАКАЗЫ ПОКУПАТЕЛЯ ---
@@ -1538,5 +1635,6 @@ async function saveLKEdit(e){
 
 <script src="assets/js/lang.js"></script>
 <script src="assets/js/notifications.js"></script>
+<script src="assets/js/fav-badge.js"></script>
 </body>
 </html>
