@@ -166,8 +166,6 @@ footer svg{width:20px;height:20px;}
 
 @media(max-width:900px){
 .site-.site-header{padding:12px 16px;flex-direction:column;gap:8px;}
-.site-header{flex-wrap:wrap;}
-.site-header .search{width:100%;max-width:none;}
 .header-left{width:100%;justify-content:center;flex-wrap:wrap;gap:8px;}
 .logo{font-size:18px;gap:10px;order:1;width:100%;justify-content:center;}
 .logo-icon{width:36px;height:36px;}
@@ -190,10 +188,6 @@ footer svg{width:20px;height:20px;}
 .bottom-bar .header-right{width:100%;justify-content:center;flex-wrap:nowrap;gap:8px;}
 .site-header{transition:transform 0.35s ease;}
 .site-header.hidden{transform:translateY(-100%);}
-.site-header{flex-wrap:wrap;}
-.site-header .search{flex:1;max-width:600px;margin:0 auto;}
-.site-header .search input{padding-right:44px;}
-.site-header .search-clear{right:16px;}
 body{padding-bottom:88px;}
 
 
@@ -302,8 +296,6 @@ button, .btn, a, label {
 <svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1e40af"/><stop offset="50%" style="stop-color:#1e40af"/><stop offset="100%" style="stop-color:#1e3a8a"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
 Я готовлю — ты&nbsp; ешь!</div>
 </div>
-
-<div class="search"><input type="text" id="heroSearch" placeholder="Поиск блюд..."><button class="search-clear" id="heroSearchClear" onclick="document.getElementById('heroSearch').value='';this.style.display='none';if(typeof loadRestaurants==='function')loadRestaurants();" aria-label="Очистить"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
 </header>
 <nav class="bottom-bar">
   <div class="header-right">
@@ -315,18 +307,21 @@ button, .btn, a, label {
 <a href="favorites.html" class="icon-btn" aria-label="Избранное"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 </nav>
-
+<section class="hero"><div class="hero-bg"></div><div class="hero-glow hero-glow-1"></div><div class="hero-glow hero-glow-2"></div>
+<div class="hero-text">
+<div class="search"><input type="text" id="heroSearch" placeholder="Поиск блюд..."><button class="search-clear" id="heroSearchClear" onclick="document.getElementById('heroSearch').value='';this.style.display='none';if(typeof loadRestaurants==='function')loadRestaurants();" aria-label="Очистить"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+</section>
 <section class="section-transparent"><h2 class="section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Популярные блюда</h2>
 <div class="cards" id="popularDishes"></div></section>
 <section class="section-transparent"><h2 class="section-title">Как это работает</h2>
 <div class="info">
-<div class="info-box"><h3>Готовь</h3><p>Готовь и публикуй свои блюда. Расскажи о их особенностях</p>
+<div class="info-box"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>Готовь</h3><p>Готовь и публикуй свои блюда. Расскажи о их особенностях</p>
 </div>
-<div class="info-box"><h3>Заказывай</h3><p>Заказывай домашнюю еду или еду из кафе и ресторанов</p>
+<div class="info-box"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Заказывай</h3><p>Заказывай домашнюю еду или еду из кафе и ресторанов</p>
 </div>
-<div class="info-box"><h3>Зарабатывай</h3><p>Стань кулинаром и получай новых клиентов и доход со своих блюд.</p>
+<div class="info-box"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Зарабатывай</h3><p>Стань кулинаром и получай новых клиентов и доход со своих блюд.</p>
 </div>
-<div class="info-box"><h3>Делись</h3><p>Делись своими рецептами и стань лучшим кулинаром своего города, а может быть и мира...</p>
+<div class="info-box"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Делись</h3><p>Делись своими рецептами и стань лучшим кулинаром своего города, а может быть и мира....&nbsp;&nbsp;</p>
 </div>
 </div></section>
 <div class="modal" id="authModal"><div class="modal-box"><div class="close" onclick="closeAuth()">✕</div><h2 id="authTitle">Личный кабинет</h2><form id="loginForm" onsubmit="login();return false;"><input id="loginName" placeholder="Email" type="email"><div class="error-msg" id="loginNameError"></div><input id="loginPassword" type="password" placeholder="Пароль" minlength="8"><div class="error-msg" id="loginPasswordError"></div><button class="btn" style="width:100%;margin-top:6px;" id="loginBtn" type="submit">Войти</button><p style="text-align:center;margin-top:12px;font-size:14px;"><a href="#" onclick="switchTab('reset');return false;" style="color:#ef4444;font-weight:600;">Забыли пароль?</a></p>
@@ -408,7 +403,6 @@ function toggleFavorite(id){
   else{favs.splice(i,1);if(typeof showToast==='function')showToast('Удалено из избранного');}
   localStorage.setItem('favorites',JSON.stringify(favs));
   document.querySelectorAll('.fav-btn[data-id="'+id+'"]').forEach(function(b){b.classList.toggle('active',isFavorite(id));});
-  if(typeof updateFavBadge==='function') updateFavBadge();
 }
 
 function showToast(msg){const t=document.createElement('div');t.textContent=msg;Object.assign(t.style,{position:'fixed',bottom:'24px',right:'24px',background:'var(--card-bg)',color:'var(--neon-dark)',padding:'14px 20px',borderRadius:'12px',border:'1px solid var(--border-color)',boxShadow:'0 10px 30px var(--neon-glow)',zIndex:'10001',fontWeight:'600',transition:'all 0.3s',transform:'translateY(20px)',opacity:'0'});document.body.appendChild(t);requestAnimationFrame(()=>{t.style.transform='translateY(0)';t.style.opacity='1';});setTimeout(()=>{t.style.transform='translateY(20px)';t.style.opacity='0';setTimeout(()=>t.remove(),300);},3000);}
@@ -708,6 +702,5 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 
 <script src="assets/js/lang.js"></script>
 <script src="assets/js/notifications.js"></script>
-<script src="assets/js/fav-badge.js"></script>
 </body>
 </html>

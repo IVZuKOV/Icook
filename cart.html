@@ -251,7 +251,6 @@ function toggleFavorite(id){
   else{favs.splice(i,1);if(typeof showToast==='function')showToast('Удалено из избранного');}
   localStorage.setItem('favorites',JSON.stringify(favs));
   document.querySelectorAll('.fav-btn[data-id="'+id+'"]').forEach(function(b){b.classList.toggle('active',isFavorite(id));});
-  if(typeof updateFavBadge==='function') updateFavBadge();
 }
 
 function renderCart(){
@@ -406,6 +405,5 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <script src="assets/js/lang.js"></script>
 <script src="assets/js/notifications.js"></script>
-<script src="assets/js/fav-badge.js"></script>
 </body>
 </html>
