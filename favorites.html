@@ -120,7 +120,8 @@ input:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(30,64,175,0.15),0
 .error-msg{color:#ef4444;font-size:13px;min-height:18px;margin-bottom:8px;display:none;}
 .error-msg.show{display:block;animation:fadeIn 0.2s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
-footer{margin-top:40px;border-top:1px solid var(--border-color);padding:25px;text-align:center;color:var(--text-muted);background:var(--card-bg);z-index:3;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;}
+footer{margin-top:0;padding:10px;text-align:center;transition:opacity 0.35s ease,transform 0.35s ease;opacity:0 !important;transform:translateY(20px) !important;pointer-events:none !important;border-top:1px solid var(--border-color);padding:25px;text-align:center;color:var(--text-muted);background:var(--card-bg);z-index:3;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;}
+footer.footer-visible{opacity:1 !important;transform:translateY(0) !important;pointer-events:auto !important;}
 footer svg{width:20px;height:20px;}
 .qr-container{position:relative;top:auto;right:auto;z-index:95;display:flex;gap:16px;justify-content:center;margin:16px auto;flex-wrap:wrap;}
 .qr-card{display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:transform 0.3s;}
@@ -626,5 +627,21 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 
 <script src="assets/js/lang.js"></script>
 <script src="assets/js/notifications.js"></script>
+<script>
+(function(){
+  var footer=document.querySelector('footer');
+  if(!footer) return;
+  function updateFooter(){
+    var scrollY=window.scrollY||window.pageYOffset;
+    var winH=window.innerHeight||document.documentElement.clientHeight;
+    var docH=document.documentElement.scrollHeight;
+    if(scrollY + winH >= docH - 60){ footer.classList.add('footer-visible'); }
+    else { footer.classList.remove('footer-visible'); }
+  }
+  window.addEventListener('scroll', updateFooter, {passive:true});
+  window.addEventListener('resize', updateFooter);
+  updateFooter();
+})();
+</script>
 </body>
 </html>
