@@ -68,7 +68,8 @@
 .dish-badge.off{background:rgba(239,68,68,0.1);color:#ef4444;}
 .dish-actions{display:flex;gap:6px;}
 .dish-actions button{flex:1;padding:8px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;border:none;transition:0.3s;font-family:'Montserrat',sans-serif;}
-.btn-toggle{background:var(--neon-glow);color:var(--neon-dark);border:1px solid var(--border-color);}
+.btn-toggle{position:relative;z-index:0;background:var(--neon-glow);color:var(--neon-dark);border:1px solid var(--border-color);}
+.btn-toggle:before{content:'';position:absolute;top:-2px;left:-2px;z-index:-1;width:calc(100% + 4px);height:calc(100% + 4px);background:var(--neon);filter:blur(6px);opacity:0.8;border-radius:10px;animation:glowing 2.4s ease-in-out infinite;}
 .btn-toggle:hover{background:var(--neon);color:#ffffff;}
 .btn-delete{background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);}
 .btn-delete:hover{background:#ef4444;color:#fff;}
