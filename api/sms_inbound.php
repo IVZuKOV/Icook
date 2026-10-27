@@ -137,24 +137,19 @@ if ($code === null) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT id FROM sms_login_challenges
-    WHERE phone = ? AND code = ? AND status = 'pending' AND expires_at > NOW()
-    ORDER BY id DESC
-    LIMIT 1");
-$stmt->execute([$sender, $code]);
-$challengeId = $stmt->fetchColumn();
+// Подтверждаем все активные проверки этого номера с таким кодом: при нескольких
+// одновременных проверках коды могут совпасть, и «одна строка» выбрала бы чужую.
+$update = $pdo->prepare("UPDATE sms_login_challenges
+    SET status = 'verified', verified_at = NOW(), expires_at = DATE_ADD(NOW(), INTERVAL 10 MINUTE)
+    WHERE phone = ? AND code = ? AND status = 'pending' AND expires_at > NOW()");
+$update->execute([$sender, $code]);
+$matched = $update->rowCount() >= 1;
 
-if ($challengeId === false) {
+if (!$matched) {
     error_log('Inbound SMS ignored: no active challenge from ' . iks_mask_phone($sender));
     echo json_encode(['ok' => true, 'matched' => false]);
     exit;
 }
-
-$update = $pdo->prepare("UPDATE sms_login_challenges
-    SET status = 'verified', verified_at = NOW(), expires_at = DATE_ADD(NOW(), INTERVAL 10 MINUTE)
-    WHERE id = ? AND status = 'pending'");
-$update->execute([(int) $challengeId]);
-$matched = $update->rowCount() === 1;
 
 if ($matched) {
     error_log('Inbound SMS verified: ' . iks_mask_phone($sender)

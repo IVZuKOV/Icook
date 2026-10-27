@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/lib/phone.php';
+require_once __DIR__ . '/mailer.php';
 
 $data = body_json();
 $challenge = trim((string) ($data['challenge'] ?? ''));
@@ -82,6 +83,20 @@ if ($mode === 'reset') {
 $pdo->prepare("UPDATE sms_login_challenges SET status = 'used', used_at = NOW() WHERE id = ?")
     ->execute([(int) $row['id']]);
 $pdo->commit();
+
+// Уведомляем владельца: сброс пароля по SMS не должен проходить незаметно.
+if ($mode === 'reset' && $userEmail !== null && $userEmail !== '') {
+    $safeName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
+    $safeIp = htmlspecialchars(client_ip(), ENT_QUOTES, 'UTF-8');
+    sendMail(
+        $userEmail,
+        'ICook: пароль изменён по SMS',
+        '<p>Здравствуйте, ' . $safeName . '!</p>'
+        . '<p>Пароль от вашего аккаунта изменён ' . date('d.m.Y H:i') . ' через подтверждение по SMS.</p>'
+        . '<p>IP: ' . $safeIp . '</p>'
+        . '<p>Если это были не вы — сразу смените пароль и ответьте на это письмо.</p>'
+    );
+}
 
 session_regenerate_id(true);
 $_SESSION['user_id'] = $userId;

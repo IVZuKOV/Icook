@@ -32,7 +32,15 @@ if ($destination === null) {
     json_out(['error' => 'Номер для приёма SMS настроен неверно'], 503);
 }
 
-if (!rate_limit($pdo, 'sms-start:phone:' . $phone, 3, 900)
+// Если активная проверка для номера уже есть, лимит «на номер» не применяем:
+// иначе посторонний, израсходовавший его, временно закрывает SMS-вход владельцу.
+// Лимит на IP остаётся в силе.
+$stmtActive = $pdo->prepare("SELECT 1 FROM sms_login_challenges
+    WHERE phone = ? AND status = 'pending' AND expires_at > NOW() LIMIT 1");
+$stmtActive->execute([$phone]);
+$hasActive = (bool) $stmtActive->fetchColumn();
+
+if ((!$hasActive && !rate_limit($pdo, 'sms-start:phone:' . $phone, 3, 900))
     || !rate_limit($pdo, 'sms-start:ip:' . client_ip(), 12, 900)) {
     json_out(['error' => 'Слишком много попыток. Попробуйте позже'], 429);
 }
@@ -44,8 +52,8 @@ $expiresIn = 600;
 $expiresAt = date('Y-m-d H:i:s', time() + $expiresIn);
 
 $pdo->beginTransaction();
-$pdo->prepare("UPDATE sms_login_challenges SET status = 'expired' WHERE phone = ? AND status = 'pending'")
-    ->execute([$phone]);
+// Прежние проверки не гасим: иначе посторонний, создавая новые, ломает код,
+// который владелец уже получил в SMS. Они истекут сами через 10 минут.
 $stmt = $pdo->prepare("INSERT INTO sms_login_challenges
     (challenge_hash, phone, code, status, ip, expires_at)
     VALUES (?, ?, ?, 'pending', ?, ?)");
