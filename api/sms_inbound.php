@@ -4,7 +4,9 @@ declare(strict_types=1);
 /**
  * Вебхук для SMS-форвардера на телефоне.
  *
- * Обязательный заголовок: X-IKS-SMS-Token: <ICOOK_INBOUND_SMS_SECRET>
+ * Авторизация (любой из вариантов):
+ *   - HMAC: X-IKS-Timestamp: <unix>, X-IKS-Signature: hex(hmac_sha256(secret, ts + "." + body))
+ *   - токен: X-IKS-SMS-Token: <ICOOK_INBOUND_SMS_SECRET> (обратная совместимость)
  * Принимаемый JSON:  {"from":"+7...","text":"1234"}
  * Принимаемая форма: from=+7...&text=1234
  * Приложение может присылать sender/message/content вместо from/text.
@@ -33,23 +35,77 @@ if (!is_file($configFile)) {
 }
 require $configFile;
 
-$token = (string) ($_SERVER['HTTP_X_IKS_SMS_TOKEN'] ?? '');
-if ($token === '') {
-    $authorization = (string) ($_SERVER['HTTP_AUTHORIZATION'] ?? '');
-    if (preg_match('/^Bearer\s+(\S+)$/iD', $authorization, $match)) {
-        $token = $match[1];
+$raw = file_get_contents('php://input') ?: '';
+if (strlen($raw) > 8192) {
+    http_response_code(413);
+    echo json_encode(['ok' => false, 'error' => 'Payload too large']);
+    exit;
+}
+
+/** Действующие секреты: текущий + предыдущий на время ротации. */
+function icook_sms_secrets(): array
+{
+    $secrets = [];
+    if (defined('ICOOK_INBOUND_SMS_SECRET') && is_string(ICOOK_INBOUND_SMS_SECRET)) {
+        $secrets[] = ICOOK_INBOUND_SMS_SECRET;
+    }
+    if (defined('ICOOK_INBOUND_SMS_SECRET_PREV') && is_string(ICOOK_INBOUND_SMS_SECRET_PREV)
+        && defined('ICOOK_INBOUND_SMS_SECRET_PREV_UNTIL')
+        && (int) ICOOK_INBOUND_SMS_SECRET_PREV_UNTIL > time()) {
+        $secrets[] = ICOOK_INBOUND_SMS_SECRET_PREV;
+    }
+
+    return array_values(array_filter(
+        $secrets,
+        static fn(string $v): bool => strlen($v) >= 32
+    ));
+}
+
+$secrets = icook_sms_secrets();
+$requireHmac = defined('ICOOK_REQUIRE_HMAC') && ICOOK_REQUIRE_HMAC === true;
+$signature = (string) ($_SERVER['HTTP_X_IKS_SIGNATURE'] ?? '');
+$timestamp = (string) ($_SERVER['HTTP_X_IKS_TIMESTAMP'] ?? '');
+$authorized = false;
+$authMode = '';
+
+if ($signature !== '' && $timestamp !== '') {
+    // HMAC: секрет не передаётся, подпись привязана к телу и времени.
+    if (ctype_digit($timestamp) && abs(time() - (int) $timestamp) <= 300) {
+        foreach ($secrets as $secret) {
+            if (hash_equals(hash_hmac('sha256', $timestamp . '.' . $raw, $secret), strtolower($signature))) {
+                $authorized = true;
+                $authMode = 'hmac';
+                break;
+            }
+        }
+    }
+} elseif (!$requireHmac) {
+    // Обратная совместимость: статический токен (уйдёт после перехода на HMAC).
+    $token = (string) ($_SERVER['HTTP_X_IKS_SMS_TOKEN'] ?? '');
+    if ($token === '') {
+        $authorization = (string) ($_SERVER['HTTP_AUTHORIZATION'] ?? '');
+        if (preg_match('/^Bearer\s+(\S+)$/iD', $authorization, $match)) {
+            $token = $match[1];
+        }
+    }
+    if ($token !== '') {
+        foreach ($secrets as $secret) {
+            if (hash_equals($secret, $token)) {
+                $authorized = true;
+                $authMode = 'token';
+                break;
+            }
+        }
     }
 }
 
-if (!defined('ICOOK_INBOUND_SMS_SECRET') || !is_string(ICOOK_INBOUND_SMS_SECRET)
-    || strlen(ICOOK_INBOUND_SMS_SECRET) < 32 || $token === ''
-    || !hash_equals(ICOOK_INBOUND_SMS_SECRET, $token)) {
+if (!$authorized) {
+    error_log('Inbound SMS rejected: bad credentials from ' . ($_SERVER['REMOTE_ADDR'] ?? '?')
+        . ' (auth=' . ($signature !== '' ? 'hmac' : 'token') . ')');
     http_response_code(403);
     echo json_encode(['ok' => false, 'error' => 'Forbidden']);
     exit;
 }
-
-$raw = file_get_contents('php://input') ?: '';
 $data = json_decode($raw, true);
 if (!is_array($data)) {
     $data = $_POST;
@@ -98,5 +154,11 @@ $update = $pdo->prepare("UPDATE sms_login_challenges
     SET status = 'verified', verified_at = NOW(), expires_at = DATE_ADD(NOW(), INTERVAL 10 MINUTE)
     WHERE id = ? AND status = 'pending'");
 $update->execute([(int) $challengeId]);
+$matched = $update->rowCount() === 1;
 
-echo json_encode(['ok' => true, 'matched' => $update->rowCount() === 1]);
+if ($matched) {
+    error_log('Inbound SMS verified: ' . iks_mask_phone($sender)
+        . ' from ' . ($_SERVER['REMOTE_ADDR'] ?? '?') . ' auth=' . $authMode);
+}
+
+echo json_encode(['ok' => true, 'matched' => $matched]);
