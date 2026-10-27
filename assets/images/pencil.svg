@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur1" />
+      <feGaussianBlur stdDeviation="8" result="blur2" />
+      <feGaussianBlur stdDeviation="15" result="blur3" />
+      <feMerge>
+        <feMergeNode in="blur3" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur1" />
+      <feGaussianBlur stdDeviation="10" result="blur2" />
+      <feGaussianBlur stdDeviation="20" result="blur3" />
+      <feMerge>
+        <feMergeNode in="blur3" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <g transform="translate(200, 200) rotate(-45) translate(-200, -200)">
+    <g filter="url(#strongGlow)" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 150 180 L 150 220 L 250 220 L 250 180 Z" />
+      <line x1="150" y1="193" x2="250" y2="193" />
+      <line x1="150" y1="207" x2="250" y2="207" />
+      <path d="M 150 185 L 150 215 L 100 200 Z" />
+      <path d="M 110 197 L 110 203 L 95 200 Z" />
+      <rect x="250" y="180" width="20" height="40" rx="2" />
+      <line x1="255" y1="180" x2="255" y2="220" />
+      <line x1="260" y1="180" x2="260" y2="220" />
+      <line x1="265" y1="180" x2="265" y2="220" />
+      <path d="M 270 185 L 270 215 L 290 215 L 290 185 Z" rx="3" />
+    </g>
+    <g filter="url(#neonGlow)" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
+      <path d="M 150 180 L 150 220 L 250 220 L 250 180 Z" />
+      <line x1="150" y1="193" x2="250" y2="193" />
+      <line x1="150" y1="207" x2="250" y2="207" />
+      <path d="M 150 185 L 150 215 L 100 200 Z" />
+      <path d="M 110 197 L 110 203 L 95 200 Z" />
+      <rect x="250" y="180" width="20" height="40" rx="2" />
+      <line x1="255" y1="180" x2="255" y2="220" />
+      <line x1="260" y1="180" x2="260" y2="220" />
+      <line x1="265" y1="180" x2="265" y2="220" />
+      <path d="M 270 185 L 270 215 L 290 215 L 290 185 Z" rx="3" />
+    </g>
+  </g>
+</svg>

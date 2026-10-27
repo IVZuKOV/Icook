@@ -1,0 +1,433 @@
+/* Единое модальное окно авторизации для всех страниц (icook / ikspirit) */
+
+/* Локальные переменные: модалка корректно выглядит и на страницах без общих CSS-переменных */
+#authUnified.au-modal {
+  --au-card: var(--card-bg, #f8fafc);
+  --au-text: var(--text-main, #1e293b);
+  --au-muted: var(--text-muted, #64748b);
+  --au-neon: var(--neon, #1e40af);
+  --au-neondark: var(--neon-dark, #1e3a8a);
+  --au-glow: var(--neon-glow, rgba(30, 64, 175, .12));
+  --au-border: var(--border-color, #e2e8f0);
+}
+[data-theme="dark"] #authUnified.au-modal {
+  --au-card: var(--card-bg, #1e293b);
+  --au-text: var(--text-main, #f8fafc);
+  --au-muted: var(--text-muted, #94a3b8);
+  --au-neon: var(--neon, #ffffff);
+  --au-neondark: var(--neon-dark, #e2e8f0);
+  --au-glow: var(--neon-glow, rgba(255, 255, 255, .12));
+  --au-border: var(--border-color, rgba(255, 255, 255, .22));
+}
+#authUnified.au-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: var(--au-card);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+#authUnified.au-modal.active { display: flex; animation: auFadeIn .25s ease; }
+@keyframes auFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+#authUnified .au-box {
+  position: relative;
+  width: min(420px, 94vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 32px 30px;
+  border-radius: 24px;
+  border: 2px solid var(--au-border);
+  background: var(--au-card);
+  box-shadow: 0 20px 60px var(--au-glow), 0 0 50px rgba(30, 64, 175, .15);
+  box-sizing: border-box;
+  font-family: var(--au-body-font, 'Nunito', system-ui, -apple-system, sans-serif);
+  color: var(--au-text);
+}
+#authUnified .au-close {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--au-muted);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color .2s, background .2s;
+}
+#authUnified .au-close:hover { color: var(--au-neondark); background: var(--au-glow); }
+
+#authUnified .au-title {
+  margin: 0 0 22px;
+  padding: 0 12px;
+  text-align: center;
+  font-family: var(--au-heading-font, 'Rubik', system-ui, -apple-system, sans-serif);
+  font-size: clamp(24px, 6vw, 30px);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--au-neondark);
+}
+
+#authUnified form { display: block; margin: 0; }
+#authUnified form[hidden] { display: none !important; }
+
+#authUnified .au-hint {
+  margin: 0 0 14px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--au-muted);
+}
+#authUnified .au-greeting {
+  margin: 0 0 14px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--au-text);
+}
+
+#authUnified .au-field { margin: 0 0 12px; }
+
+#authUnified .au-input {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 15px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  background: var(--au-card);
+  color: var(--au-text);
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.2;
+  outline: none;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+#authUnified .au-input::placeholder { color: var(--au-muted); opacity: .85; }
+#authUnified .au-input:focus {
+  border-color: var(--au-neon);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, .14), 0 0 18px rgba(30, 64, 175, .18);
+}
+#authUnified .au-input.au-code {
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 12px;
+  padding-left: 22px;
+}
+
+#authUnified .au-error {
+  display: none;
+  margin: 5px 2px 0;
+  color: #ef4444;
+  font-size: 13px;
+  line-height: 1.3;
+}
+#authUnified .au-error.show { display: block; animation: auErrIn .2s ease; }
+@keyframes auErrIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+
+#authUnified .au-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 13px 20px;
+  border: 2px solid var(--au-border);
+  border-radius: 14px;
+  background: transparent;
+  color: var(--au-text);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+}
+#authUnified .au-btn:hover {
+  border-color: var(--au-neon);
+  background: var(--au-glow);
+  color: var(--au-neondark);
+}
+#authUnified .au-btn:active { transform: scale(.98); }
+#authUnified .au-btn[disabled] { opacity: .65; cursor: default; transform: none; }
+
+#authUnified .au-sms-send-wrap { display: flex; justify-content: center; margin-top: 12px; }
+#authUnified .au-sms-fallback {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px dashed var(--au-border);
+  border-radius: 12px;
+  background: var(--au-glow);
+}
+#authUnified .au-sms-fallback-text {
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--au-muted);
+  text-align: center;
+}
+#authUnified .au-sms-fallback-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#authUnified .au-copy-btn {
+  padding: 8px 12px;
+  border: 1px solid var(--au-border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--au-text);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease;
+}
+#authUnified .au-copy-btn:hover,
+#authUnified .au-copy-btn.is-copied {
+  border-color: var(--au-neon);
+  color: var(--au-neondark);
+}
+#authUnified .au-btn.au-sms-send {
+  width: auto;
+  min-width: 120px;
+  margin: 0;
+  padding: 12px 26px;
+  border-color: transparent;
+  background: var(--au-neon);
+  color: #fff;
+  box-shadow: 0 2px 18px var(--au-glow);
+}
+#authUnified .au-btn.au-sms-send:hover {
+  border-color: transparent;
+  background: var(--au-neon);
+  color: #fff;
+  opacity: .9;
+  transform: none;
+}
+[data-theme="dark"] #authUnified .au-btn.au-sms-send { border-color: transparent; color: #0f172a; }
+[data-theme="dark"] #authUnified .au-btn.au-sms-send:hover {
+  border-color: transparent;
+  background: var(--au-neon);
+  color: #0f172a;
+  opacity: .9;
+  transform: none;
+}
+
+#authUnified .au-links {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--au-muted);
+}
+#authUnified .au-links:first-of-type { margin-top: 12px; }
+#authUnified a { color: var(--au-neondark); font-weight: 700; text-decoration: none; }
+#authUnified a:hover { text-decoration: underline; }
+
+#authUnified .au-bigcode {
+  margin: 8px 0 2px;
+  text-align: center;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  color: var(--au-neondark);
+}
+#authUnified .au-destination {
+  margin: 4px 0 2px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  color: var(--au-text);
+}
+#authUnified .au-small {
+  margin: 6px 0 0;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--au-muted);
+}
+
+/* Поле телефона (phone-country.js): без внутренних рамок, как остальные поля */
+#authUnified .pc-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  height: 52px;
+  margin: 0;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  background: var(--au-card);
+  overflow: visible;
+  position: relative;
+  box-sizing: border-box;
+  transition: border-color .2s, box-shadow .2s;
+}
+#authUnified .pc-wrap:focus-within {
+  border-color: var(--au-neon);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, .14), 0 0 18px rgba(30, 64, 175, .18);
+}
+#authUnified .pc-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  padding: 0 10px;
+  border: none;
+  background: transparent;
+  color: var(--au-text);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+#authUnified .pc-flag { font-size: 17px; line-height: 1; }
+#authUnified .pc-caret { font-size: 10px; color: var(--au-muted); }
+#authUnified .pc-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 14px 0 8px;
+  border: none !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--au-text);
+  font-family: inherit;
+  font-size: 16px;
+  line-height: normal;
+  outline: none !important;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+#authUnified .pc-input:focus { border: none !important; box-shadow: none !important; }
+
+/* Кнопка регистрации с пузырьками */
+#authUnified .bubbly-button {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 14px 0 0;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 14px;
+  background-color: var(--au-neon);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  -webkit-appearance: none;
+  appearance: none;
+  box-shadow: 0 2px 25px rgba(30, 64, 175, .45);
+  transition: transform .1s ease-in, box-shadow .25s ease-in, background-color .15s ease;
+}
+[data-theme="dark"] #authUnified .bubbly-button { color: #0f172a; box-shadow: 0 2px 25px rgba(255, 255, 255, .18); }
+#authUnified .bubbly-button:focus { outline: 0; }
+#authUnified .bubbly-button:active { transform: scale(.9); box-shadow: 0 2px 25px rgba(30, 64, 175, .18); }
+[data-theme="dark"] #authUnified .bubbly-button:active { box-shadow: 0 2px 25px rgba(255, 255, 255, .08); }
+#authUnified .bubbly-button:before,
+#authUnified .bubbly-button:after {
+  position: absolute;
+  content: "";
+  display: none;
+  width: 140%;
+  height: 100%;
+  left: -20%;
+  z-index: -1;
+  transition: all ease-in-out .5s;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+#authUnified .bubbly-button:before {
+  top: -75%;
+  background-image:
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, transparent 20%, var(--au-neon) 20%, transparent 30%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, transparent 10%, var(--au-neon) 15%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%);
+  background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%, 10% 10%, 18% 18%;
+}
+#authUnified .bubbly-button:after {
+  bottom: -75%;
+  background-image:
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, transparent 10%, var(--au-neon) 15%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%),
+    radial-gradient(circle, var(--au-neon) 20%, transparent 20%);
+  background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 10% 10%, 20% 20%;
+}
+#authUnified .bubbly-button.animate:before { display: block; animation: auTopBubbles .75s ease-in-out forwards; }
+#authUnified .bubbly-button.animate:after { display: block; animation: auBottomBubbles .75s ease-in-out forwards; }
+@keyframes auTopBubbles {
+  0% { background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%, 40% 90%, 55% 90%, 70% 90%; }
+  50% { background-position: 0% 80%, 0% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 50%, 50% 50%, 65% 20%, 90% 30%; }
+  100% { background-position: 0% 70%, 0% 10%, 10% 30%, 20% -10%, 30% 20%, 22% 40%, 50% 40%, 65% 10%, 90% 20%; background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
+}
+@keyframes auBottomBubbles {
+  0% { background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%, 70% -10%, 70% 0%; }
+  50% { background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 0%; }
+  100% { background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%, 110% 10%; background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
+}
+
+/* Тёмная тема: белое неоновое свечение только при фокусе */
+[data-theme="dark"] #authUnified .au-input,
+[data-theme="dark"] #authUnified .pc-wrap { border-color: rgba(255, 255, 255, .22); }
+[data-theme="dark"] #authUnified .au-input:focus,
+[data-theme="dark"] #authUnified .pc-wrap:focus-within {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .12), 0 0 18px rgba(255, 255, 255, .45);
+}
+[data-theme="dark"] #authUnified .au-btn { border-color: rgba(255, 255, 255, .22); color: #f8fafc; }
+[data-theme="dark"] #authUnified .au-btn:hover { border-color: #fff; background: rgba(255, 255, 255, .08); color: #fff; }
+
+@media (max-width: 480px) {
+  #authUnified.au-modal { padding: 10px; align-items: center; }
+  #authUnified .au-box { padding: 26px 20px 22px; border-radius: 20px; max-height: 94vh; }
+  #authUnified .au-title { font-size: 24px; margin-bottom: 18px; }
+  #authUnified .au-input { padding: 13px 14px; font-size: 15px; }
+  #authUnified .pc-wrap { height: 48px; }
+  #authUnified .au-bigcode { font-size: 32px; }
+}

@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Личный кабинет — Я готовлю</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=20261027125607">
+
+<style>
+.profile-.site-header{display:flex;gap:28px;align-items:center;flex-wrap:wrap;padding:24px 0;border-bottom:1px solid var(--border-color);}
+.avatar{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon-dark));display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;color:#ffffff;box-shadow:0 0 20px rgba(30,64,175,0.3);}
+.profile-header{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;}
+.profile-info{text-align:center;}
+.profile-info h1,.profile-info .role,.profile-info p{text-align:center;}
+.profile-stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;}
+.stat{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:10px 18px;min-width:110px;text-align:center;transition:0.3s;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
+.stat:hover{transform:translateY(-3px);border-color:var(--neon);box-shadow:0 8px 25px var(--neon-glow);}
+.stat-value{font-size:22px;font-weight:800;color:var(--neon-dark);}
+.stat-label{color:var(--text-muted);font-size:12px;}
+.tabs{display:flex;gap:6px;margin:20px 0;border-bottom:1px solid var(--border-color);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:10px 18px;border:none;border-radius:8px 8px 0 0;background:transparent;color:var(--text-muted);cursor:pointer;font-size:14px;font-weight:500;transition:0.3s;white-space:nowrap;font-family:'Montserrat',sans-serif;}
+.tab:hover{color:var(--neon-dark);}
+.tab.active{background:var(--neon);color:#ffffff;font-weight:700;box-shadow:0 0 15px var(--neon-glow);}
+[data-theme="dark"] .tab.active{color:#0f172a;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.orders-list{display:flex;flex-direction:column;gap:10px;}
+.order-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;transition:all 0.3s;box-shadow:0 2px 12px rgba(0,0,0,0.05);flex-wrap:wrap;gap:10px;}
+.order-card:hover{transform:translateY(-4px) scale(1.01);border-color:var(--neon);box-shadow:0 8px 30px var(--neon-glow);}
+.status{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;}
+.status.completed,.status-delivered{background:rgba(0,255,100,0.15);color:#10b981;}
+.status.pending{background:rgba(255,180,0,0.15);color:#d97706;}
+.status.confirmed{background:rgba(59,130,246,0.15);color:#2563eb;}
+.status.cooking{background:rgba(168,85,247,0.15);color:#7c3aed;}
+.status.ready{background:rgba(30,64,175,0.15);color:var(--neon-dark);}
+.status.cancelled{background:rgba(239,68,68,0.1);color:#ef4444;}
+.settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.setting-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:18px;transition:0.3s;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
+.setting-card h4{color:var(--neon-dark);margin-bottom:10px;}
+.setting-card label{display:block;color:var(--text-muted);margin:6px 0 4px;font-size:13px;}
+.setting-card input,.setting-card textarea,.setting-card select{width:100%;padding:9px 12px;border-radius:8px;border:2px solid #e2e8f0;background:var(--bg);color:var(--text-main);transition:0.3s;font-family:'Montserrat',sans-serif;font-size:14px;}
+.setting-card input:focus,.setting-card textarea:focus,.setting-card select:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(30,64,175,0.15);}
+.setting-card textarea{resize:vertical;min-height:60px;}
+.empty{text-align:center;padding:40px 20px;color:var(--text-muted);}
+.logout-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border:2px solid #ef4444;border-radius:12px;background:transparent;color:#ef4444;font-weight:700;font-size:13px;cursor:pointer;transition:0.3s;text-decoration:none;}
+.logout-btn:hover{background:#ef4444;color:#fff;box-shadow:0 0 15px rgba(239,68,68,0.3);}
+
+/* --- Стань продавцом --- */
+.become-seller-card{background:var(--card-bg);border:2px dashed var(--neon);border-radius:18px;padding:30px;text-align:center;margin:20px 0;transition:0.3s;}
+.become-seller-card:hover{box-shadow:0 8px 30px var(--neon-glow);}
+.become-seller-card h3{color:var(--neon-dark);font-size:20px;margin-bottom:8px;}
+.become-seller-card p{color:var(--text-muted);margin-bottom:16px;font-size:14px;}
+.become-seller-card input,.become-seller-card textarea{max-width:350px;margin:0 auto 10px;display:block;}
+
+/* --- Мои блюда --- */
+.my-dishes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.my-dish-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:0.3s;box-shadow:0 4px 15px rgba(0,0,0,0.06);position:relative;}
+.my-dish-card:hover{transform:translateY(-4px);border-color:var(--neon);box-shadow:0 8px 25px var(--neon-glow);}
+.my-dish-card img{width:100%;height:160px;object-fit:cover;}
+.my-dish-card .card-body{padding:14px;}
+.my-dish-card .dish-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+.my-dish-card .dish-price{font-size:18px;font-weight:800;color:var(--neon-dark);margin-bottom:8px;}
+.dish-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:8px;}
+.dish-badge.on{background:rgba(30,64,175,0.15);color:var(--neon-dark);}
+.dish-badge.off{background:rgba(239,68,68,0.1);color:#ef4444;}
+.dish-actions{display:flex;gap:6px;}
+.dish-actions button{flex:1;padding:8px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;border:none;transition:0.3s;font-family:'Montserrat',sans-serif;}
+.btn-toggle{background:var(--neon-glow);color:var(--neon-dark);border:1px solid var(--border-color);}
+.btn-toggle:hover{background:var(--neon);color:#ffffff;}
+.btn-delete{background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);}
+.btn-delete:hover{background:#ef4444;color:#fff;}
+.my-dish-card.dimmed img{opacity:0.4;filter:grayscale(0.7);transition:0.3s;}
+.my-dish-card.dimmed .dish-title,.my-dish-card.dimmed .dish-price,.my-dish-card.dimmed .dish-badge{opacity:0.45;}
+.my-dish-card.dimmed:hover{transform:none;}
+.btn-publish{border:none;outline:none;color:#fff;background:var(--neon);cursor:pointer;position:relative;z-index:0;border-radius:10px;font-weight:700;font-family:'Montserrat',sans-serif;font-size:12px;padding:8px;flex:1;box-shadow:0 0 14px rgba(30,64,175,0.6),0 0 40px rgba(30,64,175,0.3);}
+.btn-publish:before{content:'';position:absolute;top:-2px;left:-2px;z-index:-1;width:calc(100% + 4px);height:calc(100% + 4px);background:var(--neon);filter:blur(6px);opacity:0.8;border-radius:10px;animation:glowing 2.4s ease-in-out infinite;}
+.btn-publish:active{color:#000;}
+.btn-publish:active:after{background:transparent;}
+.btn-publish:hover:before{opacity:1;}
+.btn-publish:after{z-index:-1;content:'';position:absolute;width:100%;height:100%;background:var(--neon);left:0;top:0;border-radius:10px;}
+.my-dish-card.dimmed .btn-publish{filter:none;opacity:1;}
+[data-theme="dark"] .btn-publish{background:#1e293b;color:#ffffff;border:2px solid #ffffff;box-shadow:0 0 15px rgba(255,255,255,0.55);}
+[data-theme="dark"] .btn-publish:after{background:#1e293b;}
+@keyframes glowing{0%,100%{opacity:0.35;}50%{opacity:0.95;}}
+.edit-pencil-icon{position:absolute;right:8px;top:66%;transform:translateY(-50%);width:22px;height:22px;opacity:0.7;filter:drop-shadow(0 0 6px rgba(255,255,255,0.8));cursor:pointer;transition:all 0.2s ease;pointer-events:auto;}
+.edit-pencil-icon:hover{opacity:1;filter:drop-shadow(0 0 12px #ffffff) drop-shadow(0 0 18px #ffffff);transform:translateY(-50%) scale(1.1);}
+.edit-pencil-icon:active{transform:translateY(-50%) scale(0.9);}
+
+/* --- Добавить блюдо --- */
+.add-form{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:24px;box-shadow:0 4px 15px rgba(0,0,0,0.06);}
+.add-form h3{color:var(--neon-dark);font-size:20px;margin-bottom:16px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-weight:600;margin-bottom:5px;font-size:13px;color:var(--text-main);}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 14px;border-radius:12px;border:2px solid #e2e8f0;background:var(--card-bg);color:var(--text-main);font-size:14px;outline:none;transition:0.3s;font-family:'Montserrat',sans-serif;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(30,64,175,0.15);}
+.form-group textarea{resize:vertical;min-height:70px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.file-upload{border:2px dashed var(--border-color);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:0.3s;color:var(--text-muted);}
+.file-upload:hover{border-color:var(--neon);background:var(--neon-glow);}
+.file-upload svg{width:36px;height:36px;stroke:var(--neon-dark);margin-bottom:8px;}
+.file-upload input{display:none;}
+.file-preview{max-width:180px;max-height:130px;border-radius:10px;margin-top:8px;display:none;}
+
+/* --- Заказы продавца --- */
+.seller-order-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.05);transition:0.3s;}
+.seller-order-card:hover{border-color:var(--neon);box-shadow:0 6px 25px var(--neon-glow);}
+.seller-order-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+.seller-order-id{font-weight:800;color:var(--neon-dark);font-size:15px;}
+.seller-order-details{color:var(--text-muted);font-size:13px;line-height:1.6;}
+.seller-order-details strong{color:var(--text-main);}
+.seller-order-total{font-size:18px;font-weight:800;color:var(--neon-dark);margin-top:6px;}
+.status-select{padding:7px 12px;border-radius:8px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);font-weight:600;font-size:12px;cursor:pointer;font-family:'Montserrat',sans-serif;outline:none;margin-top:8px;}
+.status-select:focus{border-color:var(--neon);}
+
+/* --- КНОПКА УДАЛИТЬ АККАУНТ --- */
+.delete-account-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border:2px solid #ef4444;border-radius:10px;background:transparent;color:#ef4444;font-weight:700;font-size:12px;cursor:pointer;transition:0.3s;width:100%;margin-top:10px;}
+.delete-account-btn:hover{background:#ef4444;color:#fff;box-shadow:0 0 15px rgba(239,68,68,0.3);}
+.delete-account-btn svg{width:14px;height:14px;}
+
+/* --- МОДАЛЬНЫЕ ОКНА --- */
+.logout-modal-overlay,.delete-modal-overlay,.info-modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:10000;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;}
+.logout-modal-overlay.active,.delete-modal-overlay.active,.info-modal-overlay.active{display:flex;opacity:1;}
+.logout-modal-box,.delete-modal-box,.info-modal-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:20px;padding:32px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 30px var(--neon-glow);transform:scale(0.9);transition:transform 0.3s;}
+.logout-modal-overlay.active .logout-modal-box,.delete-modal-overlay.active .delete-modal-box,.info-modal-overlay.active .info-modal-box{transform:scale(1);}
+.logout-modal-icon,.delete-modal-icon,.info-modal-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.logout-modal-icon,.delete-modal-icon{background:rgba(239,68,68,0.1);}
+.logout-modal-icon svg,.delete-modal-icon svg{width:32px;height:32px;stroke:#ef4444;}
+.info-modal-icon.success{background:rgba(16,185,129,0.12);}
+.info-modal-icon.success svg{stroke:#10b981;}
+.info-modal-icon.error{background:rgba(239,68,68,0.12);}
+.info-modal-icon.error svg{stroke:#ef4444;}
+.info-modal-icon svg{width:32px;height:32px;}
+.logout-modal-title,.delete-modal-title,.info-modal-title{font-size:20px;font-weight:800;color:var(--text-main);margin-bottom:8px;}
+.logout-modal-text,.delete-modal-text,.info-modal-text{font-size:14px;color:var(--text-muted);margin-bottom:24px;line-height:1.5;}
+.logout-modal-buttons,.delete-modal-buttons{display:flex;gap:10px;justify-content:center;}
+.logout-modal-cancel,.delete-modal-cancel{padding:10px 24px;border:2px solid var(--border-color);border-radius:12px;background:transparent;color:var(--text-main);font-weight:600;font-size:14px;cursor:pointer;transition:0.3s;}
+.logout-modal-cancel:hover,.delete-modal-cancel:hover{border-color:var(--neon);color:var(--neon-dark);}
+.logout-modal-confirm,.delete-modal-confirm{padding:10px 24px;border:none;border-radius:12px;background:#ef4444;color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:0.3s;}
+.logout-modal-confirm:hover,.delete-modal-confirm:hover{background:#dc2626;box-shadow:0 0 20px rgba(239,68,68,0.4);transform:scale(1.03);}
+.delete-modal-confirm:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none;}
+.delete-modal-input{width:100%;padding:11px 14px;border-radius:10px;border:2px solid #e2e8f0;background:var(--bg);color:var(--text-main);font-size:14px;outline:none;transition:0.3s;margin-bottom:8px;text-align:center;}
+.delete-modal-input:focus{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,0.15);}
+.delete-modal-error{color:#ef4444;font-size:12px;min-height:16px;margin-bottom:12px;display:none;}
+.delete-modal-error.show{display:block;}
+.info-modal-btn{padding:10px 32px;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;transition:0.3s;}
+.info-modal-btn.success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;}
+.info-modal-btn.success:hover{box-shadow:0 0 20px rgba(16,185,129,0.4);transform:scale(1.03);}
+.info-modal-btn.error{background:#ef4444;color:#fff;}
+.info-modal-btn.error:hover{box-shadow:0 0 20px rgba(239,68,68,0.4);transform:scale(1.03);}
+
+.toast{position:fixed;bottom:30px;right:30px;padding:16px 28px;border-radius:14px;background:var(--card-bg);border:2px solid var(--neon);color:var(--neon-dark);font-weight:700;font-size:15px;z-index:20000;transform:translateY(100px);opacity:0;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 8px 30px var(--neon-glow);}
+.toast.show{transform:translateY(0);opacity:1;}
+
+[data-theme="dark"] .setting-card{background:#1e293b;border-color:rgba(255,255,255,0.1);}
+[data-theme="dark"] .setting-card input,[data-theme="dark"] .setting-card textarea,[data-theme="dark"] .setting-card select{background:#0f172a;border-color:rgba(255,255,255,0.2);color:#ffffff;}
+[data-theme="dark"] .stat{background:#1e293b;border-color:rgba(255,255,255,0.1);}
+[data-theme="dark"] .order-card,[data-theme="dark"] .seller-order-card,[data-theme="dark"] .my-dish-card,[data-theme="dark"] .add-form,[data-theme="dark"] .become-seller-card{background:#1e293b;border-color:rgba(255,255,255,0.1);}
+[data-theme="dark"] .logout-modal-box,[data-theme="dark"] .delete-modal-box,[data-theme="dark"] .info-modal-box{background:#1e293b;border-color:rgba(255,255,255,0.15);}
+[data-theme="dark"] .logout-modal-cancel,[data-theme="dark"] .delete-modal-cancel{border-color:rgba(255,255,255,0.2);color:#ffffff;}
+[data-theme="dark"] .delete-modal-input{background:#0f172a;border-color:rgba(255,255,255,0.2);color:#ffffff;}
+[data-theme="dark"] .status-select{background:#0f172a;border-color:rgba(255,255,255,0.2);color:#ffffff;}
+/* --- Карточка добавить блюдо (+) --- */
+.add-dish-card{background:var(--card-bg);border:2px dashed var(--neon);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;cursor:pointer;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);}
+.add-dish-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 8px 30px var(--neon-glow);background:var(--neon-glow);}
+.add-dish-card .plus-icon{width:64px;height:64px;border-radius:50%;background:transparent;border:2px solid var(--neon);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 0 20px var(--neon-glow);color:var(--neon-dark);}
+.add-dish-card .plus-icon svg{width:32px;height:32px;stroke:#ffffff;}
+.add-dish-card span{font-weight:700;color:var(--neon-dark);font-size:15px;}
+[data-theme="dark"] .add-dish-card{background:#1e293b;border-color:rgba(255,255,255,0.2);}
+[data-theme="dark"] .add-dish-card:hover{border-color:#ffffff;box-shadow:0 0 20px rgba(255,255,255,0.2);}
+@media(max-width:900px){
+.form-row{grid-template-columns:1fr;}
+.my-dishes-grid{grid-template-columns:1fr;}
+.profile-.site-header{flex-direction:column;text-align:center;}
+.profile-stats{justify-content:center;}
+}
+@media(max-width:900px){
+.site-.site-header{padding:12px 16px;flex-direction:column;gap:8px;}
+.header-left{width:100%;justify-content:center;flex-wrap:wrap;gap:8px;}
+.logo{font-size:18px;gap:10px;order:1;width:100%;justify-content:center;}
+
+.header-right{width:100%;justify-content:space-between;align-items:center;gap:8px;}
+}
+
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
+.bottom-bar .header-right{width:100%;justify-content:center;flex-wrap:nowrap;gap:8px;}
+.site-header{transition:transform 0.35s ease;}
+.site-header.hidden{transform:translateY(-100%);}
+body{padding-bottom:88px;}
+
+
+.bottom-bar .catalog-btn,.bottom-bar .icon-btn,.bottom-bar .user-btn-wrap{width:40px;height:40px;background:transparent;border:none;border-radius:50%;box-shadow:none;}
+.bottom-bar .catalog-btn:hover,.bottom-bar .icon-btn:hover{background:var(--neon-glow);transform:scale(1.05);}
+.bottom-bar .user-btn-wrap{height:40px;min-width:40px;max-width:40px;}
+.bottom-bar .user-btn-letter{border-radius:50%;background:transparent;}
+.bottom-bar .catalog-btn svg,.bottom-bar .icon-btn svg{width:20px;height:20px;}
+
+
+.bottom-bar .header-right{flex-wrap:nowrap;gap:4px;}
+.bottom-bar{padding:8px 4px;}
+.logout-btn{padding:0;width:40px;height:40px;justify-content:center;border-radius:50%;}
+
+</style>
+
+<script>
+(function(){const t=localStorage.getItem('site-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');})();
+</script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+/* Разрешение копирования и вставки на мобильных */
+input, textarea, [contenteditable="true"], select {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+}
+/* Убираем user-select:none с интерактивных элементов */
+button, .btn, a, label {
+    -webkit-user-select: auto !important;
+    user-select: auto !important;
+}
+</style>
+</head>
+<body>
+	<div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
+<div class="catalog-drawer" id="catalogDrawer">
+<h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Каталог сайта</h3>
+<a href="index.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная</a>
+<a href="restaurants.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>Рестораны/бары/кафе</a>
+<a href="menu.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Меню</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
+<a href="reviews.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
+<a href="about.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 11v5"></path><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"></circle></svg>О нас</a>
+<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Контакты</a>
+<div class="catalog-divider thick"></div>
+<a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>Войти / Регистрация</a>
+<a href="cart.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Корзина</a>
+<div class="catalog-divider thick"></div>
+<h3 class="catalog-subheader"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Совместные проекты</h3>
+<a href="#" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Еду ем</a>
+<a href="cheap-honest.html" class="catalog-link secondary" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><path d="M7 7h.01"/><path d="M10 13l2 2 4-4"/></svg>Дёшево! Честно!</a>
+</div>
+
+<header class="site-header">
+  <div class="header-left">
+<div class="logo">
+<svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1e40af"/><stop offset="50%" style="stop-color:#1e40af"/><stop offset="100%" style="stop-color:#1e3a8a"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
+Я готовлю — ты ешь!
+</div>
+</div>
+</header>
+<nav class="bottom-bar">
+  <div class="header-right">
+<button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<a href="index.html" class="icon-btn" aria-label="Главная"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+<button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></button>
+<button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+<a href="#" class="logout-btn" onclick="openLogoutModal();return false;" aria-label="Выйти"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
+
+</nav>
+
+<main class="container" style="max-width:1100px;margin:0 auto;padding:40px 24px;">
+<div class="profile-header">
+<div class="avatar" id="avatarLetter">?</div>
+<div class="profile-info">
+<h1 id="name">Гость</h1>
+<span class="role" id="roleLabel">Пользователь</span>
+<p id="email" style="color:var(--text-muted)">Email не указан</p>
+<div class="profile-stats">
+<div class="stat"><div class="stat-value" id="ordersCount">0</div><div class="stat-label">Заказов</div></div>
+<div class="stat"><div class="stat-value" id="spent">0 ₽</div><div class="stat-label">Потрачено</div></div>
+<div class="stat"><div class="stat-value" id="myDishesCount">0</div><div class="stat-label">Моих блюд</div></div>
+<div class="stat"><div class="stat-value" id="sellerOrdersCount">0</div><div class="stat-label">Продаж</div></div>
+</div>
+</div>
+</div>
+
+<div class="tabs">
+<button class="tab active" onclick="switchTab('orders',this)">Мои заказы</button>
+<button class="tab" onclick="switchTab('mydishes',this)">Мои блюда</button>
+<button class="tab" onclick="switchTab('sellerorders',this)">Заказы мне</button>
+<button class="tab" onclick="switchTab('settings',this)">Настройки</button>
+<button class="tab" id="adminTabBtn" onclick="switchTab('admin',this)" style="display:none;">🛡️ Админ</button>
+</div>
+
+<!-- === МОИ ЗАКАЗЫ (покупатель) === -->
+<div class="tab-content active" id="tab-orders">
+<h3 style="margin:18px 0 14px;color:var(--neon-dark)">История заказов</h3>
+<div class="orders-list" id="buyerOrdersList"><div class="empty">У вас пока нет заказов</div></div>
+</div>
+
+<!-- === МОИ БЛЮДА === -->
+<div class="tab-content" id="tab-mydishes">
+<div class="my-dishes-grid" id="myDishesGrid"></div>
+</div>
+
+<!-- Модальное окно добавления блюда -->
+<div class="info-modal-overlay" id="addDishModal" style="z-index:10005;">
+<div class="info-modal-box" style="max-width:480px;text-align:left;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+<h2 style="color:var(--neon-dark);font-size:22px;font-weight:800;margin:0;">Новое блюдо</h2>
+<span style="cursor:pointer;font-size:28px;color:var(--text-muted);line-height:1;" onclick="closeAddDishModal()">&#10005;</span>
+</div>
+<div class="form-group">
+<label>Название *</label>
+<input type="text" id="dishTitle" placeholder="Например: Борщ домашний">
+</div>
+<div class="form-group">
+<label>Описание</label>
+<textarea id="dishDesc" placeholder="Опишите блюдо..."></textarea>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Цена (руб) *</label>
+<input type="number" id="dishPrice" placeholder="350" min="1">
+</div>
+<div class="form-group">
+<label>Вес / объём</label>
+<input type="text" id="dishWeight" placeholder="400 г">
+</div>
+</div>
+<div class="form-group">
+<label>Категория</label>
+<select id="dishCategory"></select>
+</div>
+<div class="form-group">
+<label>Фото</label>
+<div class="file-upload" onclick="document.getElementById('dishImage').click()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+<p>Нажмите для загрузки фото</p>
+<p style="font-size:12px;margin-top:4px;">JPG, PNG, WEBP до 5 МБ</p>
+<input type="file" id="dishImage" accept="image/*" onchange="previewImage(this)">
+</div>
+<img class="file-preview" id="imagePreview">
+</div>
+<button class="btn" style="width:100%;padding:16px;font-size:16px;margin-top:10px;" onclick="addDish()">Добавить блюдо</button>
+</div>
+</div>
+<!-- Модальное окно редактирования блюда -->
+<div class="info-modal-overlay" id="editDishModal" style="z-index:10006;">
+<div class="info-modal-box" style="max-width:480px;text-align:left;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+<h2 style="color:var(--neon-dark);font-size:22px;font-weight:800;margin:0;">Редактировать блюдо</h2>
+<span style="cursor:pointer;font-size:28px;color:var(--text-muted);line-height:1;" onclick="closeEditDishModal()">&#10005;</span>
+</div>
+<input type="hidden" id="editDishId">
+<div class="form-group">
+<label>Название *</label>
+<input type="text" id="editDishTitle" placeholder="Название блюда">
+</div>
+<div class="form-group">
+<label>Описание</label>
+<textarea id="editDishDesc" placeholder="Опишите блюдо..."></textarea>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Цена (руб) *</label>
+<input type="number" id="editDishPrice" placeholder="350" min="1">
+</div>
+<div class="form-group">
+<label>Вес / объём</label>
+<input type="text" id="editDishWeight" placeholder="400 г">
+</div>
+</div>
+<div class="form-group">
+<label>Категория</label>
+<select id="editDishCategory"></select>
+</div>
+<div class="form-group">
+<label>Фото (оставить пустым — не менять)</label>
+<div class="file-upload" onclick="document.getElementById('editDishImage').click()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+<p>Нажмите для смены фото</p>
+<input type="file" id="editDishImage" accept="image/*">
+</div>
+<img class="file-preview" id="editImagePreview" style="display:none;margin-top:10px;max-width:200px;border-radius:10px;">
+</div>
+<div style="display:flex;gap:10px;margin-top:16px;">
+<button onclick="closeEditDishModal()" style="flex:1;padding:12px;border:2px solid var(--border-color);border-radius:12px;background:transparent;color:var(--text-main);font-weight:600;cursor:pointer;">Отмена</button>
+<button class="btn" style="flex:1;padding:12px;background:var(--neon);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;" onclick="editDish(document.getElementById('editDishId').value)">Сохранить</button>
+</div>
+</div>
+</div>
+<!-- === ЗАКАЗЫ МНЕ (продавец) === -->
+<div class="tab-content" id="tab-sellerorders">
+<h3 style="margin:18px 0 14px;color:var(--neon-dark)">Заказы от покупателей</h3>
+<div class="orders-list" id="sellerOrdersList"></div>
+<div class="empty" id="noSellerOrdersMsg" style="display:none;">Заказов пока нет</div>
+</div>
+
+<!-- === НАСТРОЙКИ === -->
+<div class="tab-content" id="tab-settings">
+<h3 style="margin:18px 0 14px;color:var(--neon-dark)">Настройки</h3>
+<div class="settings-grid">
+<form class="setting-card" id="settingsForm" onsubmit="saveSettings();return false;">
+<h4>Данные</h4>
+<label>Имя</label><input type="text" id="setName" value="">
+<label>Email</label><input type="email" id="setEmail" value="">
+<button class="btn" type="submit" style="margin-top:10px">Сохранить</button>
+<button type="button" class="delete-account-btn" onclick="openDeleteModal()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+Удалить аккаунт
+</button>
+</form>
+<form class="setting-card" id="geoForm" onsubmit="saveGeo();return false;">
+<h4>📍 Местоположение</h4>
+<label>Страна</label><input type="text" id="geoCountry" value="Россия">
+<label>Город</label><input type="text" id="geoCity" placeholder="Например: Казань">
+<label>Адрес</label><input type="text" id="geoAddress" placeholder="Улица, дом">
+<div id="geoMap" style="width:100%;height:250px;border-radius:14px;margin:10px 0;border:2px solid var(--border-color);z-index:1;"></div>
+<label>Радиус поиска: <span id="radiusValue">10</span> км</label>
+<input type="range" id="geoRadius" min="1" max="50" value="10" style="width:100%;accent-color:var(--neon);" oninput="document.getElementById('radiusValue').textContent=this.value;updateRadiusCircle()">
+<input type="hidden" id="geoLat">
+<input type="hidden" id="geoLng">
+<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+<button class="btn" type="button" onclick="detectLocation()" style="background:transparent;border:2px solid var(--neon);color:var(--neon-dark);flex:1;">📡 По GPS</button>
+<button class="btn" type="button" onclick="searchAddressOnMap()" style="background:transparent;border:2px solid var(--neon);color:var(--neon-dark);flex:1;">🔍 Найти по адресу</button>
+</div>
+<div id="geoPermissionHint" style="display:none;font-size:12px;color:#ef4444;margin-top:6px;">⚠️ Геолокация запрещена. Разрешите доступ: Настройки телефона → Приложения → Браузер → Разрешения → Местоположение → Разрешить</div>
+<button class="btn" type="submit" style="margin-top:8px">Сохранить</button>
+</form>
+<form class="setting-card" id="passwordForm" onsubmit="changePass();return false;">
+<h4>Пароль</h4>
+<label>Текущий пароль</label><input type="password" id="oldPass" placeholder="Введите текущий пароль">
+<label>Новый пароль</label><input type="password" id="newPass" placeholder="Минимум 8 символов">
+<label>Повторите новый пароль</label><input type="password" id="confirmPass" placeholder="Повторите новый пароль">
+<button class="btn" type="submit" style="margin-top:10px">Сменить пароль</button>
+</form>
+</div>
+</div>
+
+<!-- === АДМИН-ПАНЕЛЬ === -->
+<div class="tab-content" id="tab-admin">
+<h3 style="margin:18px 0 14px;color:var(--neon-dark)">🛡️ Панель суперпользователя</h3>
+
+<div class="tabs" style="margin-bottom:16px;">
+<button class="tab active" onclick="loadAdminSection('stats',this)">📊 Счётчики</button>
+<button class="tab" onclick="loadAdminSection('users',this)">Пользователи</button>
+<button class="tab" onclick="loadAdminSection('dishes',this)">Блюда</button>
+<button class="tab" onclick="loadAdminSection('orders',this)">Заказы</button>
+<button class="tab" onclick="loadAdminSection('categories',this)">Категории</button>
+<button class="tab" onclick="loadAdminSection('reviews',this)">💬 Отзывы</button>
+</div>
+
+<div id="adminContent" style="overflow-x:auto;"></div>
+</div>
+</main>
+
+<footer>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+&copy; 2026 Я готовлю — ты ешь!
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- Модальное окно выхода -->
+<div class="logout-modal-overlay" id="logoutModal" onclick="closeLogoutModal(event)">
+<div class="logout-modal-box" onclick="event.stopPropagation()">
+<div class="logout-modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+<div class="logout-modal-title">Выйти из аккаунта?</div>
+<div class="logout-modal-text">Вы уверены, что хотите выйти?</div>
+<div class="logout-modal-buttons">
+<button class="logout-modal-cancel" onclick="closeLogoutModal()">Отмена</button>
+<button class="logout-modal-confirm" onclick="confirmLogout()">Выйти</button>
+</div>
+</div>
+</div>
+
+<!-- Модальное окно удаления -->
+<div class="delete-modal-overlay" id="deleteModal" onclick="closeDeleteModal(event)">
+<div class="delete-modal-box" onclick="event.stopPropagation()">
+<div class="delete-modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+<div class="delete-modal-title">Удалить аккаунт?</div>
+<div class="delete-modal-text">Введите текущий пароль для подтверждения.</div>
+<form id="deleteForm" onsubmit="confirmDelete();return false;">
+<input type="password" class="delete-modal-input" id="deletePassInput" placeholder="Введите текущий пароль">
+<div class="delete-modal-error" id="deleteError"></div>
+<div class="delete-modal-buttons">
+<button type="button" class="delete-modal-cancel" onclick="closeDeleteModal()">Отмена</button>
+<button type="submit" class="delete-modal-confirm" id="deleteConfirmBtn">Удалить навсегда</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- Универсальное модальное окно -->
+<div class="info-modal-overlay" id="infoModal" onclick="closeInfoModal(event)">
+<div class="info-modal-box" onclick="event.stopPropagation()">
+<div class="info-modal-icon" id="infoModalIcon"><svg id="infoModalSvg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"></svg></div>
+<div class="info-modal-title" id="infoModalTitle"></div>
+<div class="info-modal-text" id="infoModalText"></div>
+<button class="info-modal-btn" id="infoModalBtn" onclick="closeInfoModalAndRedirect()">Понятно</button>
+</div>
+</div>
+
+<script src="assets/js/config.js?v=20261022183143"></script>
+<script src="assets/js/main.js?v=20261022183142"></script>
+<script src="assets/js/theme.js?v=20260809112441"></script>
+<script>
+const currentUser = JSON.parse(localStorage.getItem('user')) || null;
+if (!currentUser || !currentUser.name) window.location.href = 'index.html?auth=login';
+
+let infoModalRedirect = false;
+let userProfile = null;
+
+function showInfoModal(type, title, text, redirect) {
+    var icon = document.getElementById('infoModalIcon');
+    var svg = document.getElementById('infoModalSvg');
+    var btn = document.getElementById('infoModalBtn');
+    icon.className = 'info-modal-icon ' + type;
+    btn.className = 'info-modal-btn ' + type;
+    svg.innerHTML = type === 'success' ? '<polyline points="20 6 9 17 4 12"/>' : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+    document.getElementById('infoModalTitle').textContent = title;
+    document.getElementById('infoModalText').textContent = text;
+    infoModalRedirect = !!redirect;
+    document.getElementById('infoModal').classList.add('active');
+}
+function closeInfoModal(e) { if (!e || e.target === document.getElementById('infoModal')) document.getElementById('infoModal').classList.remove('active'); }
+function closeInfoModalAndRedirect() { document.getElementById('infoModal').classList.remove('active'); if (infoModalRedirect) { localStorage.removeItem('user'); setTimeout(function(){ window.location.href = 'index.html'; }, 300); } }
+
+function showToastMsg(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 3000); }
+
+// --- ТАБЫ ---
+async function switchTab(n, btn) {
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+    if(btn) btn.classList.add('active');
+    document.getElementById('tab-' + n).classList.add('active');
+    if(n === 'orders') loadBuyerOrders();
+    if(n === 'mydishes') { loadMyDishes(); }
+    if(n === 'sellerorders') { loadSellerOrders(); }
+    if(n === 'settings') { setTimeout(function(){ if(geoMap) geoMap.invalidateSize(); else initGeoMap(); }, 200); }
+    if(n === 'admin') { loadAdminSection('stats'); }
+}
+
+// --- ПРОФИЛЬ ---
+async function loadProfile() {
+    try {
+        var res = await fetch('/api/profile.php');
+        var data = await res.json();
+        if(data.success) {
+            userProfile = data.user;
+            document.getElementById('name').textContent = data.user.name;
+            document.getElementById('email').textContent = data.user.email || 'Email не указан';
+            document.getElementById('setName').value = data.user.name;
+            document.getElementById('setEmail').value = data.user.email || '';
+            // Гео-данные
+            if(data.user.country) document.getElementById('geoCountry').value = data.user.country;
+            if(data.user.city) document.getElementById('geoCity').value = data.user.city;
+            if(data.user.address) document.getElementById('geoAddress').value = data.user.address;
+            if(data.user.search_radius) {
+                document.getElementById('geoRadius').value = data.user.search_radius;
+                document.getElementById('radiusValue').textContent = data.user.search_radius;
+            }
+            if(data.user.lat && data.user.lng){
+                document.getElementById('geoLat').value = data.user.lat;
+                document.getElementById('geoLng').value = data.user.lng;
+            }
+            // Синхронизируем localStorage с сервером
+            if(currentUser){
+                currentUser.country = data.user.country || currentUser.country;
+                currentUser.city = data.user.city || currentUser.city;
+                currentUser.address = data.user.address || currentUser.address;
+                currentUser.lat = data.user.lat || currentUser.lat;
+                currentUser.lng = data.user.lng || currentUser.lng;
+                currentUser.search_radius = data.user.search_radius || currentUser.search_radius;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+            }
+            // Карта инициализируется при открытии вкладки настроек (switchTab)
+            document.getElementById('avatarLetter').textContent = data.user.name.charAt(0).toUpperCase();
+            document.getElementById('roleLabel').textContent = 'Покупатель и Продавец';
+            loadCategoriesForForm();
+        }
+    } catch(e) {}
+}
+
+// --- КАТЕГОРИИ ДЛЯ ФОРМЫ ---
+async function loadCategoriesForForm() {
+    var res = await fetch('/api/categories.php');
+    var data = await res.json();
+    if(data.success) {
+        var sel = document.getElementById('dishCategory');
+        sel.innerHTML = '<option value="">Без категории</option>';
+        data.categories.forEach(function(c){
+            sel.innerHTML += '<option value="' + c.id + '">' + c.name + '</option>';
+        });
+    }
+}
+
+
+
+// --- ФОТО ПРЕВЬЮ ---
+function previewImage(input) {
+    if(input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var prev = document.getElementById('imagePreview');
+            prev.src = e.target.result;
+            prev.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// --- ДОБАВИТЬ БЛЮДО ---
+function openAddDishModal() {
+    document.getElementById('dishTitle').value = '';
+    document.getElementById('dishDesc').value = '';
+    document.getElementById('dishPrice').value = '';
+    document.getElementById('dishWeight').value = '';
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('dishImage').value = '';
+    document.getElementById('addDishModal').classList.add('active');
+    try { history.pushState({modal:'addDish'}, '', location.href); } catch(e) {}
+}
+function closeAddDishModal() {
+    var m = document.getElementById('addDishModal');
+    if (m) m.classList.remove('active');
+    try {
+        if (history.state && history.state.modal === 'addDish') {
+            history.back();
+        }
+    } catch(e) {}
+}
+async function addDish() {
+    var title = document.getElementById('dishTitle').value.trim();
+    var desc = document.getElementById('dishDesc').value.trim();
+    var price = document.getElementById('dishPrice').value;
+    var weight = document.getElementById('dishWeight').value.trim();
+    var catId = document.getElementById('dishCategory').value;
+    var imageInput = document.getElementById('dishImage');
+    if(!title) { showToastMsg('Введите название'); return; }
+    if(!price || price <= 0) { showToastMsg('Укажите цену'); return; }
+    var formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', desc);
+    formData.append('price', price);
+    formData.append('weight', weight);
+    formData.append('category_id', catId);
+    if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
+    var res = await fetch('/api/add_dish.php', { method:'POST', body: formData });
+    var data = await res.json();
+    if(data.success) {
+        showToastMsg('Блюдо добавлено!');
+        closeAddDishModal();
+        loadMyDishes();
+    } else {
+        showToastMsg(data.error || 'Ошибка');
+    }
+}
+
+// --- МОИ БЛЮДА ---
+async function loadMyDishes() {
+    if(!userProfile) return;
+    var res = await fetch('/api/dishes.php?page=1&seller_id=' + userProfile.id);
+    var data = await res.json();
+    var grid = document.getElementById('myDishesGrid');
+    var dishesHtml = '';
+    if(data.success && data.dishes.length > 0) {
+        document.getElementById('myDishesCount').textContent = data.dishes.length;
+        window.myDishesData = data.dishes || [];
+        dishesHtml = data.dishes.map(function(d){
+            var imgSrc = d.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop';
+            var badgeClass = d.is_available == 1 ? 'on' : 'off';
+            var badgeText = d.is_available == 1 ? 'Активно' : 'Скрыто';
+            var isAvail = (d.is_available == 1);
+            return '<div class="my-dish-card' + (isAvail ? '' : ' dimmed') + '">' +
+                '<img src="' + imgSrc + '" alt="' + d.title + '">' +
+                '<div class="card-body">' +
+                    '<span class="dish-badge ' + badgeClass + '">' + badgeText + '</span>' +
+                    '<div class="dish-title">' + d.title + '</div>' +
+                    '<div class="dish-price">' + d.price + ' \u20BD</div>' +
+                    '<div class="dish-actions">' +
+                        (isAvail ? '<button class="btn-toggle" onclick="toggleDish(' + d.id + ')">Скрыть</button>' : '<button class="btn-publish" onclick="toggleDish(' + d.id + ')">Разместить</button>') +
+                        '<button class="btn-delete" onclick="deleteDish(' + d.id + ')">Удалить</button>' +
+                    '</div>' +
+                    '<svg class="edit-pencil-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="openEditDish(' + d.id + ')"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+                '</div></div>';
+        }).join('');
+    } else {
+        document.getElementById('myDishesCount').textContent = '0';
+        dishesHtml = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:30px 10px;">У вас пока нет блюд. Добавьте первое блюдо ниже 👇</p>';
+    }
+    dishesHtml += '<div class="add-dish-card" onclick="openAddDishModal()">' +
+        '<div class="plus-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>' +
+        '<span>Добавить блюдо</span>' +
+    '</div>';
+    grid.innerHTML = dishesHtml;
+}
+
+async function toggleDish(id) {
+    var res = await fetch('/api/edit_dish.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({dish_id:id, action:'toggle'}) });
+    var data = await res.json();
+    if(data.success) { showToastMsg(data.is_available ? 'Блюдо размещено' : 'Блюдо скрыто'); loadMyDishes(); }
+    else showToastMsg(data.error);
+}
+
+async function deleteDish(id) {
+    if(!confirm('Удалить блюдо?')) return;
+    var res = await fetch('/api/edit_dish.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({dish_id:id, action:'delete'}) });
+    var data = await res.json();
+    if(data.success) { showToastMsg('Блюдо удалено'); loadMyDishes(); }
+    else showToastMsg(data.error);
+}
+
+// --- РЕДАКТИРОВАНИЕ БЛЮДА ---
+function openEditDish(id) {
+    var d = (window.myDishesData || []).find(function(x){ return x.id == id; });
+    if(!d) return;
+    document.getElementById('editDishId').value = d.id;
+    document.getElementById('editDishTitle').value = d.title || '';
+    document.getElementById('editDishDesc').value = d.description || '';
+    document.getElementById('editDishPrice').value = d.price || '';
+    document.getElementById('editDishWeight').value = d.weight || '';
+    document.getElementById('editDishCategory').value = d.category_id || '';
+    document.getElementById('editImagePreview').style.display = 'none';
+    document.getElementById('editImagePreview').src = '';
+    document.getElementById('editDishImage').value = '';
+    document.getElementById('editDishModal').classList.add('active');
+    try { history.pushState({modal:'editDish'}, '', location.href); } catch(e) {}
+}
+function closeEditDishModal() {
+    var m = document.getElementById('editDishModal');
+    if (m) m.classList.remove('active');
+    try {
+        if (history.state && history.state.modal === 'editDish') {
+            history.back();
+        }
+    } catch(e) {}
+}
+// Закрытие модального окна редактирования по кнопке «Назад»/свайпу (без сохранения)
+window.addEventListener('popstate', function(e) {
+    var m = document.getElementById('editDishModal');
+    if (m && m.classList.contains('active')) {
+        m.classList.remove('active');
+    }
+    var a = document.getElementById('addDishModal');
+    if (a && a.classList.contains('active')) {
+        a.classList.remove('active');
+    }
+});
+async function editDish(id) {
+    var title = document.getElementById('editDishTitle').value.trim();
+    var desc = document.getElementById('editDishDesc').value.trim();
+    var price = document.getElementById('editDishPrice').value;
+    var weight = document.getElementById('editDishWeight').value.trim();
+    var catId = document.getElementById('editDishCategory').value;
+    var imageInput = document.getElementById('editDishImage');
+    if(!title) { showToastMsg('Введите название'); return; }
+    if(!price || price <= 0) { showToastMsg('Укажите цену'); return; }
+    var formData = new FormData();
+    formData.append('dish_id', id);
+    formData.append('action', 'update');
+    formData.append('title', title);
+    formData.append('description', desc);
+    formData.append('price', price);
+    formData.append('weight', weight);
+    formData.append('category_id', catId);
+    if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
+    var res = await fetch('/api/edit_dish.php', { method:'POST', body: formData });
+    var data = await res.json();
+    if(data.success) {
+        showToastMsg('Блюдо обновлено');
+        closeEditDishModal();
+        loadMyDishes();
+    } else {
+        showToastMsg(data.error || 'Ошибка');
+    }
+}
+
+// --- ЗАКАЗЫ ПОКУПАТЕЛЯ ---
+async function loadBuyerOrders() {
+    var res = await fetch('/api/orders.php?role=buyer');
+    var data = await res.json();
+    var list = document.getElementById('buyerOrdersList');
+    var statusNames = {pending:'Ожидает',confirmed:'Подтверждён',cooking:'Готовится',ready:'Готов',delivered:'Доставлен',cancelled:'Отменён'};
+    if(data.success && data.orders.length > 0) {
+        document.getElementById('ordersCount').textContent = data.orders.length;
+        var totalSpent = 0;
+        list.innerHTML = data.orders.map(function(o){
+            if(o.status === 'delivered') totalSpent += parseFloat(o.total_price);
+            return '<div class="order-card"><div><strong>' + o.dish_title + '</strong> x' + o.quantity + '<br><span style="color:var(--text-muted);font-size:13px;">Продавец: ' + (o.seller_name||'—') + '</span><br><span class="status status-' + o.status + '">' + (statusNames[o.status]||o.status) + '</span></div><div style="font-weight:800;color:var(--neon-dark);font-size:18px;">' + o.total_price + ' \u20BD</div></div>';
+        }).join('');
+        document.getElementById('spent').textContent = totalSpent + ' \u20BD';
+    } else {
+        list.innerHTML = '<div class="empty">У вас пока нет заказов</div>';
+    }
+}
+
+// --- ЗАКАЗЫ ПРОДАВЦА ---
+async function loadSellerOrders() {
+    if(!userProfile) return;
+    var res = await fetch('/api/orders.php?role=seller');
+    var data = await res.json();
+    var list = document.getElementById('sellerOrdersList');
+    var empty = document.getElementById('noSellerOrdersMsg');
+    var statusNames = {pending:'Ожидает',confirmed:'Подтверждён',cooking:'Готовится',ready:'Готов',delivered:'Доставлен',cancelled:'Отменён'};
+    if(data.success && data.orders.length > 0) {
+        empty.style.display = 'none';
+        document.getElementById('sellerOrdersCount').textContent = data.orders.length;
+        list.innerHTML = data.orders.map(function(o){
+            return '<div class="seller-order-card">' +
+                '<div class="seller-order-top">' +
+                    '<span class="seller-order-id">Заказ #' + o.id + '</span>' +
+                    '<span class="status status-' + o.status + '">' + (statusNames[o.status]||o.status) + '</span>' +
+                '</div>' +
+                '<div class="seller-order-details">' +
+                    '<strong>' + o.dish_title + '</strong> x' + o.quantity + '<br>' +
+                    'Покупатель: <strong>' + (o.buyer_name||'—') + '</strong><br>' +
+                    'Телефон: ' + (o.buyer_phone||'—') + '<br>' +
+                    'Адрес: ' + (o.delivery_address||'—') +
+                    (o.comment ? '<br>Комментарий: ' + o.comment : '') +
+                '</div>' +
+                '<div class="seller-order-total">' + o.total_price + ' \u20BD</div>' +
+                '<select class="status-select" onchange="updateOrderStatus(' + o.id + ',this.value)">' +
+                    '<option value="" disabled selected>Сменить статус</option>' +
+                    '<option value="confirmed">Подтвердить</option>' +
+                    '<option value="cooking">Готовится</option>' +
+                    '<option value="ready">Готов</option>' +
+                    '<option value="delivered">Доставлен</option>' +
+                    '<option value="cancelled">Отменить</option>' +
+                '</select>' +
+            '</div>';
+        }).join('');
+    } else {
+        list.innerHTML = '';
+        empty.style.display = 'block';
+    }
+}
+
+async function updateOrderStatus(orderId, status) {
+    var res = await fetch('/api/update_order.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({order_id:orderId, status:status}) });
+    var data = await res.json();
+    if(data.success) { showToastMsg(data.message); loadSellerOrders(); }
+    else showToastMsg(data.error);
+}
+
+// --- НАСТРОЙКИ ---
+function saveSettings(){
+    var n = document.getElementById('setName').value.trim();
+    var e = document.getElementById('setEmail').value.trim();
+    if(n.length < 2) return showInfoModal('error','Ошибка','Имя должно быть не менее 2 символов');
+    currentUser.name = n; currentUser.email = e;
+    localStorage.setItem('user', JSON.stringify(currentUser));
+    document.getElementById('name').textContent = n;
+    document.getElementById('email').textContent = e || 'Email не указан';
+    document.getElementById('avatarLetter').textContent = n.charAt(0).toUpperCase();
+    showInfoModal('success','Сохранено','Данные профиля обновлены');
+}
+
+async function changePass(){
+    var oldP = document.getElementById('oldPass').value;
+    var newP = document.getElementById('newPass').value;
+    var confP = document.getElementById('confirmPass').value;
+    if(!oldP) return showInfoModal('error','Ошибка','Введите текущий пароль');
+    if(newP.length < 8) return showInfoModal('error','Ошибка','Минимум 8 символов');
+    if(newP !== confP) return showInfoModal('error','Ошибка','Пароли не совпадают');
+    try {
+        var res = await fetch('/api/change_password.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({old_password:oldP,new_password:newP})});
+        var data = await res.json();
+        if(data.error) throw new Error(data.error);
+        document.getElementById('oldPass').value = '';
+        document.getElementById('newPass').value = '';
+        document.getElementById('confirmPass').value = '';
+        showInfoModal('success','Пароль изменён','Пароль успешно обновлён');
+    } catch(err){ showInfoModal('error','Ошибка',err.message); }
+}
+
+// --- УДАЛЕНИЕ АККАУНТА ---
+function openDeleteModal(){ document.getElementById('deletePassInput').value=''; document.getElementById('deleteError').textContent=''; document.getElementById('deleteError').classList.remove('show'); document.getElementById('deleteModal').classList.add('active'); setTimeout(function(){ document.getElementById('deletePassInput').focus(); },150); }
+function closeDeleteModal(e){ if(!e||e.target===document.getElementById('deleteModal')) document.getElementById('deleteModal').classList.remove('active'); }
+async function confirmDelete(){
+    var pass = document.getElementById('deletePassInput').value;
+    var errEl = document.getElementById('deleteError');
+    var btn = document.getElementById('deleteConfirmBtn');
+    if(!pass){ errEl.textContent='Введите пароль'; errEl.classList.add('show'); return; }
+    btn.disabled = true; btn.textContent = 'Удаляем...'; errEl.classList.remove('show');
+    try {
+        var res = await fetch('/api/delete_account.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pass})});
+        var data = await res.json();
+        if(data.error) throw new Error(data.error);
+        document.getElementById('deleteModal').classList.remove('active');
+        showInfoModal('success','Аккаунт удалён','Все данные удалены из системы', true);
+    } catch(err){ errEl.textContent=err.message; errEl.classList.add('show'); btn.disabled=false; btn.textContent='Удалить навсегда'; }
+}
+
+// --- ВЫХОД ---
+function openLogoutModal(){ document.getElementById('logoutModal').classList.add('active'); }
+function closeLogoutModal(e){ if(!e||e.target===document.getElementById('logoutModal')) document.getElementById('logoutModal').classList.remove('active'); }
+function confirmLogout(){ fetch('/api/logout.php',{method:'POST'}).catch(function(){}).finally(function(){ localStorage.removeItem('user'); location.href='index.html'; }); }
+
+// --- ИНИЦИАЛИЗАЦИЯ ---
+document.addEventListener('DOMContentLoaded', function(){
+    if(!currentUser) return;
+    document.getElementById('name').textContent = currentUser.name;
+    document.getElementById('email').textContent = currentUser.email || 'Email не указан';
+    document.getElementById('setName').value = currentUser.name;
+    document.getElementById('setEmail').value = currentUser.email || '';
+    document.getElementById('avatarLetter').textContent = currentUser.name.charAt(0).toUpperCase();
+    loadProfile();
+    loadBuyerOrders();
+    if(typeof updateCartBadge === 'function') updateCartBadge();
+    if(typeof hideCurrentPageInCatalog === 'function') hideCurrentPageInCatalog();
+});
+</script>
+
+<script>
+var geoMap, geoMarker, geoCircle;
+
+function initGeoMap(lat, lng){
+    if(geoMap) { geoMap.invalidateSize(); return; }
+    lat = lat || parseFloat(document.getElementById('geoLat').value) || 55.7558;
+    lng = lng || parseFloat(document.getElementById('geoLng').value) || 37.6173;
+    geoMap = L.map('geoMap').setView([lat, lng], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(geoMap);
+    
+    geoMarker = L.marker([lat, lng], {draggable:true}).addTo(geoMap);
+    geoCircle = L.circle([lat, lng], {
+        radius: (document.getElementById('geoRadius').value || 10) * 1000,
+        color: '#1e40af', fillColor: '#1e40af', fillOpacity: 0.15, weight: 2
+    }).addTo(geoMap);
+    
+    geoMarker.on('dragend', function(e){
+        var pos = e.target.getLatLng();
+        document.getElementById('geoLat').value = pos.lat.toFixed(7);
+        document.getElementById('geoLng').value = pos.lng.toFixed(7);
+        geoCircle.setLatLng(pos);
+        reverseGeocode(pos.lat, pos.lng);
+    });
+    
+    geoMap.on('click', function(e){
+        geoMarker.setLatLng(e.latlng);
+        geoCircle.setLatLng(e.latlng);
+        document.getElementById('geoLat').value = e.latlng.lat.toFixed(7);
+        document.getElementById('geoLng').value = e.latlng.lng.toFixed(7);
+        reverseGeocode(e.latlng.lat, e.latlng.lng);
+    });
+    
+    document.getElementById('geoLat').value = lat.toFixed(7);
+    document.getElementById('geoLng').value = lng.toFixed(7);
+}
+
+function updateRadiusCircle(){
+    if(!geoCircle) return;
+    var r = document.getElementById('geoRadius').value;
+    geoCircle.setRadius(r * 1000);
+}
+
+function detectLocation(){
+    if(!navigator.geolocation){ showToast('Геолокация не поддерживается браузером'); return; }
+    // Убедимся что карта инициализирована
+    if(!geoMap) initGeoMap();
+    showToast('📡 Определяем местоположение...');
+    
+    var options = { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 };
+    
+    navigator.geolocation.getCurrentPosition(function(pos){
+        var lat = pos.coords.latitude;
+        var lng = pos.coords.longitude;
+        document.getElementById('geoLat').value = lat.toFixed(7);
+        document.getElementById('geoLng').value = lng.toFixed(7);
+        geoMap.setView([lat, lng], 16);
+        geoMarker.setLatLng([lat, lng]);
+        geoCircle.setLatLng([lat, lng]);
+        reverseGeocode(lat, lng);
+        showToast('✅ Местоположение определено!');
+    }, function(err){
+        var msg = 'Не удалось определить';
+        if(err.code === 1) { msg = '❌ Доступ к геолокации запрещён'; document.getElementById('geoPermissionHint').style.display = 'block'; }
+        else if(err.code === 2) msg = '❌ Геолокация недоступна. Проверьте GPS.';
+        else if(err.code === 3) msg = '⏰ Таймаут. Попробуйте ещё раз.';
+        showToast(msg);
+        console.log('Geolocation error:', err);
+    }, options);
+}
+
+async function reverseGeocode(lat, lng){
+    try {
+        var res = await fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ru');
+        var data = await res.json();
+        var a = data.address || {};
+        if(a.city || a.town || a.village) document.getElementById('geoCity').value = a.city || a.town || a.village;
+        if(a.country) document.getElementById('geoCountry').value = a.country;
+        var road = a.road || '';
+        var house = a.house_number || '';
+        if(road) document.getElementById('geoAddress').value = road + (house ? ', ' + house : '');
+    } catch(e){ console.log('Geocode error:', e); }
+}
+
+
+async function searchAddressOnMap(){
+    var city = document.getElementById('geoCity').value.trim();
+    var addr = document.getElementById('geoAddress').value.trim();
+    var country = document.getElementById('geoCountry').value.trim();
+    var query = [addr, city, country].filter(Boolean).join(', ');
+    if(!query){ showToast('Введите хотя бы город'); return; }
+    
+    showToast('🔍 Ищем адрес...');
+    try {
+        var res = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query) + '&limit=1&accept-language=ru');
+        var data = await res.json();
+        if(!data.length){ showToast('Адрес не найден. Уточните запрос.'); return; }
+        
+        var lat = parseFloat(data[0].lat);
+        var lng = parseFloat(data[0].lon);
+        
+        document.getElementById('geoLat').value = lat.toFixed(7);
+        document.getElementById('geoLng').value = lng.toFixed(7);
+        
+        if(!geoMap) initGeoMap(lat, lng);
+        else { geoMap.setView([lat, lng], 16); geoMarker.setLatLng([lat, lng]); geoCircle.setLatLng([lat, lng]); }
+        
+        // Заполняем поля из результата
+        var a = data[0].address || {};
+        if(a.city || a.town || a.village) document.getElementById('geoCity').value = a.city || a.town || a.village;
+        if(a.country) document.getElementById('geoCountry').value = a.country;
+        var road = a.road || '';
+        var house = a.house_number || '';
+        if(road) document.getElementById('geoAddress').value = road + (house ? ', ' + house : '');
+        
+        showToast('✅ Адрес найден!');
+    } catch(e){ showToast('Ошибка поиска адреса'); console.log(e); }
+}
+
+async function saveGeo(){
+    try {
+        var res = await fetch('/api/update_profile.php', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({
+                country: document.getElementById('geoCountry').value,
+                city: document.getElementById('geoCity').value,
+                address: document.getElementById('geoAddress').value,
+                lat: document.getElementById('geoLat').value,
+                lng: document.getElementById('geoLng').value,
+                search_radius: document.getElementById('geoRadius').value
+            })
+        });
+        var data = await res.json();
+        if(data.success) {
+            showToast('Местоположение сохранено!');
+            currentUser.country = document.getElementById('geoCountry').value;
+            currentUser.city = document.getElementById('geoCity').value;
+            currentUser.address = document.getElementById('geoAddress').value;
+            currentUser.lat = document.getElementById('geoLat').value;
+            currentUser.lng = document.getElementById('geoLng').value;
+            currentUser.search_radius = document.getElementById('geoRadius').value;
+            localStorage.setItem('user', JSON.stringify(currentUser));
+        }
+        else showToast(data.error || 'Ошибка сохранения');
+    } catch(e){ showToast('Ошибка сети'); }
+}
+
+// Инициализация карты при открытии вкладки настроек
+document.addEventListener('DOMContentLoaded', function(){
+    // Загружаем сохранённые данные
+    var user = JSON.parse(localStorage.getItem('user')||'{}');
+    if(user.lat && user.lng) initGeoMap(parseFloat(user.lat), parseFloat(user.lng));
+});
+</script>
+
+
+<script>
+// Проверка роли админа
+async function checkAdminRole(){
+    try {
+        var res = await fetch('/api/admin.php?action=users');
+        var data = await res.json();
+        if(data.success){
+            document.getElementById('adminTabBtn').style.display = '';
+        }
+    } catch(e){}
+}
+
+var currentAdminSection = 'users';
+
+async function loadAdminSection(section, btn){
+    currentAdminSection = section;
+    if(btn){
+        btn.closest('.tabs').querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+        btn.classList.add('active');
+    }
+    var container = document.getElementById('adminContent');
+    container.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Загрузка...</p>';
+
+    if(section === 'stats'){ renderAdminStats(); return; }
+    if(section === 'reviews'){ renderAdminReviews(); return; }
+
+    try {
+        var res = await fetch('/api/admin.php?action=' + section);
+        var data = await res.json();
+        if(!data.success){ container.innerHTML = '<p style="color:#ef4444;">' + (data.error||'Ошибка') + '</p>'; return; }
+        
+        var rows = data.data;
+        // Кэшируем пользователей для редактирования
+        if(section === 'users'){ 
+            adminUsersCache = {}; 
+            adminUsersAllRows = rows;
+            rows.forEach(function(r){ adminUsersCache[r.id] = r; }); 
+        }
+        if(!rows.length){ container.innerHTML = '<p style="text-align:center;padding:30px;">Нет данных</p>'; return; }
+        
+        var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>';
+        var keys = Object.keys(rows[0]);
+        keys.forEach(function(k){ html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);text-align:left;color:var(--neon-dark);white-space:nowrap;">' + k + '</th>'; });
+        html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
+        
+        rows.forEach(function(row){
+            html += '<tr style="border-bottom:1px solid var(--border-color);">';
+            keys.forEach(function(k){
+                var val = row[k] !== null ? row[k] : '—';
+                html += '<td style="padding:8px;white-space:nowrap;">' + val + '</td>';
+            });
+            html += '<td style="padding:8px;">';
+            
+            if(section === 'users'){
+                html += '<button onclick="openAdminViewLK(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #8b5cf6;background:transparent;color:#8b5cf6;cursor:pointer;font-size:12px;margin-right:4px;">👁️ ЛК</button>';
+                html += '<button onclick="openAdminEditUser(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--neon);background:transparent;color:var(--neon-dark);cursor:pointer;font-size:12px;">✏️ Изменить</button>';
+            } else if(section === 'dishes'){
+                html += '<button onclick="adminToggleDish(' + row.id + ',' + (row.is_available==1?0:1) + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:12px;">' + (row.is_available==1?'Скрыть':'Показать') + '</button>';
+                html += ' <button onclick="adminDeleteDish(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px;">Удалить</button>';
+            } else if(section === 'orders'){
+                html += '<select onchange="adminUpdateOrder(' + row.id + ',this.value)" style="padding:4px 8px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);font-size:12px;">';
+                ['pending','confirmed','cooking','ready','delivered','cancelled'].forEach(function(s){ html += '<option value="' + s + '"' + (row.status===s?' selected':'') + '>' + s + '</option>'; });
+                html += '</select>';
+            }
+            
+            html += '</td></tr>';
+        });
+        
+        html += '</tbody></table>';
+        // Для users разделяем поиск и таблицу
+        if(section === 'users'){
+            container.innerHTML = '<div style="margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">' +
+                '<input type="text" id="adminUserSearch" placeholder="🔍 Поиск по имени, телефону или email..." oninput="filterAdminUsers()" style="flex:1;min-width:200px;padding:10px 16px;border-radius:12px;border:2px solid #94a3b8;background:#ffffff;color:#1e293b;font-size:14px;outline:none;">' +
+                '<span id="adminSearchCount" style="font-size:12px;color:var(--text-muted);white-space:nowrap;"></span>' +
+                '</div>' +
+                '<div id="adminUsersTableWrap"></div>';
+            document.getElementById('adminUsersTableWrap').innerHTML = html;
+        } else {
+            container.innerHTML = html;
+        }
+    } catch(e){ container.innerHTML = '<p style="color:#ef4444;">Ошибка загрузки</p>'; }
+}
+
+async function adminUpdateUser(id, role){
+    await fetch('/api/admin.php?action=update_user', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id, role:role})});
+    showToast('Роль обновлена');
+}
+
+async function adminToggleDish(id, available){
+    await fetch('/api/admin.php?action=update_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id, is_available:available})});
+    showToast('Статус блюда обновлён');
+    loadAdminSection('dishes');
+}
+
+async function adminDeleteDish(id){
+    if(!confirm('Удалить это блюдо?')) return;
+    await fetch('/api/admin.php?action=delete_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id})});
+    showToast('Блюдо удалено');
+    loadAdminSection('dishes');
+}
+
+async function adminUpdateOrder(id, status){
+    await fetch('/api/admin.php?action=update_order_status', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id, status:status})});
+    showToast('Статус заказа обновлён');
+}
+
+// === СЧЁТЧИКИ (статистика) ===
+async function renderAdminStats(){
+    var c = document.getElementById('adminContent');
+    if(!c) return;
+    c.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Загрузка...</p>';
+    try {
+        var res = await fetch('/api/admin.php?action=stats');
+        var data = await res.json();
+        if(!data.success){ c.innerHTML = '<p style="color:#ef4444;">' + (data.error||'Ошибка') + '</p>'; return; }
+        var d = data.data || {};
+        var cards = [
+            ['👥 Пользователей', d.users],
+            ['🍽️ Блюд', d.dishes],
+            ['📦 Заказов', d.orders],
+            ['🏷️ Категорий', d.categories],
+            ['⏳ Отзывов на модерации', d.reviews_pending],
+            ['✅ Одобренных отзывов', d.reviews_approved],
+            ['🚫 Отклонённых отзывов', d.reviews_rejected],
+            ['💬 Всего отзывов', d.reviews_total]
+        ];
+        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;">';
+        cards.forEach(function(card){
+            var v = (card[1] != null ? card[1] : 0);
+            html += '<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:20px 16px;text-align:center;box-shadow:0 4px 18px var(--neon-glow);">' +
+                '<div style="font-size:28px;font-weight:800;color:var(--neon-dark);">' + v + '</div>' +
+                '<div style="font-size:13px;color:var(--text-muted);margin-top:6px;">' + card[0] + '</div></div>';
+        });
+        html += '</div>';
+        c.innerHTML = html;
+    } catch(e){
+        c.innerHTML = '<p style="color:#ef4444;">Ошибка загрузки</p>';
+    }
+}
+
+// === МОДЕРАЦИЯ ОТЗЫВОВ ===
+var adminReviewStatus = 'pending';
+
+function adminEsc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(m){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+    });
+}
+
+async function renderAdminReviews(status){
+    if(status) adminReviewStatus = status;
+    var c = document.getElementById('adminContent');
+    if(!c) return;
+    c.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Загрузка...</p>';
+    var tabsHtml = '<div style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;">';
+    [['pending','⏳ На модерации'],['approved','✅ Одобренные'],['rejected','🚫 Отклонённые']].forEach(function(s){
+        var active = s[0] === adminReviewStatus;
+        tabsHtml += '<button onclick="renderAdminReviews(\'' + s[0] + '\')" style="padding:8px 14px;border-radius:10px;border:2px solid ' + (active ? 'var(--neon)' : 'var(--border-color)') + ';background:' + (active ? 'var(--neon-glow)' : 'var(--card-bg)') + ';color:var(--neon-dark);cursor:pointer;font-size:13px;font-weight:600;">' + s[1] + '</button>';
+    });
+    tabsHtml += '</div>';
+    try {
+        var res = await fetch('/api/reviews.php?action=pending&status=' + encodeURIComponent(adminReviewStatus));
+        var data = await res.json();
+        if(!res.ok || !data.success){ c.innerHTML = tabsHtml + '<p style="color:#ef4444;">' + adminEsc(data.error||'Ошибка') + '</p>'; return; }
+        var reviews = data.reviews || [];
+        if(!reviews.length){ c.innerHTML = tabsHtml + '<p style="text-align:center;padding:30px;color:var(--text-muted);">Нет отзывов</p>'; return; }
+        var html = tabsHtml;
+        reviews.forEach(function(r){
+            var rating = Math.max(0, Math.min(5, Number(r.rating) || 0));
+            html += '<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:16px;margin-bottom:12px;">';
+            html += '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;">' +
+                '<div style="font-weight:700;color:var(--neon-dark);">' + adminEsc(r.user_name) + '</div>' +
+                '<div style="color:#f59e0b;letter-spacing:2px;">' + '★'.repeat(rating) + '☆'.repeat(5-rating) + '</div>' +
+                '<div style="font-size:12px;color:var(--text-muted);">' + adminEsc(r.created_at) + '</div></div>';
+            html += '<div style="margin:10px 0;white-space:pre-wrap;color:var(--text-main);">' + adminEsc(r.review_text) + '</div>';
+            if(adminReviewStatus === 'pending'){
+                html += '<button onclick="adminModerateReview(' + r.id + ',\'approved\')" style="padding:6px 14px;border-radius:10px;border:1px solid #10b981;background:transparent;color:#10b981;cursor:pointer;font-size:13px;margin-right:8px;">✅ Одобрить</button>';
+                html += '<button onclick="adminModerateReview(' + r.id + ',\'rejected\')" style="padding:6px 14px;border-radius:10px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:13px;">🚫 Отклонить</button>';
+            }
+            html += '</div>';
+        });
+        c.innerHTML = html;
+    } catch(e){
+        c.innerHTML = tabsHtml + '<p style="color:#ef4444;">Ошибка загрузки</p>';
+    }
+}
+
+async function adminModerateReview(id, status){
+    try {
+        var res = await fetch('/api/reviews.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'moderate', review_id:id, status:status})});
+        var data = await res.json();
+        if(!res.ok || !data.success) throw new Error(data.error || 'Ошибка');
+        showToastMsg(status === 'approved' ? '✅ Отзыв одобрен' : '🚫 Отзыв отклонён');
+        renderAdminReviews(adminReviewStatus);
+    } catch(e){
+        showToastMsg(e.message || 'Ошибка');
+    }
+}
+
+// Проверяем роль при загрузке
+document.addEventListener('DOMContentLoaded', checkAdminRole);
+</script>
+
+
+<!-- Модальное окно редактирования пользователя -->
+<div id="adminEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:10001;align-items:center;justify-content:center;">
+<div style="background:var(--card-bg);border:2px solid var(--border-color);border-radius:20px;padding:30px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;">
+<h3 style="margin:0 0 16px;color:var(--neon-dark);">✏️ Редактировать пользователя</h3>
+<input type="hidden" id="aeId">
+<label style="font-size:13px;color:var(--text-muted);">Имя</label>
+<input type="text" id="aeName" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Email</label>
+<input type="email" id="aeEmail" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Телефон</label>
+<input type="text" id="aePhone" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Адрес</label>
+<input type="text" id="aeAddress" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Страна</label>
+<input type="text" id="aeCountry" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Город</label>
+<input type="text" id="aeCity" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Новый пароль (оставьте пустым чтобы не менять)</label>
+<input type="password" id="aePassword" placeholder="Новый пароль" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Роль</label>
+<select id="aeRole" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<option value="user">user</option><option value="admin">admin</option>
+</select>
+<label style="font-size:13px;color:var(--text-muted);">Продавец</label>
+<select id="aeSeller" style="width:100%;padding:10px;margin-bottom:16px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<option value="1">Да</option><option value="0">Нет</option>
+</select>
+<div style="display:flex;gap:10px;">
+<button class="btn" onclick="saveAdminUser()" style="flex:1;">Сохранить</button>
+<button class="btn" onclick="document.getElementById('adminEditModal').style.display='none'" style="flex:1;background:transparent;border:2px solid var(--border-color);color:var(--text-main);">Отмена</button>
+</div>
+</div>
+</div>
+
+<script>
+var adminUsersCache = {};
+
+function openAdminEditUser(id){
+    var u = adminUsersCache[id];
+    if(!u) return;
+    document.getElementById('aeId').value = u.id;
+    document.getElementById('aeName').value = u.name || '';
+    document.getElementById('aeEmail').value = u.email || '';
+    document.getElementById('aePhone').value = u.phone || '';
+    document.getElementById('aeAddress').value = u.address || '';
+    document.getElementById('aeCountry').value = u.country || '';
+    document.getElementById('aeCity').value = u.city || '';
+    document.getElementById('aePassword').value = '';
+    document.getElementById('aeRole').value = u.role || 'user';
+    document.getElementById('aeSeller').value = u.is_seller != null ? u.is_seller : '0';
+    document.getElementById('adminEditModal').style.display = 'flex';
+}
+
+async function saveAdminUser(){
+    var data = {
+        id: parseInt(document.getElementById('aeId').value),
+        name: document.getElementById('aeName').value,
+        email: document.getElementById('aeEmail').value,
+        phone: document.getElementById('aePhone').value,
+        address: document.getElementById('aeAddress').value,
+        country: document.getElementById('aeCountry').value,
+        city: document.getElementById('aeCity').value,
+        role: document.getElementById('aeRole').value,
+        is_seller: parseInt(document.getElementById('aeSeller').value)
+    };
+    var pw = document.getElementById('aePassword').value;
+    if(pw) data.new_password = pw;
+    
+    try {
+        var res = await fetch('/api/admin.php?action=update_user', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)});
+        var result = await res.json();
+        if(result.success){ showToast('Пользователь обновлён'); document.getElementById('adminEditModal').style.display='none'; loadAdminSection('users'); }
+        else showToast(result.error || 'Ошибка');
+    } catch(e){ showToast('Ошибка сети'); }
+}
+</script>
+
+
+<!-- === МОДАЛЬНОЕ ОКНО ПРОСМОТРА ЛК ПОЛЬЗОВАТЕЛЯ === -->
+<div id="adminLKModal" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:10002;overflow-y:auto;">
+<!-- Баннер -->
+<div style="position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(124,58,237,0.4);">
+<div style="display:flex;align-items:center;gap:10px;">
+<span style="font-size:20px;">🛡️</span>
+<span style="font-weight:700;font-size:15px;">ВЫ в ЛК: <span id="lkBannerName"></span></span>
+</div>
+<button onclick="closeAdminLK()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;">✕ Выйти</button>
+</div>
+
+<!-- Контент ЛК -->
+<div style="max-width:900px;margin:0 auto;padding:20px;">
+<!-- Инфо профиля -->
+<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:24px;margin-bottom:20px;">
+<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+<div id="lkAvatar" style="width:60px;height:60px;border-radius:50%;background:var(--neon);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#ffffff;"></div>
+<div>
+<h2 id="lkName" style="margin:0;color:var(--text-main);"></h2>
+<p id="lkEmail" style="margin:4px 0 0;color:var(--text-muted);font-size:14px;"></p>
+</div>
+</div>
+<div id="lkInfoGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;font-size:13px;"></div>
+</div>
+
+<!-- Табы ЛК -->
+<div class="tabs" id="lkTabs">
+<button class="tab active" onclick="switchLKTab('dishes',this)">🍽️ Блюда</button>
+<button class="tab" onclick="switchLKTab('buyer_orders',this)">🛒 Заказы</button>
+<button class="tab" onclick="switchLKTab('seller_orders',this)">📦 Заказы продавца</button>
+<button class="tab" onclick="switchLKTab('edit',this)">✏️ Редактировать</button>
+</div>
+
+<div id="lkTabContent" style="margin-top:16px;"></div>
+</div>
+</div>
+
+<script>
+var lkData = null;
+
+async function openAdminViewLK(userId){
+    showToast('Загрузка ЛК...');
+    try {
+        var res = await fetch('/api/admin.php?action=view_user&user_id=' + userId);
+        var text = await res.text();
+        console.log('Admin LK response:', res.status, text.substring(0,200));
+        var data;
+        try { data = JSON.parse(text); } catch(e){ showToast('Ошибка парсинга: ' + res.status); console.log('Raw:', text); return; }
+        if(!data.success){ showToast('Ошибка: ' + (data.error || JSON.stringify(data))); return; }
+        lkData = data;
+        
+        // Заполняем баннер и инфо
+        document.getElementById('lkBannerName').textContent = data.user.name;
+        document.getElementById('lkName').textContent = data.user.name;
+        document.getElementById('lkEmail').textContent = data.user.email;
+        document.getElementById('lkAvatar').textContent = data.user.name.charAt(0).toUpperCase();
+        
+        var info = '';
+        var fields = [
+            ['Телефон', data.user.phone], ['Город', data.user.city], ['Страна', data.user.country],
+            ['Адрес', data.user.address], ['Роль', data.user.role], ['Продавец', data.user.is_seller == 1 ? 'Да' : 'Нет'],
+            ['Радиус', data.user.search_radius ? data.user.search_radius + ' км' : '—'],
+            ['Регистрация', data.user.created_at ? data.user.created_at.substring(0,10) : '—']
+        ];
+        fields.forEach(function(f){ 
+            info += '<div style="background:var(--bg);padding:10px 14px;border-radius:10px;"><span style="color:var(--text-muted);">' + f[0] + ':</span> <strong style="color:var(--text-main);">' + (f[1]||'—') + '</strong></div>'; 
+        });
+        document.getElementById('lkInfoGrid').innerHTML = info;
+        
+        document.getElementById('adminLKModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        switchLKTab('dishes');
+    } catch(e){ showToast('Ошибка загрузки'); console.log(e); }
+}
+
+function closeAdminLK(){
+    document.getElementById('adminLKModal').style.display = 'none';
+    document.body.style.overflow = '';
+    lkData = null;
+}
+
+function switchLKTab(tab, btn){
+    if(btn){
+        document.querySelectorAll('#lkTabs .tab').forEach(function(t){ t.classList.remove('active'); });
+        btn.classList.add('active');
+    }
+    var container = document.getElementById('lkTabContent');
+    
+    if(tab === 'dishes'){
+        if(!lkData.dishes.length){ container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:30px;">Нет блюд</p>'; return; }
+        var html = '<div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button onclick="deleteAllUserDishes()" style="padding:8px 16px;border-radius:10px;border:2px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:13px;font-weight:700;">🗑️ Удалить ВСЕ блюда</button></div>';
+        html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">';
+        lkData.dishes.forEach(function(d){
+            html += '<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:16px;">';
+            html += '<div style="font-weight:700;color:var(--text-main);margin-bottom:4px;">' + d.title + '</div>';
+            html += '<div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">' + (d.category_name||'') + ' | ' + (d.weight||'—') + 'г</div>';
+            html += '<div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">' + (d.description ? d.description.substring(0,80) : '') + '</div>';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+            html += '<span style="font-weight:700;color:var(--neon-dark);">' + d.price + ' ₽</span>';
+            html += '<span style="font-size:11px;padding:3px 8px;border-radius:6px;background:' + (d.is_available==1?'rgba(0,255,100,0.15);color:#10b981':'rgba(239,68,68,0.15);color:#ef4444') + ';">' + (d.is_available==1?'Активно':'Скрыто') + '</span>';
+            html += '</div>';
+            html += '<div style="display:flex;gap:6px;">';
+            html += '<button onclick="editLKDish(' + d.id + ')" style="flex:1;padding:6px;border-radius:8px;border:1px solid var(--neon);background:transparent;color:var(--neon-dark);cursor:pointer;font-size:12px;">✏️ Изменить</button>';
+            html += '<button onclick="toggleLKDish(' + d.id + ',' + (d.is_available==1?0:1) + ')" style="flex:1;padding:6px;border-radius:8px;border:1px solid var(--border-color);background:transparent;color:var(--text-main);cursor:pointer;font-size:12px;">' + (d.is_available==1?'Скрыть':'Показать') + '</button>';
+            html += '<button onclick="deleteLKDish(' + d.id + ')" style="padding:6px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px;">🗑️</button>';
+            html += '</div></div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+    else if(tab === 'buyer_orders'){
+        renderLKOrders(lkData.buyer_orders, 'seller_name', 'Продавец', container, 'buyer');
+    }
+    else if(tab === 'seller_orders'){
+        renderLKOrders(lkData.seller_orders, 'buyer_name', 'Покупатель', container, 'seller');
+    }
+    else if(tab === 'edit'){
+        renderLKEditForm(container);
+    }
+}
+
+function renderLKOrders(orders, nameField, nameLabel, container, orderType){
+    if(!orders.length){ container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:30px;">Нет заказов</p>'; return; }
+    var html = '<div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button onclick="deleteAllUserOrders(\'' + orderType + '\')" style="padding:8px 16px;border-radius:10px;border:2px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:13px;font-weight:700;">🗑️ Удалить ВСЕ заказы</button></div>';
+    html += '<div style="display:flex;flex-direction:column;gap:10px;">';
+    orders.forEach(function(o){
+        var statusColors = {'new':'#d97706',confirmed:'#2563eb',cooking:'#7c3aed',ready:'#059669',delivered:'#10b981',cancelled:'#ef4444'};
+        var color = statusColors[o.status] || '#64748b';
+        html += '<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:14px 18px;">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">';
+        html += '<div><strong style="color:var(--text-main);">Заказ #' + o.id + '</strong><br><span style="font-size:12px;color:var(--text-muted);">' + nameLabel + ': ' + (o[nameField]||'—') + '</span></div>';
+        html += '<div style="text-align:right;"><span style="font-weight:700;color:var(--text-main);">' + o.total_price + ' ₽</span></div>';
+        html += '</div>';
+        html += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">';
+        html += '<select onchange="updateLKOrder(' + o.id + ',this.value)" style="padding:5px 8px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);font-size:12px;">';
+        ['new','confirmed','cooking','ready','delivered','cancelled'].forEach(function(s){ html += '<option value="' + s + '"' + (o.status===s?' selected':'') + '>' + s + '</option>'; });
+        html += '</select>';
+        html += '<button onclick="deleteLKOrder(' + o.id + ')" style="padding:5px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px;">🗑️ Удалить</button>';
+        html += '</div></div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function renderLKEditForm(container){
+    var u = lkData.user;
+    var html = '<form onsubmit="saveLKEdit(event)" style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:24px;">';
+    var fields = [
+        ['ae_lk_Name','Имя','text',u.name],['ae_lk_Email','Email','email',u.email],
+        ['ae_lk_Phone','Телефон','text',u.phone],['ae_lk_Address','Адрес','text',u.address],
+        ['ae_lk_Country','Страна','text',u.country],['ae_lk_City','Город','text',u.city]
+    ];
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;">';
+    fields.forEach(function(f){
+        html += '<div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">' + f[1] + '</label>';
+        html += '<input type="' + f[2] + '" id="' + f[0] + '" value="' + (f[3]||'') + '" style="width:100%;padding:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);box-sizing:border-box;"></div>';
+    });
+    html += '</div>';
+    
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">';
+    html += '<div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">Роль</label><select id="ae_lk_Role" style="width:100%;padding:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);"><option value="user"' + (u.role==='user'?' selected':'') + '>user</option><option value="admin"' + (u.role==='admin'?' selected':'') + '>admin</option></select></div>';
+    html += '<div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">Продавец</label><select id="ae_lk_Seller" style="width:100%;padding:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);"><option value="1"' + (u.is_seller==1?' selected':'') + '>Да</option><option value="0"' + (u.is_seller!=1?' selected':'') + '>Нет</option></select></div>';
+    html += '</div>';
+    
+    html += '<div style="margin-top:12px;"><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:4px;">Новый пароль (пусто = не менять)</label><input type="password" id="ae_lk_Password" placeholder="Новый пароль" style="width:100%;padding:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);box-sizing:border-box;"></div>';
+    
+    html += '<button class="btn" type="submit" style="margin-top:16px;width:100%;">💾 Сохранить изменения</button>';
+    html += '</form>';
+    container.innerHTML = html;
+}
+
+
+async function editLKDish(dishId){
+    var d = lkData.dishes.find(function(x){ return x.id == dishId; });
+    if(!d) return;
+    var title = prompt('Название блюда:', d.title);
+    if(title === null) return;
+    var price = prompt('Цена:', d.price);
+    if(price === null) return;
+    var desc = prompt('Описание:', d.description || '');
+    if(desc === null) return;
+    await fetch('/api/admin.php?action=update_user_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:dishId, user_id:lkData.user.id, title:title, price:parseFloat(price), description:desc})});
+    showToast('Блюдо обновлено');
+    refreshLK();
+}
+
+async function toggleLKDish(dishId, available){
+    await fetch('/api/admin.php?action=update_user_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:dishId, user_id:lkData.user.id, is_available:available})});
+    showToast('Статус изменён');
+    refreshLK();
+}
+
+async function deleteLKDish(dishId){
+    if(!confirm('Удалить это блюдо?')) return;
+    await fetch('/api/admin.php?action=delete_user_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:dishId, user_id:lkData.user.id})});
+    showToast('Блюдо удалено');
+    refreshLK();
+}
+
+async function deleteAllUserDishes(){
+    if(!confirm('УДАЛИТЬ ВСЕ БЛЮДА этого пользователя? Это необратимо!')) return;
+    await fetch('/api/admin.php?action=delete_all_user_dishes', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({user_id:lkData.user.id})});
+    showToast('Все блюда удалены');
+    refreshLK();
+}
+
+async function updateLKOrder(orderId, status){
+    await fetch('/api/admin.php?action=update_user_order', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:orderId, user_id:lkData.user.id, status:status})});
+    showToast('Статус заказа обновлён');
+}
+
+async function deleteLKOrder(orderId){
+    if(!confirm('Удалить этот заказ?')) return;
+    await fetch('/api/admin.php?action=delete_user_order', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:orderId, user_id:lkData.user.id})});
+    showToast('Заказ удалён');
+    refreshLK();
+}
+
+async function deleteAllUserOrders(type){
+    var label = type === 'seller' ? 'заказы продавца' : 'заказы покупателя';
+    if(!confirm('УДАЛИТЬ ВСЕ ' + label.toUpperCase() + ' этого пользователя? Это необратимо!')) return;
+    await fetch('/api/admin.php?action=delete_all_user_orders', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({user_id:lkData.user.id, type:type})});
+    showToast('Все заказы удалены');
+    refreshLK();
+}
+
+
+var adminUsersAllRows = [];
+
+function filterAdminUsers(){
+    var q = (document.getElementById('adminUserSearch').value || '').toLowerCase().trim();
+    var filtered = adminUsersAllRows.filter(function(r){
+        if(!q) return true;
+        return (r.name || '').toLowerCase().indexOf(q) !== -1 
+            || (r.email || '').toLowerCase().indexOf(q) !== -1 
+            || (r.phone || '').toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById('adminSearchCount').textContent = filtered.length + ' из ' + adminUsersAllRows.length;
+    renderAdminUsersTable(filtered);
+}
+
+function renderAdminUsersTable(rows){
+    var tableContainer = document.getElementById('adminUsersTableWrap');
+    if(!tableContainer) return;
+    
+    if(!rows.length){ tableContainer.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Ничего не найдено</p>'; return; }
+    
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>';
+    var keys = Object.keys(rows[0]);
+    keys.forEach(function(k){ html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);text-align:left;color:var(--neon-dark);white-space:nowrap;">' + k + '</th>'; });
+    html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
+    
+    rows.forEach(function(row){
+        html += '<tr style="border-bottom:1px solid var(--border-color);">';
+        keys.forEach(function(k){
+            var val = row[k] !== null ? row[k] : '—';
+            html += '<td style="padding:8px;white-space:nowrap;">' + val + '</td>';
+        });
+        html += '<td style="padding:8px;">';
+        html += '<button onclick="openAdminViewLK(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #8b5cf6;background:transparent;color:#8b5cf6;cursor:pointer;font-size:12px;margin-right:4px;">👁️ ЛК</button> ';
+        html += '<button onclick="openAdminEditUser(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--neon);background:transparent;color:var(--neon-dark);cursor:pointer;font-size:12px;">✏️ Изменить</button>';
+        html += '</td></tr>';
+    });
+    
+    html += '</tbody></table>';
+    tableContainer.innerHTML = html;
+}
+
+async function refreshLK(){
+    if(!lkData) return;
+    await openAdminViewLK(lkData.user.id);
+}
+
+async function saveLKEdit(e){
+    e.preventDefault();
+    var data = {
+        id: lkData.user.id,
+        name: document.getElementById('ae_lk_Name').value,
+        email: document.getElementById('ae_lk_Email').value,
+        phone: document.getElementById('ae_lk_Phone').value,
+        address: document.getElementById('ae_lk_Address').value,
+        country: document.getElementById('ae_lk_Country').value,
+        city: document.getElementById('ae_lk_City').value,
+        role: document.getElementById('ae_lk_Role').value,
+        is_seller: parseInt(document.getElementById('ae_lk_Seller').value)
+    };
+    var pw = document.getElementById('ae_lk_Password').value;
+    if(pw) data.new_password = pw;
+    
+    try {
+        var res = await fetch('/api/admin.php?action=update_user', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)});
+        var result = await res.json();
+        if(result.success){ 
+            showToast('Данные пользователя сохранены!'); 
+            // Обновляем данные в модалке
+            Object.assign(lkData.user, data);
+            document.getElementById('lkBannerName').textContent = data.name;
+            document.getElementById('lkName').textContent = data.name;
+            document.getElementById('lkEmail').textContent = data.email;
+            document.getElementById('lkAvatar').textContent = data.name.charAt(0).toUpperCase();
+            switchLKTab('edit');
+        }
+        else showToast(result.error || 'Ошибка');
+    } catch(e){ showToast('Ошибка сети'); }
+}
+</script>
+
+
+<script>
+(function(){
+  var header=document.querySelector('.site-header');
+  if(!header) return;
+  var lastY=window.scrollY;
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    if(y>lastY && y>60) header.classList.add('hidden');
+    else header.classList.remove('hidden');
+    lastY=y;
+  },{passive:true});
+})();
+</script>
+
+<script src="assets/js/lang.js?v=20261021162340"></script>
+<script src="assets/js/notifications.js?v=20261021133630"></script>
+<script src="assets/js/fav-badge.js?v=20261021133523"></script>
+<script src="assets/js/phone-country.js?v=20261025131738"></script><script src="assets/js/bubble-btn.js?v=20261025131758"></script><script src="assets/js/auth-unified.js?v=20261027125007"></script></body>
+</html>

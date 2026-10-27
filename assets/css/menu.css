@@ -1,0 +1,32 @@
+/* ============================================
+   iCook — Стили страницы Меню
+   ============================================ */
+
+.section {
+    padding: 50px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 3;
+}
+
+.badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    background: var(--neon);
+    color: #003d33;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+}
+
+/* Адаптивность */
+@media (max-width: 900px) {
+    .section {
+        padding: 25px 16px;
+    }
+}
