@@ -40,7 +40,7 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .catalog-link.secondary svg{width:20px;height:20px;stroke:var(--text-main);fill:none;flex-shrink:0;}
 .catalog-link.secondary:hover{background:rgba(15,23,42,0.06);color:var(--neon-dark);transform:translateX(3px);}
 .catalog-link.secondary:hover svg{stroke:var(--neon-dark);}
-.site-header{width:100%;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);background:var(--header-bg);border-bottom:1px solid var(--border-color);box-shadow:0 4px 30px rgba(30,64,175,0.1);}
+.site-header{width:100%;height:60px;min-height:60px;max-height:60px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);background:var(--header-bg);border-bottom:1px solid var(--border-color);box-shadow:0 4px 30px rgba(30,64,175,0.1);}
 .header-left{display:flex;align-items:center;}
 .logo{font-size:clamp(16px, 3.5vw, 28px);font-weight:800;color:var(--neon-dark);text-shadow:0 0 8px rgba(30,64,175,0.4),0 0 20px rgba(30,64,175,0.2);display:flex;align-items:center;gap:12px;white-space:nowrap;}
 .logo-icon{width:44px;height:44px;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(30,64,175,1)) drop-shadow(0 0 20px rgba(30,64,175,0.6));animation:logoPulse 3s ease-in-out infinite;}
@@ -197,7 +197,7 @@ footer svg{width:20px;height:20px;}
 }
 /* --- CSS КОНЕЦ --- */
 
-.bottom-bar{height:54px;min-height:54px;max-height:54px;position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
+.bottom-bar{height:56px;min-height:56px;max-height:56px;position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
 .bottom-bar .header-right{width:100%;height:100%;align-items:center;justify-content:center;flex-wrap:nowrap;gap:4px;}
 .site-header{transition:transform 0.35s ease;}
 .site-header.hidden{transform:translateY(-100%);}
@@ -311,6 +311,12 @@ button, .btn, a, label {
 @keyframes topBubbles{0%{background-position:5% 90%,10% 90%,10% 90%,15% 90%,25% 90%,25% 90%,40% 90%,55% 90%,70% 90%}50%{background-position:0% 80%,0% 20%,10% 40%,20% 0%,30% 30%,22% 50%,50% 50%,65% 20%,90% 30%}100%{background-position:0% 70%,0% 10%,10% 30%,20% -10%,30% 20%,22% 40%,50% 40%,65% 10%,90% 20%;background-size:0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%}}
 @keyframes bottomBubbles{0%{background-position:10% -10%,30% 10%,55% -10%,70% -10%,85% -10%,70% -10%,70% 0%}50%{background-position:0% 80%,20% 80%,45% 60%,60% 100%,75% 70%,95% 60%,105% 0%}100%{background-position:0% 90%,20% 90%,45% 70%,60% 110%,75% 80%,95% 70%,110% 10%;background-size:0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%}}
 </style>
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261028152612">
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
+<script src="assets/js/site-select.js?v=20261028155005" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
+<script src="assets/js/site-header.js?v=20261028160517" defer></script>
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -322,7 +328,6 @@ button, .btn, a, label {
 <a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
 <a href="reviews.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
 <a href="about.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 11v5"></path><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"></circle></svg>О нас</a>
-<a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Контакты</a>
 <div class="catalog-divider thick"></div>
 <a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>Войти / Регистрация</a>
 <a href="cart.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Корзина</a>
@@ -335,7 +340,7 @@ button, .btn, a, label {
   <div class="header-left">
 <div class="logo">
 <svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1e40af"/><stop offset="50%" style="stop-color:#1e40af"/><stop offset="100%" style="stop-color:#1e3a8a"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
-Я готовлю — ты&nbsp; ешь!</div>
+Я готовлю — ты ешь!</div>
 </div>
 </header>
 <div class="search-bar-wrap"><div class="search"><input type="text" id="heroSearch" placeholder="Поиск блюд..."><button class="search-clear" id="heroSearchClear" onclick="document.getElementById('heroSearch').value='';this.style.display='none';if(typeof loadRestaurants==='function')loadRestaurants();" aria-label="Очистить"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div></div>
@@ -901,26 +906,16 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 })();
 </script>
 
-<script>
-(function(){
-  var header=document.querySelector('.site-header');
-  if(!header) return;
-  var lastY=window.scrollY;
-  window.addEventListener('scroll',function(){
-    var y=window.scrollY;
-    if(y>lastY && y>60) header.classList.add('hidden');
-    else header.classList.remove('hidden');
-    lastY=y;
-  },{passive:true});
-})();
-</script>
+
 
 <script src="assets/js/lang.js?v=20261021162340"></script>
 <script src="assets/js/notifications.js?v=20261021133630"></script>
 <script src="assets/js/footer.js?v=20261021131201"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
-<script src="assets/js/auth-email-flow.js?v=20261027030424"></script>
+<script src="assets/js/site-catalog.js?v=20261028152612"></script>
+<script src="assets/js/auth-home.js?v=20261028152612"></script>
+<script src="assets/js/auth-email-flow.js?v=20261028152612"></script>
 <script src="assets/js/phone-country.js?v=20261025131738"></script>
 <script src="assets/js/bubble-btn.js?v=20261025131758"></script>
 <script>(function(){try{if(sessionStorage.getItem('authOpen')==='1'&&sessionStorage.getItem('authPath')===location.pathname){var m=document.getElementById('authModal');if(m){m.classList.add('active');var t=sessionStorage.getItem('authTab')||'login';if(typeof switchTab==='function')switchTab(t);if(typeof window.afRestoreSms==='function')window.afRestoreSms();}}}catch(e){}})();</script><script id="auth-query-open">(function(){try{var q=new URLSearchParams(location.search);var a=q.get('auth');if(!a)return;var run=function(){if(typeof openAuth!=='function'){setTimeout(run,120);return;}openAuth();if((a==='register'||a==='signup')&&typeof switchTab==='function'){switchTab('register');}try{history.replaceState(null,'',location.pathname+location.hash);}catch(e){}};if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',run);}else{run();}}catch(e){}})();</script></body>

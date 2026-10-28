@@ -7,9 +7,9 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="assets/css/app.css?v=20261028143353">
+    <link rel="stylesheet" href="assets/css/app.css?v=20261028145408">
     <link rel="stylesheet" href="assets/css/menu.css?v=20260809112434">
     
     <script>
@@ -402,6 +402,11 @@
         .add-dish-form { padding: 20px; }
     }
     </style>
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
+<script src="assets/js/site-select.js?v=20261028155005" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
+<script src="assets/js/site-header.js?v=20261028160517" defer></script>
 </head>
 <body>
     <!-- Каталог (выдвижное меню) -->
@@ -428,17 +433,13 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
             Панель продавца
         </a>
-        <a href="#" class="catalog-link" onclick="toggleCatalog()">
+        <a href="chefs.html" class="catalog-link" onclick="toggleCatalog()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
             Повара
         </a>
         <a href="#" class="catalog-link" onclick="toggleCatalog()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             Отзывы
-        </a>
-        <a href="#" class="catalog-link" onclick="toggleCatalog()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Контакты
         </a>
         <div class="catalog-divider thick"></div>
         <a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();">
@@ -465,7 +466,7 @@
     </div>
 
     <!-- Шапка -->
-    <header>
+    <header class="site-header" data-header-tools>
         <div class="header-left">
             <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>

@@ -1,0 +1,6 @@
+/* Единая типографика: как на главной странице. */
+* { font-family: 'Nunito', system-ui, -apple-system, sans-serif !important; }
+h1, h2, h3, h4, h5, h6, .logo, .section-title, .page-title,
+.dish, .chef-name, .contact-title, .ab-head {
+    font-family: 'Rubik', system-ui, -apple-system, sans-serif !important;
+}

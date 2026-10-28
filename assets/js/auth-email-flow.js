@@ -593,6 +593,7 @@
   if (typeof window.closeAuth === 'function') {
     const origCloseAuth = window.closeAuth;
     window.closeAuth = function () {
+      stopSms();
       clearPersistedSms();
       return origCloseAuth.apply(this, arguments);
     };

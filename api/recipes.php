@@ -9,7 +9,7 @@ if (mb_strlen($search) > 100) {
     $search = mb_substr($search, 0, 100);
 }
 $page = max(1, (int) ($_GET['page'] ?? 1));
-$limit = 12;
+$limit = max(1, min(50, (int) ($_GET['limit'] ?? 12)));
 $offset = ($page - 1) * $limit;
 
 // Владелец видит и скрытые свои рецепты (для управления), остальные — только опубликованные.
@@ -32,7 +32,7 @@ $sql = "SELECT r.*, u.name as author_name
         FROM recipes r
         LEFT JOIN users u ON r.user_id = u.id
         WHERE $where
-        ORDER BY r.created_at DESC
+        ORDER BY r.created_at DESC, r.id DESC
         LIMIT ? OFFSET ?";
 
 $stmt = $pdo->prepare($sql);

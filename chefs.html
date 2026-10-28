@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Повара iCook — знакомьтесь с домашними поварами, находите любимую кухню и выбирайте блюда из их меню.">
+<title>Повара — Я готовлю — ты ешь!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=20261028145408">
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261028152612">
+<link rel="stylesheet" href="assets/css/directory.css?v=20261028155636">
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('site-theme')==='dark'?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
+<script src="assets/js/site-select.js?v=20261028155005" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
+<script src="assets/js/site-header.js?v=20261028160517" defer></script>
+</head>
+<body>
+<div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
+<div class="catalog-drawer" id="catalogDrawer"></div>
+<header class="site-header"><div class="header-left"><a href="index.html" class="logo">
+<svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1e40af"/><stop offset="50%" style="stop-color:#1e40af"/><stop offset="100%" style="stop-color:#1e3a8a"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
+Я готовлю — ты ешь!</a></div></header>
+<nav class="bottom-bar" aria-label="Основная навигация"><div class="header-right">
+<button class="catalog-btn" onclick="toggleCatalog()" aria-label="Каталог сайта"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+<a href="index.html" class="icon-btn" aria-label="Главная"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 10 9-7 9 7v11H3zM9 21v-8h6v8"/></svg></a>
+<button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></button>
+<a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;" aria-label="Мой профиль"><span class="user-btn-letter" id="userLetter"></span></a>
+<a href="cart.html" class="icon-btn" aria-label="Корзина"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></a>
+<button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Переключить тему"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M1 12h2M21 12h2M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2"/></svg></button>
+</div></nav>
+<main class="directory-page">
+<div class="directory-heading"><h1>Наши повара</h1><p>У каждого блюда есть автор. Знакомьтесь с поварами, выбирайте любимую кухню и заглядывайте в их меню.</p></div>
+<div class="directory-toolbar">
+<div class="directory-search"><label class="sr-only" for="chefSearch" hidden>Поиск поваров</label><input id="chefSearch" type="search" placeholder="Имя повара, город или кухня…" aria-label="Поиск поваров"><button id="chefSearchClear" type="button" aria-label="Очистить поиск" hidden>×</button></div>
+<select id="chefCategory" aria-label="Категория блюд повара"><option value="0">Все категории</option></select>
+<select id="chefColumns" aria-label="Количество колонок"><option value="1">Показать 1</option><option value="2" selected>Показать 2</option><option value="4">Показать 4</option></select>
+</div>
+<p class="directory-summary" id="chefsSummary" aria-live="polite"></p>
+<div class="chefs-grid cols-2" id="chefsGrid" aria-label="Список поваров" aria-busy="true"></div>
+<div class="feed-status" id="chefsSentinel" role="status" aria-live="polite"></div>
+</main>
+<div class="modal" id="authModal"></div>
+<footer>© 2026 Я готовлю — ты ешь!</footer>
+<script src="assets/js/main.js?v=20261022183142"></script>
+<script src="assets/js/site-catalog.js?v=20261028152612"></script>
+<script src="assets/js/phone-country.js?v=20261025131738"></script>
+<script src="assets/js/bubble-btn.js?v=20261025131758"></script>
+<script src="assets/js/auth-home.js?v=20261028152612"></script>
+<script src="assets/js/auth-email-flow.js?v=20261028152612"></script>
+<script src="assets/js/lang.js?v=20261021162340"></script>
+<script src="assets/js/fav-badge.js?v=20261021133523"></script>
+<script src="assets/js/notifications.js?v=20261021133630"></script>
+<script src="assets/js/footer.js?v=20261021131201"></script>
+<script src="assets/js/infinite-feed.js?v=20261028155005"></script>
+<script src="assets/js/chefs.js?v=20261028155005"></script>
+</body>
+</html>
