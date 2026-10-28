@@ -194,3 +194,19 @@ function save_dish_image(array $file): string
     @chmod($dir . $filename, 0644);
     return '/uploads/dishes/' . $filename;
 }
+
+/** Сохраняет фото рецепта под случайным именем, возвращает публичный путь. */
+function save_recipe_image(array $file): string
+{
+    $ext = validate_image_upload($file);
+    $dir = '/var/www/html/icook/uploads/recipes/';
+    if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
+        throw new RuntimeException('Не удалось сохранить файл');
+    }
+    $filename = 'recipe_' . time() . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
+    if (!move_uploaded_file((string) $file['tmp_name'], $dir . $filename)) {
+        throw new RuntimeException('Не удалось сохранить файл');
+    }
+    @chmod($dir . $filename, 0644);
+    return '/uploads/recipes/' . $filename;
+}

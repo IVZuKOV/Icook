@@ -66,7 +66,7 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .icon-btn.logged{background:var(--neon);color:#ffffff;border-color:var(--neon);}
 .icon-btn svg{width:20px;height:20px;}
 .theme-btn .sun{display:none;}[data-theme="dark"] .theme-btn .moon{display:none;}[data-theme="dark"] .theme-btn .sun{display:block;}
-#cartBadge{position:absolute;top:-6px;right:-6px;background:#ff4d4d;color:#fff;font-size:11px;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
+#cartBadge{position:absolute;top:-4px;right:-4px;background:#e60023;color:#fff;font-size:9px;font-weight:bold;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border:2px solid var(--border-color);border-radius:var(--radius-md);background:transparent;color:var(--text-main);font-weight:700;font-size:14px;cursor:pointer;transition:all 0.35s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:none;position:relative;overflow:hidden;text-decoration:none;min-width:100px;}
 .btn:hover{transform:translateX(4px);border-color:var(--neon);background:var(--neon-glow);color:var(--neon-dark);box-shadow:0 0 15px var(--neon-glow);}
 .btn:active{transform:scale(0.98);}
@@ -108,6 +108,8 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .info-box h3{color:var(--neon-dark);margin-bottom:15px;font-size:24px;display:flex;align-items:center;gap:10px;}
 .info-box h3 svg{width:32px;height:32px;stroke:var(--neon-dark);fill:none;filter:drop-shadow(0 0 8px var(--neon-glow));flex-shrink:0;}
 .info-box p{color:var(--text-muted);line-height:1.7;}
+.info-box.clickable{cursor:pointer;}
+.info-box.clickable:active{transform:translateY(-2px);}
 .modal{position:fixed;inset:0;background:var(--card-bg);display:none;justify-content:center;align-items:center;z-index:1000;backdrop-filter:blur(10px);}
 .modal.active{display:flex;animation:modalFadeIn 0.3s ease;}
 @keyframes modalFadeIn{from{opacity:0;}to{opacity:1;}}
@@ -157,6 +159,9 @@ footer svg{width:20px;height:20px;}
 .share-link-input:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(30,64,175,0.15);}
 .share-copy-btn{width:100%;padding:12px;border:2px solid var(--neon);border-radius:12px;background:transparent;color:var(--neon-dark);font-weight:700;font-size:14px;cursor:pointer;transition:0.3s;margin-bottom:8px;}
 .share-copy-btn:hover{transform:scale(1.02);box-shadow:0 0 20px rgba(30,64,175,0.5);}
+/* «Поделиться страничкой»: неон появляется только при нажатии/наведении — как у .share-option в модалке APK */
+#sharePageModal .share-copy-btn{border:2px solid var(--border-color);color:var(--text-main);}
+#sharePageModal .share-copy-btn:hover,#sharePageModal .share-copy-btn:active{border-color:var(--neon);background:var(--neon-glow);color:var(--neon-dark);box-shadow:0 0 15px var(--neon-glow);transform:scale(1.02);}
 .apk-progress-wrap{margin:18px 0 8px;}
 .apk-progress-track{height:10px;border-radius:999px;background:var(--border-color);overflow:hidden;position:relative;}
 .apk-progress-bar{height:100%;width:0;border-radius:999px;background:var(--neon);box-shadow:0 0 14px var(--neon-glow);transition:width 0.25s ease;}
@@ -193,9 +198,12 @@ footer svg{width:20px;height:20px;}
 .qr-wrapper img{width:100%!important;max-width:100%!important;height:auto!important;}
 .qr-btn{min-width:0!important;max-width:108px!important;width:calc(100% - 22px)!important;font-size:8px!important;padding:5px 6px!important;min-height:28px;}
 }
+/* Светлая тема: заголовки-акценты в тексте «О нас» — фирменный синий и фирменный шрифт */
+.ab-head{color:var(--neon-dark);font-family:'Montserrat','Inter',system-ui,-apple-system,sans-serif;font-weight:800;letter-spacing:.01em;}
+[data-theme="dark"] .ab-head{color:var(--text-main);}
 /* --- CSS КОНЕЦ --- */
 
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
+.bottom-bar{height:54px;min-height:54px;max-height:54px;position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
 .bottom-bar .header-right{width:100%;justify-content:center;flex-wrap:nowrap;gap:8px;}
 .site-header{transition:transform 0.35s ease;}
 .site-header.hidden{transform:translateY(-100%);}
@@ -254,6 +262,7 @@ button, .btn, a, label {
 <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Каталог сайта</h3>
 <a href="restaurants.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>Рестораны/бары/кафе</a>
 <a href="menu.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Меню</a>
+<a href="recipes.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg>Рецепты</a>
 <a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
 <a href="reviews.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
 <a href="about.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 11v5"></path><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"></circle></svg>О нас</a>
@@ -286,21 +295,21 @@ button, .btn, a, label {
 </nav>
 </div>
 <section class="section-transparent"><h2 class="section-title">О нас</h2>
-<p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;"><strong style="color:var(--text-main);font-weight:800;">«Я готовлю — ты ешь!»: Новая культура домашней еды</strong></p>
+<p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;"><strong class="ab-head" style="font-weight:800;">«Я готовлю — ты ешь!»<br>Это новая культура домашней еды</strong></p>
 <p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;">Наша платформа — это не просто сервис заказа еды, а живое сообщество, где самые вкусные блюда создаются на обычных домашних кухнях — с душой, любовью и вниманием к каждой детали. Здесь у каждого блюда есть своя история, а у каждого повара — свое лицо и имя!</p>
 <p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;">Мы стираем границы, объединяя два мира:</p>
-<p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;"><strong style="color:var(--text-main);font-weight:800;">Для тех, кто готовит:</strong> это возможность превратить кулинарный талант в любимое дело, создавать свое уникальное меню и находить благодарных соседей, которые оценят ваш труд и влюбятся в ваши блюда.</p>
-<p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;"><strong style="color:var(--text-main);font-weight:800;">Для тех, кто любит вкусно покушать:</strong> это доступ к свежей, горячей и по-настоящему вкусной еде прямо по соседству, с прозрачными отзывами и честными ценами.</p>
+<p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;"><strong class="ab-head" style="font-weight:800;">Для тех, кто готовит:</strong><br>Это возможность превратить кулинарный талант в любимое дело, создавать свое уникальное меню и находить благодарных соседей, которые оценят ваш труд и влюбятся в ваши блюда.</p>
+<p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;"><strong class="ab-head" style="font-weight:800;">Для тех, кто любит вкусно покушать:</strong><br>Это доступ к свежей, горячей и по-настоящему вкусной еде прямо по соседству, с прозрачными отзывами и честными ценами.</p>
 <p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;">Мы делимся семейными рецептами, раскрываем кулинарные секреты и помогаем друг другу находить лучшие продукты без переплат.</p>
 <p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;">Наша миссия — сделать качественную домашнюю кухню доступной каждому, поддерживая локальных кулинаров, которые вкладывают душу, сердце в свое дело.</p>
 <p style="max-width:800px;margin:0 auto 20px;text-align:center;color:var(--text-muted);font-size:16px;line-height:1.7;">Найдите своего любимого домашнего повара рядом с вами или поделитесь своим коронным блюдом с миром!</p>
 </section>
 <section class="section-transparent"><h2 class="section-title">Как это работает</h2>
 <div class="info">
-<div class="info-box"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>Готовь</h3><p>Готовь и публикуй свои блюда. Расскажи о их особенностях</p></div>
-<div class="info-box"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Заказывай</h3><p>Заказывай домашнюю еду или еду из кафе и ресторанов</p></div>
-<div class="info-box"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Зарабатывай</h3><p>Стань кулинаром и получай новых клиентов и доход со своих блюд.</p></div>
-<div class="info-box"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Делись</h3><p>Делись любимыми блюдами с друзьями и получай бонусы</p></div>
+<div class="info-box clickable" onclick="goReady()"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>Готовь</h3><p>Готовь и публикуй свои блюда. Расскажи о их особенностях</p></div>
+<div class="info-box clickable" onclick="location.href='menu.html'"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Заказывай</h3><p>Заказывай домашнюю еду или еду из кафе и ресторанов</p></div>
+<div class="info-box clickable" onclick="goReady()"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Зарабатывай</h3><p>Стань кулинаром и получай новых клиентов и доход со своих блюд.</p></div>
+<div class="info-box clickable" onclick="location.href='recipes.html'"><h3><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Делись</h3><p>Делись любимыми блюдами с друзьями и получай бонусы</p></div>
 </div>
 </section>
 <div class="qr-container">
@@ -392,6 +401,32 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 else updateCatalogVisibility();
 function openAuth(){document.getElementById('authModal').classList.add('active');switchTab('login');setTimeout(()=>document.getElementById('loginName')?.focus(),100);}
 function closeAuth(){document.getElementById('authModal').classList.remove('active');}
+
+// --- Гиперссылки блоков «Готовь / Заказывай / Зарабатывай / Делись» ---
+// «Готовь» и «Зарабатывай» ведут в «Мои блюда» к кнопке «+ Добавить блюдо».
+// Без авторизации открываем модалку входа и после неё перебрасываем туда же.
+function goReady(){
+    var u = null;
+    try { u = JSON.parse(localStorage.getItem('user') || 'null'); } catch(e) {}
+    if (u && u.name) {
+        window.location.href = 'profile.html?tab=mydishes';
+        return;
+    }
+    try { sessionStorage.setItem('afterAuthDest', 'profile.html?tab=mydishes'); } catch(e) {}
+    if (typeof window.openAuth === 'function') window.openAuth();
+}
+// После успешной авторизации (auth-unified делает reload страницы) — уводим в «Мои блюда»
+(function(){
+    var dest = null;
+    try { dest = sessionStorage.getItem('afterAuthDest'); } catch(e) {}
+    if (!dest) return;
+    var u = null;
+    try { u = JSON.parse(localStorage.getItem('user') || 'null'); } catch(e) {}
+    if (u && u.name) {
+        try { sessionStorage.removeItem('afterAuthDest'); } catch(e) {}
+        window.location.replace(dest);
+    }
+})();
 function switchTab(tab){document.getElementById('loginForm').style.display=tab==='login'?'block':'none';document.getElementById('registerForm').style.display=tab==='register'?'block':'none';document.getElementById('resetForm').style.display=tab==='reset'?'block':'none';document.getElementById('authTitle').textContent=tab==='login'?'Личный кабинет':tab==='register'?'Создать аккаунт':'Восстановление пароля';}
 async function resetPassword(){const e=document.getElementById('resetEmail').value.trim();clearErrors();if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))return showErr('resetEmailError','Некорректный email');setLoading('resetBtn',true);try{const res=await fetch('/api/reset_password.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});const data=await res.json();if(data.error)throw new Error(data.error);closeAuth();showToast('Письмо для сброса пароля отправлено на '+e);}catch(err){showErr('resetEmailError',err.message);}finally{setLoading('resetBtn',false);}}
 function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}

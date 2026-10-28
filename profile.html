@@ -6,7 +6,7 @@
 <title>Личный кабинет — Я готовлю</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20261027125607">
+<link rel="stylesheet" href="assets/css/app.css?v=20261028143353">
 
 <style>
 .profile-.site-header{display:flex;gap:28px;align-items:center;flex-wrap:wrap;padding:24px 0;border-bottom:1px solid var(--border-color);}
@@ -68,8 +68,7 @@
 .dish-badge.off{background:rgba(239,68,68,0.1);color:#ef4444;}
 .dish-actions{display:flex;gap:6px;}
 .dish-actions button{flex:1;padding:8px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;border:none;transition:0.3s;font-family:'Montserrat',sans-serif;}
-.btn-toggle{position:relative;z-index:0;background:var(--neon-glow);color:var(--neon-dark);border:1px solid var(--border-color);}
-.btn-toggle:before{content:'';position:absolute;top:-2px;left:-2px;z-index:-1;width:calc(100% + 4px);height:calc(100% + 4px);background:var(--neon);filter:blur(6px);opacity:0.8;border-radius:10px;animation:glowing 2.4s ease-in-out infinite;}
+.btn-toggle{background:var(--neon-glow);color:var(--neon-dark);border:1px solid var(--border-color);}
 .btn-toggle:hover{background:var(--neon);color:#ffffff;}
 .btn-delete{background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);}
 .btn-delete:hover{background:#ef4444;color:#fff;}
@@ -104,6 +103,29 @@
 .file-upload svg{width:36px;height:36px;stroke:var(--neon-dark);margin-bottom:8px;}
 .file-upload input{display:none;}
 .file-preview{max-width:180px;max-height:130px;border-radius:10px;margin-top:8px;display:none;}
+
+/* --- Форма рецепта: ингредиенты и шаги --- */
+.ing-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
+.ing-row .ing-name{flex:1;min-width:0;}
+.ing-qty{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border-color);border-radius:12px;padding:4px;flex:0 0 auto;}
+.ing-qty .qty-btn{width:32px;height:32px;border:none;border-radius:8px;background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:0.05s;}
+.ing-qty .qty-btn:active{background:var(--neon);color:#fff;transform:scale(0.9);}
+.ing-qty input{width:52px!important;padding:0!important;border:none!important;background:transparent!important;text-align:center;font-weight:700;font-size:15px;box-shadow:none!important;}
+.form-group select.ing-unit{width:80px;flex:0 0 80px;padding:10px 6px!important;}
+.sub-add-btn{width:100%;padding:11px;border:2px dashed var(--border-color);border-radius:12px;background:transparent;color:var(--neon-dark);font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;transition:0.25s;font-size:13px;}
+.sub-add-btn:hover{border-color:var(--neon);background:var(--neon-glow);}
+.step-block{position:relative;border:1px solid var(--border-color);border-radius:14px;padding:14px 12px 12px;margin-bottom:10px;background:var(--bg);}
+.step-block .step-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.step-block .step-head span{font-weight:800;font-size:13px;color:var(--neon-dark);text-transform:uppercase;letter-spacing:0.5px;}
+.step-block textarea{min-height:64px!important;}
+.step-photo{position:relative;margin-top:10px;}
+.step-photo .step-photo-x{position:absolute;top:-10px;right:-10px;width:26px;height:26px;border-radius:50%;background:#ef4444;color:#fff;border:2px solid var(--card-bg);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 2px 8px rgba(239,68,68,0.45);line-height:1;padding:0;}
+.step-photo .step-photo-x:active{transform:scale(0.9);}
+.step-photo .file-upload{padding:16px;margin-top:0;}
+.step-photo .file-upload svg{width:28px;height:28px;}
+.step-photo .file-preview{max-width:100%;max-height:180px;}
+.step-photo-restore{display:block;width:100%;margin-top:8px;padding:8px;border:1px dashed var(--border-color);border-radius:10px;background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;font-family:'Montserrat',sans-serif;}
+.step-photo-restore:hover{border-color:var(--neon);color:var(--neon-dark);}
 
 /* --- Заказы продавца --- */
 .seller-order-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.05);transition:0.3s;}
@@ -167,7 +189,7 @@
 .add-dish-card{background:var(--card-bg);border:2px dashed var(--neon);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;cursor:pointer;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);}
 .add-dish-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 8px 30px var(--neon-glow);background:var(--neon-glow);}
 .add-dish-card .plus-icon{width:64px;height:64px;border-radius:50%;background:transparent;border:2px solid var(--neon);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 0 20px var(--neon-glow);color:var(--neon-dark);}
-.add-dish-card .plus-icon svg{width:32px;height:32px;stroke:#ffffff;}
+.add-dish-card .plus-icon svg{width:32px;height:32px;stroke:var(--neon);}
 .add-dish-card span{font-weight:700;color:var(--neon-dark);font-size:15px;}
 [data-theme="dark"] .add-dish-card{background:#1e293b;border-color:rgba(255,255,255,0.2);}
 [data-theme="dark"] .add-dish-card:hover{border-color:#ffffff;box-shadow:0 0 20px rgba(255,255,255,0.2);}
@@ -185,8 +207,8 @@
 .header-right{width:100%;justify-content:space-between;align-items:center;gap:8px;}
 }
 
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
-.bottom-bar .header-right{width:100%;justify-content:center;flex-wrap:nowrap;gap:8px;}
+.bottom-bar{height:54px;min-height:54px;max-height:54px;position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
+.bottom-bar .header-right{width:100%;height:100%;align-items:center;justify-content:center;flex-wrap:nowrap;gap:4px;}
 .site-header{transition:transform 0.35s ease;}
 .site-header.hidden{transform:translateY(-100%);}
 body{padding-bottom:88px;}
@@ -200,7 +222,7 @@ body{padding-bottom:88px;}
 
 
 .bottom-bar .header-right{flex-wrap:nowrap;gap:4px;}
-.bottom-bar{padding:8px 4px;}
+.bottom-bar{padding:0 4px;}
 .logout-btn{padding:0;width:40px;height:40px;justify-content:center;border-radius:50%;}
 
 </style>
@@ -234,6 +256,7 @@ button, .btn, a, label {
 <a href="index.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная</a>
 <a href="restaurants.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>Рестораны/бары/кафе</a>
 <a href="menu.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Меню</a>
+<a href="recipes.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg>Рецепты</a>
 <a href="#" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
 <a href="reviews.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
 <a href="about.html" class="catalog-link" onclick="toggleCatalog()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 11v5"></path><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"></circle></svg>О нас</a>
@@ -284,6 +307,7 @@ button, .btn, a, label {
 <div class="tabs">
 <button class="tab active" onclick="switchTab('orders',this)">Мои заказы</button>
 <button class="tab" onclick="switchTab('mydishes',this)">Мои блюда</button>
+<button class="tab" onclick="switchTab('myrecipes',this)">Мои рецепты</button>
 <button class="tab" onclick="switchTab('sellerorders',this)">Заказы мне</button>
 <button class="tab" onclick="switchTab('settings',this)">Настройки</button>
 <button class="tab" id="adminTabBtn" onclick="switchTab('admin',this)" style="display:none;">🛡️ Админ</button>
@@ -298,6 +322,11 @@ button, .btn, a, label {
 <!-- === МОИ БЛЮДА === -->
 <div class="tab-content" id="tab-mydishes">
 <div class="my-dishes-grid" id="myDishesGrid"></div>
+</div>
+
+<!-- === МОИ РЕЦЕПТЫ === -->
+<div class="tab-content" id="tab-myrecipes">
+<div class="my-dishes-grid" id="myRecipesGrid"></div>
 </div>
 
 <!-- Модальное окно добавления блюда -->
@@ -384,6 +413,85 @@ button, .btn, a, label {
 <div style="display:flex;gap:10px;margin-top:16px;">
 <button onclick="closeEditDishModal()" style="flex:1;padding:12px;border:2px solid var(--border-color);border-radius:12px;background:transparent;color:var(--text-main);font-weight:600;cursor:pointer;">Отмена</button>
 <button class="btn" style="flex:1;padding:12px;background:var(--neon);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;" onclick="editDish(document.getElementById('editDishId').value)">Сохранить</button>
+</div>
+</div>
+</div>
+<!-- Модальное окно добавления рецепта -->
+<div class="info-modal-overlay" id="addRecipeModal" style="z-index:10007;">
+<div class="info-modal-box" style="max-width:480px;text-align:left;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+<h2 style="color:var(--neon-dark);font-size:22px;font-weight:800;margin:0;">Новый рецепт</h2>
+<span style="cursor:pointer;font-size:28px;color:var(--text-muted);line-height:1;" onclick="closeAddRecipeModal()">&#10005;</span>
+</div>
+<div class="form-group">
+<label>Название *</label>
+<input type="text" id="recipeTitle" placeholder="Например: Борщ домашний">
+</div>
+<div class="form-group">
+<label>Описание</label>
+<textarea id="recipeDesc" style="min-height:80px;" placeholder="Коротко о рецепте..."></textarea>
+</div>
+<div class="form-group">
+<label>Состав / Ингредиенты</label>
+<div id="recipeIngList" class="ing-list"></div>
+<button type="button" class="sub-add-btn" onclick="addIngredientRow('recipeIngList')">＋ Добавить ингредиент</button>
+</div>
+<div class="form-group">
+<label>Пошаговый рецепт</label>
+<div id="recipeStepList" class="step-list"></div>
+<button type="button" class="sub-add-btn" onclick="addRecipeStep('recipeStepList')">＋ Добавить шаг</button>
+</div>
+<div class="form-group">
+<label>Главное фото</label>
+<div class="file-upload" onclick="document.getElementById('recipeImage').click()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+<p>Нажмите для загрузки фото</p>
+<p style="font-size:12px;margin-top:4px;">JPG, PNG, WEBP до 5 МБ</p>
+<input type="file" id="recipeImage" accept="image/*" onchange="previewRecipeImage(this, 'recipeImagePreview')">
+</div>
+<img class="file-preview" id="recipeImagePreview">
+</div>
+<button class="btn" style="width:100%;padding:16px;font-size:16px;margin-top:10px;" onclick="addRecipe()">Добавить рецепт</button>
+</div>
+</div>
+<!-- Модальное окно редактирования рецепта -->
+<div class="info-modal-overlay" id="editRecipeModal" style="z-index:10008;">
+<div class="info-modal-box" style="max-width:480px;text-align:left;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+<h2 style="color:var(--neon-dark);font-size:22px;font-weight:800;margin:0;">Редактировать рецепт</h2>
+<span style="cursor:pointer;font-size:28px;color:var(--text-muted);line-height:1;" onclick="closeEditRecipeModal()">&#10005;</span>
+</div>
+<input type="hidden" id="editRecipeId">
+<div class="form-group">
+<label>Название *</label>
+<input type="text" id="editRecipeTitle" placeholder="Название рецепта">
+</div>
+<div class="form-group">
+<label>Описание</label>
+<textarea id="editRecipeDesc" style="min-height:80px;" placeholder="Коротко о рецепте..."></textarea>
+</div>
+<div class="form-group">
+<label>Состав / Ингредиенты</label>
+<div id="editRecipeIngList" class="ing-list"></div>
+<button type="button" class="sub-add-btn" onclick="addIngredientRow('editRecipeIngList')">＋ Добавить ингредиент</button>
+</div>
+<div class="form-group">
+<label>Пошаговый рецепт</label>
+<div id="editRecipeStepList" class="step-list"></div>
+<button type="button" class="sub-add-btn" onclick="addRecipeStep('editRecipeStepList')">＋ Добавить шаг</button>
+</div>
+<div class="form-group">
+<label>Главное фото (оставить пустым — не менять)</label>
+<div class="file-upload" onclick="document.getElementById('editRecipeImage').click()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+<p>Нажмите для смены фото</p>
+<input type="file" id="editRecipeImage" accept="image/*" onchange="previewRecipeImage(this, 'editRecipeImagePreview')">
+</div>
+<img class="file-preview" id="editRecipeImagePreview" style="display:none;margin-top:10px;max-width:200px;border-radius:10px;">
+</div>
+<div style="display:flex;gap:10px;margin-top:16px;">
+<button onclick="closeEditRecipeModal()" style="flex:1;padding:12px;border:2px solid var(--border-color);border-radius:12px;background:transparent;color:var(--text-main);font-weight:600;cursor:pointer;">Отмена</button>
+<button class="btn" style="flex:1;padding:12px;background:var(--neon);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;" onclick="editRecipe(document.getElementById('editRecipeId').value)">Сохранить</button>
 </div>
 </div>
 </div>
@@ -534,6 +642,7 @@ async function switchTab(n, btn) {
     document.getElementById('tab-' + n).classList.add('active');
     if(n === 'orders') loadBuyerOrders();
     if(n === 'mydishes') { loadMyDishes(); }
+    if(n === 'myrecipes') { loadMyRecipes(); }
     if(n === 'sellerorders') { loadSellerOrders(); }
     if(n === 'settings') { setTimeout(function(){ if(geoMap) geoMap.invalidateSize(); else initGeoMap(); }, 200); }
     if(n === 'admin') { loadAdminSection('stats'); }
@@ -677,7 +786,7 @@ async function loadMyDishes() {
                     '<div class="dish-title">' + d.title + '</div>' +
                     '<div class="dish-price">' + d.price + ' \u20BD</div>' +
                     '<div class="dish-actions">' +
-                        (isAvail ? '<button class="btn-toggle" onclick="toggleDish(' + d.id + ')">Скрыть</button>' : '<button class="btn-publish" onclick="toggleDish(' + d.id + ')">Разместить</button>') +
+                        (isAvail ? '<button class="btn-toggle" onclick="toggleDish(' + d.id + ')">В стоп-лист</button>' : '<button class="btn-publish" onclick="toggleDish(' + d.id + ')">Разместить</button>') +
                         '<button class="btn-delete" onclick="deleteDish(' + d.id + ')">Удалить</button>' +
                     '</div>' +
                     '<svg class="edit-pencil-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="openEditDish(' + d.id + ')"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
@@ -744,6 +853,14 @@ window.addEventListener('popstate', function(e) {
     if (a && a.classList.contains('active')) {
         a.classList.remove('active');
     }
+    var rm = document.getElementById('editRecipeModal');
+    if (rm && rm.classList.contains('active')) {
+        rm.classList.remove('active');
+    }
+    var ra = document.getElementById('addRecipeModal');
+    if (ra && ra.classList.contains('active')) {
+        ra.classList.remove('active');
+    }
 });
 async function editDish(id) {
     var title = document.getElementById('editDishTitle').value.trim();
@@ -769,6 +886,324 @@ async function editDish(id) {
         showToastMsg('Блюдо обновлено');
         closeEditDishModal();
         loadMyDishes();
+    } else {
+        showToastMsg(data.error || 'Ошибка');
+    }
+}
+
+// --- МОИ РЕЦЕПТЫ ---
+function previewRecipeImage(input, previewId) {
+    var prev = document.getElementById(previewId);
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            prev.src = e.target.result;
+            prev.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// --- ФОРМА РЕЦЕПТА: ингредиенты и шаги ---
+function escAttr(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// Ряд ингредиента: название | счётчик (-  значение +) | единица (гр/кг/л/мл)
+function addIngredientRow(listId, ing) {
+    ing = ing || {};
+    var list = document.getElementById(listId);
+    if (!list) return;
+    var row = document.createElement('div');
+    row.className = 'ing-row';
+    var units = ['гр', 'кг', 'л', 'мл'];
+    var cur = ing.unit || 'гр';
+    var opts = units.map(function(u) {
+        return '<option value="' + u + '"' + (u === cur ? ' selected' : '') + '>' + u + '</option>';
+    }).join('');
+    row.innerHTML =
+        '<input type="text" class="ing-name" placeholder="Название ингредиента" value="' + escAttr(ing.name || '') + '">' +
+        '<div class="ing-qty">' +
+            '<button type="button" class="qty-btn" onclick="chgIngQty(this,-1)">&minus;</button>' +
+            '<input type="text" inputmode="decimal" class="qty-inp" value="' + escAttr(ing.qty != null && ing.qty !== '' ? ing.qty : '100') + '">' +
+            '<button type="button" class="qty-btn" onclick="chgIngQty(this,1)">+</button>' +
+        '</div>' +
+        '<select class="ing-unit">' + opts + '</select>';
+    list.appendChild(row);
+}
+
+// Счётчик: +1 / -1 нажатием, значение также можно ввести вручную
+function chgIngQty(btn, delta) {
+    var inp = btn.parentNode.querySelector('.qty-inp');
+    if (!inp) return;
+    var v = parseFloat(String(inp.value).replace(',', '.'));
+    if (isNaN(v)) v = 0;
+    v = Math.max(0, Math.round((v + delta) * 100) / 100);
+    inp.value = v;
+}
+
+// Блок шага: «Шаг N» + текст + фото с красным крестиком
+function addRecipeStep(listId, step) {
+    step = step || {};
+    var list = document.getElementById(listId);
+    if (!list) return;
+    var n = list.querySelectorAll('.step-block').length + 1; // предыдущий номер + 1
+    var block = document.createElement('div');
+    block.className = 'step-block';
+    var inputId = listId + '-photo-' + n;
+    block.innerHTML =
+        '<div class="step-head"><span>Шаг ' + n + '</span></div>' +
+        '<textarea class="step-text" placeholder="Опишите, что нужно сделать на шаге ' + n + '...">' + escAttr(step.text || '') + '</textarea>' +
+        '<div class="step-photo">' +
+            '<button type="button" class="step-photo-x" title="Убрать фото" onclick="removeStepPhoto(this)">&#10005;</button>' +
+            '<div class="file-upload" onclick="document.getElementById(\'' + inputId + '\').click()">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>' +
+                '<p>Добавить фото шага</p>' +
+                '<input type="file" id="' + inputId + '" accept="image/*" onchange="previewStepPhoto(this)">' +
+            '</div>' +
+            '<img class="file-preview">' +
+        '</div>' +
+        '<button type="button" class="step-photo-restore" style="display:none;" onclick="restoreStepPhoto(this)">＋ Добавить фото к шагу</button>';
+    // фото из данных (редактирование)
+    if (step.image) {
+        var img = block.querySelector('.step-photo .file-preview');
+        img.src = step.image;
+        img.style.display = 'block';
+        block.dataset.image = step.image; // запоминаем прежнее фото
+    }
+    list.appendChild(block);
+}
+
+// Красный крестик: поле добавления фото исчезает
+function removeStepPhoto(btn) {
+    var wrap = btn.closest('.step-photo');
+    if (!wrap) return;
+    wrap.style.display = 'none';
+    var restore = wrap.parentNode.querySelector('.step-photo-restore');
+    if (restore) restore.style.display = 'block';
+}
+
+// Вернуть поле фото (если передумали)
+function restoreStepPhoto(btn) {
+    var block = btn.closest('.step-block');
+    if (!block) return;
+    var wrap = block.querySelector('.step-photo');
+    wrap.style.display = '';
+    btn.style.display = 'none';
+}
+
+function previewStepPhoto(input) {
+    var wrap = input.closest('.step-photo');
+    if (!wrap) return;
+    var prev = wrap.querySelector('.file-preview');
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            prev.src = e.target.result;
+            prev.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+        delete input.closest('.step-block').dataset.image; // новое фото заменяет старое
+    }
+}
+
+// Сбор данных формы: [{name,qty,unit}], [{text,image,hasPhoto}] + файлы шагов
+function collectIngredients(listId) {
+    var out = [];
+    document.querySelectorAll('#' + listId + ' .ing-row').forEach(function(row) {
+        var name = row.querySelector('.ing-name').value.trim();
+        if (!name) return;
+        out.push({
+            name: name,
+            qty: row.querySelector('.qty-inp').value.trim(),
+            unit: row.querySelector('.ing-unit').value
+        });
+    });
+    return out;
+}
+function collectSteps(listId) {
+    var steps = [];
+    var files = [];
+    document.querySelectorAll('#' + listId + ' .step-block').forEach(function(block) {
+        var text = block.querySelector('.step-text').value.trim();
+        var fileInput = block.querySelector('.step-photo input[type=file]');
+        var wrapHidden = block.querySelector('.step-photo').style.display === 'none';
+        var hasPhoto = !wrapHidden && fileInput.files && fileInput.files[0];
+        var st = { text: text, image: null, hasPhoto: hasPhoto ? 1 : 0 };
+        if (hasPhoto) {
+            files.push(fileInput.files[0]);
+        } else if (!wrapHidden && block.dataset.image) {
+            st.image = block.dataset.image; // прежнее фото без замены
+        }
+        // пустые шаги пропускаем
+        if (st.text || st.hasPhoto || st.image) steps.push(st);
+    });
+    return { steps: steps, files: files };
+}
+
+function openAddRecipeModal() {
+    document.getElementById('recipeTitle').value = '';
+    document.getElementById('recipeDesc').value = '';
+    document.getElementById('recipeImagePreview').src = '';
+    document.getElementById('recipeImagePreview').style.display = 'none';
+    document.getElementById('recipeImage').value = '';
+    // стартовое состояние формы: один ингредиент и один шаг
+    var ingList = document.getElementById('recipeIngList');
+    ingList.innerHTML = '';
+    addIngredientRow('recipeIngList');
+    var stepList = document.getElementById('recipeStepList');
+    stepList.innerHTML = '';
+    addRecipeStep('recipeStepList');
+    document.getElementById('addRecipeModal').classList.add('active');
+    try { history.pushState({modal:'addRecipe'}, '', location.href); } catch(e) {}
+}
+function closeAddRecipeModal() {
+    var m = document.getElementById('addRecipeModal');
+    if (m) m.classList.remove('active');
+    try {
+        if (history.state && history.state.modal === 'addRecipe') history.back();
+    } catch(e) {}
+}
+function openEditRecipeModal() {
+    document.getElementById('editRecipeModal').classList.add('active');
+    try { history.pushState({modal:'editRecipe'}, '', location.href); } catch(e) {}
+}
+function closeEditRecipeModal() {
+    var m = document.getElementById('editRecipeModal');
+    if (m) m.classList.remove('active');
+    try {
+        if (history.state && history.state.modal === 'editRecipe') history.back();
+    } catch(e) {}
+}
+
+async function addRecipe() {
+    var title = document.getElementById('recipeTitle').value.trim();
+    var desc = document.getElementById('recipeDesc').value.trim();
+    var imageInput = document.getElementById('recipeImage');
+    if(!title) { showToastMsg('Введите название'); return; }
+    var ingredients = collectIngredients('recipeIngList');
+    var col = collectSteps('recipeStepList');
+    if(!ingredients.length) { showToastMsg('Добавьте хотя бы один ингредиент'); return; }
+    if(!col.steps.length) { showToastMsg('Добавьте хотя бы один шаг'); return; }
+    var formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', desc);
+    formData.append('ingredients', JSON.stringify(ingredients));
+    formData.append('steps', JSON.stringify(col.steps));
+    col.files.forEach(function(f){ formData.append('step_photos[]', f); });
+    if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
+    var res = await fetch('/api/add_recipe.php', { method:'POST', body: formData });
+    var data = await res.json();
+    if(data.success) {
+        showToastMsg('Рецепт добавлен!');
+        closeAddRecipeModal();
+        loadMyRecipes();
+    } else {
+        showToastMsg(data.error || 'Ошибка');
+    }
+}
+
+async function loadMyRecipes() {
+    if(!userProfile) return;
+    var res = await fetch('/api/recipes.php?page=1&author_id=' + userProfile.id);
+    var data = await res.json();
+    var grid = document.getElementById('myRecipesGrid');
+    var html = '';
+    if(data.success && data.recipes.length > 0) {
+        window.myRecipesData = data.recipes || [];
+        html = data.recipes.map(function(r){
+            var imgSrc = r.image || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22400%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23e2e8f0%22/><text x=%2250%25%22 y=%2250%25%22 font-size=%2248%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>🍲</text></svg>';
+            var badgeClass = r.is_available == 1 ? 'on' : 'off';
+            var badgeText = r.is_available == 1 ? 'Опубликован' : 'Скрыт';
+            var isAvail = (r.is_available == 1);
+            return '<div class="my-dish-card' + (isAvail ? '' : ' dimmed') + '">' +
+                '<img src="' + imgSrc + '" alt="' + r.title.replace(/"/g, '&quot;') + '">' +
+                '<div class="card-body">' +
+                    '<span class="dish-badge ' + badgeClass + '">' + badgeText + '</span>' +
+                    '<div class="dish-title">' + r.title + '</div>' +
+                    '<div class="dish-price" style="font-size:13px;font-weight:600;">Рецепт</div>' +
+                    '<div class="dish-actions">' +
+                        (isAvail ? '<button class="btn-toggle" onclick="toggleRecipe(' + r.id + ')">В стоп-лист</button>' : '<button class="btn-publish" onclick="toggleRecipe(' + r.id + ')">Опубликовать</button>') +
+                        '<button class="btn-delete" onclick="deleteRecipe(' + r.id + ')">Удалить</button>' +
+                    '</div>' +
+                    '<svg class="edit-pencil-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="openEditRecipe(' + r.id + ')"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+                '</div></div>';
+        }).join('');
+    } else {
+        html = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:30px 10px;">У вас пока нет рецептов. Добавьте первый рецепт ниже 👇</p>';
+    }
+    html += '<div class="add-dish-card" onclick="openAddRecipeModal()">' +
+        '<div class="plus-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>' +
+        '<span>Добавить рецепт</span>' +
+    '</div>';
+    grid.innerHTML = html;
+}
+
+async function toggleRecipe(id) {
+    var res = await fetch('/api/edit_recipe.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({recipe_id:id, action:'toggle'}) });
+    var data = await res.json();
+    if(data.success) { showToastMsg(data.is_available ? 'Рецепт опубликован' : 'Рецепт скрыт'); loadMyRecipes(); }
+    else showToastMsg(data.error);
+}
+
+async function deleteRecipe(id) {
+    if(!confirm('Удалить рецепт?')) return;
+    var res = await fetch('/api/edit_recipe.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({recipe_id:id, action:'delete'}) });
+    var data = await res.json();
+    if(data.success) { showToastMsg('Рецепт удалён'); loadMyRecipes(); }
+    else showToastMsg(data.error);
+}
+
+function openEditRecipe(id) {
+    var r = (window.myRecipesData || []).find(function(x){ return x.id == id; });
+    if(!r) return;
+    document.getElementById('editRecipeId').value = r.id;
+    document.getElementById('editRecipeTitle').value = r.title || '';
+    document.getElementById('editRecipeDesc').value = r.description || '';
+    document.getElementById('editRecipeImagePreview').style.display = 'none';
+    document.getElementById('editRecipeImagePreview').src = '';
+    document.getElementById('editRecipeImage').value = '';
+    // состав
+    var ingList = document.getElementById('editRecipeIngList');
+    ingList.innerHTML = '';
+    var ings = [];
+    try { ings = JSON.parse(r.ingredients || '[]'); } catch(e) {}
+    if(!Array.isArray(ings) || !ings.length) addIngredientRow('editRecipeIngList');
+    else ings.forEach(function(ing){ addIngredientRow('editRecipeIngList', ing); });
+    // шаги
+    var stepList = document.getElementById('editRecipeStepList');
+    stepList.innerHTML = '';
+    var sts = [];
+    try { sts = JSON.parse(r.steps || '[]'); } catch(e) {}
+    if(!Array.isArray(sts) || !sts.length) addRecipeStep('editRecipeStepList');
+    else sts.forEach(function(st){ addRecipeStep('editRecipeStepList', st); });
+    openEditRecipeModal();
+}
+
+async function editRecipe(id) {
+    var title = document.getElementById('editRecipeTitle').value.trim();
+    var desc = document.getElementById('editRecipeDesc').value.trim();
+    var imageInput = document.getElementById('editRecipeImage');
+    if(!title) { showToastMsg('Введите название'); return; }
+    var ingredients = collectIngredients('editRecipeIngList');
+    var col = collectSteps('editRecipeStepList');
+    var formData = new FormData();
+    formData.append('recipe_id', id);
+    formData.append('action', 'update');
+    formData.append('title', title);
+    formData.append('description', desc);
+    formData.append('ingredients', JSON.stringify(ingredients));
+    formData.append('steps', JSON.stringify(col.steps));
+    col.files.forEach(function(f){ formData.append('step_photos[]', f); });
+    if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
+    var res = await fetch('/api/edit_recipe.php', { method:'POST', body: formData });
+    var data = await res.json();
+    if(data.success) {
+        showToastMsg('Рецепт обновлён');
+        closeEditRecipeModal();
+        loadMyRecipes();
     } else {
         showToastMsg(data.error || 'Ошибка');
     }
@@ -896,6 +1331,52 @@ function closeLogoutModal(e){ if(!e||e.target===document.getElementById('logoutM
 function confirmLogout(){ fetch('/api/logout.php',{method:'POST'}).catch(function(){}).finally(function(){ localStorage.removeItem('user'); location.href='index.html'; }); }
 
 // --- ИНИЦИАЛИЗАЦИЯ ---
+// Открытие нужной вкладки по ?tab= (например, profile.html?tab=mydishes)
+// и прокрутка к кнопке «+ Добавить …».
+function openTabFromUrl() {
+    var m = /[?&]tab=([a-z]+)/i.exec(location.search);
+    if (!m) return;
+    var tab = m[1];
+    var content = document.getElementById('tab-' + tab);
+    if (!content) return;
+    var btn = null;
+    document.querySelectorAll('.tab').forEach(function(t) {
+        if ((t.getAttribute('onclick') || '').indexOf("switchTab('" + tab + "'") !== -1) btn = t;
+    });
+    // Списки «Мои блюда/Рецепты» зависят от userProfile — ждём его (loadProfile асинхронный)
+    var waited = 0;
+    var waitTimer = setInterval(function() {
+        if (userProfile || waited > 50) {
+            clearInterval(waitTimer);
+            switchTab(tab, btn);
+            scrollToAddCard(content);
+        }
+        waited++;
+    }, 100);
+}
+function scrollToAddCard(content) {
+    // Плавная прокрутка к карточке «+ Добавить …» после рендера списка (списки грузятся асинхронно)
+    var tries = 0;
+    var timer = setInterval(function() {
+        var addCard = content.querySelector('.add-dish-card');
+        tries++;
+        if (addCard) {
+            addCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            addCard.style.transition = 'box-shadow 0.4s';
+            addCard.style.boxShadow = '0 0 0 3px var(--neon), 0 0 25px var(--neon-glow)';
+            setTimeout(function(){ addCard.style.boxShadow = ''; }, 1800);
+            clearInterval(timer);
+            // Контроль: если плавный скролл не применился (фоновая вкладка и т.п.) — доскроллим сразу
+            setTimeout(function() {
+                var rect = addCard.getBoundingClientRect();
+                if (rect.top < 0 || rect.bottom > window.innerHeight) {
+                    addCard.scrollIntoView({ behavior: 'instant', block: 'center' });
+                }
+            }, 700);
+        }
+        if (tries > 40) clearInterval(timer); // ~4 секунды на подгрузку
+    }, 100);
+}
 document.addEventListener('DOMContentLoaded', function(){
     if(!currentUser) return;
     document.getElementById('name').textContent = currentUser.name;
@@ -907,6 +1388,7 @@ document.addEventListener('DOMContentLoaded', function(){
     loadBuyerOrders();
     if(typeof updateCartBadge === 'function') updateCartBadge();
     if(typeof hideCurrentPageInCatalog === 'function') hideCurrentPageInCatalog();
+    openTabFromUrl();
 });
 </script>
 
