@@ -249,7 +249,7 @@ button, .btn, a, label {
 }
 </style>
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261028152612">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261101132810">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
 <script src="assets/js/site-select.js?v=20261028155005" defer></script>
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
@@ -295,7 +295,18 @@ button, .btn, a, label {
 
 <main class="container" style="max-width:1100px;margin:0 auto;padding:40px 24px;">
 <div class="profile-header">
-<div class="avatar" id="avatarLetter">?</div>
+<div class="avatar" id="avatarLetter" onclick="document.getElementById('avatarInput').click()" style="cursor:pointer;overflow:hidden;background-size:cover;background-position:center;">?</div>
+<input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+<div id="avatarCropModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10010;align-items:center;justify-content:center;">
+  <div style="background:var(--card-bg,#fff);padding:20px;border-radius:16px;max-width:92vw;text-align:center;">
+    <canvas id="avatarCropCanvas" width="280" height="280" style="border-radius:50%;touch-action:none;cursor:grab;background:#e5e7eb;"></canvas>
+    <div style="margin:12px 0;"><input type="range" id="avatarZoom" min="1" max="4" step="0.01" value="1" style="width:200px;"></div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button class="btn" onclick="saveAvatarCrop()" style="padding:12px 20px;margin-top:10px;">Сохранить</button>
+      <button class="logout-modal-cancel" onclick="closeAvatarCrop()">Отмена</button>
+    </div>
+  </div>
+</div>
 <div class="profile-info">
 <h1 id="name">Гость</h1>
 <span class="role" id="roleLabel">Пользователь</span>
@@ -613,7 +624,7 @@ button, .btn, a, label {
 </div>
 
 <script src="assets/js/config.js?v=20261022183143"></script>
-<script src="assets/js/main.js?v=20261022183142"></script>
+<script src="assets/js/main.js?v=20261104160758"></script>
 <script src="assets/js/theme.js?v=20260809112441"></script>
 <script>
 const currentUser = JSON.parse(localStorage.getItem('user')) || null;
@@ -687,12 +698,75 @@ async function loadProfile() {
                 localStorage.setItem('user', JSON.stringify(currentUser));
             }
             // Карта инициализируется при открытии вкладки настроек (switchProfileTab)
-            document.getElementById('avatarLetter').textContent = data.user.name.charAt(0).toUpperCase();
+            var av=document.getElementById('avatarLetter');
+            if (data.user.avatar) { av.textContent=''; av.style.backgroundImage='url('+data.user.avatar+')'; av.style.backgroundSize='cover'; av.style.backgroundPosition='center'; }
+            else { av.style.backgroundImage=''; av.textContent = data.user.name.charAt(0).toUpperCase(); }
             document.getElementById('roleLabel').textContent = 'Покупатель и Продавец';
             loadCategoriesForForm();
         }
     } catch(e) {}
 }
+
+let _avatarImg=null,_avatarScale=1,_avatarX=0,_avatarY=0,_avatarDragging=false,_avatarLast=null;
+function openAvatarCrop(file){
+  const r=new FileReader();
+  r.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{ _avatarImg=img; _avatarScale=1; _avatarX=0; _avatarY=0; document.getElementById('avatarCropModal').style.display='flex'; drawAvatarCrop(); };
+    img.src=e.target.result;
+  };
+  r.readAsDataURL(file);
+}
+function drawAvatarCrop(){
+  const c=document.getElementById('avatarCropCanvas'); const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  if(!_avatarImg) return;
+  const base=Math.max(c.width/_avatarImg.width, c.height/_avatarImg.height);
+  const scale=base*_avatarScale;
+  const w=_avatarImg.width*scale, h=_avatarImg.height*scale;
+  const x=(c.width-w)/2+_avatarX, y=(c.height-h)/2+_avatarY;
+  ctx.save(); ctx.beginPath(); ctx.arc(c.width/2,c.height/2,c.width/2,0,Math.PI*2); ctx.clip();
+  ctx.drawImage(_avatarImg,x,y,w,h); ctx.restore();
+}
+function closeAvatarCrop(){ document.getElementById('avatarCropModal').style.display='none'; _avatarImg=null; const inp=document.getElementById('avatarInput'); if(inp) inp.value=''; }
+async function saveAvatarCrop(){
+  if(!_avatarImg) return;
+  const c=document.getElementById('avatarCropCanvas');
+  const out=document.createElement('canvas'); out.width=512; out.height=512;
+  const ctx=out.getContext('2d');
+  const base=Math.max(c.width/_avatarImg.width, c.height/_avatarImg.height);
+  const scale=base*_avatarScale;
+  const w=_avatarImg.width*scale, h=_avatarImg.height*scale;
+  const x=(c.width-w)/2+_avatarX, y=(c.height-h)/2+_avatarY;
+  const ratio=512/c.width;
+  ctx.save(); ctx.beginPath(); ctx.arc(256,256,256,0,Math.PI*2); ctx.clip();
+  ctx.drawImage(_avatarImg, x*ratio, y*ratio, w*ratio, h*ratio); ctx.restore();
+  out.toBlob(async blob=>{
+    const fd=new FormData(); fd.append('avatar', blob, 'avatar.jpg');
+    try{
+      const res=await fetch('/api/upload_avatar.php',{method:'POST',credentials:'include',body:fd});
+      const data=await res.json();
+      if(data.success){
+        const av=document.getElementById('avatarLetter');
+        av.textContent=''; av.style.backgroundImage='url('+data.avatar+')'; av.style.backgroundSize='cover'; av.style.backgroundPosition='center';
+      } else { alert(data.error||'Ошибка загрузки'); }
+    } catch(e){ alert('Ошибка загрузки'); }
+    closeAvatarCrop();
+  }, 'image/jpeg', 0.9);
+}
+async function uploadAvatar(inp){
+  if(!inp.files || !inp.files[0]) return;
+  openAvatarCrop(inp.files[0]);
+}
+document.getElementById('avatarZoom').addEventListener('input', e=>{ _avatarScale=parseFloat(e.target.value); drawAvatarCrop(); });
+const _ac=document.getElementById('avatarCropCanvas');
+_ac.addEventListener('mousedown', e=>{ _avatarDragging=true; _avatarLast={x:e.clientX,y:e.clientY}; _ac.style.cursor='grabbing'; });
+_ac.addEventListener('touchstart', e=>{ if(!e.touches.length) return; _avatarDragging=true; _avatarLast={x:e.touches[0].clientX,y:e.touches[0].clientY}; }, {passive:true});
+_ac.addEventListener('touchmove', e=>{ if(!_avatarDragging||!e.touches.length) return; e.preventDefault(); _avatarX+=e.touches[0].clientX-_avatarLast.x; _avatarY+=e.touches[0].clientY-_avatarLast.y; _avatarLast={x:e.touches[0].clientX,y:e.touches[0].clientY}; drawAvatarCrop(); }, {passive:false});
+_ac.addEventListener('touchend', ()=>{ _avatarDragging=false; });
+window.addEventListener('mousemove', e=>{ if(!_avatarDragging) return; _avatarX+=e.clientX-_avatarLast.x; _avatarY+=e.clientY-_avatarLast.y; _avatarLast={x:e.clientX,y:e.clientY}; drawAvatarCrop(); });
+window.addEventListener('mouseup', ()=>{ _avatarDragging=false; _ac.style.cursor='grab'; });
+_ac.addEventListener('wheel', e=>{ e.preventDefault(); _avatarScale=Math.min(4,Math.max(1,_avatarScale*(e.deltaY<0?1.1:0.9))); document.getElementById('avatarZoom').value=_avatarScale; drawAvatarCrop(); });
 
 // --- КАТЕГОРИИ ДЛЯ ФОРМЫ ---
 async function loadCategoriesForForm() {
@@ -2151,7 +2225,7 @@ async function saveLKEdit(e){
 <script src="assets/js/notifications.js?v=20261021133630"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
 <script src="assets/js/phone-country.js?v=20261025131738"></script><script src="assets/js/bubble-btn.js?v=20261025131758"></script>
-<script src="assets/js/site-catalog.js?v=20261028152612"></script>
+<script src="assets/js/site-catalog.js?v=20261102145150"></script>
 <script src="assets/js/auth-home.js?v=20261028152612"></script>
 <script src="assets/js/auth-email-flow.js?v=20261028152612"></script></body>
 </html>
