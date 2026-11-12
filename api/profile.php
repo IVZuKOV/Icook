@@ -23,5 +23,7 @@ json_out(['success' => true, 'user' => [
     'search_radius' => $user['search_radius'] ?? 10,
     'seller_description' => $user['seller_description'] ?? '',
     'lang' => $user['lang'] ?? 'ru',
+    'avatar' => $user['avatar'] ?? '',
+    'avatar_version' => $user['avatar_version'] ?? '',
     'is_seller' => (int) ($user['is_seller'] ?? 1),
 ]]);
