@@ -232,6 +232,8 @@ body{padding-bottom:88px;}
 .avatar-upload-trigger:hover .avatar{filter:brightness(.82);transform:scale(1.03);}
 .avatar img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%;}
 .avatar-edit-link{margin-top:-10px;padding:4px 8px;border:0;background:transparent;color:var(--neon-dark);font:600 13px 'Montserrat',sans-serif;cursor:pointer;}
+.modal-overlay{position:fixed;inset:0;z-index:10010;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);}
+.modal-overlay.active{display:flex;}
 .modal-box.avatar-modal-box{max-width:460px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;}
 .avatar-dropzone{display:flex;width:100%;min-height:145px;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;border:2px dashed var(--border-color);border-radius:16px;background:var(--bg);color:var(--text-main);font:600 14px 'Montserrat',sans-serif;cursor:pointer;transition:border-color .2s,background .2s;box-sizing:border-box;}
 .avatar-dropzone:hover,.avatar-dropzone.dragover{border-color:var(--neon);background:var(--neon-glow);}
@@ -257,8 +259,6 @@ body{padding-bottom:88px;}
 [data-theme="dark"] .avatar-modal-buttons .modal-confirm{background:#fff;color:#334155;}
 [data-theme="dark"] .avatar-modal-buttons .modal-confirm:hover{background:#e2e8f0;box-shadow:0 0 18px rgba(255,255,255,.18);}
 [data-theme="dark"] .avatar{background:linear-gradient(135deg,#64748b,#475569);color:#fff;}
-'@
-filePath: C:\Users\IVZ\AppData\Local\Temp\kilo\avatar_css.txt
 </style>
 
 <script>
@@ -720,6 +720,8 @@ async function loadProfile() {
                 currentUser.lat = data.user.lat || currentUser.lat;
                 currentUser.lng = data.user.lng || currentUser.lng;
                 currentUser.search_radius = data.user.search_radius || currentUser.search_radius;
+                currentUser.avatar = data.user.avatar || String();
+                currentUser.avatarVersion = data.user.avatar_version || String();
                 localStorage.setItem('user', JSON.stringify(currentUser));
             }
             // Карта инициализируется при открытии вкладки настроек (switchProfileTab)
@@ -730,21 +732,6 @@ async function loadProfile() {
     } catch(e) {}
 }
 
-let _avatarImg=null,_avatarScale=1,_avatarX=0,_avatarY=0,_avatarDragging=false,_avatarLast=null;
-
-
-
-
-
-document.getElementById('avatarZoom').addEventListener('input', e=>{ _avatarScale=parseFloat(e.target.value); drawAvatarCrop(); });
-const _ac=document.getElementById('avatarCropCanvas');
-_ac.addEventListener('mousedown', e=>{ _avatarDragging=true; _avatarLast={x:e.clientX,y:e.clientY}; _ac.style.cursor='grabbing'; });
-_ac.addEventListener('touchstart', e=>{ if(!e.touches.length) return; _avatarDragging=true; _avatarLast={x:e.touches[0].clientX,y:e.touches[0].clientY}; }, {passive:true});
-_ac.addEventListener('touchmove', e=>{ if(!_avatarDragging||!e.touches.length) return; e.preventDefault(); _avatarX+=e.touches[0].clientX-_avatarLast.x; _avatarY+=e.touches[0].clientY-_avatarLast.y; _avatarLast={x:e.touches[0].clientX,y:e.touches[0].clientY}; drawAvatarCrop(); }, {passive:false});
-_ac.addEventListener('touchend', ()=>{ _avatarDragging=false; });
-window.addEventListener('mousemove', e=>{ if(!_avatarDragging) return; _avatarX+=e.clientX-_avatarLast.x; _avatarY+=e.clientY-_avatarLast.y; _avatarLast={x:e.clientX,y:e.clientY}; drawAvatarCrop(); });
-window.addEventListener('mouseup', ()=>{ _avatarDragging=false; _ac.style.cursor='grab'; });
-_ac.addEventListener('wheel', e=>{ e.preventDefault(); _avatarScale=Math.min(4,Math.max(1,_avatarScale*(e.deltaY<0?1.1:0.9))); document.getElementById('avatarZoom').value=_avatarScale; drawAvatarCrop(); });
 
 // --- КАТЕГОРИИ ДЛЯ ФОРМЫ ---
 async function loadCategoriesForForm() {
@@ -2243,8 +2230,6 @@ async function saveLKEdit(e){
 </div>
 </div>
 </div>
-'@
-filePath: C:\Users\IVZ\AppData\Local\Temp\kilo\avatar_modals.txt
 <script>
 var _origBtoa=window.btoa.bind(window);
 window._safeBtoa=function(s){try{return _origBtoa(s);}catch(e){return _origBtoa(unescape(encodeURIComponent(s)));}};
@@ -2258,7 +2243,6 @@ var avatarCropOffsetY=0;
 var avatarCropDrag=null;
 var avatarUploading=false;
 var avatarSelectionVersion=0;
-
 function clearAvatarPreview(){
   if(avatarSourceUrl){URL.revokeObjectURL(avatarSourceUrl);avatarSourceUrl='';}
   avatarSourceImage=null;
@@ -2477,8 +2461,6 @@ function renderProfileAvatar(){
   avatar.textContent='';
   avatar.appendChild(image);
 }
-'@
-filePath: C:\Users\IVZ\AppData\Local\Temp\kilo\avatar_js.txt
 </script>
 </body>
 </html>
