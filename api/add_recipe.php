@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/lib/ingredients.php';
 
 $userId = require_login();
 
@@ -26,7 +27,7 @@ if (!is_array($ingredients)) {
 if (count($ingredients) > 50) {
     json_out(['error' => 'Слишком много ингредиентов (макс. 50)']);
 }
-$units = ['гр', 'кг', 'л', 'мл'];
+$units = ['гр', 'кг', 'л', 'мл', 'ст.ложки', 'ч.ложки', 'шт.', 'ед.'];
 $ingOut = [];
 foreach ($ingredients as $ing) {
     $name = trim((string) ($ing['name'] ?? ''));
@@ -47,7 +48,7 @@ foreach ($ingredients as $ing) {
     $ingOut[] = ['name' => $name, 'qty' => $qty, 'unit' => $unit];
 }
 
-// --- Шаги: JSON-массив [{text, hasPhoto}], фото — файлы step_photos[] по порядку ---
+// --- Шаги: JSON-массив [{text, photoCount}], фото — файлы step_photos[] по порядку ---
 $steps = json_decode((string) ($_POST['steps'] ?? '[]'), true);
 if (!is_array($steps)) {
     json_out(['error' => 'Некорректный формат шагов']);
@@ -80,21 +81,31 @@ foreach ($steps as $st) {
     if (mb_strlen($text) > 2000) {
         json_out(['error' => 'Текст шага слишком длинный (макс. 2000 символов)']);
     }
-    $hasPhoto = !empty($st['hasPhoto']) && isset($stepFiles[$fileIdx]);
-    $image = null;
-    if ($hasPhoto) {
+    // несколько фото на шаг: photoCount файлов подряд из общего списка
+    $count = (int) ($st['photoCount'] ?? (!empty($st['hasPhoto']) ? 1 : 0));
+    if ($count < 0) {
+        $count = 0;
+    }
+    if ($count > 20) {
+        $count = 20;
+    }
+    $images = [];
+    for ($k = 0; $k < $count; $k++) {
+        if (!isset($stepFiles[$fileIdx])) {
+            break;
+        }
         try {
-            $image = save_recipe_image($stepFiles[$fileIdx]);
+            $images[] = save_recipe_image($stepFiles[$fileIdx]);
         } catch (RuntimeException $e) {
             json_out(['error' => 'Фото шага: ' . $e->getMessage()]);
         }
         $fileIdx++;
     }
     // пустые шаги (нет текста и нет фото) не сохраняем
-    if ($text === '' && $image === null) {
+    if ($text === '' && !$images) {
         continue;
     }
-    $stepOut[] = ['text' => $text, 'image' => $image];
+    $stepOut[] = ['text' => $text, 'image' => $images[0] ?? null, 'images' => $images];
 }
 
 // главное фото
@@ -107,16 +118,26 @@ if (isset($_FILES['image']) && is_array($_FILES['image']) && ($_FILES['image']['
     }
 }
 
-$stmt = $pdo->prepare(
-    'INSERT INTO recipes (user_id, title, description, ingredients, steps, image) VALUES (?, ?, ?, ?, ?, ?)'
-);
-$stmt->execute([
-    $userId,
-    $title,
-    $description,
-    json_encode($ingOut, JSON_UNESCAPED_UNICODE),
-    json_encode($stepOut, JSON_UNESCAPED_UNICODE),
-    $image,
-]);
-
-json_out(['success' => true, 'id' => (int) $pdo->lastInsertId(), 'message' => 'Рецепт добавлен']);
+try {
+    $pdo->beginTransaction();
+    $stmt = $pdo->prepare(
+        'INSERT INTO recipes (user_id, title, description, ingredients, steps, image) VALUES (?, ?, ?, ?, ?, ?)'
+    );
+    $stmt->execute([
+        $userId, $title, $description,
+        json_encode($ingOut, JSON_UNESCAPED_UNICODE),
+        json_encode($stepOut, JSON_UNESCAPED_UNICODE), $image,
+    ]);
+    $recipeId = (int) $pdo->lastInsertId();
+    ingredient_catalog_sync($pdo, $recipeId, $ingOut);
+    $pdo->commit();
+    json_out(['success' => true, 'id' => $recipeId, 'message' => 'Рецепт добавлен']);
+} catch (Throwable $error) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    // These files were created by this request and are not referenced by a saved recipe.
+    $created = $image ? [$image] : [];
+    foreach ($stepOut as $step) foreach ($step['images'] ?? [] as $file) $created[] = $file;
+    foreach (array_unique($created) as $file) @unlink('/var/www/html/icook' . $file);
+    error_log('Add recipe failed: ' . $error->getMessage());
+    json_out(['success' => false, 'error' => 'Не удалось сохранить рецепт. Попробуйте ещё раз.'], 500);
+}

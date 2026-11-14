@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="assets/css/app.css?v=20261028145408">
-    <link rel="stylesheet" href="assets/css/menu.css?v=20260809112434">
+    <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
+    <link rel="stylesheet" href="assets/css/menu.css?v=20261105152159">
     
     <script>
         (function(){
@@ -441,13 +441,17 @@ body{padding-bottom:88px;}
         -webkit-user-select: auto !important;
         user-select: auto !important;
     }
-    </style>
-<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
-<script src="assets/js/site-select.js?v=20261028155005" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
-<script src="assets/js/site-header.js?v=20261028160517" defer></script>
+    .back-to-top{position:fixed;bottom:70px;right:16px;z-index:102;width:40px;height:40px;padding:0;border:none;border-radius:12px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s,box-shadow 0.3s;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 14px var(--neon-glow);}
+.back-to-top.visible{opacity:1;pointer-events:auto;}
+.back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow);}
+.back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
+<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261105152159">
+<script src="assets/js/site-header.js?v=20261105152159" defer></script>
 </head>
 <body>
     <!-- Каталог (выдвижное меню) -->
@@ -517,6 +521,9 @@ body{padding-bottom:88px;}
             </button>
         
 </nav>
+
+    <!-- Кнопка «Наверх» -->
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх"><svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
 
     <!-- Заголовок -->
     <div style="max-width:1200px;margin:0 auto;padding:30px 40px 0;">
@@ -616,10 +623,25 @@ body{padding-bottom:88px;}
         &copy; 2026 Я готовлю — ты ешь!
     </footer>
 
-    <script src="assets/js/config.js?v=20261022183143"></script>
-    <script src="assets/js/main.js?v=20261022183142"></script>
-    <script src="assets/js/theme.js?v=20260809112441"></script>
+    <script src="assets/js/config.js?v=20261105152159"></script>
+    <script src="assets/js/main.js?v=20261105152159"></script>
+    <script src="assets/js/favorites-store.js?v=20261101115409"></script>
+    <script src="assets/js/theme.js?v=20261105152159"></script>
     <script>
+    function toggleFavorite(id) {
+        if (typeof window.toggleContentFavorite === 'function') {
+            window.toggleContentFavorite('dish', id);
+            return;
+        }
+        const favorites = getFavorites();
+        const numericId = Number(id);
+        const index = favorites.indexOf(numericId);
+        if (index >= 0) favorites.splice(index, 1);
+        else favorites.push(numericId);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        if (typeof updateFavBadge === 'function') updateFavBadge();
+    }
+
     function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}
 
     async function login(){
@@ -802,8 +824,21 @@ body{padding-bottom:88px;}
 <script src="assets/js/footer.js?v=20261021131201"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
-<script src="assets/js/phone-country.js?v=20261025131738"></script><script src="assets/js/bubble-btn.js?v=20261025131758"></script>
-<script src="assets/js/site-catalog.js?v=20261028152612"></script>
-<script src="assets/js/auth-home.js?v=20261028152612"></script>
-<script src="assets/js/auth-email-flow.js?v=20261028152612"></script></body>
+<script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
+<script src="assets/js/site-catalog.js?v=20261105152159"></script>
+<script src="assets/js/auth-home.js?v=20261105152159"></script>
+<script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
+<script>
+(function(){const init = () => {
+    const backBtn = document.querySelector('.back-to-top');
+    const applyBack = () => { if (backBtn) backBtn.classList.toggle('visible', window.scrollY > 300); };
+    const onScroll = () => { applyBack(); };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('scrollend', onScroll);
+    if (backBtn) backBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+};
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+})();
+</script></body>
 </html>

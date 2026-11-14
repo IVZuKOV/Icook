@@ -71,7 +71,7 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border:2px solid var(--border-color);border-radius:var(--radius-md);background:transparent;color:var(--text-main);font-weight:700;font-size:14px;cursor:pointer;transition:all 0.35s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:none;position:relative;overflow:hidden;text-decoration:none;min-width:100px;}
 .btn:hover{transform:translateX(4px);border-color:var(--neon);background:var(--neon-glow);color:var(--neon-dark);box-shadow:0 0 15px var(--neon-glow);}
 .btn:active{transform:scale(0.98);}
-.hero{position:relative;min-height:0;display:flex;align-items:center;justify-content:space-between;padding:40px 40px 30px;gap:40px;overflow:hidden;}
+.hero{position:relative;min-height:0;display:flex;align-items:center;justify-content:space-between;padding:8px 40px 8px;gap:40px;overflow:hidden;}
 .hero-bg{position:fixed;inset:0;z-index:0;background-image:url();background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:scroll;filter:grayscale(85%) contrast(1.15) brightness(1.05);opacity:0.55;}
 .hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.25) 0%,rgba(248,250,252,0.55) 45%,rgba(248,250,252,0.92) 100%);}
 [data-theme="dark"] .hero-bg::after{background:linear-gradient(180deg,rgba(15,23,42,0.4) 0%,#0f172a 100%);}
@@ -89,7 +89,25 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .hero-glow{position:absolute;width:400px;height:400px;border-radius:50%;filter:blur(100px);opacity:0.12;z-index:1;pointer-events:none;}
 .hero-glow-1{background:var(--neon);top:-100px;right:-100px;}
 .hero-glow-2{background:#1e40af;bottom:-100px;left:-100px;opacity:0.1;}
-.section-transparent{padding:60px 40px;background:transparent;position:relative;z-index:2;}
+/* --- Промо-карусель: 3 карточки в hero --- */
+.promo-carousel{position:relative;width:100%;max-width:1200px;margin:8px auto 0;overflow:hidden;border-radius:20px;touch-action:pan-y;}
+.hero .hero-bg{display:none;}
+.hero .hero-glow{display:none;}
+.promo-track{display:flex;gap:32px;transition:transform 0.9s cubic-bezier(0.22,1,0.36,1);will-change:transform;}
+.promo-card{flex:0 0 calc((100% - 64px) / 3);min-height:210px;background:linear-gradient(135deg,var(--neon) 0%,#1e40af 100%);border-radius:20px;position:relative;overflow:hidden;display:flex;align-items:center;padding:28px;color:#fff;box-shadow:0 10px 30px var(--neon-glow);}
+    .promo-card-img{position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background-size:cover;background-position:center;}
+.promo-carousel-single .promo-card{flex-basis:100%;}
+.promo-card-tag{position:absolute;top:14px;left:14px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.35);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#fff;}
+.promo-card-title{font-family:'Rubik',sans-serif;font-size:24px;font-weight:900;margin-bottom:8px;color:#fff;}
+.promo-card-text{font-size:14px;line-height:1.5;opacity:0.92;}
+.promo-card[data-promo-link]:not([data-promo-link=""]){cursor:pointer;}
+@media (max-width:640px){
+  .promo-carousel{max-width:none;margin-top:8px;}
+  .promo-card{flex:0 0 100%;min-height:150px;padding:18px;border-radius:16px;}
+  .promo-card-title{font-size:18px;margin-bottom:4px;}
+  .promo-card-text{font-size:12px;line-height:1.35;}
+}
+.section-transparent{padding:16px 40px;background:transparent;position:relative;z-index:2;}
 .section-title{font-size:32px;font-weight:800;margin-bottom:25px;color:var(--neon-dark);text-shadow:0 0 8px rgba(30,64,175,0.3);display:flex;align-items:center;gap:10px;}
 .section-icon{width:26px;height:26px;flex-shrink:0;filter:drop-shadow(0 0 3px rgba(30,64,175,0.5));}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
@@ -184,7 +202,7 @@ footer svg{width:20px;height:20px;}
 .icon-btn{width:38px;height:38px;}
 .user-btn-wrap{height:38px;min-width:38px;max-width:38px;}
 .user-btn-letter{width:38px;height:38px;font-size:14px;}
-.hero{flex-direction:column;text-align:center;padding:30px 16px 30px;}
+.hero{flex-direction:column;text-align:center;padding:8px 16px 8px;}
 .section-transparent{padding:25px 16px;}
 .search{flex-direction:column;justify-content:center;}
 .search input{max-width:100%;}
@@ -310,13 +328,17 @@ button, .btn, a, label {
 .bubbly-button.animate:after{display:block;animation:bottomBubbles .75s ease-in-out forwards}
 @keyframes topBubbles{0%{background-position:5% 90%,10% 90%,10% 90%,15% 90%,25% 90%,25% 90%,40% 90%,55% 90%,70% 90%}50%{background-position:0% 80%,0% 20%,10% 40%,20% 0%,30% 30%,22% 50%,50% 50%,65% 20%,90% 30%}100%{background-position:0% 70%,0% 10%,10% 30%,20% -10%,30% 20%,22% 40%,50% 40%,65% 10%,90% 20%;background-size:0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%}}
 @keyframes bottomBubbles{0%{background-position:10% -10%,30% 10%,55% -10%,70% -10%,85% -10%,70% -10%,70% 0%}50%{background-position:0% 80%,20% 80%,45% 60%,60% 100%,75% 70%,95% 60%,105% 0%}100%{background-position:0% 90%,20% 90%,45% 70%,60% 110%,75% 80%,95% 70%,110% 10%;background-size:0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,0% 0%}}
+.back-to-top{position:fixed;bottom:70px;right:16px;z-index:102;width:40px;height:40px;padding:0;border:none;border-radius:12px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s,box-shadow 0.3s;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 14px var(--neon-glow);}
+.back-to-top.visible{opacity:1;pointer-events:auto;}
+.back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow);}
+.back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 </style>
-<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
-<script src="assets/js/site-select.js?v=20261028155005" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
-<script src="assets/js/site-header.js?v=20261028160517" defer></script>
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
+<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261105152159">
+<script src="assets/js/site-header.js?v=20261105152159" defer></script>
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -355,8 +377,31 @@ button, .btn, a, label {
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 </nav>
 <section class="hero"><div class="hero-bg"></div><div class="hero-glow hero-glow-1"></div><div class="hero-glow hero-glow-2"></div>
+    <div class="promo-carousel" id="promoCarousel" aria-label="Промо-блоки">
+        <div class="promo-track" id="promoTrack">
+            <div class="promo-card" data-promo-link="index.html">
+                <div class="promo-card-tag">Хит</div>
+                <div class="promo-card-title">Горячее</div>
+                <div class="promo-card-text">Сковородки, мангалы и духовки — лучшие рецепты недели от наших поваров.</div>
+            </div>
+            <div class="promo-card" data-promo-link="index.html">
+                <div class="promo-card-tag">Новинки</div>
+                <div class="promo-card-title">Свежие идеи</div>
+                <div class="promo-card-text">Новые блюда и десерты от наших поваров.</div>
+            </div>
+            <div class="promo-card" data-promo-link="index.html">
+                <div class="promo-card-tag">Спец</div>
+                <div class="promo-card-title">Скидки</div>
+                <div class="promo-card-text">Выгодные предложения для наших подписчиков.</div>
+            </div>
+        </div>
+    </div>
 
 </section>
+
+    <!-- Кнопка «Наверх» -->
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх"><svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
+
 <section class="section-transparent"><h2 class="section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Популярные блюда</h2>
 <div class="cards" id="popularDishes"></div></section>
 
@@ -384,7 +429,7 @@ button, .btn, a, label {
 <div class="share-modal-overlay" id="apkDownloadModal" onclick="closeApkDownloadModal(event)">
     <div class="share-modal-box" onclick="event.stopPropagation()">
         <div class="share-modal-title" id="apkDownloadTitle">Отправить APK файл</div>
-        <div class="share-modal-desc" id="apkDownloadDesc">Скачать приложение на телефон и отправить его через любое приложение?</div>
+        <div class="share-modal-desc" id="apkDownloadDesc">Перед установкой удалите предыдущую версию приложения. После установки войдите в аккаунт заново.</div>
         <div class="apk-progress-wrap" id="apkProgressWrap" style="display:none;">
             <div class="apk-progress-track"><div class="apk-progress-bar" id="apkProgressBar"></div></div>
             <div class="apk-progress-text" id="apkProgressText">0%</div>
@@ -418,6 +463,7 @@ button, .btn, a, label {
         © 2026 Я готовлю — ты ешь!
     </footer>
 
+<script src="assets/js/favorites-store.js?v=20261101115409"></script>
 <script>
 // --- JS НАЧАЛО ---
 let cart=JSON.parse(localStorage.getItem('cart'))||[];
@@ -467,6 +513,10 @@ function setLoading(id, state){const b=document.getElementById(id);state?b.class
 function getFavorites(){return JSON.parse(localStorage.getItem('favorites')||'[]');}
 function isFavorite(id){return getFavorites().indexOf(Number(id))!==-1;}
 function toggleFavorite(id){
+  if(typeof window.toggleContentFavorite==='function'){
+    window.toggleContentFavorite('dish', id);
+    return;
+  }
   id=Number(id);
   let favs=getFavorites();
   const i=favs.indexOf(id);
@@ -510,8 +560,8 @@ function toggleTheme(){const html = document.documentElement;const next = html.g
 // --- МОДАЛЬНЫЕ ОКНА ПОДЕЛИТЬСЯ ---
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const siteUrl = 'https://icook.com.ru/';
-const apkUrl = 'https://icook.com.ru/assets/apk/ICOOK.apk';
-const apkFileUrl = 'https://icook.com.ru/assets/apk/ICOOK-native-20261027g.apk';
+const apkUrl = 'https://icook.com.ru/assets/apk/ICOOK-native-20261101i.apk';
+const apkFileUrl = 'https://icook.com.ru/assets/apk/ICOOK-native-20261101i.apk';
 
 function closeShareModal(e, id){
     if(!e || e.target === document.getElementById(id)){
@@ -582,7 +632,7 @@ function openApkDownloadModal(){
     apkNativePolls = 0;
 
     document.getElementById('apkDownloadTitle').textContent = 'Отправить APK файл';
-    document.getElementById('apkDownloadDesc').textContent = 'Скачать приложение на телефон и отправить его через любое приложение?';
+    document.getElementById('apkDownloadDesc').textContent = 'Перед установкой удалите предыдущую версию приложения. После установки войдите в аккаунт заново.';
     document.getElementById('apkProgressWrap').style.display = 'none';
     document.getElementById('apkProgressBar').style.width = '0%';
     document.getElementById('apkProgressText').textContent = '0%';
@@ -699,13 +749,13 @@ function openShareAppModal(){
     container.innerHTML = '';
 
     if(isMobile){
-        container.innerHTML += '<button class="share-option" onclick="shareApkFile()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Отправить APK файл</div><div class="share-hint">Скачать и отправить через приложение</div></div></button>';
+        container.innerHTML += '<button class="share-option" onclick="shareApkFile()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Отправить APK файл</div><div class="share-hint">Перед установкой удалите предыдущую версию</div></div></button>';
         container.innerHTML += '<button class="share-option" onclick="shareApkLink()"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><div><div class="share-label">Отправить ссылку на APK</div><div class="share-hint">Поделиться ссылкой для скачивания</div></div></button>';
         container.innerHTML += '<button class="share-option" onclick="copyApkLink()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><div><div class="share-label">Копировать ссылку на скачивание приложения</div><div class="share-hint">Ссылка на APK</div></div></button>';
     } else {
         container.innerHTML += '<input class="share-link-input" value="'+apkUrl+'" readonly onclick="this.select()">';
         container.innerHTML += '<button class="share-copy-btn" onclick="copyApkLink()">Скопировать ссылку на APK</button>';
-        container.innerHTML += '<button class="share-option" onclick="downloadApk()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Скачать APK</div><div class="share-hint">Сохранить файл на компьютер</div></div></button>';
+        container.innerHTML += '<button class="share-option" onclick="downloadApk()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Скачать APK</div><div class="share-hint">Перед установкой удалите предыдущую версию</div></div></button>';
     }
 
     document.getElementById('shareAppModal').classList.add('active');
@@ -913,10 +963,213 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 <script src="assets/js/footer.js?v=20261021131201"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
-<script src="assets/js/site-catalog.js?v=20261028152612"></script>
-<script src="assets/js/auth-home.js?v=20261028152612"></script>
-<script src="assets/js/auth-email-flow.js?v=20261028152612"></script>
-<script src="assets/js/phone-country.js?v=20261025131738"></script>
-<script src="assets/js/bubble-btn.js?v=20261025131758"></script>
-<script>(function(){try{if(sessionStorage.getItem('authOpen')==='1'&&sessionStorage.getItem('authPath')===location.pathname){var m=document.getElementById('authModal');if(m){m.classList.add('active');var t=sessionStorage.getItem('authTab')||'login';if(typeof switchTab==='function')switchTab(t);if(typeof window.afRestoreSms==='function')window.afRestoreSms();}}}catch(e){}})();</script><script id="auth-query-open">(function(){try{var q=new URLSearchParams(location.search);var a=q.get('auth');if(!a)return;var run=function(){if(typeof openAuth!=='function'){setTimeout(run,120);return;}openAuth();if((a==='register'||a==='signup')&&typeof switchTab==='function'){switchTab('register');}try{history.replaceState(null,'',location.pathname+location.hash);}catch(e){}};if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',run);}else{run();}}catch(e){}})();</script></body>
+<script src="assets/js/site-catalog.js?v=20261105152159"></script>
+<script src="assets/js/auth-home.js?v=20261105152159"></script>
+<script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
+<script src="assets/js/phone-country.js?v=20261105152151"></script>
+<script src="assets/js/bubble-btn.js?v=20261105152151"></script>
+<script>(function(){try{if(sessionStorage.getItem('authOpen')==='1'&&sessionStorage.getItem('authPath')===location.pathname){var m=document.getElementById('authModal');if(m){m.classList.add('active');var t=sessionStorage.getItem('authTab')||'login';if(typeof switchTab==='function')switchTab(t);if(typeof window.afRestoreSms==='function')window.afRestoreSms();}}}catch(e){}})();</script><script id="auth-query-open">(function(){try{var q=new URLSearchParams(location.search);var a=q.get('auth');if(!a)return;var run=function(){if(typeof openAuth!=='function'){setTimeout(run,120);return;}openAuth();if((a==='register'||a==='signup')&&typeof switchTab==='function'){switchTab('register');}try{history.replaceState(null,'',location.pathname+location.hash);}catch(e){}};if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',run);}else{run();}}catch(e){}})();</script><script>
+(function(){const init = () => {
+    const backBtn = document.querySelector('.back-to-top');
+    const applyBack = () => { if (backBtn) backBtn.classList.toggle('visible', window.scrollY > 300); };
+    const onScroll = () => { applyBack(); };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('scrollend', onScroll);
+    if (backBtn) backBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+};
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+})();
+</script>
+<script>
+(function(){
+    var track=document.getElementById('promoTrack');
+    var carousel=document.getElementById('promoCarousel');
+    if(!track||!carousel)return;
+
+    var cards=Array.prototype.slice.call(track.querySelectorAll('.promo-card'));
+    var logicalIndex=0;
+    var cloneCount=0;
+    var timer=null;
+    var paused=false;
+    var drag=null;
+    var suppressClickUntil=0;
+    var transitionValue='transform 0.7s cubic-bezier(0.22,1,0.36,1)';
+
+    function slotSize(){
+        var first=track.children[0],second=track.children[1];
+        if(!first||!second)return first?first.getBoundingClientRect().width:0;
+        var firstRect=first.getBoundingClientRect(),secondRect=second.getBoundingClientRect();
+        return Math.abs(secondRect.left-firstRect.left)||firstRect.width;
+    }
+
+    function setPosition(animate){
+        if(!cards.length)return;
+        var slot=slotSize();
+        if(!slot)return;
+        track.style.transition=animate?transitionValue:'none';
+        track.style.transform='translate3d(-'+(slot*(cloneCount+logicalIndex))+'px,0,0)';
+        if(!animate){
+            requestAnimationFrame(function(){track.style.transition=transitionValue;});
+        }
+    }
+
+    function stop(){
+        if(timer!==null){clearInterval(timer);timer=null;}
+    }
+
+    function start(){
+        stop();
+        if(cards.length<2||paused||document.hidden)return;
+        timer=setInterval(function(){if(!drag)moveBy(1);},3000);
+    }
+
+    function moveBy(direction){
+        if(cards.length<2)return;
+        logicalIndex+=direction<0?-1:1;
+        setPosition(true);
+    }
+
+    function normalizeLoopPosition(){
+        if(cards.length<2)return;
+        if(logicalIndex>=cards.length||logicalIndex<0){
+            logicalIndex=((logicalIndex%cards.length)+cards.length)%cards.length;
+            track.style.transition='none';
+            var slot=slotSize();
+            track.style.transform='translate3d(-'+(slot*(cloneCount+logicalIndex))+'px,0,0)';
+            requestAnimationFrame(function(){track.style.transition=transitionValue;});
+        }
+    }
+
+    function rebuildTrack(nextCards){
+        stop();
+        cards=nextCards;
+        logicalIndex=0;
+        cloneCount=cards.length>1?3:0;
+        carousel.classList.toggle('promo-carousel-single',cards.length===1);
+        track.innerHTML='';
+        if(cloneCount){
+            for(var before=cloneCount;before>0;before--){
+                var beforeIndex=((cards.length-(before%cards.length))%cards.length);
+                var beforeClone=cards[beforeIndex].cloneNode(true);
+                beforeClone.setAttribute('aria-hidden','true');
+                track.appendChild(beforeClone);
+            }
+        }
+        cards.forEach(function(card){track.appendChild(card);});
+        if(cloneCount){
+            for(var after=0;after<cloneCount;after++){
+                var afterClone=cards[after%cards.length].cloneNode(true);
+                afterClone.setAttribute('aria-hidden','true');
+                track.appendChild(afterClone);
+            }
+        }
+        setPosition(false);
+        start();
+    }
+
+    function makePromoCard(banner){
+        var card=document.createElement('div');
+        card.className='promo-card';
+        card.setAttribute('data-promo-link',banner.link||'');
+        card.setAttribute('data-promo-id',String(banner.id||''));
+        if(banner.tag&&Number(banner.show_tag)!==0){
+            var tag=document.createElement('div');
+            tag.className='promo-card-tag';
+            tag.textContent=banner.tag;
+            tag.style.zIndex='2';
+            card.appendChild(tag);
+        }
+        if(Number(banner.show_title)!==0){
+            var title=document.createElement('div');
+            title.className='promo-card-title';
+            title.textContent=banner.title||'';
+            title.style.position='relative';
+            title.style.zIndex='2';
+            card.appendChild(title);
+        }
+        if(Number(banner.show_description)!==0){
+            var description=document.createElement('div');
+            description.className='promo-card-text';
+            description.textContent=banner.description||'';
+            description.style.position='relative';
+            description.style.zIndex='2';
+            card.appendChild(description);
+        }
+        if(banner.image_path&&/^\/uploads\/index-banners\/[A-Za-z0-9_-]+\.(jpg|png|webp)$/i.test(banner.image_path)){
+            var image=document.createElement('div');
+            image.className='promo-card-img';
+            image.style.backgroundImage='linear-gradient(rgba(0,0,0,.22),rgba(0,0,0,.42)),url("'+banner.image_path+'")';
+            card.appendChild(image);
+        }
+        return card;
+    }
+
+    rebuildTrack(cards);
+
+    carousel.addEventListener('pointerdown',function(event){
+        if(!event.isPrimary||(event.pointerType==='mouse'&&event.button!==0)||cards.length<2)return;
+        var slot=slotSize();
+        if(!slot)return;
+        stop();
+        drag={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,dx:0,slot:slot,base:(cloneCount+logicalIndex)*slot,horizontal:false};
+        try{carousel.setPointerCapture(event.pointerId);}catch(error){}
+    });
+
+    carousel.addEventListener('pointermove',function(event){
+        if(!drag||event.pointerId!==drag.pointerId)return;
+        var dx=event.clientX-drag.startX,dy=event.clientY-drag.startY;
+        if(!drag.horizontal&&Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy))drag.horizontal=true;
+        if(!drag.horizontal)return;
+        drag.dx=dx;
+        track.style.transition='none';
+        track.style.transform='translate3d(-'+(drag.base-dx)+'px,0,0)';
+    });
+
+    function finishDrag(event,cancelled){
+        if(!drag||event.pointerId!==drag.pointerId)return;
+        var completed=drag;
+        drag=null;
+        var threshold=Math.max(40,completed.slot*.16);
+        if(completed.horizontal&&!cancelled&&Math.abs(completed.dx)>threshold){
+            suppressClickUntil=Date.now()+500;
+            moveBy(completed.dx<0?1:-1);
+        }else if(completed.horizontal){
+            setPosition(true);
+        }
+        start();
+    }
+    carousel.addEventListener('pointerup',function(event){finishDrag(event,false);});
+    carousel.addEventListener('pointercancel',function(event){finishDrag(event,true);});
+    carousel.addEventListener('lostpointercapture',function(event){finishDrag(event,true);});
+
+    track.addEventListener('transitionend',function(event){
+        if(event.target===track&&event.propertyName==='transform')normalizeLoopPosition();
+    });
+
+    carousel.addEventListener('mouseenter',function(){paused=true;stop();});
+    carousel.addEventListener('mouseleave',function(){paused=false;start();});
+    carousel.addEventListener('click',function(event){
+        if(Date.now()<suppressClickUntil){event.preventDefault();event.stopPropagation();return;}
+        var card=event.target&&event.target.closest?event.target.closest('.promo-card'):null;
+        if(!card)return;
+        var link=card.getAttribute('data-promo-link')||'';
+        if(link&&link!=='#')window.location.href=link;
+    });
+    window.addEventListener('resize',function(){if(!drag)setPosition(false);});
+    document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else start();});
+
+    fetch('/api/index_banners.php?action=public',{credentials:'same-origin',cache:'no-store'})
+        .then(function(response){if(!response.ok)throw new Error('Failed to load banners');return response.json();})
+        .then(function(data){
+            if(data&&data.success&&Array.isArray(data.banners)){
+                carousel.hidden=data.banners.length===0;
+                rebuildTrack(data.banners.map(makePromoCard));
+            }
+        })
+        .catch(function(){/* Keep the built-in fallback banners if the API is unavailable. */});
+})();
+</script>
+
+</body>
 </html>

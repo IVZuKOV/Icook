@@ -9,9 +9,12 @@ declare(strict_types=1);
 // Конфиг БД лежит вне веб-рута (/etc/icook/config.php).
 require_once '/etc/icook/config.php';
 
+const ICOOK_SESSION_LIFETIME = 2592000;
+
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.use_strict_mode', '1');
     ini_set('session.use_only_cookies', '1');
+    ini_set('session.gc_maxlifetime', (string) ICOOK_SESSION_LIFETIME);
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_samesite', 'Strict');
     session_set_cookie_params([
@@ -23,6 +26,16 @@ if (session_status() === PHP_SESSION_NONE) {
         'samesite' => 'Strict',
     ]);
     session_start();
+    if (!empty($_SESSION['user_id'])) {
+        session_set_cookie_params([
+            'lifetime' => ICOOK_SESSION_LIFETIME,
+            'path' => '/',
+            'domain' => '',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ]);
+    }
 }
 
 header('Content-Type: application/json; charset=utf-8');
@@ -41,6 +54,20 @@ function client_ip(): string
 
 function json_out(array $payload, int $status = 200): void
 {
+    if (
+        session_status() === PHP_SESSION_ACTIVE
+        && !headers_sent()
+        && !empty($_SESSION['user_id'])
+    ) {
+        setcookie(session_name(), session_id(), [
+            'expires' => time() + ICOOK_SESSION_LIFETIME,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ]);
+    }
+
     http_response_code($status);
     echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
@@ -131,7 +158,7 @@ function current_user(PDO $pdo): ?array
         return null;
     }
     $stmt = $pdo->prepare(
-        'SELECT id, name, email, phone, role, is_seller, seller_description,
+        'SELECT id, name, email, phone, role, is_seller, seller_description, avatar,
                 country, city, address, lat, lng, search_radius, lang
          FROM users WHERE id = ?'
     );

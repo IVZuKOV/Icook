@@ -8,7 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Подключаем общие стили -->
-<link rel="stylesheet" href="assets/css/app.css?v=20261028145408">
+<link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/content-favorites.css?v=20261101115550">
 
 <style>
 /* Специфичные стили только для контента рецептов */
@@ -18,8 +19,15 @@
 .recipes-toolbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;}
 .recipes-toolbar .search-input{max-width:340px;width:100%;padding:12px 16px;border:2px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main);font-family:'Montserrat',sans-serif;font-size:14px;}
 .recipes-toolbar .search-input:focus{outline:none;border-color:var(--neon);}
-.add-recipe-cta{padding:12px 22px;border:none;border-radius:12px;background:var(--neon);color:#ffffff;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;transition:0.3s;box-shadow:0 0 14px var(--neon-glow);}
-.add-recipe-cta:hover{transform:scale(1.03);box-shadow:0 0 20px var(--neon-glow);}
+.add-recipe-cta{position:fixed;top:72px;right:16px;z-index:95;width:28px;height:28px;padding:0;border:none;border-radius:8px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;transition:opacity 3s ease,transform 0.3s ease,box-shadow 0.3s ease;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 7px var(--neon-glow);}
+.add-recipe-cta svg{width:13px;height:13px;stroke:var(--neon);fill:none;stroke-width:3;stroke-linecap:round;}
+.add-recipe-cta:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 11px var(--neon-glow);}
+.add-recipe-cta:active{background:transparent;transform:scale(0.96);}
+.add-recipe-cta.add-recipe-hidden{opacity:0;pointer-events:none;}
+.back-to-top{position:fixed;bottom:70px;right:16px;z-index:102;width:40px;height:40px;padding:0;border:none;border-radius:12px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s,box-shadow 0.3s;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 14px var(--neon-glow);}
+.back-to-top.visible{opacity:1;pointer-events:auto;}
+.back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow);}
+.back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .recipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;text-align:left;}
 .recipe-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;transition:all 0.3s;box-shadow:0 8px 30px rgba(0,0,0,0.08);position:relative;}
 .recipe-card:hover{transform:translateY(-4px);border-color:var(--neon);box-shadow:0 10px 35px var(--neon-glow),0 0 25px rgba(30,64,175,0.1);}
@@ -60,7 +68,20 @@ body{padding-bottom:88px;}
 </style>
 
 <script>
-(function(){const t=localStorage.getItem('site-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');})();
+(function(){const t=localStorage.getItem('site-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');
+  const init = () => {
+    const addBtn = document.querySelector('.add-recipe-cta');
+    const backBtn = document.querySelector('.back-to-top');
+    const applyAdd = () => { if (addBtn) { if (window.scrollY > 120) addBtn.classList.add('add-recipe-hidden'); else addBtn.classList.remove('add-recipe-hidden'); } };
+    const applyBack = () => { if (backBtn) backBtn.classList.toggle('visible', window.scrollY > 300); };
+    const onScroll = () => { applyAdd(); applyBack(); };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('scrollend', onScroll);
+    if (backBtn) backBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
 </script>
 
 <style>
@@ -78,12 +99,12 @@ button, .btn, a, label {
     user-select: auto !important;
 }
 </style>
-<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
-<script src="assets/js/site-select.js?v=20261028155005" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
-<script src="assets/js/site-header.js?v=20261028160517" defer></script>
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
+<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261105152159">
+<script src="assets/js/site-header.js?v=20261105152159" defer></script>
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -124,12 +145,13 @@ button, .btn, a, label {
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 
 </nav>
+<button class="add-recipe-cta" onclick="goAddRecipe()" aria-label="Добавить рецепт"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+<button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх"><svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
 <section class="recipes-page">
 <h1 class="page-title">Рецепты</h1>
 <p class="page-desc">Домашние рецепты от наших поваров — готовьте и делитесь своими</p>
 <div class="recipes-toolbar">
 <input type="text" class="search-input" id="recipeSearch" placeholder="Поиск рецептов...">
-<button class="add-recipe-cta" onclick="goAddRecipe()">＋ Добавить рецепт</button>
 </div>
 <div class="recipes-grid" id="recipesGrid"><div class="recipes-loading">Загружаем рецепты...</div></div>
 <div class="feed-status" id="recipesSentinel" role="status" aria-live="polite"></div>
@@ -181,8 +203,9 @@ button, .btn, a, label {
         © 2026 Я готовлю — ты ешь!
     </footer>
 
-<script src="assets/js/infinite-feed.js?v=20261028155005"></script>
-<script src="assets/js/main.js?v=20261022183142"></script>
+<script src="assets/js/infinite-feed.js?v=20261105152159"></script>
+<script src="assets/js/main.js?v=20261105152159"></script>
+<script src="assets/js/favorites-store.js?v=20261101115409"></script>
 <script>
 // --- JS РЕЦЕПТОВ ---
 let recipesFeed = null;
@@ -236,7 +259,18 @@ function renderRecipes(recipes) {
         const author = r.author_name ? escapeHtml(r.author_name) : 'Аноним';
         const letter = r.author_name ? escapeHtml(r.author_name.charAt(0).toUpperCase()) : '?';
         const text = escapeHtml(r.description || 'Без описания');
-        return '<div class="recipe-card">' + img +
+            const favoriteItem = JSON.stringify({
+                title: r.title || '',
+                image: r.image || '',
+                author_name: r.author_name || '',
+                description: r.description || ''
+            });
+            const favoriteButton = '<button type="button" class="fav-btn content-fav-btn' +
+                (window.isContentFavorite('recipe', r.id) ? ' active' : '') +
+                '" data-favorite-type="recipe" data-favorite-id="' + escapeHtml(r.id) +
+                '" data-favorite-item="' + escapeHtml(favoriteItem) +
+                '" aria-label="Добавить рецепт в избранное"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>';
+            return '<div class="recipe-card">' + favoriteButton + img +
             '<div class="recipe-body">' +
                 '<div class="recipe-title">' + escapeHtml(r.title) + '</div>' +
                 '<div class="recipe-author"><span class="author-letter">' + letter + '</span>' + author + '</div>' +
@@ -309,8 +343,8 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="assets/js/notifications.js?v=20261021133630"></script>
 <script src="assets/js/footer.js?v=20261021131201"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
-<script src="assets/js/cart-sync.js?v=20261021162338"></script><script src="assets/js/phone-country.js?v=20261025131738"></script><script src="assets/js/bubble-btn.js?v=20261025131758"></script>
-<script src="assets/js/site-catalog.js?v=20261028152612"></script>
-<script src="assets/js/auth-home.js?v=20261028152612"></script>
-<script src="assets/js/auth-email-flow.js?v=20261028152612"></script></body>
+<script src="assets/js/cart-sync.js?v=20261021162338"></script><script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
+<script src="assets/js/site-catalog.js?v=20261105152159"></script>
+<script src="assets/js/auth-home.js?v=20261105152159"></script>
+<script src="assets/js/auth-email-flow.js?v=20261105152159"></script></body>
 </html>

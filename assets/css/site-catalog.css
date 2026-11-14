@@ -44,6 +44,11 @@
     transform: translateX(5px);
 }
 #catalogDrawer .catalog-link.secondary { padding-left: 18px; }
+#catalogProjectLinks .catalog-link,
+#catalogOutletLinks .catalog-link {
+    padding-top: 8px; padding-bottom: 8px;
+    margin-bottom: 2px; line-height: 1.4;
+}
 #catalogDrawer .catalog-link.secondary svg { stroke: var(--text-main); }
 #catalogDrawer .catalog-link.secondary:hover {
     background: rgba(15,23,42,.06); transform: translateX(3px);

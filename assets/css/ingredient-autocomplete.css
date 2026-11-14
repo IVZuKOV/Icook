@@ -1,0 +1,10 @@
+.ingredient-suggestions {
+    position: fixed; inset: auto; margin: 0; padding: 6px; z-index: 20030;
+    max-width: calc(100vw - 16px); touch-action: pan-y;
+}
+.ingredient-suggestions .ingredient-option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ingredient-option-name { min-width: 0; overflow-wrap: anywhere; }
+.ingredient-option-count { flex-shrink: 0; font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+.ingredient-suggestion-note { padding: 10px 14px; color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+.ingredient-suggestions .ingredient-option.is-active { box-shadow: inset 0 0 0 1px rgba(255,255,255,.8); }
+@media(max-width:420px) { .ingredient-option-count { font-size: 10px; } }

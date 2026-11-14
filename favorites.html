@@ -250,14 +250,19 @@ button, .btn, a, label {
     [data-theme="dark"] .qty-btn:active{background:transparent;color:#000000;transform:scale(0.95);z-index:2;position:relative;}
     .qty-btn:active{background:var(--neon);color:#fff;transform:scale(0.9);transition:background 0.05s,color 0.05s,transform 0.05s;}
     .qty-val{font-weight:700;font-size:16px;width:20px;text-align:center;}
+.back-to-top{position:fixed;bottom:70px;right:16px;z-index:102;width:40px;height:40px;padding:0;border:none;border-radius:12px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s,box-shadow 0.3s;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 14px var(--neon-glow);}
+.back-to-top.visible{opacity:1;pointer-events:auto;}
+.back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow);}
+.back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 </style>
 <link rel="stylesheet" href="assets/css/favorites.css?v=20261021145218">
-<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
-<script src="assets/js/site-select.js?v=20261028155005" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
-<script src="assets/js/site-header.js?v=20261028160517" defer></script>
+<link rel="stylesheet" href="assets/css/content-favorites.css?v=20261101115550">
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
+<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261105152159">
+<script src="assets/js/site-header.js?v=20261105152159" defer></script>
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -295,7 +300,19 @@ button, .btn, a, label {
 
 <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 </nav>
+
+    <!-- Кнопка «Наверх» -->
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх"><svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
+
 <section class="section-transparent"><h2 class="section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Избранное</h2>
+<div class="favorites-toolbar">
+    <select id="favoritesFilter" class="favorites-filter" aria-label="Фильтр избранного">
+        <option value="all">Все избранное</option>
+        <option value="place">Места</option>
+        <option value="recipe">Рецепты</option>
+        <option value="dish">Блюда</option>
+    </select>
+</div>
 <div class="cards" id="favoritesGrid"></div>
 <p id="favoritesEmpty" style="text-align:center;color:var(--text-muted);padding:40px;display:none;">В избранном пока ничего нет</p>
 </section>
@@ -344,6 +361,10 @@ function setLoading(id, state){const b=document.getElementById(id);state?b.class
 function getFavorites(){return JSON.parse(localStorage.getItem('favorites')||'[]');}
 function isFavorite(id){return getFavorites().indexOf(Number(id))!==-1;}
 function toggleFavorite(id){
+  if(typeof window.toggleContentFavorite==='function'){
+    window.toggleContentFavorite('dish', id);
+    return;
+  }
   id=Number(id);
   let favs=getFavorites();
   const i=favs.indexOf(id);
@@ -387,7 +408,7 @@ function toggleTheme(){const html = document.documentElement;const next = html.g
 // --- МОДАЛЬНЫЕ ОКНА ПОДЕЛИТЬСЯ ---
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const siteUrl = 'https://icook.com.ru/';
-const apkUrl = 'https://icook.com.ru/assets/apk/ICOOK.apk';
+const apkUrl = 'https://icook.com.ru/assets/apk/ICOOK-native-20261101i.apk';
 
 function closeShareModal(e, id){
     if(!e || e.target === document.getElementById(id)){
@@ -428,13 +449,13 @@ function openShareAppModal(){
     container.innerHTML = '';
 
     if(isMobile){
-        container.innerHTML += '<button class="share-option" onclick="shareApkFile()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Отправить APK файл</div><div class="share-hint">Скачать и отправить через приложение</div></div></button>';
+        container.innerHTML += '<button class="share-option" onclick="shareApkFile()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Отправить APK файл</div><div class="share-hint">Перед установкой удалите старую версию</div></div></button>';
         container.innerHTML += '<button class="share-option" onclick="shareApkLink()"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><div><div class="share-label">Отправить ссылку на APK</div><div class="share-hint">Поделиться ссылкой для скачивания</div></div></button>';
         container.innerHTML += '<button class="share-option" onclick="copyApkLink()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><div><div class="share-label">Копировать ссылку на скачивание приложения</div><div class="share-hint">Ссылка на APK</div></div></button>';
     } else {
         container.innerHTML += '<input class="share-link-input" value="'+apkUrl+'" readonly onclick="this.select()">';
         container.innerHTML += '<button class="share-copy-btn" onclick="copyApkLink()">Скопировать ссылку на APK</button>';
-        container.innerHTML += '<button class="share-option" onclick="downloadApk()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Скачать APK</div><div class="share-hint">Сохранить файл на компьютер</div></div></button>';
+        container.innerHTML += '<button class="share-option" onclick="downloadApk()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Скачать APK</div><div class="share-hint">Перед установкой удалите старую версию</div></div></button>';
     }
 
     document.getElementById('shareAppModal').classList.add('active');
@@ -571,30 +592,159 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 // --- JS КОНЕЦ ---
 </script>
 
+<script src="assets/js/favorites-store.js?v=20261101115409"></script>
 <script>
-(async function loadPopularDishes(){
-    try {
-        var res = await fetch('/api/dishes.php?limit=10');
-        var data = await res.json();
-        var container = document.getElementById('popularDishes');
-        if(!data.success || !data.dishes.length){
-            container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px;">Блюд пока нет</p>';
-            return;
+let favoritesLoadVersion = 0;
+let favoritesPageEntries = null;
+const favoriteHeartSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+
+function createFavoriteHeart(entry) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'fav-btn content-fav-btn' + (window.isContentFavorite(entry.type, entry.id) ? ' active' : '');
+    button.dataset.favoriteType = entry.type;
+    button.dataset.favoriteId = entry.id;
+    button.setAttribute('aria-label', window.isContentFavorite(entry.type, entry.id) ? 'Удалить из избранного' : 'Добавить в избранное');
+    button.innerHTML = favoriteHeartSvg;
+    return button;
+}
+
+function createFavoriteCard(entry, item) {
+    const card = document.createElement('article');
+    card.className = 'card favorite-content-card';
+    card.appendChild(createFavoriteHeart(entry));
+
+    if (item.image) {
+        const image = document.createElement('img');
+        image.className = 'favorite-content-image';
+        image.src = item.image;
+        image.alt = item.title || item.name || '';
+        image.loading = 'lazy';
+        card.appendChild(image);
+    }
+
+    const body = document.createElement('div');
+    body.className = 'favorite-content-body';
+    const typeLabel = document.createElement('div');
+    typeLabel.className = 'favorite-content-type';
+    typeLabel.textContent = entry.type === 'place' ? 'Место' : entry.type === 'recipe' ? 'Рецепт' : 'Блюдо';
+    body.appendChild(typeLabel);
+
+    const title = document.createElement('div');
+    title.className = entry.type === 'dish' ? 'dish favorite-content-title' : 'favorite-content-title';
+    title.textContent = item.title || item.name || 'Избранное';
+    body.appendChild(title);
+
+    if (entry.type === 'dish') {
+        const author = document.createElement('div');
+        author.className = 'chef';
+        author.textContent = item.seller_name || 'Повар';
+        body.appendChild(author);
+        if (item.description) {
+            const description = document.createElement('div');
+            description.className = 'desc favorite-content-description';
+            description.textContent = item.description;
+            body.appendChild(description);
         }
-        var html = '';
-        data.dishes.forEach(function(d){
-            var img = d.image ? d.image : '';
-            var imgTag = img ? '<img src="' + img + '" alt="' + d.title + '">' : '';
-            var chef = d.seller_name || 'Повар';
-            var desc = d.description || '';
-            if(desc.length > 80) desc = desc.substring(0,80) + '...';
-            var weight = d.weight ? ' · ' + d.weight + 'г' : '';
-            var cat = d.category_name ? '<span style="font-size:12px;color:var(--text-muted);">' + d.category_name + '</span>' : '';
-            html += '<div class="card">' + '<button class="fav-btn ' + (isFavorite(d.id)?'active':'') + '" onclick="toggleFavorite(' + d.id + ');return false;" data-id="' + d.id + '">' + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>' + imgTag + '<div class="card-content">' + cat + '<div class="dish">' + d.title + '</div><div class="chef">' + chef + '</div><div class="desc">' + desc + '</div><div class="price">' + parseFloat(d.price).toFixed(0) + ' ₽' + weight + '</div><button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g,'&quot;') + '" data-chef="' + chef.replace(/"/g,'&quot;') + '" data-price="' + parseFloat(d.price).toFixed(0) + '" data-img="' + (img||'') + '" onclick="addToCartBtn(this)">В корзину</button></div></div>';
+        const price = document.createElement('div');
+        price.className = 'price';
+        price.textContent = (Number(item.price) || 0).toFixed(0) + ' ₽' + (item.weight ? ' · ' + item.weight + 'г' : '');
+        body.appendChild(price);
+        const addButton = document.createElement('button');
+        addButton.type = 'button';
+        addButton.className = 'btn';
+        addButton.textContent = 'В корзину';
+        addButton.dataset.id = String(item.id);
+        addButton.dataset.name = item.title || '';
+        addButton.dataset.chef = item.seller_name || 'Повар';
+        addButton.dataset.price = String(Number(item.price) || 0);
+        addButton.dataset.img = item.image || '';
+        addButton.addEventListener('click', function () { addToCartBtn(addButton); });
+        body.appendChild(addButton);
+    } else {
+        const details = entry.type === 'place'
+            ? [item.type, item.address].filter(Boolean).join(' · ')
+            : [item.author_name || 'Аноним', item.description].filter(Boolean).join('\n');
+        if (details) {
+            const description = document.createElement('div');
+            description.className = 'favorite-content-description';
+            description.textContent = details;
+            body.appendChild(description);
+        }
+        if (entry.type === 'place' && item.website) {
+            const link = document.createElement('a');
+            link.className = 'venue-contact';
+            link.href = item.website;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.textContent = 'Открыть сайт';
+            body.appendChild(link);
+        }
+    }
+
+    card.appendChild(body);
+    return card;
+}
+
+async function loadFavoriteDishes(entries, version) {
+    const wanted = new Set(entries.map(function (entry) { return entry.id; }));
+    const dishes = new Map();
+    let page = 1;
+    let pageCount = 1;
+    while (page <= pageCount && wanted.size) {
+        const response = await fetch('/api/dishes.php?page=' + page);
+        if (!response.ok) throw new Error('Не удалось загрузить избранные блюда (' + response.status + ')');
+        const data = await response.json();
+        if (!data.success || !Array.isArray(data.dishes)) throw new Error('Сервер вернул некорректный список блюд');
+        data.dishes.forEach(function (dish) {
+            const id = String(dish.id);
+            if (wanted.has(id)) {
+                dishes.set(id, dish);
+                wanted.delete(id);
+            }
         });
-        container.innerHTML = html;
-    } catch(e){ console.error('Load dishes error:', e); }
-})();
+        pageCount = Number(data.pages) || 1;
+        page++;
+        if (version !== favoritesLoadVersion) return dishes;
+    }
+    return dishes;
+}
+
+async function loadFavorites() {
+    const version = ++favoritesLoadVersion;
+    const container = document.getElementById('favoritesGrid');
+    const empty = document.getElementById('favoritesEmpty');
+    const filter = document.getElementById('favoritesFilter').value;
+    if (favoritesPageEntries === null) {
+        favoritesPageEntries = window.getFavoriteContent().sort(function (a, b) { return b.addedAt - a.addedAt; });
+    }
+    const allEntries = favoritesPageEntries;
+    const entries = allEntries.filter(function (entry) { return filter === 'all' || entry.type === filter; });
+    container.replaceChildren();
+
+    try {
+        const dishEntries = entries.filter(function (entry) { return entry.type === 'dish'; });
+        const dishes = dishEntries.length ? await loadFavoriteDishes(dishEntries, version) : new Map();
+        if (version !== favoritesLoadVersion) return;
+
+        entries.forEach(function (entry) {
+            const item = entry.type === 'dish' ? dishes.get(entry.id) : entry.item;
+            if (!item) return;
+            container.appendChild(createFavoriteCard(entry, item));
+        });
+        empty.style.display = container.childElementCount ? 'none' : 'block';
+        empty.textContent = filter === 'all' ? 'В избранном пока ничего нет' : 'В этом разделе пока ничего нет';
+    } catch (error) {
+        if (version !== favoritesLoadVersion) return;
+        console.error('Unable to load favorites', error);
+        empty.textContent = 'Не удалось загрузить избранное. Попробуйте обновить страницу.';
+        empty.style.display = 'block';
+    }
+}
+
+document.getElementById('favoritesFilter').addEventListener('change', loadFavorites);
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadFavorites);
+else loadFavorites();
 </script>
 
 
@@ -603,8 +753,21 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 <script src="assets/js/footer.js?v=20261021131201"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
-<script src="assets/js/phone-country.js?v=20261025131738"></script><script src="assets/js/bubble-btn.js?v=20261025131758"></script>
-<script src="assets/js/site-catalog.js?v=20261028152612"></script>
-<script src="assets/js/auth-home.js?v=20261028152612"></script>
-<script src="assets/js/auth-email-flow.js?v=20261028152612"></script></body>
+<script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
+<script src="assets/js/site-catalog.js?v=20261105152159"></script>
+<script src="assets/js/auth-home.js?v=20261105152159"></script>
+<script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
+<script>
+(function(){const init = () => {
+    const backBtn = document.querySelector('.back-to-top');
+    const applyBack = () => { if (backBtn) backBtn.classList.toggle('visible', window.scrollY > 300); };
+    const onScroll = () => { applyBack(); };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('scrollend', onScroll);
+    if (backBtn) backBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+};
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+})();
+</script></body>
 </html>

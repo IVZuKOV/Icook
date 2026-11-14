@@ -43,7 +43,7 @@
     var l = document.createElement('link');
     l.id = 'auStyles';
     l.rel = 'stylesheet';
-    l.href = '/assets/css/auth-unified.css?v=20261026123443';
+    l.href = '/assets/css/auth-unified.css?v=20261105152151';
     document.head.appendChild(l);
   }
 

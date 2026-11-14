@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Заявка на еду к поезду или автобусу на станции по маршруту в России.">
+<title>Еду ем — еда к поезду или автобусу</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261105152159">
+<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
+<style>
+body{padding-bottom:84px}
+.bottom-bar{height:56px;min-height:56px;max-height:56px;position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,.1)}
+.bottom-bar .header-right{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:4px}
+.bottom-bar .catalog-btn,.bottom-bar .icon-btn,.bottom-bar .user-btn-wrap{width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:50%;box-shadow:none;padding:0;color:var(--text-main);text-decoration:none}
+.bottom-bar .catalog-btn:hover,.bottom-bar .icon-btn:hover{background:var(--neon-glow);transform:scale(1.05)}
+.bottom-bar .user-btn-wrap,.bottom-bar .user-btn-wrap:hover,.bottom-bar .user-btn-wrap:focus,.bottom-bar .user-btn-wrap:active{background:transparent!important;border:0!important;transform:none!important;box-shadow:none!important;outline:none!important}
+.bottom-bar .catalog-btn svg,.bottom-bar .icon-btn svg{width:20px;height:20px}
+.bottom-bar button,.bottom-bar a{-webkit-tap-highlight-color:transparent;appearance:none;outline:0;box-shadow:none}
+.bottom-bar button:focus,.bottom-bar button:active,.bottom-bar a:focus,.bottom-bar a:active{outline:0;box-shadow:none}
+.bottom-bar .theme-btn .sun{display:none}
+[data-theme="dark"] .bottom-bar .theme-btn .moon{display:none}
+[data-theme="dark"] .bottom-bar .theme-btn .sun{display:block}
+.bottom-bar .user-btn-letter{display:block;width:auto!important;height:auto!important;min-width:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:var(--text-main)!important;font-weight:800;line-height:1}
+.bottom-bar #cartBadge{position:absolute;margin:-24px 0 0 24px;min-width:16px;height:16px;padding:0 3px;border-radius:99px;background:#ef4444;color:white;font:700 10px/16px 'Nunito',sans-serif;text-align:center}
+.bottom-bar #cartBadge:empty{display:none}
+.site-header .logo{color:#1e40af;text-shadow:0 0 8px rgba(30,64,175,.4),0 0 20px rgba(30,64,175,.2)}
+[data-theme="dark"] .site-header .logo{color:#fff;text-shadow:0 0 10px rgba(255,255,255,.5),0 0 25px rgba(255,255,255,.25)}
+.edu-hero h1{color:#1e40af}
+.edu-hero h1 span{display:block;color:#1e40af}
+[data-theme="dark"] .edu-hero h1,[data-theme="dark"] .edu-hero h1 span{color:#fff}
+.edu-hero{padding:64px 20px 46px;text-align:center;background:radial-gradient(ellipse at top,rgba(30,64,175,.12),transparent 65%)}
+.edu-hero-inner,.edu-section{width:min(980px,calc(100% - 32px));margin:0 auto}
+.edu-eyebrow{display:inline-block;padding:7px 13px;border:1px solid var(--border-color);border-radius:999px;color:var(--neon-dark);font-size:13px;font-weight:800}
+.edu-hero h1{max-width:780px;margin:18px auto 12px;font-size:clamp(34px,7vw,64px);line-height:1.04;font-weight:900}
+.edu-hero p{max-width:660px;margin:0 auto 24px;color:var(--text-muted);font-size:clamp(16px,2.4vw,20px);line-height:1.55}
+.edu-cta{display:inline-flex;justify-content:center;align-items:center;padding:14px 24px;border-radius:14px;background:var(--neon);color:white;text-decoration:none;font-weight:800}
+.edu-cta:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.edu-notice{margin:28px auto 0;padding:14px 18px;max-width:760px;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);color:var(--text-main);font-size:14px;line-height:1.5}
+.edu-section{padding:28px 0}
+.edu-section h2{margin:0 0 18px;color:var(--text-main);font-size:clamp(24px,4vw,34px);font-weight:900}
+.edu-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.edu-step,.edu-form-card{padding:20px;border:1px solid var(--border-color);border-radius:18px;background:var(--card-bg);box-shadow:0 10px 28px rgba(15,23,42,.06)}
+.edu-step b{display:grid;place-items:center;width:34px;height:34px;margin-bottom:12px;border-radius:11px;background:var(--neon-glow);color:var(--neon-dark);font-weight:900}
+.edu-step h3{margin:0 0 8px;color:var(--text-main);font-size:17px}
+.edu-step p,.edu-small{margin:0;color:var(--text-muted);font-size:14px;line-height:1.55}
+.edu-form-card{width:100%;max-width:760px;min-width:0;box-sizing:border-box}
+.edu-form-card form,.edu-form-grid,.edu-field{min-width:0;max-width:100%;box-sizing:border-box}
+.edu-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.edu-field{display:flex;flex-direction:column;gap:6px}
+.edu-field.full{grid-column:1/-1}
+.edu-field label{color:var(--text-main);font-size:13px;font-weight:800}
+.edu-field input,.edu-field select,.edu-field textarea{width:100%;max-width:100%;min-width:0;min-height:46px;padding:11px 12px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:500 15px 'Nunito',sans-serif;box-sizing:border-box}
+.edu-field input:focus,.edu-field input:focus-visible,.edu-field select:focus,.edu-field textarea:focus,.edu-field textarea:focus-visible{outline:none;border-color:var(--neon);box-shadow:0 0 0 3px rgba(30,64,175,.12)}
+.edu-field input:invalid:not(:placeholder-shown),.edu-field textarea:invalid:not(:placeholder-shown){border-color:var(--border-color);box-shadow:none}
+.edu-field input[type="datetime-local"]{color-scheme:light}
+[data-theme="dark"] .edu-field input[type="datetime-local"]{color-scheme:dark}
+.edu-field input[type="datetime-local"]::-webkit-calendar-picker-indicator{opacity:.75;cursor:pointer}
+.edu-select .site-select-trigger{min-height:46px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);font:500 15px 'Nunito',sans-serif}
+.edu-select .site-select-trigger:focus,.edu-select .site-select-trigger[aria-expanded="true"]{outline:none!important;border-color:var(--neon)!important;box-shadow:0 0 0 3px rgba(30,64,175,.12)!important}
+.edu-outlet-link{display:none;align-items:center;gap:10px;width:100%;max-width:100%;min-width:0;min-height:56px;box-sizing:border-box;margin:10px 0 0;padding:10px 14px;border:1px solid var(--border-color);border-radius:10px;color:var(--neon-dark);background:var(--card-bg);font-weight:800;line-height:1.35;text-decoration:none;overflow-wrap:anywhere}
+.edu-outlet-link.visible{display:flex}
+.edu-outlet-link img{width:36px;height:36px;flex:0 0 36px;border-radius:8px;object-fit:cover}
+.edu-outlet-link:hover{border-color:var(--neon)}
+.edu-field textarea{min-height:100px;resize:vertical}
+.edu-consent{display:flex;align-items:flex-start;gap:10px;margin:16px 0;color:var(--text-muted);font-size:13px;line-height:1.45}
+.edu-consent input[type="checkbox"]{appearance:none;position:relative;flex:0 0 18px;width:18px;height:18px;margin:3px 0 0;border:0;border-radius:0;background:transparent;box-shadow:none;outline:none;cursor:pointer}
+.edu-consent input[type="checkbox"]::after{content:"";position:absolute;left:5px;top:1px;width:6px;height:11px;border:solid var(--neon-dark);border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transform-origin:center;transition:transform .12s ease}
+.edu-consent input[type="checkbox"]:checked::after{transform:rotate(45deg) scale(1)}
+.edu-consent input[type="checkbox"]:focus-visible{outline:2px solid var(--neon);outline-offset:3px}
+.edu-submit{width:100%;min-height:50px;border:0;border-radius:12px;background:var(--neon);color:white;font:800 16px 'Nunito',sans-serif;cursor:pointer}
+.edu-submit:hover{filter:brightness(.97);box-shadow:none}
+.edu-submit:focus,.edu-submit:focus-visible,.edu-submit:active{outline:none;box-shadow:none}
+.edu-submit:disabled{opacity:.6;cursor:wait}
+.edu-status{min-height:22px;margin-top:12px;color:var(--text-muted);font-size:14px}
+.edu-status.error{color:#dc2626}
+.edu-status.success{color:#059669}
+.edu-footer-note{padding:18px 0 30px;text-align:center;color:var(--text-muted);font-size:13px}
+.edu-footer-note a{color:var(--neon-dark)}
+footer{margin-top:0;padding:10px;text-align:center;transition:opacity .35s ease,transform .35s ease;opacity:0!important;transform:translateY(20px)!important;pointer-events:none!important}
+footer.footer-visible{opacity:1!important;transform:translateY(0)!important;pointer-events:auto!important;padding:25px;text-align:center;color:var(--text-muted);z-index:3;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px}
+footer svg{width:20px;height:20px}
+@media(max-width:700px){.edu-hero{padding:44px 12px 32px}.edu-steps{grid-template-columns:1fr}.edu-form-grid{grid-template-columns:1fr}.edu-field.full{grid-column:auto}.edu-form-card{padding:16px}}
+[data-theme="dark"] .edu-field input:focus,[data-theme="dark"] .edu-field textarea:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(96,165,250,.16)}
+[data-theme="dark"] .edu-select .site-select-trigger:focus,[data-theme="dark"] .edu-select .site-select-trigger[aria-expanded="true"]{border-color:var(--neon)!important;box-shadow:0 0 0 3px rgba(96,165,250,.16)!important}
+[data-theme="dark"] .edu-cta,[data-theme="dark"] .edu-submit{border:2px solid rgba(255,255,255,.15);background:transparent;color:#f8fafc;box-shadow:none}
+[data-theme="dark"] .edu-cta:hover,[data-theme="dark"] .edu-submit:hover{filter:none;border-color:#fff;background:rgba(255,255,255,.08);color:#fff;transform:translateX(4px);box-shadow:0 0 15px rgba(255,255,255,.15)}
+[data-theme="dark"] .edu-submit:focus-visible,[data-theme="dark"] .edu-cta:focus-visible{outline:2px solid #fff;outline-offset:4px;box-shadow:0 0 15px rgba(255,255,255,.15)}
+[data-theme="dark"] .edu-consent input[type="checkbox"]::after{border-color:#fff}
+[data-theme="dark"] .bottom-bar .catalog-btn:hover,[data-theme="dark"] .bottom-bar .icon-btn:hover,
+[data-theme="dark"] .bottom-bar .catalog-btn:focus,[data-theme="dark"] .bottom-bar .icon-btn:focus,
+[data-theme="dark"] .bottom-bar .catalog-btn:active,[data-theme="dark"] .bottom-bar .icon-btn:active{background:transparent;transform:none;box-shadow:none}
+</style>
+<script>
+(function(){var theme=localStorage.getItem('site-theme');document.documentElement.setAttribute('data-theme',theme==='dark'?'dark':'light');})();
+function toggleTheme(){var dark=document.documentElement.getAttribute('data-theme')!=='dark';document.documentElement.setAttribute('data-theme',dark?'dark':'light');localStorage.setItem('site-theme',dark?'dark':'light');}
+function openAuth(){window.location.href='index.html?auth=login';}
+</script>
+</head>
+<body>
+<div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
+<div class="catalog-drawer" id="catalogDrawer"></div>
+<header class="site-header">
+  <div class="header-left"><a class="logo" href="index.html" style="text-decoration:none">
+    <svg class="logo-icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M10 44C10 26 20 12 32 12s22 14 22 32M24 12V6a8 8 0 0 1 16 0v6M16 36q4-10 12-14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+    Я готовлю — ты ешь!
+  </a></div>
+</header>
+<nav class="bottom-bar">
+  <div class="header-right">
+    <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a href="index.html" class="icon-btn" aria-label="Главная"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+    <button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+    <a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none;text-decoration:none;" aria-label="Профиль"><span class="user-btn-letter" id="userLetter"></span></a>
+    <button class="icon-btn" onclick="window.location.href='cart.html'" aria-label="Корзина"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none;"></span></button>
+    <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+  </div>
+</nav>
+
+<main>
+  <section class="edu-hero">
+    <div class="edu-hero-inner">
+      <span class="edu-eyebrow">Еду ем · Вкусные поездки по России</span>
+      <h1>Вкусная еда<span>к вашей остановке</span></h1>
+      <p>Оставьте заявку на доставку к поезду или автобусу. Укажите маршрут, станцию и время — мы проверим возможность и свяжемся с вами.</p>
+      <a class="edu-cta" href="#delivery-request">Оставить заявку</a>
+      <div class="edu-notice"><b>Важно:</b> сейчас это предварительная заявка, а не оплаченный заказ. Доступность доставки, меню и стоимость подтверждаются отдельно для каждого маршрута и станции.</div>
+    </div>
+  </section>
+
+  <section class="edu-section">
+    <h2>Как это работает</h2>
+    <div class="edu-steps">
+      <article class="edu-step"><b>1</b><h3>Расскажите о поездке</h3><p>Выберите поезд или автобус, укажите маршрут, место и местное время получения.</p></article>
+      <article class="edu-step"><b>2</b><h3>Согласуем возможность</h3><p>Проверим, можно ли передать заказ на выбранной станции, остановке или автовокзале.</p></article>
+      <article class="edu-step"><b>3</b><h3>Подтвердим детали</h3><p>Свяжемся по телефону, чтобы согласовать состав заказа, цену и способ получения.</p></article>
+    </div>
+  </section>
+
+  <section class="edu-section" id="delivery-request">
+    <div class="edu-form-card">
+      <h2>Заявка на доставку</h2>
+      <p class="edu-small" style="margin:-8px 0 18px">Время укажите по местному времени станции. Чем точнее маршрут и место встречи, тем проще проверить доставку.</p>
+      <form id="eduEmForm">
+        <div class="edu-form-grid">
+          <div class="edu-field"><label for="deliveryType">Транспорт *</label><select id="deliveryType" required><option value="train">Поезд</option><option value="bus">Автобус</option></select></div>
+          <div class="edu-field"><label for="customerName">Ваше имя *</label><input id="customerName" name="name" autocomplete="name" minlength="2" maxlength="120" required></div>
+          <div class="edu-field"><label for="customerPhone">Телефон для связи *</label><input id="customerPhone" name="phone" type="tel" autocomplete="tel" placeholder="+7 900 000-00-00" maxlength="24" required></div>
+          <div class="edu-field"><label for="route">Маршрут или номер рейса *</label><input id="route" name="route" placeholder="Например: поезд 102, Москва — Казань" maxlength="200" required></div>
+          <div class="edu-field"><label for="station">Станция / остановка получения *</label><input id="station" name="station" placeholder="Город, вокзал или остановка" maxlength="160" required></div>
+          <div class="edu-field"><label for="deliveryTime">Дата и время получения *</label><input id="deliveryTime" name="delivery_local_time" type="datetime-local" required></div>
+          <div class="edu-field full"><label for="carriageSeat">Вагон / место или ориентир</label><input id="carriageSeat" name="carriage_seat" placeholder="Например: вагон 5, место 12 или у входа на автовокзал" maxlength="100"></div>
+          <div class="edu-field full"><label for="orderDetails">Что хотите заказать? *</label><textarea id="orderDetails" name="order_details" maxlength="4000" placeholder="Напишите блюда, напитки и количество" required></textarea></div>
+          <div class="edu-field full"><label for="comment">Дополнительные пожелания</label><textarea id="comment" name="comment" maxlength="2000" placeholder="Аллергии, упаковка или другие важные детали"></textarea></div>
+          <div class="edu-field full">
+            <label for="selectedOutlet">Торговая точка-партнёр *</label>
+            <select id="selectedOutlet" class="edu-select" required>
+              <option value="">Загрузка согласованных точек…</option>
+            </select>
+            <a class="edu-outlet-link" id="selectedOutletLink" href="#" target="_self"></a>
+          </div>
+        </div>
+        <label class="edu-consent"><input id="privacyConsent" type="checkbox" required><span>Согласен(на) на обработку указанных данных для связи по этой заявке. Не указывайте данные банковских карт и другую лишнюю личную информацию.</span></label>
+        <button class="edu-submit" id="eduEmSubmit" type="submit">Отправить заявку</button>
+        <div class="edu-status" id="eduEmStatus" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+  <p class="edu-footer-note">Заявка не является подтверждением заказа. Мы отдельно согласуем возможность доставки, ассортимент, стоимость и получение.</p>
+</main>
+<footer>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;" aria-hidden="true">
+    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+    <path d="M7 2v20"/>
+    <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+  </svg>
+  © 2026 Я готовлю — ты ешь!
+</footer>
+<script src="assets/js/site-catalog.js?v=20261105152159"></script>
+<script src="assets/js/site-header.js?v=20261105152159"></script>
+<script src="assets/js/notifications.js?v=20261021133630"></script>
+<script src="assets/js/fav-badge.js?v=20261021133523"></script>
+<script src="assets/js/footer.js?v=20261021131201"></script>
+<script>
+var eduReturnStateKey='icook:return-scroll:'+location.pathname;
+var eduNavigationEntry=typeof performance.getEntriesByType==='function'?performance.getEntriesByType('navigation')[0]:null;
+var eduIsHistoryReturn=Boolean(eduNavigationEntry&&eduNavigationEntry.type==='back_forward');
+var eduPendingReturnState=null;
+function readEduReturnState(){
+    try {
+        var saved=sessionStorage.getItem(eduReturnStateKey);
+        var state=saved?JSON.parse(saved):null;
+        return state&&Number.isFinite(Number(state.scrollY))?state:null;
+    } catch(error) {
+        console.error('Unable to read page return position',error);
+        return null;
+    }
+}
+window.addEventListener('pagehide',function(){
+    var formState={};
+    document.querySelectorAll('#eduEmForm input[id],#eduEmForm select[id],#eduEmForm textarea[id]').forEach(function(control){
+        if(control.type==='file')return;
+        formState[control.id]=control.type==='checkbox'?control.checked:control.value;
+    });
+    try { sessionStorage.setItem(eduReturnStateKey,JSON.stringify({scrollY:window.scrollY,form:formState})); }
+    catch(error) { console.error('Unable to save page return position',error); }
+});
+window.addEventListener('pageshow',function(event){
+    if(!event.persisted&&!eduIsHistoryReturn)return;
+    var state=readEduReturnState();
+    if(!state)return;
+    if(!event.persisted&&state.form&&typeof state.form==='object'){
+        eduPendingReturnState=state;
+        Object.keys(state.form).forEach(function(id){
+            if(id==='selectedOutlet')return;
+            var control=document.getElementById(id);
+            if(!control||!document.getElementById('eduEmForm').contains(control)||control.type==='file')return;
+            if(control.type==='checkbox')control.checked=Boolean(state.form[id]);
+            else control.value=String(state.form[id]);
+            control.dispatchEvent(new Event('input',{bubbles:true}));
+            control.dispatchEvent(new Event('change',{bubbles:true}));
+        });
+    }
+    try { sessionStorage.removeItem(eduReturnStateKey); }
+    catch(error) { console.error('Unable to clear saved page position',error); }
+    requestAnimationFrame(function(){window.scrollTo(0,Math.max(0,Number(state.scrollY)));});
+});
+function updateBottomBar(){
+    var user=null;
+    try { user=JSON.parse(localStorage.getItem('user')||'null'); } catch(error) { console.error('Unable to read local user state',error); }
+    var auth=document.getElementById('authBtnIcon');
+    var profile=document.getElementById('userNameBtn');
+    if(user&&user.name){auth.style.display='none';profile.style.display='flex';document.getElementById('userLetter').textContent=user.name.charAt(0).toUpperCase();}
+    else {auth.style.display='flex';profile.style.display='none';}
+    var count=0;
+    try { var cart=JSON.parse(localStorage.getItem('cart')||'[]');count=Array.isArray(cart)?cart.reduce(function(sum,item){return sum+(Number(item.qty)||1);},0):0; }
+    catch(error) { console.error('Unable to read cart state',error); }
+    var badge=document.getElementById('cartBadge');
+    if(count){badge.textContent=String(count);badge.style.display='block';}else{badge.textContent='';badge.style.display='none';}
+}
+window.addEventListener('storage',function(event){if(event.key==='user'||event.key==='cart')updateBottomBar();});
+document.addEventListener('DOMContentLoaded',updateBottomBar);
+
+var availableOutlets = [];
+var selectedOutlet = document.getElementById('selectedOutlet');
+var selectedOutletLink = document.getElementById('selectedOutletLink');
+function applyEduReturnOutlet(){
+    if(!eduPendingReturnState||!eduPendingReturnState.form||!selectedOutlet)return;
+    var savedOutletId=String(eduPendingReturnState.form.selectedOutlet||'');
+    if(savedOutletId&&Array.from(selectedOutlet.options).some(function(option){return option.value===savedOutletId;})){
+        selectedOutlet.value=savedOutletId;
+        selectedOutlet.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    eduPendingReturnState=null;
+}
+selectedOutlet.addEventListener('change',function(){
+    var outlet=availableOutlets.find(function(item){return String(item.id)===selectedOutlet.value;});
+    if(!outlet){selectedOutletLink.removeAttribute('href');selectedOutletLink.replaceChildren();selectedOutletLink.classList.remove('visible');return;}
+    var outletUrl;
+    try { outletUrl=new URL(outlet.website_url,window.location.href); }
+    catch(error) {
+        selectedOutletLink.removeAttribute('href');
+        selectedOutletLink.replaceChildren();
+        selectedOutletLink.classList.remove('visible');
+        console.error('Invalid partner website URL',error);
+        return;
+    }
+    if(outletUrl.protocol!=='https:'&&outletUrl.protocol!=='http:'){
+        selectedOutletLink.removeAttribute('href');
+        selectedOutletLink.replaceChildren();
+        selectedOutletLink.classList.remove('visible');
+        console.error('Unsupported partner website URL protocol',outlet.website_url);
+        return;
+    }
+    selectedOutletLink.href=outletUrl.href;
+    selectedOutletLink.replaceChildren();
+    if(outlet.label_image){
+        var label=document.createElement('img');
+        label.src=outlet.label_image;
+        label.alt='';
+        label.setAttribute('aria-hidden','true');
+        label.addEventListener('error',function(){label.remove();},{once:true});
+        selectedOutletLink.appendChild(label);
+    }
+    var linkText=document.createElement('span');
+    linkText.textContent='Выбрать блюда на сайте «'+outlet.name+'»';
+    selectedOutletLink.appendChild(linkText);
+    selectedOutletLink.classList.add('visible');
+});
+async function loadEduEmOutlets(){
+    var response=await fetch('/api/joint_projects.php?action=public_outlets',{credentials:'same-origin',cache:'no-store'});
+    var data=await response.json();
+    if(!response.ok||!data.success||!Array.isArray(data.outlets))throw new Error(data.error||'Не удалось загрузить список торговых точек');
+    availableOutlets=data.outlets;
+    selectedOutlet.replaceChildren();
+    var placeholder=document.createElement('option');
+    placeholder.value='';
+    placeholder.textContent=availableOutlets.length?'Выберите согласованную торговую точку':'Пока нет согласованных торговых точек';
+    placeholder.selected=true;
+    selectedOutlet.appendChild(placeholder);
+    availableOutlets.forEach(function(outlet){
+        var option=document.createElement('option');
+        option.value=String(outlet.id);
+        option.textContent=outlet.name;
+        selectedOutlet.appendChild(option);
+    });
+    applyEduReturnOutlet();
+    document.getElementById('eduEmSubmit').disabled=availableOutlets.length===0;
+    if(!availableOutlets.length){
+        var status=document.getElementById('eduEmStatus');
+        status.textContent='Список партнёров появится, когда администратор добавит согласованные торговые точки.';
+    }
+}
+loadEduEmOutlets().catch(function(error){
+    console.error(error);
+    var status=document.getElementById('eduEmStatus');
+    status.className='edu-status error';
+    status.textContent=error.message||'Не удалось загрузить партнёров. Обновите страницу.';
+    document.getElementById('eduEmSubmit').disabled=true;
+});
+</script>
+<script>
+document.getElementById('eduEmForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+    var form = event.currentTarget;
+    var button = document.getElementById('eduEmSubmit');
+    var status = document.getElementById('eduEmStatus');
+    status.className = 'edu-status';
+    status.textContent = '';
+    if (!form.reportValidity()) return;
+
+    button.disabled = true;
+    button.textContent = 'Отправляем…';
+    var payload = {
+        delivery_type: document.getElementById('deliveryType').value,
+        outlet_id: Number(selectedOutlet.value),
+        name: document.getElementById('customerName').value.trim(),
+        phone: document.getElementById('customerPhone').value.trim(),
+        route: document.getElementById('route').value.trim(),
+        station: document.getElementById('station').value.trim(),
+        delivery_local_time: document.getElementById('deliveryTime').value,
+        carriage_seat: document.getElementById('carriageSeat').value.trim(),
+        order_details: document.getElementById('orderDetails').value.trim(),
+        comment: document.getElementById('comment').value.trim(),
+        consent: document.getElementById('privacyConsent').checked
+    };
+    try {
+        var response = await fetch('/api/edu_em_requests.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'same-origin',
+            body: JSON.stringify(payload)
+        });
+        var result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.error || 'Не удалось отправить заявку');
+        status.className = 'edu-status success';
+        status.textContent = 'Заявка №' + result.id + ' отправлена. Мы отдельно уточним возможность доставки и стоимость.';
+        form.reset();
+    } catch (error) {
+        status.className = 'edu-status error';
+        status.textContent = error.message || 'Ошибка сети. Попробуйте ещё раз.';
+    } finally {
+        button.disabled = availableOutlets.length === 0;
+        button.textContent = 'Отправить заявку';
+    }
+});
+</script>
+</body>
+</html>

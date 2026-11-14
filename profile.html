@@ -243,6 +243,40 @@ body{padding-bottom:88px;}
 .avatar-modal-buttons .modal-confirm{border-color:var(--neon);background:var(--neon);color:var(--bg);}
 .avatar-modal-buttons .modal-confirm:hover{border-color:var(--neon-dark);background:var(--neon-dark);color:var(--bg);box-shadow:0 0 18px var(--neon-glow);}
 .avatar-modal-buttons .modal-cancel:disabled,.avatar-modal-buttons .modal-confirm:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
+.index-banner-toolbar{display:flex;justify-content:flex-end;margin-bottom:14px;}
+.index-banner-add{width:48px;height:48px;border:0;border-radius:50%;background:var(--neon);color:var(--bg);font-size:32px;font-weight:500;line-height:1;cursor:pointer;box-shadow:0 4px 14px var(--neon-glow);}
+.index-banner-add:hover{transform:scale(1.06);}
+.index-banner-card{position:relative;padding:14px 48px 14px 14px!important;}
+.index-banner-delete,.index-banner-photo-remove{position:absolute;top:-9px;right:-9px;z-index:5;width:28px;height:28px;border:2px solid var(--card-bg);border-radius:50%;background:#ef4444;color:#fff;font-size:16px;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(239,68,68,.45);padding:0;}
+.index-banner-delete:hover,.index-banner-photo-remove:hover{background:#dc2626;transform:scale(1.08);}
+.index-banner-crop-frame .index-banner-photo-remove{top:6px;right:6px;border-color:#fff;}
+.index-banner-modal-box{position:relative;width:min(560px,100%);max-height:90vh;overflow:auto;padding:24px;background:var(--card-bg);color:var(--text-main);border:1px solid var(--border-color);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.24);}
+.index-banner-modal-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px;}
+.index-banner-modal-head h2{margin:0;color:var(--neon-dark);font-size:22px;font-weight:800;}
+.index-banner-modal-close{width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:var(--text-muted);font-size:26px;line-height:1;cursor:pointer;}
+.index-banner-modal-close:hover{background:var(--neon-glow);color:var(--neon-dark);}
+.index-banner-existing{display:none;width:min(100%,360px);aspect-ratio:16/9;object-fit:cover;margin:10px auto;border-radius:12px;border:1px solid var(--border-color);}
+.index-banner-crop-wrap{display:none;position:relative;width:min(100%,360px);margin:12px auto;}
+.index-banner-crop-wrap.active{display:block;}
+.index-banner-crop-frame{position:relative;width:min(320px,100%);aspect-ratio:16/9;margin:auto;overflow:hidden;box-sizing:border-box;border:2px solid var(--neon);border-radius:12px;background:#0f172a;touch-action:none;user-select:none;cursor:grab;}
+.index-banner-crop-frame.dragging{cursor:grabbing;}
+.index-banner-crop-image{position:absolute;top:50%;left:50%;max-width:none;pointer-events:none;will-change:width,height;}
+.index-banner-zoom{display:flex;align-items:center;gap:10px;margin:10px auto 0;width:min(320px,100%);color:var(--text-muted);font-size:12px;}
+.index-banner-zoom input{flex:1;accent-color:var(--neon);}
+.index-banner-input-toggle{position:relative;display:flex;align-items:center;}
+.index-banner-input-toggle input,.index-banner-input-toggle textarea{padding-right:48px!important;margin-bottom:0!important;}
+.index-banner-eye{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:32px;height:32px;padding:5px;border:0;border-radius:8px;background:transparent;color:var(--neon-dark);cursor:pointer;display:grid;place-items:center;}
+.index-banner-eye:hover{background:var(--neon-glow);}
+.index-banner-eye svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.index-banner-input-toggle.multiline .index-banner-eye{top:7px;transform:none;}
+.index-banner-file-button{display:block;width:100%;padding:12px;border:2px dashed var(--border-color);border-radius:12px;background:transparent;color:var(--neon-dark);font-weight:700;cursor:pointer;}
+.index-banner-file-button:hover{border-color:var(--neon);background:var(--neon-glow);}
+.index-banner-form-actions{display:flex;gap:10px;margin-top:16px;}
+.index-banner-form-actions button{flex:1;min-width:0;}
+.index-banner-form-actions .modal-cancel,.index-banner-form-actions .modal-confirm{min-height:42px;padding:10px 18px;border:1px solid var(--border-color);border-radius:12px;font:700 14px 'Montserrat',sans-serif;cursor:pointer;}
+.index-banner-form-actions .modal-cancel{background:var(--card-bg);color:var(--text-main);}
+.index-banner-form-actions .modal-confirm{border-color:var(--neon);background:var(--neon);color:var(--bg);}
+@media(max-width:600px){.index-banner-modal-box{padding:18px;}.index-banner-card{padding-right:42px!important;}}
 .avatar-dropzone{display:flex;width:100%;min-height:145px;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;border:2px dashed var(--border-color);border-radius:16px;background:var(--bg);color:var(--text-main);font:600 14px 'Montserrat',sans-serif;cursor:pointer;transition:border-color .2s,background .2s;box-sizing:border-box;}
 .avatar-dropzone:hover,.avatar-dropzone.dragover{border-color:var(--neon);background:var(--neon-glow);}
 .avatar-dropzone svg{width:34px;height:34px;color:var(--neon-dark);}
@@ -598,7 +632,7 @@ button, .btn, a, label {
 <button class="tab" onclick="loadAdminSection('orders',this)">Заказы</button>
 <button class="tab" onclick="loadAdminSection('categories',this)">Категории</button>
 <button class="tab" onclick="loadAdminSection('reviews',this)">💬 Отзывы</button>
-<button class="tab" onclick="showJointProjectsAdmin(this)">🤝 Совместные проекты</button>
+<button class="tab" onclick="showBannerManagement(this)">🖼️ Управление баннерами</button>
 </div>
 
 <div id="adminContent" style="overflow-x:auto;"></div>
@@ -2518,17 +2552,35 @@ function renderProfileAvatar(){
 <script>
 var adminJointProjects = [];
 
-async function showJointProjectsAdmin(button){
+function bannerManagementContainer(){
+    return document.getElementById('bannerManagementContent')||document.getElementById('adminContent');
+}
+
+function showBannerManagement(button){
     if(button){
         button.closest('.tabs').querySelectorAll('.tab').forEach(function(tab){tab.classList.remove('active');});
         button.classList.add('active');
     }
-    currentAdminSection='joint_projects';
-    await renderAdminJointProjects();
+    currentAdminSection='banner_management';
+    var container=document.getElementById('adminContent');
+    container.innerHTML='<div class="tabs banner-management-tabs" style="margin:0 0 14px;display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="tab active" data-banner-section="joint">🤝 Совместные проекты</button><button type="button" class="tab" data-banner-section="index">Index ban</button></div><div id="bannerManagementContent" style="overflow-x:auto;"></div>';
+    var first=container.querySelector('[data-banner-section="joint"]');
+    container.querySelectorAll('[data-banner-section]').forEach(function(tab){tab.addEventListener('click',function(){showBannerManagementSection(tab.getAttribute('data-banner-section'),tab);});});
+    showBannerManagementSection('joint',first);
+}
+
+function showBannerManagementSection(section,button){
+    if(button){
+        button.closest('.banner-management-tabs').querySelectorAll('.tab').forEach(function(tab){tab.classList.remove('active');});
+        button.classList.add('active');
+    }
+    currentAdminSection=section==='index'?'index_banners':'joint_projects';
+    if(section==='index')renderAdminIndexBanners();
+    else renderAdminJointProjects();
 }
 
 async function renderAdminJointProjects(){
-    var container=document.getElementById('adminContent');
+    var container=bannerManagementContainer();
     if(!container)return;
     container.innerHTML='<p style="text-align:center;padding:24px;color:var(--text-muted);">Загрузка совместных проектов…</p>';
     try{
@@ -2593,6 +2645,307 @@ async function updateAdminJointProject(action,id){
 
 function toggleAdminJointProject(id){updateAdminJointProject('toggle',id);}
 function deleteAdminJointProject(id){if(confirm('Удалить совместный проект?'))updateAdminJointProject('delete',id);}
+</script>
+
+<script>
+var adminIndexBanners=[];
+var indexBannerSourceUrl='';
+var indexBannerSourceImage=null;
+var indexBannerBaseScale=1;
+var indexBannerOffsetX=0;
+var indexBannerOffsetY=0;
+var indexBannerPointers=Object.create(null);
+var indexBannerDrag=null;
+var indexBannerPinch=null;
+var indexBannerUploading=false;
+
+async function renderAdminIndexBanners(){
+    var container=bannerManagementContainer();
+    if(!container)return;
+    container.innerHTML='<p style="text-align:center;padding:24px;color:var(--text-muted);">Загрузка баннеров…</p>';
+    try{
+        var response=await fetch('/api/index_banners.php?action=admin',{credentials:'same-origin',cache:'no-store'});
+        var data=await response.json();
+        if(!response.ok||!data.success)throw new Error(data.error||'Не удалось загрузить баннеры');
+        adminIndexBanners=Array.isArray(data.banners)?data.banners:[];
+        var cards=adminIndexBanners.length?adminIndexBanners.map(function(banner){
+            var id=Number(banner.id)||0;
+            var image=banner.image_path?'<img src="'+adminEsc(banner.image_path)+'" alt="" style="width:180px;height:100px;object-fit:cover;border-radius:10px;border:1px solid var(--border-color);">':'<div style="width:180px;height:100px;display:grid;place-items:center;border-radius:10px;background:var(--neon-glow);color:var(--text-muted);font-size:12px;">Без изображения</div>';
+            return '<article class="index-banner-card" style="display:flex;align-items:center;gap:14px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;flex-wrap:wrap;"><button type="button" class="index-banner-delete" title="Удалить баннер" aria-label="Удалить баннер" onclick="deleteAdminIndexBanner('+id+')">×</button>'+image+'<div style="flex:1;min-width:180px;"><span style="display:block;font-size:11px;color:var(--text-muted);">'+adminEsc(banner.tag||'')+'</span><strong style="display:block;color:var(--text-main);">'+adminEsc(banner.title)+'</strong><span style="display:block;font-size:12px;color:var(--text-muted);">'+adminEsc(banner.description||'')+'</span><span style="display:block;font-size:12px;color:var(--neon-dark);overflow-wrap:anywhere;">'+adminEsc(banner.link||'Без ссылки')+'</span><span style="display:block;font-size:12px;color:var(--text-muted);margin-top:4px;">'+(Number(banner.is_active)===1?'Опубликован':'Скрыт')+'</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;"><button type="button" class="btn" style="min-width:0;padding:7px 10px;" onclick="editAdminIndexBanner('+id+')">Изменить</button><button type="button" class="btn" style="min-width:0;padding:7px 10px;" onclick="toggleAdminIndexBanner('+id+')">'+(Number(banner.is_active)===1?'Скрыть':'Опубликовать')+'</button></div></article>';
+        }).join(''):'<p style="text-align:center;padding:20px;color:var(--text-muted);">Баннеров пока нет.</p>';
+        container.innerHTML='<div class="index-banner-toolbar"><button type="button" class="index-banner-add" title="Добавить баннер" aria-label="Добавить баннер" onclick="openIndexBannerModal()">+</button></div><div style="display:grid;gap:12px;">'+cards+'</div><div class="info-modal-overlay" id="indexBannerModal" onclick="closeIndexBannerModal(event)"><div class="index-banner-modal-box" onclick="event.stopPropagation()"><div class="index-banner-modal-head"><h2 id="indexBannerModalTitle">Новый баннер</h2><button type="button" class="index-banner-modal-close" title="Закрыть" aria-label="Закрыть" onclick="closeIndexBannerModal()">×</button></div><form id="indexBannerForm" onsubmit="saveAdminIndexBanner(event)"><input type="hidden" name="action" value="save"><input type="hidden" name="id" value=""><div class="form-group"><label>Метка</label><div class="index-banner-input-toggle"><input name="tag" maxlength="40" placeholder="Например: Новинки"><input type="hidden" name="show_tag" value="1"><button type="button" class="index-banner-eye" data-visibility-field="show_tag" aria-label="Скрыть метку на главной" aria-pressed="true" title="Скрыть метку на главной" onclick="toggleIndexBannerVisibility(this)"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div></div><div class="form-group"><label>Заголовок *</label><div class="index-banner-input-toggle"><input name="title" required minlength="2" maxlength="120" placeholder="Заголовок баннера"><input type="hidden" name="show_title" value="1"><button type="button" class="index-banner-eye" data-visibility-field="show_title" aria-label="Скрыть заголовок на главной" aria-pressed="true" title="Скрыть заголовок на главной" onclick="toggleIndexBannerVisibility(this)"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div></div><div class="form-group"><label>Описание</label><div class="index-banner-input-toggle multiline"><textarea name="description" maxlength="500" placeholder="Короткий текст баннера"></textarea><input type="hidden" name="show_description" value="1"><button type="button" class="index-banner-eye" data-visibility-field="show_description" aria-label="Скрыть описание на главной" aria-pressed="true" title="Скрыть описание на главной" onclick="toggleIndexBannerVisibility(this)"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div></div><div class="form-group"><label>Ссылка</label><input name="link" maxlength="2048" placeholder="https://… или /страница.html"></div><div class="form-group"><label>Прямоугольное фото (JPG, PNG или WebP, до 10 МБ)</label><input id="indexBannerFileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden onchange="handleIndexBannerImage(this.files&&this.files[0])"><button class="index-banner-file-button" type="button" onclick="openIndexBannerFilePicker()">Выбрать фото</button><img id="indexBannerExistingImage" class="index-banner-existing" alt="Текущее изображение баннера"><div id="indexBannerCropWrap" class="index-banner-crop-wrap"><div class="index-banner-crop-frame" id="indexBannerCropFrame" role="application" aria-label="Перемещайте изображение внутри прямоугольной рамки" onpointerdown="startIndexBannerCropPointer(event)" onpointermove="moveIndexBannerCropPointer(event)" onpointerup="endIndexBannerCropPointer(event)" onpointercancel="endIndexBannerCropPointer(event)"><img id="indexBannerCropImage" class="index-banner-crop-image" alt=""><button type="button" class="index-banner-photo-remove" title="Убрать выбранное фото" aria-label="Убрать выбранное фото" onclick="clearIndexBannerImage(event)">×</button></div><label class="index-banner-zoom"><span>−</span><input id="indexBannerZoom" type="range" min="1" max="3" step="0.01" value="1" aria-label="Масштаб изображения" oninput="updateIndexBannerCropPreview()"><span>+</span></label></div><div id="indexBannerModalStatus" class="avatar-modal-status" role="status" aria-live="polite"></div></div><div class="index-banner-form-actions"><button type="button" class="modal-cancel" onclick="closeIndexBannerModal()">Отмена</button><button id="indexBannerSaveButton" class="modal-confirm" type="submit">Добавить</button></div></form></div></div>';
+    }catch(error){container.innerHTML='<p style="padding:20px;color:#ef4444;">'+adminEsc(error.message||'Ошибка загрузки баннеров')+'</p>';}
+}
+
+function resetIndexBannerDraft(){
+    if(indexBannerSourceUrl){URL.revokeObjectURL(indexBannerSourceUrl);indexBannerSourceUrl='';}
+    indexBannerSourceImage=null;
+    indexBannerOffsetX=0;indexBannerOffsetY=0;
+    indexBannerPointers=Object.create(null);indexBannerDrag=null;indexBannerPinch=null;
+    var frame=document.getElementById('indexBannerCropFrame');
+    if(frame)frame.classList.remove('dragging');
+}
+
+function openIndexBannerModal(id){
+    var form=document.getElementById('indexBannerForm');
+    if(!form)return;
+    resetIndexBannerDraft();
+    form.reset();
+    form.querySelector('[name="id"]').value='';
+    document.getElementById('indexBannerFileInput').value='';
+    document.getElementById('indexBannerCropWrap').classList.remove('active');
+    var existingImage=document.getElementById('indexBannerExistingImage');
+    existingImage.style.display='none';
+    existingImage.removeAttribute('src');
+    document.getElementById('indexBannerModalStatus').textContent='';
+    var banner=id?adminIndexBanners.find(function(item){return Number(item.id)===Number(id);}):null;
+    if(banner){
+        form.querySelector('[name="id"]').value=banner.id;
+        form.elements.tag.value=banner.tag||'';
+        form.elements.title.value=banner.title||'';
+        form.elements.description.value=banner.description||'';
+        form.elements.link.value=banner.link||'';
+        setIndexBannerVisibility('show_tag',Number(banner.show_tag)!==0);
+        setIndexBannerVisibility('show_title',Number(banner.show_title)!==0);
+        setIndexBannerVisibility('show_description',Number(banner.show_description)!==0);
+        if(banner.image_path){existingImage.src=banner.image_path;existingImage.style.display='block';}
+        document.getElementById('indexBannerModalTitle').textContent='Редактировать баннер';
+        document.getElementById('indexBannerSaveButton').textContent='Сохранить';
+    }else{
+        document.getElementById('indexBannerModalTitle').textContent='Новый баннер';
+        document.getElementById('indexBannerSaveButton').textContent='Добавить';
+    }
+    document.getElementById('indexBannerModal').classList.add('active');
+}
+
+function indexBannerEyeIcon(visible){
+    return visible?'<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>':'<svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"></path><path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a14 14 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.5 7 10 7a10 10 0 0 0 3-.5"></path></svg>';
+}
+
+function setIndexBannerVisibility(name,visible){
+    var form=document.getElementById('indexBannerForm');
+    if(!form)return;
+    var value=visible?'1':'0';
+    form.elements[name].value=value;
+    var button=form.querySelector('[data-visibility-field="'+name+'"]');
+    if(!button)return;
+    var label=visible?'Скрыть':'Показать';
+    var field=name==='show_tag'?'метку':(name==='show_title'?'заголовок':'описание');
+    button.innerHTML=indexBannerEyeIcon(visible);
+    button.title=label+' '+field+' на главной';
+    button.setAttribute('aria-label',button.title);
+    button.setAttribute('aria-pressed',visible?'true':'false');
+}
+
+function toggleIndexBannerVisibility(button){
+    var name=button.getAttribute('data-visibility-field');
+    var form=document.getElementById('indexBannerForm');
+    if(!form||!form.elements[name])return;
+    setIndexBannerVisibility(name,form.elements[name].value!=='1');
+}
+
+function editAdminIndexBanner(id){openIndexBannerModal(id);}
+
+function closeIndexBannerModal(event){
+    var modal=document.getElementById('indexBannerModal');
+    if(event&&event.target!==modal)return;
+    if(indexBannerUploading)return;
+    modal.classList.remove('active');
+    resetIndexBannerDraft();
+}
+
+function setIndexBannerStatus(message,type){
+    var status=document.getElementById('indexBannerModalStatus');
+    if(!status)return;
+    status.textContent=message;
+    status.className='avatar-modal-status'+(type?' '+type:'');
+}
+
+function openIndexBannerFilePicker(){
+    document.getElementById('indexBannerFileInput').click();
+}
+
+function getIndexBannerFrameSize(){
+    var rect=document.getElementById('indexBannerCropFrame').getBoundingClientRect();
+    return {width:rect.width||320,height:rect.height||180};
+}
+
+function updateIndexBannerCropPreview(){
+    if(!indexBannerSourceImage)return;
+    var frameSize=getIndexBannerFrameSize();
+    var zoom=Number(document.getElementById('indexBannerZoom').value)||1;
+    var renderedWidth=indexBannerSourceImage.naturalWidth*indexBannerBaseScale*zoom;
+    var renderedHeight=indexBannerSourceImage.naturalHeight*indexBannerBaseScale*zoom;
+    var image=document.getElementById('indexBannerCropImage');
+    image.style.width=renderedWidth+'px';
+    image.style.height=renderedHeight+'px';
+    var maxX=Math.max(0,(renderedWidth-frameSize.width)/2);
+    var maxY=Math.max(0,(renderedHeight-frameSize.height)/2);
+    indexBannerOffsetX=Math.max(-maxX,Math.min(maxX,indexBannerOffsetX));
+    indexBannerOffsetY=Math.max(-maxY,Math.min(maxY,indexBannerOffsetY));
+    image.style.transform='translate(calc(-50% + '+indexBannerOffsetX+'px),calc(-50% + '+indexBannerOffsetY+'px))';
+}
+
+async function handleIndexBannerImage(file){
+    if(!file||indexBannerUploading)return;
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size<1||file.size>10*1024*1024){
+        setIndexBannerStatus('Выберите JPG, PNG или WebP размером не более 10 МБ.','error');
+        document.getElementById('indexBannerFileInput').value='';
+        return;
+    }
+    resetIndexBannerDraft();
+    setIndexBannerStatus('Подготавливаем изображение…');
+    var sourceUrl=URL.createObjectURL(file);
+    try{
+        var image=new Image();
+        image.src=sourceUrl;
+        await image.decode();
+        if(image.naturalWidth>12000||image.naturalHeight>12000)throw new Error('Максимальный размер изображения — 12000 × 12000 пикселей');
+        indexBannerSourceUrl=sourceUrl;
+        indexBannerSourceImage=image;
+        document.getElementById('indexBannerCropWrap').classList.add('active');
+        var frameSize=getIndexBannerFrameSize();
+        indexBannerBaseScale=Math.max(frameSize.width/image.naturalWidth,frameSize.height/image.naturalHeight);
+        indexBannerOffsetX=0;indexBannerOffsetY=0;
+        document.getElementById('indexBannerZoom').value='1';
+        document.getElementById('indexBannerCropImage').src=sourceUrl;
+        document.getElementById('indexBannerExistingImage').style.display='none';
+        requestAnimationFrame(updateIndexBannerCropPreview);
+        setIndexBannerStatus('Перемещайте фото одним пальцем, масштабируйте двумя.');
+    }catch(error){
+        if(sourceUrl!==indexBannerSourceUrl)URL.revokeObjectURL(sourceUrl);
+        setIndexBannerStatus(error.message||'Не удалось обработать фото.','error');
+    }
+}
+
+function clearIndexBannerImage(event){
+    if(event){event.preventDefault();event.stopPropagation();}
+    resetIndexBannerDraft();
+    document.getElementById('indexBannerFileInput').value='';
+    document.getElementById('indexBannerCropImage').removeAttribute('src');
+    document.getElementById('indexBannerCropWrap').classList.remove('active');
+    var banner=adminIndexBanners.find(function(item){return Number(item.id)===Number(document.querySelector('#indexBannerForm [name="id"]').value);});
+    var existing=document.getElementById('indexBannerExistingImage');
+    if(banner&&banner.image_path){existing.src=banner.image_path;existing.style.display='block';}
+    setIndexBannerStatus('');
+}
+
+function getIndexBannerPointerIds(){return Object.keys(indexBannerPointers);}
+function getIndexBannerPointerDistance(a,b){var dx=a.x-b.x,dy=a.y-b.y;return Math.sqrt(dx*dx+dy*dy);}
+
+function startIndexBannerCropPointer(event){
+    if(!indexBannerSourceImage||indexBannerUploading)return;
+    event.preventDefault();
+    var frame=document.getElementById('indexBannerCropFrame');
+    try{frame.setPointerCapture(event.pointerId);}catch(error){}
+    indexBannerPointers[event.pointerId]={x:event.clientX,y:event.clientY};
+    var ids=getIndexBannerPointerIds();
+    if(ids.length>=2){
+        var first=indexBannerPointers[ids[0]],second=indexBannerPointers[ids[1]];
+        indexBannerPinch={firstId:ids[0],secondId:ids[1],distance:Math.max(1,getIndexBannerPointerDistance(first,second)),zoom:Number(document.getElementById('indexBannerZoom').value)||1,offsetX:indexBannerOffsetX,offsetY:indexBannerOffsetY,midpointX:(first.x+second.x)/2,midpointY:(first.y+second.y)/2};
+        indexBannerDrag=null;
+    }else{
+        indexBannerDrag={pointerId:event.pointerId,x:event.clientX,y:event.clientY,offsetX:indexBannerOffsetX,offsetY:indexBannerOffsetY};
+    }
+    frame.classList.add('dragging');
+}
+
+function moveIndexBannerCropPointer(event){
+    if(!Object.prototype.hasOwnProperty.call(indexBannerPointers,event.pointerId))return;
+    indexBannerPointers[event.pointerId]={x:event.clientX,y:event.clientY};
+    if(indexBannerPinch){
+        var first=indexBannerPointers[indexBannerPinch.firstId],second=indexBannerPointers[indexBannerPinch.secondId];
+        if(!first||!second)return;
+        var zoomInput=document.getElementById('indexBannerZoom');
+        var minZoom=Number(zoomInput.min)||1,maxZoom=Number(zoomInput.max)||3;
+        var distance=getIndexBannerPointerDistance(first,second);
+        var midpointX=(first.x+second.x)/2,midpointY=(first.y+second.y)/2;
+        zoomInput.value=String(Math.max(minZoom,Math.min(maxZoom,indexBannerPinch.zoom*distance/indexBannerPinch.distance)));
+        indexBannerOffsetX=indexBannerPinch.offsetX+midpointX-indexBannerPinch.midpointX;
+        indexBannerOffsetY=indexBannerPinch.offsetY+midpointY-indexBannerPinch.midpointY;
+        updateIndexBannerCropPreview();
+        return;
+    }
+    if(!indexBannerDrag||event.pointerId!==indexBannerDrag.pointerId)return;
+    indexBannerOffsetX=indexBannerDrag.offsetX+event.clientX-indexBannerDrag.x;
+    indexBannerOffsetY=indexBannerDrag.offsetY+event.clientY-indexBannerDrag.y;
+    updateIndexBannerCropPreview();
+}
+
+function endIndexBannerCropPointer(event){
+    if(!Object.prototype.hasOwnProperty.call(indexBannerPointers,event.pointerId))return;
+    delete indexBannerPointers[event.pointerId];
+    var ids=getIndexBannerPointerIds();
+    indexBannerPinch=null;
+    if(ids.length===1){
+        var remaining=indexBannerPointers[ids[0]];
+        indexBannerDrag={pointerId:ids[0],x:remaining.x,y:remaining.y,offsetX:indexBannerOffsetX,offsetY:indexBannerOffsetY};
+    }else indexBannerDrag=null;
+    if(!ids.length)document.getElementById('indexBannerCropFrame').classList.remove('dragging');
+}
+
+function createCroppedIndexBannerFile(){
+    return new Promise(function(resolve,reject){
+        if(!indexBannerSourceImage){resolve(null);return;}
+        var frameSize=getIndexBannerFrameSize();
+        var zoom=Number(document.getElementById('indexBannerZoom').value)||1;
+        var scale=indexBannerBaseScale*zoom;
+        var sourceWidth=frameSize.width/scale,sourceHeight=frameSize.height/scale;
+        var sourceX=(indexBannerSourceImage.naturalWidth-sourceWidth)/2-indexBannerOffsetX/scale;
+        var sourceY=(indexBannerSourceImage.naturalHeight-sourceHeight)/2-indexBannerOffsetY/scale;
+        sourceX=Math.max(0,Math.min(indexBannerSourceImage.naturalWidth-sourceWidth,sourceX));
+        sourceY=Math.max(0,Math.min(indexBannerSourceImage.naturalHeight-sourceHeight,sourceY));
+        var canvas=document.createElement('canvas');
+        canvas.width=1200;canvas.height=675;
+        var context=canvas.getContext('2d');
+        if(!context){reject(new Error('Обработка изображений не поддерживается браузером'));return;}
+        context.drawImage(indexBannerSourceImage,sourceX,sourceY,sourceWidth,sourceHeight,0,0,canvas.width,canvas.height);
+        canvas.toBlob(function(blob){
+            if(!blob){reject(new Error('Не удалось подготовить изображение баннера'));return;}
+            if(blob.size>5*1024*1024){reject(new Error('Фото после кадрирования больше 5 МБ'));return;}
+            resolve(new File([blob],'index-banner.jpg',{type:'image/jpeg',lastModified:Date.now()}));
+        },'image/jpeg',.88);
+    });
+}
+
+async function saveAdminIndexBanner(event){
+    event.preventDefault();
+    if(indexBannerUploading)return;
+    var form=document.getElementById('indexBannerForm');
+    var button=document.getElementById('indexBannerSaveButton');
+    indexBannerUploading=true;
+    button.disabled=true;
+    try{
+        setIndexBannerStatus(indexBannerSourceImage?'Кадрируем изображение…':'Сохраняем баннер…');
+        var formData=new FormData(form);
+        if(indexBannerSourceImage){
+            var imageFile=await createCroppedIndexBannerFile();
+            formData.set('image',imageFile,'index-banner.jpg');
+        }
+        setIndexBannerStatus('Сохраняем баннер…');
+        var response=await fetch('/api/index_banners.php',{method:'POST',credentials:'same-origin',body:formData});
+        var data=await response.json();
+        if(!response.ok||!data.success)throw new Error(data.error||'Не удалось сохранить баннер');
+        document.getElementById('indexBannerModal').classList.remove('active');
+        resetIndexBannerDraft();
+        showToastMsg('Баннер сохранён');
+        await renderAdminIndexBanners();
+    }catch(error){setIndexBannerStatus(error.message||'Ошибка сохранения баннера','error');}
+    finally{indexBannerUploading=false;var current=document.getElementById('indexBannerSaveButton');if(current)current.disabled=false;}
+}
+
+async function updateAdminIndexBanner(action,id){
+    try{
+        var response=await fetch('/api/index_banners.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:action,id:Number(id)})});
+        var data=await response.json();
+        if(!response.ok||!data.success)throw new Error(data.error||'Не удалось обновить баннер');
+        showToastMsg(action==='delete'?'Баннер удалён':'Статус баннера обновлён');
+        await renderAdminIndexBanners();
+    }catch(error){showToastMsg(error.message||'Ошибка обновления баннера');}
+}
+
+function toggleAdminIndexBanner(id){updateAdminIndexBanner('toggle',id);}
+function deleteAdminIndexBanner(id){if(confirm('Удалить баннер?'))updateAdminIndexBanner('delete',id);}
 </script>
 
 </body>

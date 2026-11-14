@@ -8,32 +8,91 @@
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Подключаем общие стили -->
-<link rel="stylesheet" href="assets/css/app.css?v=20261028145408">
+<link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/content-favorites.css?v=20261101115550">
 
 <style>
 /* Специфичные стили только для контента ресторанов */
 .restaurants-page{padding:50px 20px 30px;max-width:1200px;margin:0 auto;text-align:center;}
 .page-title{font-size:clamp(32px, 5vw, 48px);font-weight:900;color:var(--neon-dark);text-shadow:0 0 15px var(--neon-glow);margin-bottom:8px;}
 .page-desc{color:var(--text-muted);margin-bottom:40px;}
-.orbit-wrapper{position:relative;height:400px;display:flex;align-items:center;justify-content:center;perspective:1000px;overflow:hidden;}
-.venue-card{position:absolute;width:300px;height:360px;background:var(--card-bg);border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.1);transition:all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);cursor:pointer;border:2px solid transparent;}
-.venue-card:hover{border-color:var(--neon);}
-.venue-card.active{transform: translateX(0) scale(1);z-index:10;opacity:1;box-shadow:0 15px 50px var(--neon-glow);}
-.venue-card.left{transform: translateX(-220px) scale(0.85) rotateY(15deg);z-index:5;opacity:0.7;}
-.venue-card.right{transform: translateX(220px) scale(0.85) rotateY(-15deg);z-index:5;opacity:0.7;}
-.venue-card.hidden{transform: translateX(0) scale(0.5) rotateY(0deg);z-index:1;opacity:0;pointer-events:none;}
-.venue-img{width:100%;height:180px;object-fit:cover;}
-.venue-info{padding:18px;text-align:left;}
-.venue-name{font-size:18px;font-weight:700;margin-bottom:6px;color:var(--text-main);}
-.venue-type{font-size:13px;color:var(--neon-dark);font-weight:600;margin-bottom:8px;}
-.venue-address{font-size:12px;color:var(--text-muted);line-height:1.4;margin-bottom:12px;}
-.venue-btn{width:100%;padding:10px;border:none;border-radius:8px;background:var(--neon);color:#ffffff;font-weight:700;cursor:pointer;transition:0.3s;}
-.venue-btn:hover{transform:scale(1.03);box-shadow:0 0 15px var(--neon-glow);}
-.nav-btn{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:var(--card-bg);border:2px solid var(--neon);color:var(--neon-dark);font-size:20px;cursor:pointer;z-index:20;display:flex;align-items:center;justify-content:center;transition:0.3s;box-shadow:0 4px 15px rgba(0,0,0,0.1);}
-.nav-btn:hover{background:var(--neon);color:#ffffff;transform:translateY(-50%) scale(1.1);}
-.nav-prev{left:20px;}
-.nav-next{right:20px;}
-@media(max-width:900px){ .venue-card{width:260px;height:320px;} .venue-card.left{transform: translateX(-140px) scale(0.8);} .venue-card.right{transform: translateX(140px) scale(0.8);} }
+.page-desc{max-width:680px;margin:0 auto 28px;line-height:1.6;}
+.restaurant-status{min-height:24px;margin:18px 0;color:var(--text-muted);font-size:14px;}
+.restaurant-status.is-error{color:#dc2626;}
+.restaurant-carousel{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;margin:0 auto;max-width:600px;perspective:900px;}
+.restaurant-track{position:relative;display:flex;align-items:flex-start;justify-content:center;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;flex:1;min-width:0;min-height:500px;height:auto;padding:8px 2px 20px;}
+.venue-card{display:none;width:100%;max-width:440px;min-height:470px;flex-direction:column;overflow:visible;text-align:left;background:transparent;border:0;border-radius:22px;box-shadow:none;}
+.venue-card.is-current,.venue-card.is-prev,.venue-card.is-next{position:absolute;top:8px;left:50%;display:flex;transform:translateX(-50%);transform-origin:center;transition:transform .28s cubic-bezier(.22,.75,.25,1),opacity .28s ease;will-change:transform,opacity;}
+.venue-card.is-current{z-index:2;opacity:1;}
+.venue-card.is-prev,.venue-card.is-next{z-index:1;opacity:.5;pointer-events:none;}
+.venue-card.is-prev{transform:translateX(calc(-50% - 82%)) scale(.92);}
+.venue-card.is-next{transform:translateX(calc(-50% + 82%)) scale(.92);}
+.venue-card.is-dragging,.venue-card.is-dragging-neighbor{transition:none!important;}
+.venue-card.is-current.is-settling,.venue-card.is-prev.is-settling,.venue-card.is-next.is-settling{transition:transform .28s cubic-bezier(.22,.75,.25,1),opacity .28s ease;}
+.venue-card.is-current.is-outgoing{z-index:3;}
+.venue-card.is-link{cursor:pointer;}
+.venue-card.is-link:hover{filter:drop-shadow(0 14px 20px var(--neon-glow));}
+.venue-img,.venue-img-placeholder{display:flex;width:100%;height:260px;object-fit:cover;border-radius:22px 22px 12px 12px;background:linear-gradient(145deg,#dbeafe,#93c5fd 55%,#1e40af);box-shadow:0 10px 24px rgba(15,23,42,.14);}
+.venue-img-placeholder{flex-direction:column;align-items:center;justify-content:center;gap:9px;color:#1e3a8a;font-size:13px;}
+.venue-img-placeholder svg{width:48px;height:48px;stroke:currentColor;opacity:.8;}
+.venue-info{position:relative;z-index:1;display:flex;flex:1;flex-direction:column;min-height:230px;margin:-24px 0 0;padding:22px 20px 20px;text-align:left;background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;box-shadow:0 12px 30px rgba(15,23,42,.14);}
+.venue-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.venue-name{font-size:18px;font-weight:700;line-height:1.3;margin:0;color:var(--text-main);}
+.venue-rating{flex:none;padding:5px 8px;border-radius:999px;background:var(--neon-glow);color:var(--neon-dark);font-size:12px;font-weight:700;white-space:nowrap;}
+.venue-rating-summary{margin:5px 0 2px;color:var(--text-muted);font-size:12px;}
+.venue-stars{display:flex;align-items:center;gap:3px;margin:6px 0 2px;}
+.rating-star{display:flex;align-items:center;justify-content:center;width:34px;height:34px;padding:3px;border:0;background:transparent;color:#d99a00;cursor:pointer;transition:transform .15s ease,color .15s ease;}
+.rating-star svg{width:26px;height:26px;fill:transparent;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;}
+.rating-star.is-filled svg{fill:#ffc533;stroke:#d99a00;}
+.rating-star:hover,.rating-star:focus-visible{transform:scale(1.12);color:#bf8500;}
+.rating-star:focus-visible{outline:2px solid var(--neon);outline-offset:1px;border-radius:8px;}
+.rating-star:disabled{cursor:default;}
+.venue-photo-suggest,.venue-photo-modal .venue-photo-submit{padding:7px 10px;border:1px solid var(--border-color);border-radius:9px;background:transparent;color:var(--neon-dark);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;}
+.venue-photo-suggest{align-self:flex-start;margin-top:10px;}
+.venue-photo-suggest:hover{background:var(--neon-glow);}
+.venue-photo-modal .modal-box{width:min(480px,calc(100% - 24px));max-width:480px;max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+.venue-photo-modal .close{display:flex;align-items:center;justify-content:center;width:34px;height:34px;top:12px;right:12px;border:0;border-radius:50%;background:#ef4444;color:#fff;font-size:20px;line-height:1;box-shadow:0 3px 10px rgba(239,68,68,.3);}
+.venue-photo-modal .close:hover{background:#dc2626;color:#fff;transform:scale(1.06);}
+.venue-photo-modal label{display:block;margin:14px 0 6px;color:var(--text-main);font-weight:600;font-size:13px;}
+.venue-photo-terms{display:flex!important;align-items:flex-start;gap:9px;font-weight:400!important;line-height:1.45;}
+.venue-photo-terms input[type="checkbox"]{appearance:auto;flex:none;width:18px;height:18px;margin:3px 0 0;padding:0;border:0;border-radius:4px;background:transparent;box-shadow:none;}
+.venue-photo-file-picker{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px;}
+.venue-photo-file-control{width:auto!important;min-width:0!important;margin:0!important;padding:10px 16px!important;}
+.venue-photo-file-name{min-width:0;color:var(--text-muted);font-size:13px;overflow-wrap:anywhere;}
+.venue-photo-file-input[hidden]{display:none;}
+.venue-photo-preview{display:none;margin-top:14px;text-align:center;}
+.venue-photo-preview.is-visible{display:block;}
+.venue-photo-preview img{display:block;width:100%;max-height:300px;object-fit:contain;border:1px solid var(--border-color);border-radius:14px;background:var(--bg);}
+.venue-photo-preview-name{margin:7px 0 0;color:var(--text-muted);font-size:12px;overflow-wrap:anywhere;}
+.venue-photo-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+.venue-photo-actions button{padding:10px 16px;border:0;border-radius:10px;cursor:pointer;font-weight:700;}
+.venue-photo-modal .venue-photo-submit:hover{background:var(--neon-glow);box-shadow:none;filter:none;transform:none;}
+.venue-photo-modal .venue-photo-submit:disabled{opacity:.6;cursor:wait;}
+.venue-photo-cancel{background:var(--card-bg);color:var(--text-main);}
+.venue-type{font-size:13px;color:var(--neon-dark);font-weight:600;margin:7px 0 10px;}
+.venue-address{display:flex;gap:7px;align-items:flex-start;color:var(--text-muted);font-size:13px;line-height:1.45;margin:0 0 12px;}
+.venue-address svg{flex:none;width:16px;height:16px;margin-top:1px;}
+.venue-distance{margin-left:auto;white-space:nowrap;}
+.venue-contacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid var(--border-color);}
+.venue-contact{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px;border-radius:9px;background:var(--bg);color:var(--neon-dark);font-size:12px;font-weight:700;text-decoration:none;overflow-wrap:anywhere;}
+.venue-contact:hover{background:var(--neon-glow);}
+.venue-contact svg{width:15px;height:15px;flex:none;}
+.venue-no-website{color:var(--text-muted);font-size:12px;align-self:center;}
+.carousel-arrow{width:40px;height:40px;flex:none;border:1px solid var(--border-color);border-radius:50%;background:var(--card-bg);color:var(--neon-dark);font-size:22px;cursor:pointer;box-shadow:0 4px 14px rgba(15,23,42,.10);}
+.carousel-arrow:hover:not(:disabled){background:var(--neon);color:#fff;}
+.carousel-arrow:disabled{opacity:.35;cursor:default;}
+.carousel-dots{display:flex;justify-content:center;align-items:center;gap:9px;min-height:28px;margin:4px auto 0;}
+.carousel-dot{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:var(--text-muted);opacity:.4;cursor:pointer;transition:width .2s,opacity .2s,background .2s;}
+.carousel-dot[aria-current="true"]{width:22px;border-radius:8px;background:var(--neon);opacity:1;}
+.carousel-dot.is-swipe-current,.carousel-dot.is-swipe-target{border-radius:8px;background:var(--neon);}
+.carousel-dot:focus-visible{outline:2px solid var(--neon);outline-offset:3px;}
+@media(max-width:700px){.restaurants-page{padding:36px 14px 24px;}.restaurant-carousel{gap:4px;margin:0 -4px;}.restaurant-track{min-height:480px;height:auto;padding:8px 0 18px;}.venue-card{width:calc(100% - 40px);min-height:450px;}.venue-img,.venue-img-placeholder{height:230px;}.venue-info{min-height:230px;padding:20px 17px 18px;}.carousel-arrow{display:none;}.carousel-dots{gap:8px;}}
+@media(max-width:700px){
+.venue-card.is-current:not(.is-dragging):not(.is-settling){animation:swipe-hint-mobile 1s ease-in-out 1.5s 2;}
+.venue-card.is-current.is-dragging,.venue-card.is-current.is-settling{animation:none!important;}
+}
+@keyframes swipe-hint-mobile{0%,100%{transform:translateX(-50%) rotateY(0deg) rotateZ(0deg);}25%{transform:translateX(calc(-50% - 3px)) rotateY(-2deg) rotateZ(-.35deg);}75%{transform:translateX(calc(-50% + 3px)) rotateY(2deg) rotateZ(.35deg);}}
+@media(prefers-reduced-motion:reduce){.venue-card.is-current,.venue-card.is-prev,.venue-card.is-next{transition-duration:.01ms;animation:none!important;}}
 @media(max-width:900px){
 .site-.site-header{padding:12px 16px;flex-direction:column;gap:8px;}
 .header-left{width:100%;justify-content:center;flex-wrap:wrap;gap:8px;}
@@ -76,12 +135,13 @@ button, .btn, a, label {
     user-select: auto !important;
 }
 </style>
-<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
-<script src="assets/js/site-select.js?v=20261028155005" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
-<script src="assets/js/site-header.js?v=20261028160517" defer></script>
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
+<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261105152159">
+<script src="assets/js/site-header.js?v=20261105152159" defer></script>
+<script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -123,14 +183,40 @@ button, .btn, a, label {
 
 </nav>
 <section class="restaurants-page">
-<h1 class="page-title">Лучшие места Иркутска</h1>
-<p class="page-desc">Популярные рестораны и кафе рядом с тобой</p>
-<div class="orbit-wrapper" id="orbitContainer">
-<button class="nav-btn nav-prev" onclick="moveOrbit(-1)">‹</button>
-<div id="orbitTrack"></div>
-<button class="nav-btn nav-next" onclick="moveOrbit(1)">›</button>
+<h1 class="page-title">Лучшие места</h1>
+<p class="page-desc">Рестораны, бары и кафе рядом с вами. Сначала места с рейтингом, затем — ближайшие.</p>
+<div class="restaurant-status" id="restaurantStatus" role="status" aria-live="polite">Определяем ваше местоположение…</div>
+<div class="restaurant-carousel" aria-label="Заведения рядом">
+<button class="carousel-arrow" id="restaurantsPrev" type="button" aria-label="Предыдущие заведения">‹</button>
+<div class="restaurant-track" id="orbitTrack" tabindex="0" aria-label="Карусель заведений"></div>
+<button class="carousel-arrow" id="restaurantsNext" type="button" aria-label="Следующие заведения">›</button>
 </div>
+<div class="carousel-dots" id="restaurantDots" role="group" aria-label="Выбор заведения"></div>
 </section>
+<div class="modal venue-photo-modal" id="venuePhotoModal" role="dialog" aria-modal="true" aria-labelledby="venuePhotoTitle">
+    <div class="modal-box">
+        <button class="close" type="button" aria-label="Закрыть" onclick="closeVenuePhotoModal()">✕</button>
+        <h2 id="venuePhotoTitle">Предложить фото</h2>
+        <p id="venuePhotoVenueName" style="color:var(--text-muted);"></p>
+        <form id="venuePhotoForm" onsubmit="submitVenuePhoto(event)">
+            <label>Фотография заведения</label>
+            <div class="venue-photo-file-picker">
+                <input id="venuePhotoFile" class="venue-photo-file-input" type="file" accept="image/jpeg,image/png,image/webp" hidden onchange="handleVenuePhotoSelection(this.files&&this.files[0])">
+                <button class="btn venue-photo-file-control" type="button" onclick="document.getElementById('venuePhotoFile').click()">Выбрать файл</button>
+                <span class="venue-photo-file-name" id="venuePhotoFileName" aria-live="polite">Файл не выбран</span>
+            </div>
+            <div class="venue-photo-preview" id="venuePhotoPreview">
+                <img id="venuePhotoPreviewImage" alt="Предпросмотр фото заведения">
+                <p class="venue-photo-preview-name" id="venuePhotoPreviewName"></p>
+            </div>
+            <label class="venue-photo-terms"><input id="venuePhotoRights" type="checkbox" required> <span>У меня есть право передать это фото для публикации. Фото появится после проверки администратором.</span></label>
+            <div class="venue-photo-actions">
+                <button class="venue-photo-cancel" type="button" onclick="closeVenuePhotoModal()">Отмена</button>
+                <button class="venue-photo-submit" id="venuePhotoSubmit" type="submit">Отправить на проверку</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Модальное окно входа -->
 <div class="modal" id="authModal">
@@ -178,18 +264,72 @@ button, .btn, a, label {
         © 2026 Я готовлю — ты ешь!
     </footer>
 
-<script src="assets/js/main.js?v=20261022183142"></script>
+<script src="assets/js/main.js?v=20261105152159"></script>
+<script src="assets/js/favorites-store.js?v=20261101115409"></script>
 <script>
-// --- JS РЕСТОРАНОВ ---
-const venues = [
-{name:"Ресторан «На Байкале»", type:"Европейская / Русская", addr:"ул. Сухэ-Батора, 28", img:"https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=800"},
-{name:"Гастро-бар «Хлеб & Соль»", type:"Авторская кухня", addr:"ул. Карла Маркса, 35", img:"https://images.unsplash.com/photo-1514362545857-3bc16549766b?q=80&w=800"},
-{name:"Кофейня «Сова»", type:"Кофе / Десерты", addr:"ул. Франк-Каменецкого, 18", img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800"},
-{name:"Паб «Чикаго»", type:"Стейки / Пиво", addr:"ул. Ленина, 15", img:"https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800"},
-{name:"Суши-бар «Якитория»", type:"Японская кухня", addr:"ТЦ «Модный Квартал»", img:"https://images.unsplash.com/photo-1579027989536-b7b1f875659b?q=80&w=800"}
-];
-let orbitIndex = 0;
+// --- Поиск заведений рядом ---
+let venues = [];
+let currentVenueIndex = 0;
+let restaurantDotPosition = null;
+let carouselDirection = 'next';
 const track = document.getElementById('orbitTrack');
+const restaurantStatus = document.getElementById('restaurantStatus');
+const restaurantReturnStateKey = 'icook:return-scroll:' + location.pathname;
+const restaurantNavigationEntry = typeof performance.getEntriesByType === 'function'
+    ? performance.getEntriesByType('navigation')[0]
+    : null;
+const isRestaurantHistoryReturn = Boolean(restaurantNavigationEntry && restaurantNavigationEntry.type === 'back_forward');
+let restaurantReturnState = null;
+if (isRestaurantHistoryReturn) {
+    try {
+        const savedState = sessionStorage.getItem(restaurantReturnStateKey);
+        restaurantReturnState = savedState ? JSON.parse(savedState) : null;
+    } catch (error) {
+        console.error('Unable to read restaurant return state', error);
+    }
+}
+
+function restoreRestaurantScroll(state) {
+    if (!state || !Number.isFinite(Number(state.scrollY))) return;
+    requestAnimationFrame(function () {
+        window.scrollTo(0, Math.max(0, Number(state.scrollY)));
+    });
+}
+
+function positionRestaurantStatusAtTop() {
+    requestAnimationFrame(function () {
+        const statusTop = restaurantStatus.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+            top: Math.max(0, statusTop - 8),
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+        });
+    });
+}
+
+window.addEventListener('pagehide', function () {
+    try {
+        sessionStorage.setItem(restaurantReturnStateKey, JSON.stringify({
+            scrollY: window.scrollY,
+            venueId: venues[currentVenueIndex] ? String(venues[currentVenueIndex].venueId || '') : '',
+            venueIndex: currentVenueIndex,
+            dotPosition: restaurantDotPosition,
+            direction: carouselDirection
+        }));
+    } catch (error) {
+        console.error('Unable to save restaurant return state', error);
+    }
+});
+
+window.addEventListener('pageshow', function (event) {
+    if (!event.persisted) return;
+    try {
+        const state = JSON.parse(sessionStorage.getItem(restaurantReturnStateKey) || 'null');
+        restoreRestaurantScroll(state);
+        sessionStorage.removeItem(restaurantReturnStateKey);
+    } catch (error) {
+        console.error('Unable to restore restaurant return position', error);
+    }
+});
 
 function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}
 
@@ -224,25 +364,970 @@ async function register(){const n=document.getElementById('regName').value.trim(
 
 async function resetPassword(){const e=document.getElementById('resetEmail').value.trim();clearErrors();if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))return showErr('resetEmailError','Некорректный email');setLoading('resetBtn',true);try{const res=await fetch('/api/reset_password.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e})});const data=await res.json();if(data.error)throw new Error(data.error);closeAuth();showToast('✅ Письмо для сброса пароля отправлено на '+e);}catch(err){showErr('resetEmailError',err.message);}finally{setLoading('resetBtn',false);}}
 
-function renderOrbit() {
-track.innerHTML = '';
-venues.forEach((v, i) => {
-let status = 'hidden';
-const dist = (i - orbitIndex + venues.length) % venues.length;
-if(dist === 0) status = 'active';
-else if(dist === 1) status = 'right';
-else if(dist === venues.length - 1) status = 'left';
-track.innerHTML += `<div class="venue-card ${status}" onclick="setOrbit(${i})"><img src="${v.img}" class="venue-img"><div class="venue-info"><div class="venue-name">${v.name}</div><div class="venue-type">${v.type}</div><div class="venue-address">📍 ${v.addr}</div><button class="venue-btn">Забронировать</button></div></div>`;
-});
+function setRestaurantStatus(message, isError) {
+    restaurantStatus.textContent = message;
+    restaurantStatus.classList.toggle('is-error', Boolean(isError));
 }
-function setOrbit(index) {orbitIndex = index;renderOrbit();}
-function moveOrbit(dir) {orbitIndex = (orbitIndex + dir + venues.length) % venues.length;renderOrbit();}
+
+function getDistanceMeters(lat1, lon1, lat2, lon2) {
+    const toRad = function (degrees) { return degrees * Math.PI / 180; };
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+    return 6371000 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function getPlaceImage(value) {
+    if (value) {
+        if (/^assets\/images\/REST\/venue_(?:node|way|relation)_\d+_\d+_[a-f0-9]+\.jpg$/i.test(value)) {
+            return '/' + value;
+        }
+        try {
+            const image = /^File:/i.test(value)
+                ? 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(value.replace(/^File:/i, '')) + '?width=900'
+                : value;
+            const url = new URL(/^https?:\/\//i.test(image) ? image : 'https://' + image);
+            if (url.protocol === 'http:') url.protocol = 'https:';
+            if (url.protocol === 'https:') return url.href;
+        } catch (e) {}
+    }
+    return '';
+}
+
+function getWebsite(value) {
+    if (!value) return '';
+    try {
+        const url = new URL(/^https?:\/\//i.test(value) ? value : 'https://' + value);
+        return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : '';
+    } catch (e) {
+        return '';
+    }
+}
+
+async function fetchNearbyVenues(lat, lon, radius) {
+    const params = new URLSearchParams({ lat: String(lat), lon: String(lon) });
+    const response = await fetch('/api/nearby_places.php?' + params.toString());
+    if (!response.ok) throw new Error('Nearby places request failed: ' + response.status);
+    const data = await response.json();
+    if (!data.success || !Array.isArray(data.venues)) throw new Error('Nearby places are unavailable');
+
+    return data.venues.reduce(function (results, venue) {
+        const placeLat = Number(venue.lat);
+        const placeLon = Number(venue.lon);
+        if (!Number.isFinite(placeLat) || !Number.isFinite(placeLon)) return results;
+        const distance = getDistanceMeters(lat, lon, placeLat, placeLon);
+        if (distance > radius) return results;
+        results.push({
+            venueId: venue.venue_id || '',
+            name: venue.name || 'Заведение',
+            type: venue.type || 'Заведение',
+            address: venue.addr || 'Адрес не указан',
+            image: getPlaceImage(venue.img),
+            website: getWebsite(venue.website),
+            email: String(venue.email || '').split(/[;,]/)[0].trim(),
+            phone: String(venue.phone || '').split(/[;,]/)[0].trim(),
+            rating: Number.isFinite(Number(venue.rating)) && Number(venue.rating) > 0 && Number(venue.rating) <= 5
+                ? Number(venue.rating)
+                : null,
+            ratingCount: Number(venue.rating_count) || 0,
+            userRating: Number(venue.user_rating) || null,
+            distance: distance
+        });
+        return results;
+    }, []).sort(function (a, b) {
+        if (a.rating !== null && b.rating === null) return -1;
+        if (a.rating === null && b.rating !== null) return 1;
+        if (a.rating !== b.rating) return (b.rating || 0) - (a.rating || 0);
+        return a.distance - b.distance;
+    });
+}
+
+async function getIpCoordinates() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(function () { controller.abort(); }, 2500);
+    try {
+        const response = await fetch('https://ipwho.is/', { signal: controller.signal });
+        if (!response.ok) throw new Error('Не удалось определить местоположение по IP');
+        const data = await response.json();
+        if (!data.success || !Number.isFinite(data.latitude) || !Number.isFinite(data.longitude)) {
+            throw new Error('Не удалось определить местоположение по IP');
+        }
+        return { lat: data.latitude, lon: data.longitude, source: 'IP' };
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
+async function getNearbyCoordinates() {
+    if (!navigator.geolocation) return getIpCoordinates();
+
+    let ipLocationPromise;
+    const getIpLocation = function () {
+        if (!ipLocationPromise) ipLocationPromise = getIpCoordinates();
+        return ipLocationPromise;
+    };
+    let fallbackTimer;
+    const gpsLocation = new Promise(function (resolve) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                resolve({ lat: position.coords.latitude, lon: position.coords.longitude, source: 'GPS' });
+            },
+            function () { resolve(null); },
+            { enableHighAccuracy: false, maximumAge: 300000, timeout: 5000 }
+        );
+    });
+    const ipFallback = new Promise(function (resolve) {
+        fallbackTimer = setTimeout(resolve, 1500);
+    }).then(getIpLocation).catch(async function (error) {
+        const location = await gpsLocation;
+        if (location) return location;
+        throw error;
+    });
+
+    try {
+        return await Promise.race([
+            gpsLocation.then(function (location) { return location || getIpLocation(); }),
+            ipFallback
+        ]);
+    } finally {
+        clearTimeout(fallbackTimer);
+    }
+}
+
+async function initNearbyRestaurants() {
+    setRestaurantStatus('Определяем местоположение и ищем заведения…');
+    try {
+        const location = await getNearbyCoordinates();
+        const results = await fetchNearbyVenues(location.lat, location.lon, 3000);
+        venues = results;
+        const returnState = restaurantReturnState;
+        if (returnState && results.length) {
+            const restoredIndex = returnState.venueId
+                ? results.findIndex(function (venue) { return String(venue.venueId || '') === returnState.venueId; })
+                : -1;
+            const savedIndex = Number.isInteger(Number(returnState.venueIndex)) ? Number(returnState.venueIndex) : 0;
+            currentVenueIndex = restoredIndex >= 0 ? restoredIndex : Math.min(Math.max(0, savedIndex), results.length - 1);
+            const dotCount = Math.min(results.length, 5);
+            const savedDotPosition = Number(returnState.dotPosition);
+            restaurantDotPosition = returnState.dotPosition !== null
+                && returnState.dotPosition !== undefined
+                && Number.isInteger(savedDotPosition)
+                && dotCount
+                ? (savedDotPosition % dotCount + dotCount) % dotCount
+                : null;
+            carouselDirection = returnState.direction === 'prev' ? 'prev' : 'next';
+        }
+        renderRestaurants();
+        if (returnState) {
+            restoreRestaurantScroll(returnState);
+            try { sessionStorage.removeItem(restaurantReturnStateKey); }
+            catch (error) { console.error('Unable to clear saved restaurant state', error); }
+            restaurantReturnState = null;
+        }
+        if (!results.length) {
+            setRestaurantStatus('В радиусе 3 км заведения не найдены. Попробуйте обновить местоположение.');
+        } else {
+            const ratedCount = results.filter(function (venue) { return venue.rating !== null; }).length;
+            const accuracy = location.source === 'IP' ? 'Местоположение определено приблизительно по IP.' : 'Местоположение определено по GPS.';
+            setRestaurantStatus('Найдено заведений: ' + results.length + '. Рейтинг указан у ' + ratedCount + '. ' + accuracy);
+            if (!isRestaurantHistoryReturn) positionRestaurantStatusAtTop();
+        }
+    } catch (error) {
+        venues = [];
+        renderRestaurants();
+        if (restaurantReturnState) {
+            restoreRestaurantScroll(restaurantReturnState);
+            try { sessionStorage.removeItem(restaurantReturnStateKey); }
+            catch (storageError) { console.error('Unable to clear saved restaurant state', storageError); }
+            restaurantReturnState = null;
+        }
+        setRestaurantStatus('Не удалось загрузить заведения. Проверьте подключение и попробуйте ещё раз.', true);
+        if (typeof showToast === 'function') showToast('Не удалось загрузить список заведений');
+    }
+}
+
+function createContactLink(label, href) {
+    const link = document.createElement('a');
+    link.className = 'venue-contact';
+    link.href = href;
+    link.textContent = label;
+    link.addEventListener('click', function (event) { event.stopPropagation(); });
+    return link;
+}
+
+function renderRestaurants() {
+    track.replaceChildren();
+    if (!venues.length) {
+        track.style.removeProperty('height');
+        updateCarouselButtons();
+        renderRestaurantDots();
+        return;
+    }
+
+    currentVenueIndex = (currentVenueIndex + venues.length) % venues.length;
+    const venue = venues[currentVenueIndex];
+    track.setAttribute('aria-label', 'Заведение ' + (currentVenueIndex + 1) + ' из ' + venues.length + ': ' + venue.name);
+    const previousIndex = (currentVenueIndex - 1 + venues.length) % venues.length;
+    const nextIndex = (currentVenueIndex + 1) % venues.length;
+    if (venues.length > 1) {
+        track.appendChild(createVenueCard(venues[previousIndex], 'prev', false));
+    }
+    const currentCard = createVenueCard(venues[currentVenueIndex], 'current', true);
+    currentCard.classList.add('slide-' + carouselDirection);
+    track.appendChild(currentCard);
+    if (venues.length > 1) {
+        track.appendChild(createVenueCard(venues[nextIndex], 'next', false));
+    }
+    updateRestaurantTrackHeight();
+    updateCarouselButtons();
+    renderRestaurantDots();
+}
+
+function updateRestaurantTrackHeight() {
+    const currentCard = track.querySelector('.venue-card.is-current');
+    if (!currentCard) {
+        track.style.removeProperty('height');
+        return;
+    }
+    track.style.height = Math.ceil(currentCard.getBoundingClientRect().height + 26) + 'px';
+}
+
+window.addEventListener('resize', updateRestaurantTrackHeight);
+
+function createVenueCard(venue, position, interactive) {
+    const card = document.createElement('article');
+    card.className = 'venue-card is-' + position + (interactive && venue.website ? ' is-link' : '');
+    if (!interactive) {
+        card.setAttribute('aria-hidden', 'true');
+        card.inert = true;
+    } else if (venue.website) {
+        card.tabIndex = 0;
+        card.setAttribute('role', 'link');
+        card.setAttribute('aria-label', venue.name + ', открыть сайт заведения');
+        card.addEventListener('click', function (event) {
+            if (!event.target.closest('a, button')) window.location.assign(venue.website);
+        });
+        card.addEventListener('keydown', function (event) {
+            if ((event.key === 'Enter' || event.key === ' ') && !event.target.closest('a, button')) {
+                event.preventDefault();
+                window.location.assign(venue.website);
+            }
+        });
+    }
+
+    if (interactive && venue.venueId) {
+        const favoriteButton = document.createElement('button');
+        favoriteButton.type = 'button';
+        favoriteButton.className = 'fav-btn content-fav-btn' +
+            (window.isContentFavorite('place', venue.venueId) ? ' active' : '');
+        favoriteButton.dataset.favoriteType = 'place';
+        favoriteButton.dataset.favoriteId = venue.venueId;
+        favoriteButton.dataset.favoriteItem = JSON.stringify({
+            venueId: venue.venueId,
+            name: venue.name,
+            type: venue.type,
+            address: venue.address,
+            image: venue.image,
+            website: venue.website,
+            email: venue.email,
+            phone: venue.phone,
+            distance: venue.distance
+        });
+        favoriteButton.setAttribute('aria-label', 'Добавить место в избранное');
+        favoriteButton.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+        card.appendChild(favoriteButton);
+    }
+
+    if (venue.image) {
+        const image = document.createElement('img');
+        image.className = 'venue-img';
+        image.src = venue.image;
+        image.alt = interactive ? venue.name : '';
+        image.loading = 'lazy';
+        image.decoding = 'async';
+        image.addEventListener('error', function () {
+            const placeholder = createPhotoPlaceholder();
+            image.replaceWith(placeholder);
+        }, { once: true });
+        card.appendChild(image);
+    } else {
+        card.appendChild(createPhotoPlaceholder());
+    }
+
+    const info = document.createElement('div');
+    info.className = 'venue-info';
+    const heading = document.createElement('div');
+    heading.className = 'venue-heading';
+    const name = document.createElement('h2');
+    name.className = 'venue-name';
+    name.textContent = venue.name;
+    heading.appendChild(name);
+    const rating = document.createElement('span');
+    rating.className = 'venue-rating';
+    rating.textContent = venue.rating === null ? '★ Нет оценки' : '★ ' + venue.rating.toFixed(1) + ' / 5';
+    rating.setAttribute('aria-label', venue.rating === null ? 'Рейтинг не указан' : 'Рейтинг: ' + venue.rating + ' из 5');
+    heading.appendChild(rating);
+    info.appendChild(heading);
+
+    const ratingSummary = document.createElement('div');
+    ratingSummary.className = 'venue-rating-summary';
+    ratingSummary.textContent = venue.ratingCount
+        ? (venue.rating || 0).toFixed(1) + ' · ' + venue.ratingCount + ' ' + ratingWord(venue.ratingCount)
+        : 'Пока нет оценок';
+    info.appendChild(ratingSummary);
+    info.appendChild(createVenueRatingStars(venue, interactive));
+
+    const type = document.createElement('div');
+    type.className = 'venue-type';
+    type.textContent = venue.type;
+    info.appendChild(type);
+    const address = document.createElement('p');
+    address.className = 'venue-address';
+    address.textContent = '⌖ ' + venue.address;
+    const distance = document.createElement('span');
+    distance.className = 'venue-distance';
+    distance.textContent = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(venue.distance / 1000) + ' км';
+    distance.title = 'Расстояние по прямой';
+    address.appendChild(distance);
+    info.appendChild(address);
+
+    const contacts = document.createElement('div');
+    contacts.className = 'venue-contacts';
+    if (venue.website) contacts.appendChild(createContactLink('Сайт', venue.website));
+    if (venue.email) contacts.appendChild(createContactLink('Email', 'mailto:' + encodeURIComponent(venue.email).replace(/%40/gi, '@')));
+    const dialablePhone = venue.phone.replace(/[^0-9+*#,;]/g, '');
+    if (/\d/.test(dialablePhone)) contacts.appendChild(createContactLink('Позвонить', 'tel:' + dialablePhone));
+    if (!venue.website) {
+        const noWebsite = document.createElement('span');
+        noWebsite.className = 'venue-no-website';
+        noWebsite.textContent = 'Сайт не указан';
+        contacts.appendChild(noWebsite);
+    }
+    info.appendChild(contacts);
+    if (interactive) {
+        const photoButton = document.createElement('button');
+        photoButton.className = 'venue-photo-suggest';
+        photoButton.type = 'button';
+        photoButton.textContent = 'Предложить фото';
+        photoButton.addEventListener('click', function (event) {
+            event.stopPropagation();
+            openVenuePhotoModal(venue);
+        });
+        info.appendChild(photoButton);
+    }
+    card.appendChild(info);
+    return card;
+}
+
+function ratingWord(count) {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+    if (mod10 === 1 && mod100 !== 11) return 'оценка';
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'оценки';
+    return 'оценок';
+}
+
+function createVenueRatingStars(venue, interactive) {
+    const group = document.createElement('div');
+    group.className = 'venue-stars';
+    group.setAttribute('role', 'radiogroup');
+    group.setAttribute('aria-label', 'Ваша оценка: ' + (venue.userRating || 'не выбрана'));
+    for (let value = 1; value <= 5; value++) {
+        const star = document.createElement('button');
+        star.type = 'button';
+        star.className = 'rating-star' + (venue.userRating && value <= venue.userRating ? ' is-filled' : '');
+        star.setAttribute('role', 'radio');
+        star.setAttribute('aria-label', value + ' из 5 звёзд');
+        star.setAttribute('aria-checked', String(venue.userRating === value));
+        star.setAttribute('aria-pressed', String(venue.userRating === value));
+        star.disabled = !interactive;
+        star.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.7 2.85 5.78 6.38.93-4.62 4.5 1.09 6.35L12 17.26l-5.7 3 1.09-6.35-4.62-4.5 6.38-.93L12 2.7Z"/></svg>';
+        if (interactive) {
+            star.addEventListener('click', function (event) {
+                event.stopPropagation();
+                submitVenueRating(venue, value);
+            });
+        }
+        group.appendChild(star);
+    }
+    return group;
+}
+
+async function submitVenueRating(venue, rating) {
+    try {
+        const response = await fetch('/api/venue_ratings.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ venue_id: venue.venueId, rating: rating })
+        });
+        const data = await response.json();
+        if (response.status === 401) {
+            if (typeof openAuth === 'function') openAuth();
+            showToast('Войдите в аккаунт, чтобы оценить заведение');
+            return;
+        }
+        if (!response.ok || !data.success) throw new Error(data.error || 'Не удалось сохранить оценку');
+        venue.userRating = data.rating;
+        venue.rating = data.average;
+        venue.ratingCount = data.count;
+        showToast('Ваша оценка сохранена');
+        renderRestaurants();
+    } catch (error) {
+        showToast(error.message || 'Не удалось сохранить оценку');
+    }
+}
+
+let selectedPhotoVenue = null;
+let restaurantModalHistory = [];
+let pendingModalCloseToken = null;
+let modalCloseCallback = null;
+let closingModalFromPopState = false;
+let venuePhotoPreviewUrl = null;
+let selectedVenuePhotoFile = null;
+let venuePhotoSelectionVersion = 0;
+
+function clearVenuePhotoPreview() {
+    venuePhotoSelectionVersion++;
+    const preview = document.getElementById('venuePhotoPreview');
+    const image = document.getElementById('venuePhotoPreviewImage');
+    if (venuePhotoPreviewUrl) {
+        URL.revokeObjectURL(venuePhotoPreviewUrl);
+        venuePhotoPreviewUrl = null;
+    }
+    selectedVenuePhotoFile = null;
+    image.removeAttribute('src');
+    preview.classList.remove('is-visible');
+    document.getElementById('venuePhotoPreviewName').textContent = '';
+}
+
+async function handleVenuePhotoSelection(file) {
+    const input = document.getElementById('venuePhotoFile');
+    if (input) input.value = '';
+    clearVenuePhotoPreview();
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        showToast('Выберите изображение JPEG, PNG или WebP');
+        return;
+    }
+    if (file.size < 1 || file.size > 10 * 1024 * 1024) {
+        showToast('Размер фото должен быть не больше 10 МБ');
+        return;
+    }
+    const selectionVersion = venuePhotoSelectionVersion;
+    let sourceUrl = '';
+    try {
+        sourceUrl = URL.createObjectURL(file);
+        const image = new Image();
+        image.src = sourceUrl;
+        await image.decode();
+        if (selectionVersion !== venuePhotoSelectionVersion) {
+            URL.revokeObjectURL(sourceUrl);
+            return;
+        }
+        selectedVenuePhotoFile = file;
+        venuePhotoPreviewUrl = sourceUrl;
+        document.getElementById('venuePhotoPreviewImage').src = sourceUrl;
+        document.getElementById('venuePhotoPreviewName').textContent = file.name;
+        document.getElementById('venuePhotoFileName').textContent = file.name;
+        document.getElementById('venuePhotoPreview').classList.add('is-visible');
+    } catch (error) {
+        if (sourceUrl && sourceUrl !== venuePhotoPreviewUrl) URL.revokeObjectURL(sourceUrl);
+        if (selectionVersion === venuePhotoSelectionVersion) {
+            showToast('Не удалось открыть это изображение. Выберите другое фото.');
+        }
+    }
+}
+
+function shouldTrackRestaurantModalHistory() {
+    return typeof window.AndroidShare === 'undefined';
+}
+
+function registerRestaurantModalHistory(modalId) {
+    const top = restaurantModalHistory[restaurantModalHistory.length - 1];
+    if (top && top.id === modalId) return;
+    const token = 'restaurant-modal-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+    const state = history.state && typeof history.state === 'object' ? history.state : {};
+    try {
+        history.pushState(Object.assign({}, state, { restaurantModalId: modalId, restaurantModalToken: token }), '', location.href);
+        restaurantModalHistory.push({ id: modalId, token: token });
+    } catch (error) {
+        console.error('Unable to add modal history state', error);
+    }
+}
+
+function closeRestaurantModalHistory(modalId) {
+    if (closingModalFromPopState) return;
+    const top = restaurantModalHistory[restaurantModalHistory.length - 1];
+    if (!top || top.id !== modalId) {
+        if (modalCloseCallback) {
+            const callback = modalCloseCallback;
+            modalCloseCallback = null;
+            callback();
+        }
+        return;
+    }
+    if (history.state && history.state.restaurantModalToken === top.token) {
+        pendingModalCloseToken = top.token;
+        history.back();
+        return;
+    }
+    restaurantModalHistory.pop();
+    if (modalCloseCallback) {
+        const callback = modalCloseCallback;
+        modalCloseCallback = null;
+        callback();
+    }
+}
+
+function closeModalFromBrowserBack(modal) {
+    if (!modal) return;
+    closingModalFromPopState = true;
+    if (modal.id === 'authModal' && typeof window.closeAuth === 'function') {
+        window.closeAuth();
+    } else {
+        modal.classList.remove('active');
+        if (modal.id === 'venuePhotoModal') {
+            clearVenuePhotoPreview();
+            selectedPhotoVenue = null;
+        }
+    }
+    closingModalFromPopState = false;
+}
+
+window.addEventListener('popstate', function () {
+    const top = restaurantModalHistory[restaurantModalHistory.length - 1];
+    if (!top) return;
+    restaurantModalHistory.pop();
+    if (pendingModalCloseToken === top.token) {
+        pendingModalCloseToken = null;
+    } else {
+        closeModalFromBrowserBack(document.getElementById(top.id));
+    }
+    if (!restaurantModalHistory.length && modalCloseCallback) {
+        const callback = modalCloseCallback;
+        modalCloseCallback = null;
+        callback();
+    }
+});
+
+function installAuthModalHistory() {
+    const originalOpenAuth = window.openAuth;
+    const originalCloseAuth = window.closeAuth;
+    if (typeof originalOpenAuth === 'function' && !originalOpenAuth.restaurantHistoryWrapped) {
+        const wrappedOpenAuth = function () {
+            const result = originalOpenAuth.apply(this, arguments);
+            if (document.getElementById('authModal')?.classList.contains('active')) {
+                registerRestaurantModalHistory('authModal');
+            }
+            return result;
+        };
+        wrappedOpenAuth.restaurantHistoryWrapped = true;
+        window.openAuth = wrappedOpenAuth;
+    }
+    if (typeof originalCloseAuth === 'function' && !originalCloseAuth.restaurantHistoryWrapped) {
+        const wrappedCloseAuth = function () {
+            const result = originalCloseAuth.apply(this, arguments);
+            closeRestaurantModalHistory('authModal');
+            return result;
+        };
+        wrappedCloseAuth.restaurantHistoryWrapped = true;
+        window.closeAuth = wrappedCloseAuth;
+    }
+}
+
+function openVenuePhotoModal(venue) {
+    selectedPhotoVenue = venue;
+    document.getElementById('venuePhotoForm').reset();
+    clearVenuePhotoPreview();
+    document.getElementById('venuePhotoFileName').textContent = 'Файл не выбран';
+    document.getElementById('venuePhotoVenueName').textContent = venue.name + ' · ' + venue.address;
+    document.getElementById('venuePhotoModal').classList.add('active');
+    if (shouldTrackRestaurantModalHistory()) registerRestaurantModalHistory('venuePhotoModal');
+}
+
+function closeVenuePhotoModal(afterClose) {
+    document.getElementById('venuePhotoModal').classList.remove('active');
+    clearVenuePhotoPreview();
+    selectedPhotoVenue = null;
+    if (shouldTrackRestaurantModalHistory()) {
+        if (typeof afterClose === 'function') modalCloseCallback = afterClose;
+        closeRestaurantModalHistory('venuePhotoModal');
+    } else if (typeof afterClose === 'function') {
+        afterClose();
+    }
+}
+
+async function submitVenuePhoto(event) {
+    event.preventDefault();
+    if (!selectedPhotoVenue) return;
+    const file = selectedVenuePhotoFile;
+    if (!file) {
+        showToast('Выберите фотографию');
+        return;
+    }
+
+    const submitButton = document.getElementById('venuePhotoSubmit');
+    submitButton.disabled = true;
+    const formData = new FormData();
+    formData.set('action', 'submit');
+    formData.set('venue_id', selectedPhotoVenue.venueId);
+    formData.set('rights_confirm', document.getElementById('venuePhotoRights').checked ? '1' : '0');
+    formData.set('photo', file);
+    try {
+        const response = await fetch('/api/venue_photos.php', { method: 'POST', body: formData });
+        const data = await response.json();
+        if (response.status === 401) {
+            closeVenuePhotoModal(function () {
+                if (typeof window.openAuth === 'function') window.openAuth();
+            });
+            showToast('Войдите в аккаунт, чтобы предложить фото');
+            return;
+        }
+        if (!response.ok || !data.success) throw new Error(data.error || 'Не удалось отправить фото');
+        closeVenuePhotoModal();
+        showToast('Фото отправлено администратору на проверку');
+    } catch (error) {
+        showToast(error.message || 'Не удалось отправить фото');
+    } finally {
+        submitButton.disabled = false;
+    }
+}
+
+let activeSwipe = null;
+let carouselAnimating = false;
+let swipeAnimationTimer = null;
+
+function resetSwipeCardStyles() {
+    track.querySelectorAll('.venue-card').forEach(function (card) {
+        card.classList.remove('is-dragging', 'is-dragging-neighbor', 'is-settling', 'is-outgoing');
+        card.style.removeProperty('transform');
+        card.style.removeProperty('opacity');
+        card.style.removeProperty('z-index');
+    });
+    document.getElementById('restaurantDots').querySelectorAll('.carousel-dot').forEach(function (dot) {
+        dot.classList.remove('is-swipe-current', 'is-swipe-target');
+        dot.style.removeProperty('width');
+        dot.style.removeProperty('opacity');
+    });
+    track.removeAttribute('data-swipe-progress');
+}
+
+function updateSwipeProgress(deltaX) {
+    const currentCard = track.querySelector('.venue-card.is-current');
+    if (!currentCard || venues.length < 2) return;
+    const cardWidth = currentCard.getBoundingClientRect().width || track.clientWidth;
+    const progress = Math.min(1, Math.abs(deltaX) / cardWidth);
+    const isNext = deltaX < 0;
+    const direction = isNext ? 1 : -1;
+    const neighbor = track.querySelector(isNext ? '.venue-card.is-next' : '.venue-card.is-prev');
+    const otherNeighbor = track.querySelector(isNext ? '.venue-card.is-prev' : '.venue-card.is-next');
+    const startOffset = cardWidth * 0.82;
+    const currentOffset = deltaX;
+    currentCard.classList.add('is-dragging');
+    currentCard.style.transform = 'translate3d(calc(-50% + ' + currentOffset + 'px),0,0) scale(' + (1 - progress * 0.055) + ') rotate(' + (deltaX / cardWidth * 3) + 'deg)';
+    currentCard.style.opacity = String(1 - progress * 0.88);
+    if (neighbor) {
+        neighbor.classList.add('is-dragging-neighbor');
+        neighbor.style.transform = 'translate3d(calc(-50% + ' + (direction * startOffset * (1 - progress)) + 'px),0,0) scale(' + (0.92 + progress * 0.08) + ')';
+        neighbor.style.opacity = String(0.5 + progress * 0.5);
+        neighbor.style.zIndex = '2';
+    }
+    if (otherNeighbor) {
+        otherNeighbor.classList.add('is-dragging-neighbor');
+        otherNeighbor.style.transform = 'translate3d(calc(-50% + ' + (-direction * startOffset * (1 + progress)) + 'px),0,0) scale(' + (0.92 - progress * 0.04) + ')';
+        otherNeighbor.style.opacity = String(Math.max(0.12, 0.5 - progress * 0.35));
+    }
+    track.setAttribute('data-swipe-progress', String(progress));
+    updateSwipeDots(isNext, progress);
+}
+
+function updateSwipeDots(isNext, progress) {
+    const dotsContainer = document.getElementById('restaurantDots');
+    const dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
+    if (dots.length < 2) return;
+    const currentPosition = Math.min(restaurantDotPosition || 0, dots.length - 1);
+    const targetPosition = (currentPosition + (isNext ? 1 : -1) + dots.length) % dots.length;
+    const currentDot = dots[currentPosition];
+    const targetDot = dots[targetPosition];
+    dots.forEach(function (dot) {
+        dot.classList.remove('is-swipe-current', 'is-swipe-target');
+        dot.style.removeProperty('width');
+        dot.style.removeProperty('opacity');
+    });
+    currentDot.classList.add('is-swipe-current');
+    currentDot.style.width = (22 - 14 * progress) + 'px';
+    currentDot.style.opacity = String(1 - 0.6 * progress);
+    if (targetDot && dots.indexOf(targetDot) !== currentPosition) {
+        targetDot.classList.add('is-swipe-target');
+        targetDot.style.width = (8 + 14 * progress) + 'px';
+        targetDot.style.opacity = String(0.4 + 0.6 * progress);
+    }
+}
+
+function finishRestaurantSwipe(direction, shouldCommit) {
+    if (carouselAnimating) return;
+    const currentCard = track.querySelector('.venue-card.is-current');
+    const targetCard = track.querySelector(direction > 0 ? '.venue-card.is-next' : '.venue-card.is-prev');
+    const departingSideCard = track.querySelector(direction > 0 ? '.venue-card.is-prev' : '.venue-card.is-next');
+    if (!currentCard || !targetCard) {
+        if (shouldCommit) {
+            currentVenueIndex = (currentVenueIndex + direction + venues.length) % venues.length;
+            restaurantDotPosition = (restaurantDotPosition + direction + Math.min(venues.length, 5)) % Math.min(venues.length, 5);
+            carouselDirection = direction > 0 ? 'next' : 'prev';
+            renderRestaurants();
+        }
+        return;
+    }
+    carouselAnimating = true;
+    if (swipeAnimationTimer) clearTimeout(swipeAnimationTimer);
+    currentCard.classList.remove('is-dragging');
+    targetCard.classList.remove('is-dragging-neighbor');
+    if (departingSideCard) departingSideCard.classList.remove('is-dragging-neighbor');
+    currentCard.classList.add('is-settling');
+    targetCard.classList.add('is-settling');
+    if (departingSideCard) departingSideCard.classList.add('is-settling');
+    if (shouldCommit) {
+        const cardWidth = currentCard.getBoundingClientRect().width || track.clientWidth;
+        const sign = direction > 0 ? -1 : 1;
+        currentCard.classList.add('is-outgoing');
+        currentCard.style.transform = 'translate3d(calc(-50% + ' + (sign * cardWidth * 1.25) + 'px),0,0) scale(.94) rotate(' + (sign * 4) + 'deg)';
+        currentCard.style.opacity = '0';
+        targetCard.style.transform = 'translate3d(-50%,0,0) scale(1)';
+        targetCard.style.opacity = '1';
+        targetCard.style.zIndex = '3';
+        if (departingSideCard) {
+            departingSideCard.style.transform = 'translate3d(calc(-50% + ' + (sign * cardWidth * 1.25) + 'px),0,0) scale(.88)';
+            departingSideCard.style.opacity = '0';
+            departingSideCard.style.zIndex = '1';
+        }
+        carouselDirection = direction > 0 ? 'next' : 'prev';
+    } else {
+        resetSwipeCardStyles();
+        currentCard.classList.add('is-settling');
+        targetCard.classList.add('is-settling');
+    }
+    const complete = function () {
+        if (!carouselAnimating) return;
+        carouselAnimating = false;
+        if (swipeAnimationTimer) clearTimeout(swipeAnimationTimer);
+        swipeAnimationTimer = null;
+        if (shouldCommit) {
+            currentVenueIndex = (currentVenueIndex + direction + venues.length) % venues.length;
+            const dotCount = Math.min(venues.length, 5);
+            restaurantDotPosition = (restaurantDotPosition + direction + dotCount) % dotCount;
+            renderRestaurants();
+        } else {
+            resetSwipeCardStyles();
+        }
+    };
+    if (shouldCommit) {
+        currentCard.addEventListener('transitionend', function onTransitionEnd(event) {
+            if (event.target !== currentCard || event.propertyName !== 'transform') return;
+            currentCard.removeEventListener('transitionend', onTransitionEnd);
+            complete();
+        });
+        swipeAnimationTimer = setTimeout(complete, 360);
+    } else {
+        swipeAnimationTimer = setTimeout(complete, 310);
+    }
+}
+
+function moveRestaurant(direction) {
+    if (venues.length < 2 || carouselAnimating) return;
+    resetSwipeCardStyles();
+    finishRestaurantSwipe(direction, true);
+}
+
+function showRestaurant(index) {
+    if (carouselAnimating || venues.length < 2 || index === currentVenueIndex) return;
+    resetSwipeCardStyles();
+    const forward = (index - currentVenueIndex + venues.length) % venues.length;
+    const offset = forward <= venues.length / 2 ? forward : forward - venues.length;
+    const dotCount = Math.min(venues.length, 5);
+    restaurantDotPosition = (restaurantDotPosition + offset % dotCount + dotCount) % dotCount;
+    carouselDirection = offset >= 0 ? 'next' : 'prev';
+    currentVenueIndex = index;
+    renderRestaurants();
+}
+
+function renderRestaurantDots() {
+    const dots = document.getElementById('restaurantDots');
+    dots.replaceChildren();
+    if (venues.length < 2) return;
+
+    const dotCount = Math.min(venues.length, 5);
+    if (restaurantDotPosition === null) restaurantDotPosition = Math.floor((dotCount - 1) / 2);
+    restaurantDotPosition = (restaurantDotPosition % dotCount + dotCount) % dotCount;
+    const firstVenueIndex = (currentVenueIndex - restaurantDotPosition + venues.length) % venues.length;
+    const visibleIndexes = Array.from({ length: dotCount }, function (_, position) {
+        return (firstVenueIndex + position) % venues.length;
+    });
+    visibleIndexes.forEach(function (index) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'carousel-dot';
+        dot.setAttribute('aria-label', 'Показать заведение ' + (index + 1) + ' из ' + venues.length);
+        dot.setAttribute('aria-current', index === currentVenueIndex ? 'true' : 'false');
+        dot.addEventListener('click', function () { showRestaurant(index); });
+        dots.appendChild(dot);
+    });
+}
+
+function createPhotoPlaceholder() {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'venue-img-placeholder';
+    placeholder.setAttribute('aria-label', 'Фото заведения не добавлено');
+    placeholder.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="m21 15-5-5L5 21"></path></svg><span>Фото не добавлено</span>';
+    return placeholder;
+}
+
+function updateCarouselButtons() {
+    const disabled = venues.length < 2;
+    document.getElementById('restaurantsPrev').disabled = disabled;
+    document.getElementById('restaurantsNext').disabled = disabled;
+}
+
+document.getElementById('restaurantsPrev').addEventListener('click', function () {
+    moveRestaurant(-1);
+});
+document.getElementById('restaurantsNext').addEventListener('click', function () {
+    moveRestaurant(1);
+});
+
+let suppressSwipeClick = false;
+function beginRestaurantSwipe(pointerId, clientX, clientY, source) {
+    if (carouselAnimating || venues.length < 2) {
+        activeSwipe = null;
+        return;
+    }
+    activeSwipe = {
+        pointerId: pointerId,
+        source: source,
+        startX: clientX,
+        startY: clientY,
+        lastX: clientX,
+        startTime: performance.now(),
+        lastTime: performance.now(),
+        velocityX: 0,
+        dragging: false
+    };
+}
+
+function moveRestaurantSwipe(pointerId, clientX, clientY, source, event) {
+    if (!activeSwipe || activeSwipe.pointerId !== pointerId || activeSwipe.source !== source) return;
+    const deltaX = clientX - activeSwipe.startX;
+    const deltaY = clientY - activeSwipe.startY;
+    if (!activeSwipe.dragging) {
+        if (Math.abs(deltaY) > 10 && Math.abs(deltaY) > Math.abs(deltaX)) {
+            activeSwipe = null;
+            return;
+        }
+        if (Math.abs(deltaX) < 8 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+        activeSwipe.dragging = true;
+        suppressSwipeClick = true;
+    }
+    event.preventDefault();
+    const now = performance.now();
+    const elapsed = Math.max(1, now - activeSwipe.lastTime);
+    activeSwipe.velocityX = (clientX - activeSwipe.lastX) / elapsed;
+    activeSwipe.lastX = clientX;
+    activeSwipe.lastTime = now;
+    updateSwipeProgress(deltaX);
+}
+
+function endRestaurantSwipe(pointerId, clientX, source) {
+    if (!activeSwipe || activeSwipe.pointerId !== pointerId || activeSwipe.source !== source) return;
+    const swipe = activeSwipe;
+    activeSwipe = null;
+    if (!swipe.dragging) return;
+    const deltaX = clientX - swipe.startX;
+    const now = performance.now();
+    const elapsed = Math.max(1, now - swipe.lastTime);
+    if (clientX !== swipe.lastX) {
+        swipe.velocityX = (clientX - swipe.lastX) / elapsed;
+    } else {
+        swipe.velocityX = deltaX / Math.max(1, now - swipe.startTime);
+    }
+    const card = track.querySelector('.venue-card.is-current');
+    const threshold = Math.max(36, (card ? card.getBoundingClientRect().width : track.clientWidth) * 0.12);
+    const commit = Math.abs(deltaX) >= threshold || (Math.abs(deltaX) >= 24 && Math.sign(deltaX) === Math.sign(swipe.velocityX) && Math.abs(swipe.velocityX) >= 0.45);
+    finishRestaurantSwipe(deltaX < 0 ? 1 : -1, commit);
+    requestAnimationFrame(function () {
+        setTimeout(function () { suppressSwipeClick = false; }, 0);
+    });
+}
+
+function findTouch(touchList, identifier) {
+    for (let index = 0; index < touchList.length; index++) {
+        if (touchList[index].identifier === identifier) return touchList[index];
+    }
+    return null;
+}
+
+track.addEventListener('touchstart', function (event) {
+    if (event.touches.length !== 1) {
+        activeSwipe = null;
+        return;
+    }
+    const touch = event.touches[0];
+    beginRestaurantSwipe(touch.identifier, touch.clientX, touch.clientY, 'touch');
+}, { passive: true });
+track.addEventListener('touchmove', function (event) {
+    if (!activeSwipe || activeSwipe.source !== 'touch') return;
+    const touch = findTouch(event.touches, activeSwipe.pointerId);
+    if (touch) moveRestaurantSwipe(touch.identifier, touch.clientX, touch.clientY, 'touch', event);
+}, { passive: false });
+track.addEventListener('touchend', function (event) {
+    if (!activeSwipe || activeSwipe.source !== 'touch') return;
+    const touch = findTouch(event.changedTouches, activeSwipe.pointerId);
+    if (touch) endRestaurantSwipe(touch.identifier, touch.clientX, 'touch');
+}, { passive: true });
+track.addEventListener('touchcancel', function () {
+    if (!activeSwipe || activeSwipe.source !== 'touch') return;
+    const wasDragging = activeSwipe.dragging;
+    activeSwipe = null;
+    if (wasDragging) finishRestaurantSwipe(1, false);
+});
+
+track.addEventListener('pointerdown', function (event) {
+    if (event.pointerType === 'touch' || carouselAnimating || !event.isPrimary || event.button !== 0) return;
+    beginRestaurantSwipe(event.pointerId, event.clientX, event.clientY, 'pointer');
+});
+track.addEventListener('pointermove', function (event) {
+    if (event.pointerType === 'touch') return;
+    moveRestaurantSwipe(event.pointerId, event.clientX, event.clientY, 'pointer', event);
+});
+track.addEventListener('pointerup', function (event) {
+    if (event.pointerType === 'touch') return;
+    endRestaurantSwipe(event.pointerId, event.clientX, 'pointer');
+});
+track.addEventListener('pointercancel', function (event) {
+    if (!activeSwipe || activeSwipe.source !== 'pointer' || event.pointerId !== activeSwipe.pointerId) return;
+    const wasDragging = activeSwipe.dragging;
+    activeSwipe = null;
+    if (wasDragging) finishRestaurantSwipe(1, false);
+});
+track.addEventListener('click', function (event) {
+    if (!suppressSwipeClick) return;
+    event.preventDefault();
+    event.stopPropagation();
+}, true);
+track.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        moveRestaurant(-1);
+    } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        moveRestaurant(1);
+    }
+});
 
 document.addEventListener('DOMContentLoaded', function(){
     updateUI();
     updateCartBadge();
     if(typeof hideCurrentPageInCatalog === 'function') hideCurrentPageInCatalog();
-    renderOrbit();
+    setTimeout(installAuthModalHistory, 0);
+    initNearbyRestaurants();
 });
 </script>
 
@@ -252,8 +1337,30 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="assets/js/notifications.js?v=20261021133630"></script>
 <script src="assets/js/footer.js?v=20261021131201"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
-<script src="assets/js/phone-country.js?v=20261025131738"></script><script src="assets/js/bubble-btn.js?v=20261025131758"></script>
-<script src="assets/js/site-catalog.js?v=20261028152612"></script>
-<script src="assets/js/auth-home.js?v=20261028152612"></script>
-<script src="assets/js/auth-email-flow.js?v=20261028152612"></script></body>
+<script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
+<script src="assets/js/site-catalog.js?v=20261105152159"></script>
+<script src="assets/js/auth-home.js?v=20261105152159"></script>
+<script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
+<style>
+.back-to-top{position:fixed;bottom:70px;right:16px;z-index:102;width:40px;height:40px;padding:0;border:none;border-radius:12px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s,box-shadow 0.3s;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 14px var(--neon-glow);}
+.back-to-top.visible{opacity:1;pointer-events:auto;}
+.back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow);}
+.back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+    <!-- Кнопка «Наверх» -->
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх"><svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
+<script>
+(function(){const init = () => {
+    const backBtn = document.querySelector('.back-to-top');
+    const applyBack = () => { if (backBtn) backBtn.classList.toggle('visible', window.scrollY > 300); };
+    const onScroll = () => { applyBack(); };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('scrollend', onScroll);
+    if (backBtn) backBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+};
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+})();
+</script>
+</body>
 </html>

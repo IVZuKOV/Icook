@@ -14,7 +14,8 @@
         login: '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>',
         cart: '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>',
         calendar: '<path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>',
-        cheap: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01M10 13l2 2 4-4"/>'
+        cheap: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01M10 13l2 2 4-4"/>',
+        store: '<path d="M3 10h18l-1.2-6H4.2L3 10zM5 10v10h14V10M9 20v-6h6v6"/><path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>'
     };
     function svg(content) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + content + '</svg>'; }
     function link(label, href, icon, secondary) {
@@ -28,8 +29,12 @@
         '<div class="catalog-divider thick"></div>' +
         '<a class="catalog-link" href="#" data-catalog-auth>' + svg(icons.login) + 'Войти / Регистрация</a>' +
         link('Корзина', 'cart.html', 'cart') + '<div class="catalog-divider thick"></div>' +
-        '<h3 class="catalog-subheader">' + svg('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>') + 'Совместные проекты</h3>' +
-        link('Еду ем', '#', 'calendar', true) + link('Дёшево! Честно!', 'cheap-honest.html', 'cheap', true);
+        '<h3 class="catalog-subheader">' + svg('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 0 0 7.75"/>') + 'Совместные проекты</h3>' +
+        '<div id="catalogProjectLinks">' +
+        link('Еду ем', 'sitoedu.html', 'calendar', true) + link('Дёшево! Честно!', 'cheap-honest.html', 'cheap', true) +
+        '</div>' +
+        '<h3 id="catalogOutletTitle" class="catalog-subheader" style="display:none;">' + svg(icons.store) + 'Наши партнёры</h3>' +
+        '<div id="catalogOutletLinks"></div>';
     drawer.setAttribute('role', 'navigation');
     drawer.setAttribute('aria-labelledby', 'catalogTitle');
     var opener = null;
@@ -53,6 +58,82 @@
         try { user = JSON.parse(localStorage.getItem('user') || 'null'); } catch (e) {}
         drawer.querySelector('[data-catalog-auth]').style.display = user && user.name ? 'none' : '';
     };
+    function renderProjectLinks(projects) {
+        if (!Array.isArray(projects)) return;
+        var target = drawer.querySelector('#catalogProjectLinks');
+        if (!target) return;
+        var fragment = document.createDocumentFragment();
+        projects.forEach(function (project) {
+            if (!project || typeof project.name !== 'string' || typeof project.project_url !== 'string') return;
+            var anchor = document.createElement('a');
+            anchor.className = 'catalog-link secondary';
+            anchor.href = project.project_url;
+            anchor.dataset.projectSlug = project.slug || '';
+            if (project.label_image) {
+                var image = document.createElement('img');
+                image.src = project.label_image;
+                image.alt = '';
+                image.loading = 'lazy';
+                image.width = 24;
+                image.height = 24;
+                image.style.cssText = 'width:24px;height:24px;object-fit:contain;border-radius:5px;flex:none;';
+                anchor.appendChild(image);
+            } else {
+                var iconName = project.slug === 'cheap-honest' ? 'cheap' : 'calendar';
+                anchor.insertAdjacentHTML('beforeend', svg(icons[iconName]));
+            }
+            anchor.appendChild(document.createTextNode(project.name));
+            fragment.appendChild(anchor);
+        });
+        if (fragment.childNodes.length) target.replaceChildren(fragment);
+    }
+    fetch('/api/joint_projects.php?action=public', {credentials:'same-origin', cache:'no-store'})
+        .then(function (response) {
+            if (!response.ok) throw new Error('Не удалось загрузить совместные проекты (' + response.status + ')');
+            return response.json();
+        })
+        .then(function (data) {
+            if (!data.success || !Array.isArray(data.projects)) throw new Error('Некорректный список совместных проектов');
+            renderProjectLinks(data.projects);
+        })
+        .catch(function (error) { console.error(error); });
+    fetch('/api/joint_projects.php?action=public_outlets', {credentials:'same-origin', cache:'no-store'})
+        .then(function (response) {
+            if (!response.ok) throw new Error('Не удалось загрузить торговые точки (' + response.status + ')');
+            return response.json();
+        })
+        .then(function (data) {
+            if (!data.success || !Array.isArray(data.outlets)) throw new Error('Некорректный список торговых точек');
+            var target = drawer.querySelector('#catalogOutletLinks');
+            var heading = drawer.querySelector('#catalogOutletTitle');
+            var fragment = document.createDocumentFragment();
+            data.outlets.forEach(function (outlet) {
+                if (!outlet || typeof outlet.name !== 'string' || typeof outlet.website_url !== 'string') return;
+                var anchor = document.createElement('a');
+                anchor.className = 'catalog-link secondary';
+                anchor.href = outlet.website_url;
+                anchor.target = '_blank';
+                anchor.rel = 'noopener noreferrer';
+                if (outlet.label_image) {
+                    var image = document.createElement('img');
+                    image.src = outlet.label_image;
+                    image.alt = '';
+                    image.loading = 'lazy';
+                    image.width = 28;
+                    image.height = 28;
+                    image.style.cssText = 'width:28px;height:28px;object-fit:cover;border-radius:8px;flex:none;';
+                    anchor.appendChild(image);
+                } else {
+                    anchor.insertAdjacentHTML('beforeend', svg(icons.store));
+                }
+                anchor.appendChild(document.createTextNode(outlet.name));
+                fragment.appendChild(anchor);
+            });
+            var hasOutlets = fragment.childNodes.length > 0;
+            target.replaceChildren(fragment);
+            heading.style.display = hasOutlets ? '' : 'none';
+        })
+        .catch(function (error) { console.error(error); });
     drawer.addEventListener('click', function (event) {
         var anchor = event.target.closest('a.catalog-link');
         if (!anchor) return;

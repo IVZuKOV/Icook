@@ -255,12 +255,12 @@ button, .btn, a, label {
     .qty-btn:active{background:var(--neon);color:#fff;transform:scale(0.9);}
     .qty-val{font-weight:700;font-size:16px;width:28px;text-align:center;color:var(--text-main);}
 </style>
-<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261028152612">
-<link rel="stylesheet" href="assets/css/site-select.css?v=20261028155005">
-<script src="assets/js/site-select.js?v=20261028155005" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261028161049">
-<script src="assets/js/site-header.js?v=20261028160517" defer></script>
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
+<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261105152159">
+<script src="assets/js/site-header.js?v=20261105152159" defer></script>
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -350,7 +350,7 @@ button, .btn, a, label {
 <div class="share-modal-overlay" id="apkDownloadModal" onclick="closeApkDownloadModal(event)">
     <div class="share-modal-box" onclick="event.stopPropagation()">
         <div class="share-modal-title" id="apkDownloadTitle">Отправить APK файл</div>
-        <div class="share-modal-desc" id="apkDownloadDesc">Скачать приложение на телефон и отправить его через любое приложение?</div>
+        <div class="share-modal-desc" id="apkDownloadDesc">Перед установкой удалите предыдущую версию приложения. После установки войдите в аккаунт заново.</div>
         <div class="apk-progress-wrap" id="apkProgressWrap" style="display:none;">
             <div class="apk-progress-track"><div class="apk-progress-bar" id="apkProgressBar"></div></div>
             <div class="apk-progress-text" id="apkProgressText">0%</div>
@@ -475,8 +475,8 @@ function toggleTheme(){const html = document.documentElement;const next = html.g
 // --- МОДАЛЬНЫЕ ОКНА ПОДЕЛИТЬСЯ ---
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const siteUrl = 'https://icook.com.ru/';
-const apkUrl = 'https://icook.com.ru/assets/apk/ICOOK.apk';
-const apkFileUrl = 'https://icook.com.ru/assets/apk/ICOOK-native-20261027g.apk';
+const apkUrl = 'https://icook.com.ru/assets/apk/ICOOK-native-20261101i.apk';
+const apkFileUrl = 'https://icook.com.ru/assets/apk/ICOOK-native-20261101i.apk';
 
 function closeShareModal(e, id){
     if(!e || e.target === document.getElementById(id)){
@@ -547,7 +547,7 @@ function openApkDownloadModal(){
     apkNativePolls = 0;
 
     document.getElementById('apkDownloadTitle').textContent = 'Отправить APK файл';
-    document.getElementById('apkDownloadDesc').textContent = 'Скачать приложение на телефон и отправить его через любое приложение?';
+    document.getElementById('apkDownloadDesc').textContent = 'Перед установкой удалите предыдущую версию приложения. После установки войдите в аккаунт заново.';
     document.getElementById('apkProgressWrap').style.display = 'none';
     document.getElementById('apkProgressBar').style.width = '0%';
     document.getElementById('apkProgressText').textContent = '0%';
@@ -664,13 +664,13 @@ function openShareAppModal(){
     container.innerHTML = '';
 
     if(isMobile){
-        container.innerHTML += '<button class="share-option" onclick="shareApkFile()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Отправить APK файл</div><div class="share-hint">Скачать и отправить через приложение</div></div></button>';
+        container.innerHTML += '<button class="share-option" onclick="shareApkFile()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Отправить APK файл</div><div class="share-hint">Перед установкой удалите предыдущую версию</div></div></button>';
         container.innerHTML += '<button class="share-option" onclick="shareApkLink()"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><div><div class="share-label">Отправить ссылку на APK</div><div class="share-hint">Поделиться ссылкой для скачивания</div></div></button>';
         container.innerHTML += '<button class="share-option" onclick="copyApkLink()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><div><div class="share-label">Копировать ссылку на скачивание приложения</div><div class="share-hint">Ссылка на APK</div></div></button>';
     } else {
         container.innerHTML += '<input class="share-link-input" value="'+apkUrl+'" readonly onclick="this.select()">';
         container.innerHTML += '<button class="share-copy-btn" onclick="copyApkLink()">Скопировать ссылку на APK</button>';
-        container.innerHTML += '<button class="share-option" onclick="downloadApk()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Скачать APK</div><div class="share-hint">Сохранить файл на компьютер</div></div></button>';
+        container.innerHTML += '<button class="share-option" onclick="downloadApk()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="share-label">Скачать APK</div><div class="share-hint">Перед установкой удалите предыдущую версию</div></div></button>';
     }
 
     document.getElementById('shareAppModal').classList.add('active');
@@ -895,8 +895,29 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 <script src="assets/js/footer.js?v=20261021131201"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
-<script src="assets/js/phone-country.js?v=20261025131738"></script><script src="assets/js/bubble-btn.js?v=20261025131758"></script>
-<script src="assets/js/site-catalog.js?v=20261028152612"></script>
-<script src="assets/js/auth-home.js?v=20261028152612"></script>
-<script src="assets/js/auth-email-flow.js?v=20261028152612"></script></body>
+<script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
+<script src="assets/js/site-catalog.js?v=20261105152159"></script>
+<script src="assets/js/auth-home.js?v=20261105152159"></script>
+<script src="assets/js/auth-email-flow.js?v=20261105152159"></script><style>
+.back-to-top{position:fixed;bottom:70px;right:16px;z-index:102;width:40px;height:40px;padding:0;border:none;border-radius:12px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s,box-shadow 0.3s;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 14px var(--neon-glow);}
+.back-to-top.visible{opacity:1;pointer-events:auto;}
+.back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow);}
+.back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+    <!-- Кнопка «Наверх» -->
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх"><svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
+<script>
+(function(){const init = () => {
+    const backBtn = document.querySelector('.back-to-top');
+    const applyBack = () => { if (backBtn) backBtn.classList.toggle('visible', window.scrollY > 300); };
+    const onScroll = () => { applyBack(); };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('scrollend', onScroll);
+    if (backBtn) backBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+};
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+})();
+</script>
+</body>
 </html>
