@@ -1124,8 +1124,15 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
         if(!drag.horizontal&&Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy))drag.horizontal=true;
         if(!drag.horizontal)return;
         drag.dx=dx;
+        var position=(drag.base-dx)/drag.slot;
+        var cycle=cards.length;
+        var visibleCards=Math.ceil(carousel.clientWidth/drag.slot);
+        var minPosition=cloneCount-cards.length;
+        var maxPosition=track.children.length-visibleCards-cards.length;
+        while(position<minPosition){position+=cycle;drag.base+=cycle*drag.slot;}
+        while(position>maxPosition){position-=cycle;drag.base-=cycle*drag.slot;}
         track.style.transition='none';
-        track.style.transform='translate3d(-'+(drag.base-dx)+'px,0,0)';
+        track.style.transform='translate3d(-'+(position*drag.slot)+'px,0,0)';
     });
 
     function finishDrag(event,cancelled){
@@ -1135,9 +1142,10 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
         var threshold=Math.max(40,completed.slot*.16);
         if(completed.horizontal&&!cancelled&&Math.abs(completed.dx)>threshold){
             suppressClickUntil=Date.now()+500;
-            var slides=Math.max(1,Math.round(Math.abs(completed.dx)/completed.slot));
-            moveBy(completed.dx<0?slides:-slides);
+            logicalIndex=Math.round((completed.base-completed.dx)/completed.slot)-cloneCount;
+            setPosition(true);
         }else if(completed.horizontal){
+            if(cancelled)logicalIndex=Math.round((completed.base-completed.dx)/completed.slot)-cloneCount;
             setPosition(true);
         }
         start();
