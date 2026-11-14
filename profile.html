@@ -234,7 +234,15 @@ body{padding-bottom:88px;}
 .avatar-edit-link{margin-top:-10px;padding:4px 8px;border:0;background:transparent;color:var(--neon-dark);font:600 13px 'Montserrat',sans-serif;cursor:pointer;}
 .modal-overlay{position:fixed;inset:0;z-index:10010;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);}
 .modal-overlay.active{display:flex;}
-.modal-box.avatar-modal-box{max-width:460px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;}
+.modal-box.avatar-modal-box{width:min(460px,100%);max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;padding:28px;background:var(--card-bg);color:var(--text-main);border:1px solid var(--border-color);box-shadow:0 20px 60px rgba(0,0,0,.22);}
+.avatar-modal-box .modal-title{margin:0 0 8px;color:var(--neon-dark);font-size:22px;font-weight:800;text-align:center;}
+.avatar-modal-box .modal-text{margin:0 0 18px;color:var(--text-muted);font-size:14px;line-height:1.5;text-align:center;}
+.avatar-modal-buttons{display:flex;justify-content:center;gap:10px;}
+.avatar-modal-buttons .modal-cancel,.avatar-modal-buttons .modal-confirm{min-height:42px;padding:10px 20px;border:1px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main);font:700 14px 'Montserrat',sans-serif;cursor:pointer;transition:background .2s,border-color .2s,color .2s,box-shadow .2s;}
+.avatar-modal-buttons .modal-cancel:hover{border-color:var(--neon);background:var(--bg);}
+.avatar-modal-buttons .modal-confirm{border-color:var(--neon);background:var(--neon);color:var(--bg);}
+.avatar-modal-buttons .modal-confirm:hover{border-color:var(--neon-dark);background:var(--neon-dark);color:var(--bg);box-shadow:0 0 18px var(--neon-glow);}
+.avatar-modal-buttons .modal-cancel:disabled,.avatar-modal-buttons .modal-confirm:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
 .avatar-dropzone{display:flex;width:100%;min-height:145px;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;border:2px dashed var(--border-color);border-radius:16px;background:var(--bg);color:var(--text-main);font:600 14px 'Montserrat',sans-serif;cursor:pointer;transition:border-color .2s,background .2s;box-sizing:border-box;}
 .avatar-dropzone:hover,.avatar-dropzone.dragover{border-color:var(--neon);background:var(--neon-glow);}
 .avatar-dropzone svg{width:34px;height:34px;color:var(--neon-dark);}
@@ -253,11 +261,6 @@ body{padding-bottom:88px;}
 .avatar-modal-status{min-height:20px;margin:8px 0 14px;color:var(--text-muted);font-size:13px;line-height:1.5;}
 .avatar-modal-status.error{color:#ef4444;}
 .avatar-modal-status.success{color:#059669;}
-.avatar-modal-buttons .modal-confirm{background:#1e40af;color:#fff;}
-.avatar-modal-buttons .modal-confirm:hover{background:#1d4ed8;box-shadow:0 0 18px var(--neon-glow);}
-.avatar-modal-buttons .modal-confirm:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
-[data-theme="dark"] .avatar-modal-buttons .modal-confirm{background:#fff;color:#334155;}
-[data-theme="dark"] .avatar-modal-buttons .modal-confirm:hover{background:#e2e8f0;box-shadow:0 0 18px rgba(255,255,255,.18);}
 [data-theme="dark"] .avatar{background:linear-gradient(135deg,#64748b,#475569);color:#fff;}
 </style>
 
@@ -595,6 +598,7 @@ button, .btn, a, label {
 <button class="tab" onclick="loadAdminSection('orders',this)">Заказы</button>
 <button class="tab" onclick="loadAdminSection('categories',this)">Категории</button>
 <button class="tab" onclick="loadAdminSection('reviews',this)">💬 Отзывы</button>
+<button class="tab" onclick="showJointProjectsAdmin(this)">🤝 Совместные проекты</button>
 </div>
 
 <div id="adminContent" style="overflow-x:auto;"></div>
@@ -1169,7 +1173,7 @@ async function loadMyRecipes() {
                     '<div class="dish-title">' + r.title + '</div>' +
                     '<div class="dish-price" style="font-size:13px;font-weight:600;">Рецепт</div>' +
                     '<div class="dish-actions">' +
-                        (isAvail ? '<button class="btn-toggle" onclick="toggleRecipe(' + r.id + ')">В стоп-лист</button>' : '<button class="btn-publish" onclick="toggleRecipe(' + r.id + ')">Опубликовать</button>') +
+                        (isAvail ? '<button class="btn-toggle" onclick="toggleRecipe(' + r.id + ')">Скрыть</button>' : '<button class="btn-publish" onclick="toggleRecipe(' + r.id + ')">Опубликовать</button>') +
                         '<button class="btn-delete" onclick="deleteRecipe(' + r.id + ')">Удалить</button>' +
                     '</div>' +
                     '<svg class="edit-pencil-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="openEditRecipe(' + r.id + ')"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
@@ -2194,7 +2198,6 @@ async function saveLKEdit(e){
 <script src="assets/js/auth-home.js?v=20261105152159"></script>
 <script src="assets/js/auth-email-flow.js?v=20261105152159"></script><div class="modal-overlay" id="avatarUploadModal" onclick="closeAvatarUpload(event)">
 <div class="modal-box avatar-modal-box" onclick="event.stopPropagation()">
-<div class="modal-icon success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M20 16.5v2A1.5 1.5 0 0 1 18.5 20h-13A1.5 1.5 0 0 1 4 18.5v-2"/></svg></div>
 <div class="modal-title"><span class="morph-text" data-ru="Фото профиля" data-en="Profile photo">Фото профиля</span></div>
 <div class="modal-text"><span class="morph-text" data-ru="Выберите фото для профиля." data-en="Choose a profile photo.">Выберите фото для профиля.</span></div>
 <input type="file" id="avatarFileInput" accept="image/jpeg,image/png,image/webp" hidden onchange="handleAvatarSelection(this.files&&this.files[0])">
@@ -2212,9 +2215,8 @@ async function saveLKEdit(e){
 
 <div class="modal-overlay" id="avatarCropModal" onclick="closeAvatarUpload(event)">
 <div class="modal-box avatar-modal-box" onclick="event.stopPropagation()">
-<div class="modal-icon success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M20 16.5v2A1.5 1.5 0 0 1 18.5 20h-13A1.5 1.5 0 0 1 4 18.5v-2"/></svg></div>
 <div class="modal-title"><span class="morph-text" data-ru="Настройка фото" data-en="Adjust photo">Настройка фото</span></div>
-<div class="modal-text"><span class="morph-text" data-ru="Отцентрируйте фото и выберите масштаб." data-en="Center your photo and adjust its zoom.">Отцентрируйте фото и выберите масштаб.</span></div>
+<div class="modal-text"><span class="morph-text" data-ru="Перемещайте фото одним пальцем, масштабируйте двумя." data-en="Drag with one finger and pinch with two to zoom.">Перемещайте фото одним пальцем, масштабируйте двумя.</span></div>
 <div class="avatar-preview-wrap" id="avatarPreviewWrap">
 <div class="avatar-crop-frame" id="avatarCropFrame" role="application" aria-label="Перемещайте фотографию внутри круга, чтобы выбрать кадр" onpointerdown="startAvatarCropDrag(event)" onpointermove="moveAvatarCropDrag(event)" onpointerup="endAvatarCropDrag(event)" onpointercancel="endAvatarCropDrag(event)">
 <img class="avatar-crop-image" id="avatarCropImage" alt="">
@@ -2241,12 +2243,16 @@ var avatarBaseScale=1;
 var avatarCropOffsetX=0;
 var avatarCropOffsetY=0;
 var avatarCropDrag=null;
+var avatarCropPointers=Object.create(null);
+var avatarCropPinch=null;
 var avatarUploading=false;
 var avatarSelectionVersion=0;
 function clearAvatarPreview(){
   if(avatarSourceUrl){URL.revokeObjectURL(avatarSourceUrl);avatarSourceUrl='';}
   avatarSourceImage=null;
   avatarCropDrag=null;
+  avatarCropPointers=Object.create(null);
+  avatarCropPinch=null;
   var wrap=document.getElementById('avatarPreviewWrap');
   var image=document.getElementById('avatarCropImage');
   var frame=document.getElementById('avatarCropFrame');
@@ -2299,25 +2305,66 @@ function updateAvatarCropPreview(){
   if(!avatarSourceImage)return;
   var zoom=Number(document.getElementById('avatarZoom').value)||1;
   var image=document.getElementById('avatarCropImage');
-  image.style.width=(avatarSourceImage.naturalWidth*avatarBaseScale*zoom)+'px';
-  image.style.height=(avatarSourceImage.naturalHeight*avatarBaseScale*zoom)+'px';
-  var maxX=(image.offsetWidth-240)/2;
-  var maxY=(image.offsetHeight-240)/2;
+  var renderedWidth=avatarSourceImage.naturalWidth*avatarBaseScale*zoom;
+  var renderedHeight=avatarSourceImage.naturalHeight*avatarBaseScale*zoom;
+  image.style.width=renderedWidth+'px';
+  image.style.height=renderedHeight+'px';
+  // Do not rely on offsetWidth/offsetHeight: the crop modal can still be hidden here.
+  var maxX=Math.max(0,(renderedWidth-240)/2);
+  var maxY=Math.max(0,(renderedHeight-240)/2);
   avatarCropOffsetX=Math.max(-maxX,Math.min(maxX,avatarCropOffsetX));
   avatarCropOffsetY=Math.max(-maxY,Math.min(maxY,avatarCropOffsetY));
   image.style.transform='translate(calc(-50% + '+avatarCropOffsetX+'px),calc(-50% + '+avatarCropOffsetY+'px))';
+}
+
+function getAvatarCropPointerIds(){
+  return Object.keys(avatarCropPointers);
+}
+
+function getAvatarCropPointerDistance(first,second){
+  var dx=first.x-second.x,dy=first.y-second.y;
+  return Math.sqrt(dx*dx+dy*dy);
 }
 
 function startAvatarCropDrag(event){
   if(!avatarSourceImage||avatarUploading)return;
   event.preventDefault();
   var frame=document.getElementById('avatarCropFrame');
-  frame.setPointerCapture(event.pointerId);
+  try{frame.setPointerCapture(event.pointerId);}catch(error){}
+  avatarCropPointers[event.pointerId]={x:event.clientX,y:event.clientY};
+  var ids=getAvatarCropPointerIds();
+  if(ids.length>=2){
+    var first=avatarCropPointers[ids[0]],second=avatarCropPointers[ids[1]];
+    avatarCropPinch={
+      firstId:ids[0],secondId:ids[1],
+      distance:Math.max(1,getAvatarCropPointerDistance(first,second)),
+      zoom:Number(document.getElementById('avatarZoom').value)||1,
+      offsetX:avatarCropOffsetX,offsetY:avatarCropOffsetY,
+      midpointX:(first.x+second.x)/2,midpointY:(first.y+second.y)/2
+    };
+    avatarCropDrag=null;
+  }else{
+    avatarCropDrag={pointerId:event.pointerId,x:event.clientX,y:event.clientY,offsetX:avatarCropOffsetX,offsetY:avatarCropOffsetY};
+  }
   frame.classList.add('dragging');
-  avatarCropDrag={pointerId:event.pointerId,x:event.clientX,y:event.clientY,offsetX:avatarCropOffsetX,offsetY:avatarCropOffsetY};
 }
 
 function moveAvatarCropDrag(event){
+  if(!Object.prototype.hasOwnProperty.call(avatarCropPointers,event.pointerId))return;
+  avatarCropPointers[event.pointerId]={x:event.clientX,y:event.clientY};
+  if(avatarCropPinch){
+    var first=avatarCropPointers[avatarCropPinch.firstId],second=avatarCropPointers[avatarCropPinch.secondId];
+    if(!first||!second)return;
+    var zoomInput=document.getElementById('avatarZoom');
+    var minZoom=Number(zoomInput.min)||1,maxZoom=Number(zoomInput.max)||3;
+    var distance=getAvatarCropPointerDistance(first,second);
+    var midpointX=(first.x+second.x)/2,midpointY=(first.y+second.y)/2;
+    zoomInput.value=String(Math.max(minZoom,Math.min(maxZoom,avatarCropPinch.zoom*distance/avatarCropPinch.distance)));
+    avatarCropOffsetX=avatarCropPinch.offsetX+midpointX-avatarCropPinch.midpointX;
+    avatarCropOffsetY=avatarCropPinch.offsetY+midpointY-avatarCropPinch.midpointY;
+    updateAvatarCropPreview();
+    return;
+  }
   if(!avatarCropDrag||event.pointerId!==avatarCropDrag.pointerId)return;
   avatarCropOffsetX=avatarCropDrag.offsetX+event.clientX-avatarCropDrag.x;
   avatarCropOffsetY=avatarCropDrag.offsetY+event.clientY-avatarCropDrag.y;
@@ -2325,9 +2372,17 @@ function moveAvatarCropDrag(event){
 }
 
 function endAvatarCropDrag(event){
-  if(!avatarCropDrag||event.pointerId!==avatarCropDrag.pointerId)return;
-  avatarCropDrag=null;
-  document.getElementById('avatarCropFrame').classList.remove('dragging');
+  if(!Object.prototype.hasOwnProperty.call(avatarCropPointers,event.pointerId))return;
+  delete avatarCropPointers[event.pointerId];
+  var ids=getAvatarCropPointerIds();
+  avatarCropPinch=null;
+  if(ids.length===1){
+    var remaining=avatarCropPointers[ids[0]];
+    avatarCropDrag={pointerId:ids[0],x:remaining.x,y:remaining.y,offsetX:avatarCropOffsetX,offsetY:avatarCropOffsetY};
+  }else{
+    avatarCropDrag=null;
+  }
+  if(!ids.length)document.getElementById('avatarCropFrame').classList.remove('dragging');
 }
 
 function canvasToJpeg(canvas,quality){
@@ -2430,8 +2485,6 @@ async function uploadAvatar(){
     avatarUploading=false;
     document.getElementById('avatarCancelButton').disabled=false;
     closeAvatarUpload();
-    if(typeof showInfo==='function')showInfo('success','Фото обновлено','Аватар сохранён. Размер файла: '+data.size_kb+' КБ.');
-    else alert('Аватар сохранён. Размер: '+data.size_kb+' КБ.');
   }catch(error){
     setAvatarStatus(error.message||'Не удалось загрузить фото. Попробуйте ещё раз.','error');
   }finally{
@@ -2462,5 +2515,85 @@ function renderProfileAvatar(){
   avatar.appendChild(image);
 }
 </script>
+<script>
+var adminJointProjects = [];
+
+async function showJointProjectsAdmin(button){
+    if(button){
+        button.closest('.tabs').querySelectorAll('.tab').forEach(function(tab){tab.classList.remove('active');});
+        button.classList.add('active');
+    }
+    currentAdminSection='joint_projects';
+    await renderAdminJointProjects();
+}
+
+async function renderAdminJointProjects(){
+    var container=document.getElementById('adminContent');
+    if(!container)return;
+    container.innerHTML='<p style="text-align:center;padding:24px;color:var(--text-muted);">Загрузка совместных проектов…</p>';
+    try{
+        var response=await fetch('/api/joint_projects.php?action=admin',{credentials:'same-origin',cache:'no-store'});
+        var data=await response.json();
+        if(!response.ok||!data.success)throw new Error(data.error||'Не удалось загрузить проекты');
+        adminJointProjects=Array.isArray(data.projects)?data.projects:[];
+        var cards=adminJointProjects.length?adminJointProjects.map(function(project){
+            var id=Number(project.id)||0;
+            var image=project.label_image?'<img src="'+adminEsc(project.label_image)+'" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:12px;border:1px solid var(--border-color);">':'<div style="width:64px;height:64px;display:grid;place-items:center;border-radius:12px;background:var(--neon-glow);font-size:26px;">🤝</div>';
+            var link=String(project.project_url||'');
+            var safeLink=/^https?:\/\//i.test(link)||(link.charAt(0)==='/'&&link.charAt(1)!=='/');
+            return '<article style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;flex-wrap:wrap;">'+image+'<div style="flex:1;min-width:180px;"><strong style="display:block;color:var(--text-main);">'+adminEsc(project.name)+'</strong><a '+(safeLink?'href="'+adminEsc(link)+'" target="_blank" rel="noopener noreferrer"':'')+' style="font-size:12px;color:var(--neon-dark);overflow-wrap:anywhere;">'+adminEsc(link)+'</a><div style="font-size:12px;color:var(--text-muted);margin-top:4px;">'+(Number(project.is_active)===1?'Опубликован':'Скрыт')+'</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;"><button type="button" class="btn" style="min-width:0;padding:7px 10px;" onclick="editAdminJointProject('+id+')">Изменить</button><button type="button" class="btn" style="min-width:0;padding:7px 10px;" onclick="toggleAdminJointProject('+id+')">'+(Number(project.is_active)===1?'Скрыть':'Опубликовать')+'</button><button type="button" class="btn" style="min-width:0;padding:7px 10px;color:#ef4444;border-color:#ef4444;" onclick="deleteAdminJointProject('+id+')">Удалить</button></div></article>';
+        }).join(''):'<p style="text-align:center;padding:20px;color:var(--text-muted);">Совместных проектов пока нет.</p>';
+        container.innerHTML='<form id="jointProjectForm" onsubmit="saveAdminJointProject(event)" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;align-items:end;padding:16px;margin-bottom:16px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;"><input type="hidden" name="action" value="save"><input type="hidden" name="id" value=""><label style="display:grid;gap:5px;font-size:12px;color:var(--text-muted);">Название<input name="name" required minlength="2" maxlength="120" placeholder="Название проекта" style="width:100%;padding:9px;border:1px solid var(--border-color);border-radius:8px;background:var(--bg);color:var(--text-main);"></label><label style="display:grid;gap:5px;font-size:12px;color:var(--text-muted);">Ссылка<input name="url" required maxlength="2048" placeholder="https://… или /страница.html" style="width:100%;padding:9px;border:1px solid var(--border-color);border-radius:8px;background:var(--bg);color:var(--text-main);"></label><label style="display:grid;gap:5px;font-size:12px;color:var(--text-muted);">Лейбл 256×256<input name="image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" style="width:100%;font-size:12px;"></label><div style="display:flex;gap:8px;align-items:center;"><button id="jointProjectSaveButton" class="btn" type="submit" style="min-width:0;">Добавить</button><button class="btn" type="button" onclick="resetAdminJointProjectForm()" style="min-width:0;">Сбросить</button></div></form><div style="display:grid;gap:10px;">'+cards+'</div>';
+    }catch(error){container.innerHTML='<p style="padding:20px;color:#ef4444;">'+adminEsc(error.message||'Ошибка загрузки проектов')+'</p>';}
+}
+
+function editAdminJointProject(id){
+    var project=adminJointProjects.find(function(item){return Number(item.id)===Number(id);});
+    var form=document.getElementById('jointProjectForm');
+    if(!project||!form)return;
+    form.querySelector('[name="id"]').value=project.id;
+    form.elements.name.value=project.name||'';
+    form.elements.url.value=project.project_url||'';
+    document.getElementById('jointProjectSaveButton').textContent='Сохранить';
+    form.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function resetAdminJointProjectForm(){
+    var form=document.getElementById('jointProjectForm');
+    if(!form)return;
+    form.reset();
+    form.querySelector('[name="id"]').value='';
+    document.getElementById('jointProjectSaveButton').textContent='Добавить';
+}
+
+async function saveAdminJointProject(event){
+    event.preventDefault();
+    var form=document.getElementById('jointProjectForm');
+    var button=document.getElementById('jointProjectSaveButton');
+    button.disabled=true;
+    try{
+        var response=await fetch('/api/joint_projects.php',{method:'POST',credentials:'same-origin',body:new FormData(form)});
+        var data=await response.json();
+        if(!response.ok||!data.success)throw new Error(data.error||'Не удалось сохранить проект');
+        showToastMsg('Совместный проект сохранён');
+        await renderAdminJointProjects();
+    }catch(error){showToastMsg(error.message||'Ошибка сохранения');}
+    finally{var current=document.getElementById('jointProjectSaveButton');if(current)current.disabled=false;}
+}
+
+async function updateAdminJointProject(action,id){
+    try{
+        var response=await fetch('/api/joint_projects.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:action,id:Number(id)})});
+        var data=await response.json();
+        if(!response.ok||!data.success)throw new Error(data.error||'Не удалось обновить проект');
+        showToastMsg(action==='delete'?'Совместный проект удалён':'Статус проекта обновлён');
+        await renderAdminJointProjects();
+    }catch(error){showToastMsg(error.message||'Ошибка обновления');}
+}
+
+function toggleAdminJointProject(id){updateAdminJointProject('toggle',id);}
+function deleteAdminJointProject(id){if(confirm('Удалить совместный проект?'))updateAdminJointProject('delete',id);}
+</script>
+
 </body>
 </html>
