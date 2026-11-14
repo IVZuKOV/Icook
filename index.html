@@ -1114,12 +1114,20 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
         var slot=slotSize();
         if(!slot)return;
         stop();
-        drag={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,dx:0,slot:slot,base:(cloneCount+logicalIndex)*slot,horizontal:false};
+        drag={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,lastX:event.clientX,lastTime:event.timeStamp,velocityX:0,originIndex:cloneCount+logicalIndex,dx:0,slot:slot,base:(cloneCount+logicalIndex)*slot,horizontal:false};
         try{carousel.setPointerCapture(event.pointerId);}catch(error){}
     });
 
     carousel.addEventListener('pointermove',function(event){
         if(!drag||event.pointerId!==drag.pointerId)return;
+        var sampleTime=event.timeStamp||Date.now();
+        var elapsed=sampleTime-drag.lastTime;
+        if(elapsed>0){
+            var sampleVelocity=(event.clientX-drag.lastX)/elapsed;
+            drag.velocityX=drag.velocityX?drag.velocityX*.4+sampleVelocity*.6:sampleVelocity;
+            drag.lastX=event.clientX;
+            drag.lastTime=sampleTime;
+        }
         var dx=event.clientX-drag.startX,dy=event.clientY-drag.startY;
         if(!drag.horizontal&&Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy))drag.horizontal=true;
         if(!drag.horizontal)return;
@@ -1129,8 +1137,8 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
         var visibleCards=Math.ceil(carousel.clientWidth/drag.slot);
         var minPosition=cloneCount-cards.length;
         var maxPosition=track.children.length-visibleCards-cards.length;
-        while(position<minPosition){position+=cycle;drag.base+=cycle*drag.slot;}
-        while(position>maxPosition){position-=cycle;drag.base-=cycle*drag.slot;}
+        while(position<minPosition){position+=cycle;drag.base+=cycle*drag.slot;drag.originIndex+=cycle;}
+        while(position>maxPosition){position-=cycle;drag.base-=cycle*drag.slot;drag.originIndex-=cycle;}
         track.style.transition='none';
         track.style.transform='translate3d(-'+(position*drag.slot)+'px,0,0)';
     });
@@ -1140,9 +1148,14 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
         var completed=drag;
         drag=null;
         var threshold=Math.max(40,completed.slot*.16);
-        if(completed.horizontal&&!cancelled&&Math.abs(completed.dx)>threshold){
+        var releaseTime=event.timeStamp||completed.lastTime;
+        var recentVelocity=releaseTime-completed.lastTime<=120?completed.velocityX:0;
+        var fastFlick=Math.abs(recentVelocity)>=.5;
+        if(completed.horizontal&&!cancelled&&(Math.abs(completed.dx)>threshold||fastFlick)){
             suppressClickUntil=Date.now()+500;
-            logicalIndex=Math.round((completed.base-completed.dx)/completed.slot)-cloneCount;
+            var targetIndex=Math.round((completed.base-completed.dx)/completed.slot);
+            if(fastFlick&&targetIndex===completed.originIndex)targetIndex+=recentVelocity<0?1:-1;
+            logicalIndex=targetIndex-cloneCount;
             setPosition(true);
         }else if(completed.horizontal){
             if(cancelled)logicalIndex=Math.round((completed.base-completed.dx)/completed.slot)-cloneCount;
