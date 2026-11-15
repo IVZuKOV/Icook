@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Админ-панель — Я готовлю</title>
+<link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
+<style>
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0}
+body{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);color:var(--text-main);font-family:'Nunito',sans-serif}
+.admin-topbar{position:relative;z-index:5;display:flex;align-items:center;gap:12px;width:100%;height:64px;flex:none;padding:0 18px;border-bottom:1px solid var(--border-color);background:var(--card-bg);box-shadow:0 2px 12px rgba(15,23,42,.06)}
+.admin-topbar-button{display:grid;place-items:center;width:42px;height:42px;flex:none;border:1px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main);cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+.admin-topbar-button:hover{transform:translateY(-1px);border-color:var(--neon);background:var(--neon-glow)}
+.admin-topbar-button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.admin-topbar-title{min-width:0;margin:0;font-size:16px;font-weight:800;letter-spacing:-.2px}
+.admin-topbar-context{margin-left:auto;color:var(--text-muted);font-size:12px;font-weight:700}
+.admin-page-frame{display:block;width:100%;min-height:0;flex:1;border:0;background:var(--bg)}
+@media(max-width:600px){.admin-topbar{height:58px;gap:9px;padding:0 12px}.admin-topbar-button{width:38px;height:38px;border-radius:11px}.admin-topbar-title{font-size:14px}.admin-topbar-context{display:none}}
+</style>
+<script>
+(function(){var theme=localStorage.getItem('site-theme');document.documentElement.setAttribute('data-theme',theme==='dark'?'dark':'light');})();
+</script>
+</head>
+<body>
+<header class="admin-topbar">
+    <button class="admin-topbar-button" id="adminMenuButton" type="button" aria-label="Свернуть боковую панель" aria-expanded="true" title="Свернуть/показать меню">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <button class="admin-topbar-button" id="adminBackButton" type="button" aria-label="Вернуться в профиль" title="Вернуться в профиль">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <h1 class="admin-topbar-title">Панель администратора</h1>
+    <span class="admin-topbar-context" id="adminTopbarContext">Обзор и статистика</span>
+</header>
+<iframe class="admin-page-frame" id="adminPageFrame" src="profile.html?admin=1" title="Панель администратора"></iframe>
+<script>
+(function(){
+    var frame=document.getElementById('adminPageFrame');
+    var menuButton=document.getElementById('adminMenuButton');
+    var context=document.getElementById('adminTopbarContext');
+
+    function getFrameDocument(){
+        try{return frame.contentDocument||frame.contentWindow.document;}catch(error){return null;}
+    }
+    function updateMenuState(){
+        var doc=getFrameDocument();
+        if(!doc)return;
+        var open=doc.body.classList.contains('admin-sidebar-open');
+        var collapsed=doc.body.classList.contains('admin-sidebar-collapsed');
+        var mobile=window.matchMedia('(max-width:760px)').matches;
+        var expanded=mobile?open:!collapsed;
+        menuButton.setAttribute('aria-expanded',String(expanded));
+        menuButton.setAttribute('aria-label',expanded?'Свернуть боковую панель':'Показать боковую панель');
+    }
+    menuButton.addEventListener('click',function(){
+        var doc=getFrameDocument();
+        if(!doc)return;
+        if(window.matchMedia('(max-width:760px)').matches){
+            doc.body.classList.toggle('admin-sidebar-open');
+        }else{
+            doc.body.classList.toggle('admin-sidebar-collapsed');
+        }
+        updateMenuState();
+    });
+    document.getElementById('adminBackButton').addEventListener('click',function(){
+        window.location.href='profile.html';
+    });
+    frame.addEventListener('load',function(){
+        var doc=getFrameDocument();
+        if(!doc)return;
+        if(/\/index\.html$/.test(frame.contentWindow.location.pathname)){
+            window.location.href='index.html?auth=login';
+            return;
+        }
+        var title=doc.getElementById('adminSectionTitle');
+        if(title){
+            context.textContent=title.textContent;
+            new MutationObserver(function(){context.textContent=title.textContent;}).observe(title,{childList:true,characterData:true,subtree:true});
+        }
+        updateMenuState();
+    });
+    window.addEventListener('message',function(event){
+        if(event.origin!==location.origin||!event.data)return;
+        if(event.data.type==='admin-sidebar-changed'){updateMenuState();return;}
+        if(event.data.type!=='admin-access-denied')return;
+        window.location.href='profile.html';
+    });
+})();
+</script>
+</body>
+</html>
