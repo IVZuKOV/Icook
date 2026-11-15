@@ -501,6 +501,17 @@ body.admin-standalone .admin-sidebar-backdrop{display:none;}
 .avatar-modal-status.error{color:#ef4444;}
 .avatar-modal-status.success{color:#059669;}
 [data-theme="dark"] .avatar{background:linear-gradient(135deg,#64748b,#475569);color:#fff;}
+@media(max-width:760px){
+    body.admin-standalone #adminContent .admin-table-wrap:has(.admin-dishes-table){overflow:visible;border:0;background:transparent;box-shadow:none;}
+    body.admin-standalone #adminContent .admin-dishes-table,
+    body.admin-standalone #adminContent .admin-dishes-table tbody{display:block;width:100%;min-width:0!important;}
+    body.admin-standalone #adminContent .admin-dishes-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+    body.admin-standalone #adminContent .admin-dishes-table tr{display:block;width:100%;margin:0 0 12px;padding:7px 12px;border:1px solid var(--border-color);border-radius:13px;background:var(--card-bg);}
+    body.admin-standalone #adminContent .admin-dishes-table td{display:grid;grid-template-columns:minmax(72px,28%) minmax(0,1fr);gap:8px;width:100%;min-width:0;padding:8px 0;border-bottom:1px solid var(--border-color);font-size:12px;white-space:normal;overflow-wrap:anywhere;}
+    body.admin-standalone #adminContent .admin-dishes-table td:before{color:var(--text-muted);font-size:10px;font-weight:800;letter-spacing:.2px;text-transform:uppercase;content:attr(data-label);}
+    body.admin-standalone #adminContent .admin-dishes-table td[data-label="Действия"]{grid-template-columns:1fr;border-bottom:0;}
+    body.admin-standalone #adminContent .admin-dishes-table td[data-label="Действия"] button{max-width:100%;min-height:34px;margin:2px!important;padding:6px 8px!important;font-size:11px!important;white-space:normal;}
+}
 </style>
 
 <script>
@@ -2106,7 +2117,7 @@ async function loadAdminSection(section, btn){
         }
         if(!rows.length){ container.innerHTML = '<p style="text-align:center;padding:30px;">Нет данных</p>'; return; }
         
-        var html = '<div class="admin-table-wrap"><table class="admin-table"><thead><tr>';
+        var html = '<div class="admin-table-wrap"><table class="admin-table' + (section === 'dishes' ? ' admin-dishes-table' : '') + '"><thead><tr>';
         var keys = Object.keys(rows[0]);
         keys.forEach(function(k){ html += '<th scope="col">' + adminEsc(k) + '</th>'; });
         html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
