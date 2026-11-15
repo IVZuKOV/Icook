@@ -75,7 +75,7 @@
             pressTimer = window.setTimeout(function () {
                 longPress = true;
                 showRecipesShortcut();
-            }, 500);
+            }, 300);
         });
         menuShortcut.addEventListener('pointerup', function (event) {
             event.preventDefault();
