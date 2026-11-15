@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
-<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261115-fix2">
+<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261115132651">
 
 <style>
 .profile-.site-header{display:flex;gap:28px;align-items:center;flex-wrap:wrap;padding:24px 0;border-bottom:1px solid var(--border-color);}
@@ -107,18 +107,30 @@
 .file-preview{max-width:180px;max-height:130px;border-radius:10px;margin-top:8px;display:none;}
 
 /* --- Форма рецепта: ингредиенты и шаги --- */
-.ing-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
-.ing-row .ing-name{flex:1;min-width:0;}
+.ing-row{display:block;margin-bottom:12px;padding:10px;border:1px solid var(--border-color);border-radius:12px;background:var(--card-bg);}
+.ing-name-line{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ing-name-field{position:relative;flex:1;min-width:0;}
+.ing-row .ing-name{width:100%;min-width:0;}
+.ing-suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:20;display:none;max-height:220px;overflow-y:auto;border:1px solid var(--border-color);border-radius:10px;background:var(--card-bg);box-shadow:0 8px 24px rgba(15,23,42,.18);}
+.ing-suggestions.active{display:block;}
+.ing-suggestion{display:block;width:100%;padding:10px 12px;border:0;border-bottom:1px solid var(--border-color);background:transparent;color:var(--text-main);text-align:left;font:inherit;cursor:pointer;}
+.ing-suggestion:last-child{border-bottom:0;}
+.ing-suggestion:hover,.ing-suggestion:focus{background:var(--neon-glow);color:var(--neon-dark);outline:0;}
+.ing-controls{display:flex;align-items:center;gap:8px;}
+.ing-remove-btn,.step-remove-btn,.recipe-main-image-remove{display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex:0 0 28px;border:2px solid var(--card-bg);border-radius:50%;background:#ef4444;color:#fff;font-size:16px;font-weight:900;line-height:1;cursor:pointer;text-shadow:0 0 6px #fff;box-shadow:0 0 10px rgba(239,68,68,.55),0 0 12px rgba(255,255,255,.35);padding:0;}
+.ing-remove-btn:active,.step-remove-btn:active,.recipe-main-image-remove:active{transform:scale(.92);}
 .ing-qty{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border-color);border-radius:12px;padding:4px;flex:0 0 auto;}
 .ing-qty .qty-btn{width:32px;height:32px;border:none;border-radius:8px;background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:0.05s;}
 .ing-qty .qty-btn:active{background:var(--neon);color:#fff;transform:scale(0.9);}
 .ing-qty input{width:52px!important;padding:0!important;border:none!important;background:transparent!important;text-align:center;font-weight:700;font-size:15px;box-shadow:none!important;}
-.form-group select.ing-unit{width:80px;flex:0 0 80px;padding:10px 6px!important;}
+.form-group select.ing-unit{width:auto;min-width:150px;flex:1;padding:10px 8px!important;}
+@media(max-width:480px){.ing-controls{gap:6px;}.ing-qty .qty-btn{width:30px;height:30px;}.ing-qty input{width:42px!important;}.form-group select.ing-unit{min-width:0;max-width:calc(100% - 125px);font-size:12px!important;padding:10px 4px!important;}}
 .sub-add-btn{width:100%;padding:11px;border:2px dashed var(--border-color);border-radius:12px;background:transparent;color:var(--neon-dark);font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;transition:0.25s;font-size:13px;}
 .sub-add-btn:hover{border-color:var(--neon);background:var(--neon-glow);}
 .step-block{position:relative;border:1px solid var(--border-color);border-radius:14px;padding:14px 12px 12px;margin-bottom:10px;background:var(--bg);}
-.step-block .step-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.step-block .step-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-right:34px;}
 .step-block .step-head span{font-weight:800;font-size:13px;color:var(--neon-dark);text-transform:uppercase;letter-spacing:0.5px;}
+.step-remove-btn{position:absolute;top:8px;right:8px;z-index:4;}
 .step-block textarea{min-height:64px!important;}
 .step-photo{position:relative;margin-top:10px;}
 .step-photo .step-photo-x{position:absolute;top:-10px;right:-10px;width:26px;height:26px;border-radius:50%;background:#ef4444;color:#fff;border:2px solid var(--card-bg);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 2px 8px rgba(239,68,68,0.45);line-height:1;padding:0;}
@@ -128,6 +140,22 @@
 .step-photo .file-preview{max-width:100%;max-height:180px;}
 .step-photo-restore{display:block;width:100%;margin-top:8px;padding:8px;border:1px dashed var(--border-color);border-radius:10px;background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;font-family:'Montserrat',sans-serif;}
 .step-photo-restore:hover{border-color:var(--neon);color:var(--neon-dark);}
+.recipe-image-field{position:relative;}
+.form-group.has-recipe-image .recipe-image-field .file-upload{display:none;}
+.recipe-main-image-preview{position:relative;display:none;width:fit-content;max-width:100%;margin-top:8px;}
+.form-group.has-recipe-image .recipe-main-image-preview{display:block;}
+.recipe-main-image-preview img{display:block;max-width:min(100%,420px);max-height:260px;border-radius:12px;object-fit:cover;}
+.recipe-main-image-remove{position:absolute;top:6px;right:6px;width:30px;height:30px;z-index:2;}
+.recipe-description-trigger{cursor:text;-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important;}
+.recipe-description-editor{position:fixed;inset:0;z-index:10020;display:none;flex-direction:column;gap:12px;box-sizing:border-box;padding:calc(14px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom));background:var(--bg);color:var(--text-main);}
+.recipe-description-editor.active{display:flex;}
+.recipe-description-editor-head{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--neon-dark);font-size:18px;font-weight:800;}
+.recipe-description-editor textarea{flex:1;min-height:0;width:100%;resize:none;padding:14px;border:2px solid var(--border-color);border-radius:14px;background:var(--card-bg);color:var(--text-main);font:inherit;font-size:16px;line-height:1.55;-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important;}
+.recipe-description-editor-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.recipe-description-editor-actions button{min-height:48px;padding:12px;border-radius:12px;font:inherit;font-weight:800;cursor:pointer;}
+.recipe-description-cancel{border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);}
+.recipe-description-apply{border:2px solid var(--neon);background:var(--neon);color:#fff;box-shadow:0 4px 16px var(--neon-glow);}
+#addRecipeModal input,#addRecipeModal textarea,#addRecipeModal select,#editRecipeModal input,#editRecipeModal textarea,#editRecipeModal select,.ing-row input,.ing-row select,.step-block textarea{ -webkit-user-select:text!important; -moz-user-select:text!important; -ms-user-select:text!important; user-select:text!important; -webkit-touch-callout:default!important; touch-action:auto!important;}
 
 /* --- Заказы продавца --- */
 .seller-order-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.05);transition:0.3s;}
@@ -330,6 +358,7 @@ input, textarea, [contenteditable="true"], select {
     -ms-user-select: text !important;
     user-select: text !important;
     -webkit-touch-callout: default !important;
+    touch-action: auto !important;
 }
 /* Убираем user-select:none с интерактивных элементов */
 button, .btn, a, label {
@@ -341,7 +370,7 @@ button, .btn, a, label {
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
 <script src="assets/js/site-select.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261115-tools1">
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
 </head>
 <body>
@@ -525,7 +554,7 @@ button, .btn, a, label {
 </div>
 <div class="form-group">
 <label>Описание</label>
-<textarea id="recipeDesc" style="min-height:80px;" placeholder="Коротко о рецепте..."></textarea>
+<textarea id="recipeDesc" class="recipe-description-trigger" readonly onclick="openRecipeDescriptionEditor('recipeDesc')" style="min-height:80px;" placeholder="Нажмите, чтобы написать описание..."></textarea>
 </div>
 <div class="form-group">
 <label>Состав / Ингредиенты</label>
@@ -539,13 +568,15 @@ button, .btn, a, label {
 </div>
 <div class="form-group">
 <label>Главное фото</label>
+<div class="recipe-image-field" id="recipeImageField">
 <div class="file-upload" onclick="document.getElementById('recipeImage').click()">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
 <p>Нажмите для загрузки фото</p>
 <p style="font-size:12px;margin-top:4px;">JPG, PNG, WEBP до 5 МБ</p>
 <input type="file" id="recipeImage" accept="image/*" onchange="previewRecipeImage(this, 'recipeImagePreview')">
 </div>
-<img class="file-preview" id="recipeImagePreview">
+</div>
+<div class="recipe-main-image-preview"><img id="recipeImagePreview" alt="Главное фото рецепта"><button type="button" class="recipe-main-image-remove" aria-label="Удалить фото" title="Удалить фото" onclick="removeRecipeMainImage('recipeImage','recipeImagePreview')">&#10005;</button></div>
 </div>
 <button class="btn" style="width:100%;padding:16px;font-size:16px;margin-top:10px;" onclick="addRecipe()">Добавить рецепт</button>
 </div>
@@ -564,7 +595,7 @@ button, .btn, a, label {
 </div>
 <div class="form-group">
 <label>Описание</label>
-<textarea id="editRecipeDesc" style="min-height:80px;" placeholder="Коротко о рецепте..."></textarea>
+<textarea id="editRecipeDesc" class="recipe-description-trigger" readonly onclick="openRecipeDescriptionEditor('editRecipeDesc')" style="min-height:80px;" placeholder="Нажмите, чтобы написать описание..."></textarea>
 </div>
 <div class="form-group">
 <label>Состав / Ингредиенты</label>
@@ -578,12 +609,14 @@ button, .btn, a, label {
 </div>
 <div class="form-group">
 <label>Главное фото (оставить пустым — не менять)</label>
+<div class="recipe-image-field" id="editRecipeImageField">
 <div class="file-upload" onclick="document.getElementById('editRecipeImage').click()">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
 <p>Нажмите для смены фото</p>
 <input type="file" id="editRecipeImage" accept="image/*" onchange="previewRecipeImage(this, 'editRecipeImagePreview')">
 </div>
-<img class="file-preview" id="editRecipeImagePreview" style="display:none;margin-top:10px;max-width:200px;border-radius:10px;">
+</div>
+<div class="recipe-main-image-preview"><img id="editRecipeImagePreview" alt="Главное фото рецепта"><button type="button" class="recipe-main-image-remove" aria-label="Удалить фото" title="Удалить фото" onclick="removeRecipeMainImage('editRecipeImage','editRecipeImagePreview')">&#10005;</button></div>
 </div>
 <div style="display:flex;gap:10px;margin-top:16px;">
 <button onclick="closeEditRecipeModal()" style="flex:1;padding:12px;border:2px solid var(--border-color);border-radius:12px;background:transparent;color:var(--text-main);font-weight:600;cursor:pointer;">Отмена</button>
@@ -948,6 +981,10 @@ function closeEditDishModal() {
 }
 // Закрытие модального окна редактирования по кнопке «Назад»/свайпу (без сохранения)
 window.addEventListener('popstate', function(e) {
+    var recipeDescriptionEditor = document.getElementById('recipeDescriptionEditor');
+    if (recipeDescriptionEditor && recipeDescriptionEditor.classList.contains('active')) {
+        recipeDescriptionEditor.classList.remove('active');
+    }
     var m = document.getElementById('editDishModal');
     if (m && m.classList.contains('active')) {
         m.classList.remove('active');
@@ -1001,10 +1038,75 @@ function previewRecipeImage(input, previewId) {
         var reader = new FileReader();
         reader.onload = function(e) {
             prev.src = e.target.result;
-            prev.style.display = 'block';
+            var field = input.closest('.form-group').querySelector('.recipe-image-field');
+            if (field) field.closest('.form-group').classList.add('has-recipe-image');
+            var modal = input.closest('.info-modal-overlay');
+            if (modal && modal.id === 'editRecipeModal') modal.dataset.removeImage = '0';
         };
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function removeRecipeMainImage(inputId, previewId) {
+    var input = document.getElementById(inputId);
+    var preview = document.getElementById(previewId);
+    if (input) input.value = '';
+    if (preview) preview.removeAttribute('src');
+    var field = input && input.closest('.form-group').querySelector('.recipe-image-field');
+    if (field) field.closest('.form-group').classList.remove('has-recipe-image');
+    var modal = input && input.closest('.info-modal-overlay');
+    if (modal && modal.id === 'editRecipeModal') modal.dataset.removeImage = '1';
+}
+
+function showRecipeImage(previewId, src) {
+    var preview = document.getElementById(previewId);
+    if (!preview || !src) return;
+    preview.src = src;
+    var field = preview.closest('.form-group').querySelector('.recipe-image-field');
+    if (field) field.closest('.form-group').classList.add('has-recipe-image');
+}
+
+function openRecipeDescriptionEditor(targetId) {
+    var target = document.getElementById(targetId);
+    if (!target) return;
+    var overlay = document.getElementById('recipeDescriptionEditor');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'recipeDescriptionEditor';
+        overlay.className = 'recipe-description-editor';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-labelledby', 'recipeDescriptionEditorTitle');
+        overlay.innerHTML = '<div class="recipe-description-editor-head"><span id="recipeDescriptionEditorTitle">Описание рецепта</span></div>' +
+            '<textarea id="recipeDescriptionEditorText" placeholder="Расскажите о рецепте..."></textarea>' +
+            '<div class="recipe-description-editor-actions"><button type="button" class="recipe-description-cancel">Отменить</button><button type="button" class="recipe-description-apply">Применить</button></div>';
+        document.body.appendChild(overlay);
+        overlay.querySelector('.recipe-description-cancel').addEventListener('click', function () {
+            overlay.classList.remove('active');
+            var destination = document.getElementById(overlay.dataset.targetId || '');
+            if (destination) destination.focus({ preventScroll: true });
+        });
+        overlay.querySelector('.recipe-description-apply').addEventListener('click', function () {
+            var destination = document.getElementById(overlay.dataset.targetId || '');
+            if (destination) {
+                destination.value = overlay.querySelector('textarea').value;
+                destination.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            overlay.classList.remove('active');
+            if (destination) destination.focus({ preventScroll: true });
+        });
+        overlay.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') overlay.classList.remove('active');
+        });
+    }
+    overlay.dataset.targetId = targetId;
+    overlay.querySelector('textarea').value = target.value;
+    overlay.classList.add('active');
+    requestAnimationFrame(function () {
+        var editor = overlay.querySelector('textarea');
+        editor.focus();
+        editor.setSelectionRange(editor.value.length, editor.value.length);
+    });
 }
 
 // --- ФОРМА РЕЦЕПТА: ингредиенты и шаги ---
@@ -1014,27 +1116,92 @@ function escAttr(s) {
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-// Ряд ингредиента: название | счётчик (-  значение +) | единица (гр/кг/л/мл)
+// Строка ингредиента: название сверху, количество и единица измерения ниже.
 function addIngredientRow(listId, ing) {
     ing = ing || {};
     var list = document.getElementById(listId);
     if (!list) return;
     var row = document.createElement('div');
     row.className = 'ing-row';
-    var units = ['гр', 'кг', 'л', 'мл'];
+    var units = [
+        { value: 'гр', label: 'грамм' },
+        { value: 'кг', label: 'килограмм' },
+        { value: 'л', label: 'литр' },
+        { value: 'мл', label: 'миллилитр' },
+        { value: 'ст.ложки', label: 'столовая ложка' },
+        { value: 'ч.ложки', label: 'чайная ложка' },
+        { value: 'шт.', label: 'штука' },
+        { value: 'ед.', label: 'единица' }
+    ];
     var cur = ing.unit || 'гр';
-    var opts = units.map(function(u) {
-        return '<option value="' + u + '"' + (u === cur ? ' selected' : '') + '>' + u + '</option>';
+    var opts = units.map(function(unit) {
+        return '<option value="' + unit.value + '"' + (unit.value === cur ? ' selected' : '') + '>' + unit.label + '</option>';
     }).join('');
     row.innerHTML =
-        '<input type="text" class="ing-name" placeholder="Название ингредиента" value="' + escAttr(ing.name || '') + '">' +
-        '<div class="ing-qty">' +
-            '<button type="button" class="qty-btn" onclick="chgIngQty(this,-1)">&minus;</button>' +
-            '<input type="text" inputmode="decimal" class="qty-inp" value="' + escAttr(ing.qty != null && ing.qty !== '' ? ing.qty : '100') + '">' +
-            '<button type="button" class="qty-btn" onclick="chgIngQty(this,1)">+</button>' +
-        '</div>' +
-        '<select class="ing-unit">' + opts + '</select>';
+        '<div class="ing-name-line"><div class="ing-name-field"><input type="text" class="ing-name" maxlength="100" autocomplete="off" placeholder="Название ингредиента" value="' + escAttr(ing.name || '') + '"><div class="ing-suggestions" role="listbox"></div></div>' +
+        '<button type="button" class="ing-remove-btn" title="Удалить ингредиент" aria-label="Удалить ингредиент" onclick="removeIngredientRow(this)">&#10005;</button></div>' +
+        '<div class="ing-controls"><div class="ing-qty">' +
+            '<button type="button" class="qty-btn" aria-label="Уменьшить количество" onclick="chgIngQty(this,-1)">&minus;</button>' +
+            '<input type="text" inputmode="decimal" class="qty-inp" aria-label="Количество" value="' + escAttr(ing.qty != null && ing.qty !== '' ? ing.qty : '100') + '">' +
+            '<button type="button" class="qty-btn" aria-label="Увеличить количество" onclick="chgIngQty(this,1)">+</button>' +
+        '</div><select class="ing-unit" aria-label="Единица измерения">' + opts + '</select></div>';
     list.appendChild(row);
+    setupIngredientSuggestions(row.querySelector('.ing-name'), row.querySelector('.ing-suggestions'));
+}
+
+function removeIngredientRow(button) {
+    var row = button.closest('.ing-row');
+    if (row) row.remove();
+}
+
+function setupIngredientSuggestions(input, dropdown) {
+    var timer = null;
+    var controller = null;
+    function hide() { dropdown.classList.remove('active'); dropdown.replaceChildren(); }
+    input.addEventListener('input', function () {
+        clearTimeout(timer);
+        if (controller) controller.abort();
+        var query = input.value.trim();
+        if (!query) { hide(); return; }
+        timer = window.setTimeout(async function () {
+            controller = typeof AbortController === 'function' ? new AbortController() : null;
+            try {
+                var response = await fetch('/api/ingredients.php?q=' + encodeURIComponent(query), {
+                    credentials: 'same-origin',
+                    signal: controller ? controller.signal : undefined
+                });
+                var data = await response.json();
+                if (!response.ok || !data.success || !Array.isArray(data.ingredients)) { hide(); return; }
+                dropdown.replaceChildren();
+                data.ingredients.forEach(function (ingredient) {
+                    var option = document.createElement('button');
+                    option.type = 'button';
+                    option.className = 'ing-suggestion';
+                    option.setAttribute('role', 'option');
+                    option.textContent = ingredient.name;
+                    option.addEventListener('mousedown', function (event) { event.preventDefault(); });
+                    option.addEventListener('click', function () {
+                        input.value = ingredient.name;
+                        hide();
+                        input.focus();
+                    });
+                    dropdown.appendChild(option);
+                });
+                dropdown.classList.toggle('active', dropdown.childElementCount > 0);
+            } catch (error) {
+                if (error.name !== 'AbortError') hide();
+            }
+        }, 220);
+    });
+    input.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowDown') {
+            var first = dropdown.querySelector('.ing-suggestion');
+            if (first) { event.preventDefault(); first.focus(); }
+        } else if (event.key === 'Escape') {
+            hide();
+        }
+    });
+    input.addEventListener('blur', function () { window.setTimeout(hide, 160); });
 }
 
 // Счётчик: +1 / -1 нажатием, значение также можно ввести вручную
@@ -1052,12 +1219,14 @@ function addRecipeStep(listId, step) {
     step = step || {};
     var list = document.getElementById(listId);
     if (!list) return;
-    var n = list.querySelectorAll('.step-block').length + 1; // предыдущий номер + 1
+    var n = list.querySelectorAll('.step-block').length + 1;
     var block = document.createElement('div');
     block.className = 'step-block';
+    block.dataset.listId = listId;
     var inputId = listId + '-photo-' + n;
     block.innerHTML =
         '<div class="step-head"><span>Шаг ' + n + '</span></div>' +
+        '<button type="button" class="step-remove-btn" title="Удалить шаг" aria-label="Удалить шаг" onclick="removeRecipeStep(this)">&#10005;</button>' +
         '<textarea class="step-text" placeholder="Опишите, что нужно сделать на шаге ' + n + '...">' + escAttr(step.text || '') + '</textarea>' +
         '<div class="step-photo">' +
             '<button type="button" class="step-photo-x" title="Убрать фото" onclick="removeStepPhoto(this)">&#10005;</button>' +
@@ -1077,6 +1246,32 @@ function addRecipeStep(listId, step) {
         block.dataset.image = step.image; // запоминаем прежнее фото
     }
     list.appendChild(block);
+    renumberRecipeSteps(list);
+}
+
+function removeRecipeStep(button) {
+    var block = button.closest('.step-block');
+    if (!block) return;
+    var list = block.parentElement;
+    block.remove();
+    renumberRecipeSteps(list);
+}
+
+function renumberRecipeSteps(list) {
+    if (!list) return;
+    list.querySelectorAll('.step-block').forEach(function (block, index) {
+        var number = index + 1;
+        var listId = block.dataset.listId || list.id;
+        var inputId = listId + '-photo-' + number;
+        var input = block.querySelector('.step-photo input[type=file]');
+        var upload = block.querySelector('.step-photo .file-upload');
+        var text = block.querySelector('.step-text');
+        var heading = block.querySelector('.step-head span');
+        if (heading) heading.textContent = 'Шаг ' + number;
+        if (text) text.placeholder = 'Опишите, что нужно сделать на шаге ' + number + '...';
+        if (input) input.id = inputId;
+        if (upload) upload.setAttribute('onclick', "document.getElementById('" + inputId + "').click()");
+    });
 }
 
 // Красный крестик: поле добавления фото исчезает
@@ -1149,16 +1344,13 @@ function collectSteps(listId) {
 function openAddRecipeModal() {
     document.getElementById('recipeTitle').value = '';
     document.getElementById('recipeDesc').value = '';
-    document.getElementById('recipeImagePreview').src = '';
-    document.getElementById('recipeImagePreview').style.display = 'none';
+    document.getElementById('recipeImagePreview').removeAttribute('src');
     document.getElementById('recipeImage').value = '';
-    // стартовое состояние формы: один ингредиент и один шаг
+    document.getElementById('recipeImageField').closest('.form-group').classList.remove('has-recipe-image');
     var ingList = document.getElementById('recipeIngList');
     ingList.innerHTML = '';
-    addIngredientRow('recipeIngList');
     var stepList = document.getElementById('recipeStepList');
     stepList.innerHTML = '';
-    addRecipeStep('recipeStepList');
     document.getElementById('addRecipeModal').classList.add('active');
     try { history.pushState({modal:'addRecipe'}, '', location.href); } catch(e) {}
 }
@@ -1266,23 +1458,23 @@ function openEditRecipe(id) {
     document.getElementById('editRecipeId').value = r.id;
     document.getElementById('editRecipeTitle').value = r.title || '';
     document.getElementById('editRecipeDesc').value = r.description || '';
-    document.getElementById('editRecipeImagePreview').style.display = 'none';
-    document.getElementById('editRecipeImagePreview').src = '';
+    document.getElementById('editRecipeImagePreview').removeAttribute('src');
     document.getElementById('editRecipeImage').value = '';
+    document.getElementById('editRecipeImageField').closest('.form-group').classList.remove('has-recipe-image');
+    document.getElementById('editRecipeModal').dataset.removeImage = '0';
+    if (r.image) showRecipeImage('editRecipeImagePreview', r.image);
     // состав
     var ingList = document.getElementById('editRecipeIngList');
     ingList.innerHTML = '';
     var ings = [];
     try { ings = JSON.parse(r.ingredients || '[]'); } catch(e) {}
-    if(!Array.isArray(ings) || !ings.length) addIngredientRow('editRecipeIngList');
-    else ings.forEach(function(ing){ addIngredientRow('editRecipeIngList', ing); });
+    if(Array.isArray(ings)) ings.forEach(function(ing){ addIngredientRow('editRecipeIngList', ing); });
     // шаги
     var stepList = document.getElementById('editRecipeStepList');
     stepList.innerHTML = '';
     var sts = [];
     try { sts = JSON.parse(r.steps || '[]'); } catch(e) {}
-    if(!Array.isArray(sts) || !sts.length) addRecipeStep('editRecipeStepList');
-    else sts.forEach(function(st){ addRecipeStep('editRecipeStepList', st); });
+    if(Array.isArray(sts)) sts.forEach(function(st){ addRecipeStep('editRecipeStepList', st); });
     openEditRecipeModal();
 }
 
@@ -1302,6 +1494,7 @@ async function editRecipe(id) {
     formData.append('steps', JSON.stringify(col.steps));
     col.files.forEach(function(f){ formData.append('step_photos[]', f); });
     if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
+    if(document.getElementById('editRecipeModal').dataset.removeImage === '1') formData.append('remove_image', '1');
     var res = await fetch('/api/edit_recipe.php', { method:'POST', body: formData });
     var data = await res.json();
     if(data.success) {
@@ -2247,10 +2440,10 @@ async function saveLKEdit(e){
 
 
 <script src="assets/js/lang.js?v=20261021162340"></script>
-<script src="assets/js/notifications.js?v=20261115-bell1"></script>
+<script src="assets/js/notifications.js?v=20261115141314"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
-<script src="assets/js/site-catalog.js?v=20261115-nav5"></script>
+<script src="assets/js/site-catalog.js?v=20261115142432"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>
 <script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
 <div class="modal-overlay" id="avatarSettingsModal" onclick="closeAvatarSettings(event)">
