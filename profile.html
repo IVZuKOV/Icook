@@ -362,6 +362,54 @@ body{padding-bottom:88px;}
 .avatar-zoom-control{width:min(280px,100%);display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:12px;}
 .avatar-zoom-control input{flex:1;accent-color:var(--neon);}
 .avatar-preview-info{min-width:0;color:var(--text-main);font-size:13px;line-height:1.6;}
+/* --- Admin dashboard: Venix/Dataflow-inspired, keeps existing admin actions --- */
+.admin-dashboard{--admin-sidebar:#0b1830;--admin-sidebar-muted:#9eacc2;max-width:1440px;margin:20px auto 30px;overflow:hidden;border:1px solid var(--border-color);border-radius:22px;background:var(--card-bg);box-shadow:0 18px 55px rgba(15,23,42,.1);}
+.admin-dashboard-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 26px;border-bottom:1px solid var(--border-color);background:var(--card-bg);}
+.admin-dashboard-brand{display:flex;align-items:center;gap:13px;min-width:0;}
+.admin-dashboard-brand-icon{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:14px;background:linear-gradient(145deg,#315fd5,#6d8eff);color:#fff;font-size:21px;box-shadow:0 6px 18px rgba(49,95,213,.23);}
+.admin-dashboard-brand-title{margin:0;color:var(--text-main);font-size:17px;font-weight:800;letter-spacing:-.3px;}
+.admin-dashboard-brand-subtitle{margin:3px 0 0;color:var(--text-muted);font-size:12px;}
+.admin-dashboard-security{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border-color);border-radius:999px;color:var(--text-muted);font-size:12px;font-weight:700;white-space:nowrap;}
+.admin-dashboard-security:before{width:8px;height:8px;border-radius:50%;background:#22c55e;content:"";box-shadow:0 0 0 3px rgba(34,197,94,.12);}
+.admin-dashboard-layout{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:600px;}
+.admin-sidebar{padding:22px 14px;background:var(--admin-sidebar);}
+.admin-sidebar-caption{margin:0 10px 12px;color:var(--admin-sidebar-muted);font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;}
+.admin-sidebar .admin-nav{display:flex;flex-direction:column;gap:5px;margin:0;padding:0;border:0;overflow:visible;scrollbar-width:none;}
+.admin-sidebar .admin-nav .tab{display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:10px 12px;border:1px solid transparent;border-radius:11px;background:transparent;color:#c4cfdf;text-align:left;font-size:13px;font-weight:650;white-space:normal;box-shadow:none;transition:background .18s,color .18s,border-color .18s;}
+.admin-sidebar .admin-nav .tab:hover{transform:none;background:rgba(255,255,255,.07);color:#fff;}
+.admin-sidebar .admin-nav .tab.active{border-color:rgba(255,255,255,.09);background:linear-gradient(100deg,rgba(60,103,226,.34),rgba(60,103,226,.12));color:#fff;box-shadow:inset 3px 0 #7da0ff;}
+.admin-nav-icon{display:grid;place-items:center;width:26px;height:26px;flex:none;border-radius:8px;background:rgba(255,255,255,.08);font-size:14px;}
+.admin-sidebar-divider{height:1px;margin:16px 10px;background:rgba(255,255,255,.1);}
+.admin-workspace{min-width:0;padding:26px;background:var(--bg);}
+.admin-workspace-header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px;}
+.admin-workspace-title{margin:0;color:var(--text-main);font-size:clamp(22px,3vw,29px);font-weight:850;letter-spacing:-.7px;}
+.admin-workspace-description{margin:6px 0 0;color:var(--text-muted);font-size:13px;line-height:1.5;}
+.admin-workspace-badge{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid var(--border-color);border-radius:10px;background:var(--card-bg);color:var(--text-muted);font-size:11px;font-weight:700;white-space:nowrap;}
+.admin-workspace-badge span{color:var(--neon-dark);}
+#adminContent{min-width:0;overflow-x:auto;}
+#adminContent .admin-table-wrap{overflow:auto;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);box-shadow:0 3px 14px rgba(15,23,42,.035);}
+#adminContent .admin-table{width:100%;border-collapse:collapse;font-size:12px;}
+#adminContent .admin-table th{padding:13px 12px;border-bottom:1px solid var(--border-color);background:var(--card-bg);color:var(--text-muted);font-size:10px;font-weight:800;letter-spacing:.45px;text-align:left;text-transform:uppercase;white-space:nowrap;}
+#adminContent .admin-table td{padding:12px;border-bottom:1px solid var(--border-color);color:var(--text-main);vertical-align:middle;}
+#adminContent .admin-table tbody tr:last-child td{border-bottom:0;}
+#adminContent .admin-table tbody tr:hover{background:var(--neon-glow);}
+#adminContent .admin-table td:last-child{white-space:nowrap;}
+#adminContent .admin-search-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+#adminContent .admin-search-row input{min-width:0;flex:1;padding:12px 15px;border:1px solid var(--border-color)!important;border-radius:12px;background:var(--card-bg)!important;color:var(--text-main)!important;font-size:13px;box-shadow:none!important;}
+#adminContent .admin-search-row input:focus{border-color:var(--neon)!important;box-shadow:0 0 0 3px var(--neon-glow)!important;}
+#adminContent .admin-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:13px;}
+#adminContent .admin-stat-card{position:relative;min-height:112px;padding:18px;border:1px solid var(--border-color);border-radius:15px;background:var(--card-bg);text-align:left;box-shadow:0 3px 14px rgba(15,23,42,.04);transition:transform .2s,border-color .2s,box-shadow .2s;}
+#adminContent .admin-stat-card:hover{transform:translateY(-2px);border-color:var(--neon);box-shadow:0 9px 22px var(--neon-glow);}
+#adminContent .admin-stat-value{color:var(--text-main);font-size:27px;font-weight:850;letter-spacing:-.6px;}
+#adminContent .admin-stat-label{margin-top:8px;color:var(--text-muted);font-size:12px;font-weight:650;}
+#adminContent .admin-review-card{margin-bottom:12px;padding:17px;border:1px solid var(--border-color);border-radius:15px;background:var(--card-bg);box-shadow:0 3px 14px rgba(15,23,42,.04);}
+.banner-management-tabs{margin:0 0 16px!important;padding:0 0 10px;border-bottom:1px solid var(--border-color);overflow:auto;}
+.banner-management-tabs .tab{border-radius:10px;font-size:12px;}
+[data-theme="dark"] .admin-dashboard{box-shadow:0 18px 55px rgba(0,0,0,.22);}
+[data-theme="dark"] .admin-workspace{background:#0b1220;}
+[data-theme="dark"] #adminContent .admin-table-wrap,[data-theme="dark"] #adminContent .admin-stat-card,[data-theme="dark"] #adminContent .admin-review-card{box-shadow:none;}
+@media(max-width:900px){.admin-dashboard-layout{grid-template-columns:1fr;min-height:0;}.admin-sidebar{padding:12px 14px 10px;}.admin-sidebar-caption,.admin-sidebar-divider{display:none;}.admin-sidebar .admin-nav{flex-direction:row;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;padding:0 0 5px;-webkit-overflow-scrolling:touch;}.admin-sidebar .admin-nav .tab{width:auto;min-width:max-content;min-height:42px;padding:8px 11px;}.admin-sidebar .admin-nav .tab.active{box-shadow:inset 0 -3px #7da0ff;}.admin-workspace{padding:22px;}}
+@media(max-width:600px){.admin-dashboard{margin:12px auto 22px;border-radius:16px;}.admin-dashboard-top{padding:15px 16px;}.admin-dashboard-brand-icon{width:38px;height:38px;border-radius:12px;}.admin-dashboard-brand-title{font-size:15px;}.admin-dashboard-brand-subtitle{font-size:11px;}.admin-dashboard-security{padding:7px 9px;font-size:10px;}.admin-sidebar{padding:10px 12px 7px;}.admin-sidebar .admin-nav .tab{min-height:40px;padding:7px 10px;font-size:12px;}.admin-nav-icon{width:23px;height:23px;font-size:12px;}.admin-workspace{padding:18px 14px 20px;}.admin-workspace-header{margin-bottom:15px;}.admin-workspace-title{font-size:22px;}.admin-workspace-description{font-size:12px;}.admin-workspace-badge{display:none;}#adminContent .admin-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}#adminContent .admin-stat-card{min-height:96px;padding:14px;}#adminContent .admin-stat-value{font-size:23px;}#adminContent .admin-stat-label{font-size:11px;}#adminContent .admin-search-row{align-items:stretch;flex-direction:column;}#adminContent .admin-search-row input{min-height:44px;}#adminContent .admin-table-wrap{overflow:visible;border:0;background:transparent;box-shadow:none;}#adminContent .admin-table,#adminContent .admin-table tbody{display:block;width:100%;}#adminContent .admin-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}#adminContent .admin-table tr{display:block;margin-bottom:10px;padding:6px 12px;border:1px solid var(--border-color);border-radius:13px;background:var(--card-bg);}#adminContent .admin-table td{display:grid;grid-template-columns:minmax(82px,32%) minmax(0,1fr);gap:10px;padding:9px 0;border-bottom:1px solid var(--border-color);font-size:12px;white-space:normal;overflow-wrap:anywhere;}#adminContent .admin-table td:before{color:var(--text-muted);font-size:10px;font-weight:800;letter-spacing:.25px;text-transform:uppercase;content:attr(data-label);}#adminContent .admin-table td:last-child{white-space:normal;}#adminContent .admin-table td:has(button),#adminContent .admin-table td:has(select){grid-template-columns:1fr;}#adminContent .admin-table td:has(button):before,#adminContent .admin-table td:has(select):before{content:"Действия";}#adminContent .admin-table td button{min-height:34px;margin:3px!important;}#adminContent .admin-table td select{max-width:100%;min-height:38px;}#adminContent .admin-review-card{padding:14px;}}
 .avatar-preview-info strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .avatar-preview-info span{color:var(--text-muted);}
 .avatar-modal-status{min-height:20px;margin:8px 0 14px;color:var(--text-muted);font-size:13px;line-height:1.5;}
@@ -700,19 +748,37 @@ button, .btn, a, label {
 
 <!-- === АДМИН-ПАНЕЛЬ === -->
 <div class="tab-content" id="tab-admin">
-<h3 style="margin:18px 0 14px;color:var(--neon-dark)">🛡️ Панель суперпользователя</h3>
-
-<div class="tabs" style="margin-bottom:16px;">
-<button class="tab active" onclick="loadAdminSection('stats',this)">📊 Счётчики</button>
-<button class="tab" onclick="loadAdminSection('users',this)">Пользователи</button>
-<button class="tab" onclick="loadAdminSection('dishes',this)">Блюда</button>
-<button class="tab" onclick="loadAdminSection('orders',this)">Заказы</button>
-<button class="tab" onclick="loadAdminSection('categories',this)">Категории</button>
-<button class="tab" onclick="loadAdminSection('reviews',this)">💬 Отзывы</button>
-<button class="tab" onclick="showBannerManagement(this)">🖼️ Управление баннерами</button>
+<div class="admin-dashboard">
+<header class="admin-dashboard-top">
+<div class="admin-dashboard-brand">
+<div class="admin-dashboard-brand-icon" aria-hidden="true">🛡️</div>
+<div><h2 class="admin-dashboard-brand-title">Панель управления</h2><p class="admin-dashboard-brand-subtitle">Администрирование сайта и контента</p></div>
 </div>
-
-<div id="adminContent" style="overflow-x:auto;"></div>
+<div class="admin-dashboard-security">Защищённый доступ</div>
+</header>
+<div class="admin-dashboard-layout">
+<aside class="admin-sidebar">
+<p class="admin-sidebar-caption">Рабочее место</p>
+<nav class="tabs admin-nav" aria-label="Разделы панели администратора">
+<button class="tab active" data-admin-section="stats" onclick="loadAdminSection('stats',this)" aria-label="Счётчики"><span class="admin-nav-icon" aria-hidden="true">▦</span><span>Обзор и статистика</span></button>
+<button class="tab" data-admin-section="users" onclick="loadAdminSection('users',this)" aria-label="Пользователи"><span class="admin-nav-icon" aria-hidden="true">♙</span><span>Пользователи</span></button>
+<button class="tab" data-admin-section="dishes" onclick="loadAdminSection('dishes',this)" aria-label="Блюда"><span class="admin-nav-icon" aria-hidden="true">🍽</span><span>Блюда</span></button>
+<button class="tab" data-admin-section="orders" onclick="loadAdminSection('orders',this)" aria-label="Заказы"><span class="admin-nav-icon" aria-hidden="true">▤</span><span>Заказы</span></button>
+<button class="tab" data-admin-section="categories" onclick="loadAdminSection('categories',this)" aria-label="Категории"><span class="admin-nav-icon" aria-hidden="true">▣</span><span>Категории</span></button>
+<button class="tab" data-admin-section="reviews" onclick="loadAdminSection('reviews',this)" aria-label="Отзывы"><span class="admin-nav-icon" aria-hidden="true">✳</span><span>Отзывы</span></button>
+<div class="admin-sidebar-divider" aria-hidden="true"></div>
+<button class="tab" data-admin-section="banner_management" onclick="showBannerManagement(this)" aria-label="Управление баннерами"><span class="admin-nav-icon" aria-hidden="true">▧</span><span>Баннеры и проекты</span></button>
+</nav>
+</aside>
+<section class="admin-workspace">
+<header class="admin-workspace-header">
+<div><h1 class="admin-workspace-title" id="adminSectionTitle">Обзор и статистика</h1><p class="admin-workspace-description" id="adminSectionDescription">Ключевые показатели и активность платформы</p></div>
+<div class="admin-workspace-badge">Раздел: <span id="adminSectionBadge">Обзор</span></div>
+</header>
+<div id="adminContent"></div>
+</section>
+</div>
+</div>
 </div>
 </main>
 
@@ -1910,12 +1976,30 @@ async function checkAdminRole(){
 
 var currentAdminSection = 'users';
 
+function setAdminSectionHeading(title, description, badge){
+    var titleNode=document.getElementById('adminSectionTitle');
+    var descriptionNode=document.getElementById('adminSectionDescription');
+    var badgeNode=document.getElementById('adminSectionBadge');
+    if(titleNode) titleNode.textContent=title;
+    if(descriptionNode) descriptionNode.textContent=description;
+    if(badgeNode) badgeNode.textContent=badge||title;
+}
+
 async function loadAdminSection(section, btn){
     currentAdminSection = section;
-    if(btn){
-        btn.closest('.tabs').querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-        btn.classList.add('active');
-    }
+    var headings={
+        stats:['Обзор и статистика','Ключевые показатели и активность платформы','Обзор'],
+        users:['Пользователи','Профили, роли и быстрый переход в личный кабинет','Пользователи'],
+        dishes:['Блюда','Публикация и управление блюдами на платформе','Блюда'],
+        orders:['Заказы','Текущие статусы и история заказов','Заказы'],
+        categories:['Категории','Справочник категорий каталога','Категории'],
+        reviews:['Отзывы','Модерация и проверка отзывов пользователей','Отзывы']
+    };
+    var heading=headings[section]||['Панель управления','Управление данными сайта',section];
+    setAdminSectionHeading(heading[0],heading[1],heading[2]);
+    document.querySelectorAll('#tab-admin .admin-nav [data-admin-section]').forEach(function(tab){
+        tab.classList.toggle('active', tab===btn || (!btn && tab.dataset.adminSection===section));
+    });
     var container = document.getElementById('adminContent');
     container.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Загрузка...</p>';
 
@@ -1936,18 +2020,18 @@ async function loadAdminSection(section, btn){
         }
         if(!rows.length){ container.innerHTML = '<p style="text-align:center;padding:30px;">Нет данных</p>'; return; }
         
-        var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>';
+        var html = '<div class="admin-table-wrap"><table class="admin-table"><thead><tr>';
         var keys = Object.keys(rows[0]);
-        keys.forEach(function(k){ html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);text-align:left;color:var(--neon-dark);white-space:nowrap;">' + k + '</th>'; });
+        keys.forEach(function(k){ html += '<th scope="col">' + adminEsc(k) + '</th>'; });
         html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
         
         rows.forEach(function(row){
-            html += '<tr style="border-bottom:1px solid var(--border-color);">';
+            html += '<tr>';
             keys.forEach(function(k){
                 var val = row[k] !== null ? row[k] : '—';
-                html += '<td style="padding:8px;white-space:nowrap;">' + val + '</td>';
+                html += '<td data-label="' + adminEsc(k) + '">' + adminEsc(val) + '</td>';
             });
-            html += '<td style="padding:8px;">';
+            html += '<td data-label="Действия">';
             
             if(section === 'users'){
                 html += '<button onclick="openAdminViewLK(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #8b5cf6;background:transparent;color:#8b5cf6;cursor:pointer;font-size:12px;margin-right:4px;">👁️ ЛК</button>';
@@ -1964,10 +2048,10 @@ async function loadAdminSection(section, btn){
             html += '</td></tr>';
         });
         
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
         // Для users разделяем поиск и таблицу
         if(section === 'users'){
-            container.innerHTML = '<div style="margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">' +
+            container.innerHTML = '<div class="admin-search-row">' +
                 '<input type="text" id="adminUserSearch" placeholder="🔍 Поиск по имени, телефону или email..." oninput="filterAdminUsers()" style="flex:1;min-width:200px;padding:10px 16px;border-radius:12px;border:2px solid #94a3b8;background:#ffffff;color:#1e293b;font-size:14px;outline:none;">' +
                 '<span id="adminSearchCount" style="font-size:12px;color:var(--text-muted);white-space:nowrap;"></span>' +
                 '</div>' +
@@ -2022,12 +2106,12 @@ async function renderAdminStats(){
             ['🚫 Отклонённых отзывов', d.reviews_rejected],
             ['💬 Всего отзывов', d.reviews_total]
         ];
-        var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;">';
+        var html = '<div class="admin-stat-grid">';
         cards.forEach(function(card){
             var v = (card[1] != null ? card[1] : 0);
-            html += '<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:20px 16px;text-align:center;box-shadow:0 4px 18px var(--neon-glow);">' +
-                '<div style="font-size:28px;font-weight:800;color:var(--neon-dark);">' + v + '</div>' +
-                '<div style="font-size:13px;color:var(--text-muted);margin-top:6px;">' + card[0] + '</div></div>';
+            html += '<div class="admin-stat-card">' +
+                '<div class="admin-stat-value">' + adminEsc(v) + '</div>' +
+                '<div class="admin-stat-label">' + card[0] + '</div></div>';
         });
         html += '</div>';
         c.innerHTML = html;
@@ -2047,6 +2131,7 @@ function adminEsc(s){
 
 async function renderAdminReviews(status){
     if(status) adminReviewStatus = status;
+    setAdminSectionHeading('Отзывы','Модерация и проверка отзывов пользователей','Отзывы');
     var c = document.getElementById('adminContent');
     if(!c) return;
     c.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Загрузка...</p>';
@@ -2065,7 +2150,7 @@ async function renderAdminReviews(status){
         var html = tabsHtml;
         reviews.forEach(function(r){
             var rating = Math.max(0, Math.min(5, Number(r.rating) || 0));
-            html += '<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:16px;margin-bottom:12px;">';
+            html += '<div class="admin-review-card">';
             html += '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;">' +
                 '<div style="font-weight:700;color:var(--neon-dark);">' + adminEsc(r.user_name) + '</div>' +
                 '<div style="color:#f59e0b;letter-spacing:2px;">' + '★'.repeat(rating) + '☆'.repeat(5-rating) + '</div>' +
@@ -2426,24 +2511,24 @@ function renderAdminUsersTable(rows){
     
     if(!rows.length){ tableContainer.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Ничего не найдено</p>'; return; }
     
-    var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>';
+    var html = '<div class="admin-table-wrap"><table class="admin-table"><thead><tr>';
     var keys = Object.keys(rows[0]);
-    keys.forEach(function(k){ html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);text-align:left;color:var(--neon-dark);white-space:nowrap;">' + k + '</th>'; });
+    keys.forEach(function(k){ html += '<th scope="col">' + adminEsc(k) + '</th>'; });
     html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
     
     rows.forEach(function(row){
-        html += '<tr style="border-bottom:1px solid var(--border-color);">';
+        html += '<tr>';
         keys.forEach(function(k){
             var val = row[k] !== null ? row[k] : '—';
-            html += '<td style="padding:8px;white-space:nowrap;">' + val + '</td>';
+            html += '<td data-label="' + adminEsc(k) + '">' + adminEsc(val) + '</td>';
         });
-        html += '<td style="padding:8px;">';
+        html += '<td data-label="Действия">';
         html += '<button onclick="openAdminViewLK(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #8b5cf6;background:transparent;color:#8b5cf6;cursor:pointer;font-size:12px;margin-right:4px;">👁️ ЛК</button> ';
         html += '<button onclick="openAdminEditUser(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--neon);background:transparent;color:var(--neon-dark);cursor:pointer;font-size:12px;">✏️ Изменить</button>';
         html += '</td></tr>';
     });
     
-    html += '</tbody></table>';
+    html += '</tbody></table></div>';
     tableContainer.innerHTML = html;
 }
 
@@ -2906,19 +2991,25 @@ function bannerManagementContainer(){
 }
 
 function showBannerManagement(button){
+    setAdminSectionHeading('Баннеры и проекты','Баннеры главной страницы и совместные проекты','Баннеры');
     if(button){
         button.closest('.tabs').querySelectorAll('.tab').forEach(function(tab){tab.classList.remove('active');});
         button.classList.add('active');
     }
     currentAdminSection='banner_management';
     var container=document.getElementById('adminContent');
-    container.innerHTML='<div class="tabs banner-management-tabs" style="margin:0 0 14px;display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="tab active" data-banner-section="joint">🤝 Совместные проекты</button><button type="button" class="tab" data-banner-section="index">Index ban</button></div><div id="bannerManagementContent" style="overflow-x:auto;"></div>';
+    container.innerHTML='<div class="tabs banner-management-tabs" style="margin:0 0 14px;display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="tab active" data-banner-section="joint">🤝 Совместные проекты</button><button type="button" class="tab" data-banner-section="index">🏠 Баннеры главной</button></div><div id="bannerManagementContent" style="overflow-x:auto;"></div>';
     var first=container.querySelector('[data-banner-section="joint"]');
     container.querySelectorAll('[data-banner-section]').forEach(function(tab){tab.addEventListener('click',function(){showBannerManagementSection(tab.getAttribute('data-banner-section'),tab);});});
     showBannerManagementSection('joint',first);
 }
 
 function showBannerManagementSection(section,button){
+    setAdminSectionHeading(
+        section==='index'?'Баннеры главной страницы':'Совместные проекты',
+        section==='index'?'Создание, оформление и публикация промо-баннеров':'Партнёрские проекты и их отображение на сайте',
+        section==='index'?'Баннеры':'Проекты'
+    );
     if(button){
         button.closest('.banner-management-tabs').querySelectorAll('.tab').forEach(function(tab){tab.classList.remove('active');});
         button.classList.add('active');
