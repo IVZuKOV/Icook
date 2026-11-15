@@ -18,14 +18,88 @@
         store: '<path d="M3 10h18l-1.2-6H4.2L3 10zM5 10v10h14V10M9 20v-6h6v6"/><path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>'
     };
     function svg(content) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + content + '</svg>'; }
+    if (!document.getElementById('bottomNavShortcutStyles')) {
+        var shortcutStyles = document.createElement('style');
+        shortcutStyles.id = 'bottomNavShortcutStyles';
+        shortcutStyles.textContent = '.bottom-nav-recipes-popover{position:fixed;z-index:1100;display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid var(--border-color);border-radius:50%;background:var(--card-bg);color:var(--text-main);box-shadow:0 4px 16px var(--neon-glow);text-decoration:none;opacity:0;transform:translateY(6px) scale(.92);transition:opacity .16s ease,transform .16s ease}.bottom-nav-recipes-popover.is-visible{opacity:1;transform:translateY(0) scale(1)}.bottom-nav-recipes-popover svg{width:20px;height:20px}.bottom-nav-recipes-popover[hidden]{display:none!important}';
+        document.head.appendChild(shortcutStyles);
+    }
     document.querySelectorAll('.bottom-bar .header-right').forEach(function (bar) {
         if (bar.querySelector('[data-bottom-shortcut="menu"]')) return;
         var reference = bar.querySelector('a[href="index.html"]') || bar.querySelector('.catalog-btn');
         if (!reference) return;
-        reference.insertAdjacentHTML('afterend',
-            '<a class="icon-btn bottom-nav-shortcut" data-bottom-shortcut="menu" href="menu.html" aria-label="Меню" title="Меню" style="flex:0 0 40px;">' + svg(icons.menu) + '</a>' +
-            '<a class="icon-btn bottom-nav-shortcut" data-bottom-shortcut="recipes" href="recipes.html" aria-label="Рецепты" title="Рецепты" style="flex:0 0 40px;">' + svg(icons.recipes) + '</a>'
-        );
+
+        var menuShortcut = document.createElement('a');
+        menuShortcut.className = 'icon-btn bottom-nav-shortcut';
+        menuShortcut.href = 'menu.html';
+        menuShortcut.setAttribute('aria-label', 'Меню');
+        menuShortcut.title = 'Меню · удерживайте для рецептов';
+        menuShortcut.dataset.bottomShortcut = 'menu';
+        menuShortcut.style.flex = '0 0 40px';
+        menuShortcut.innerHTML = svg(icons.menu);
+        reference.insertAdjacentElement('afterend', menuShortcut);
+
+        var recipesShortcut = document.createElement('a');
+        recipesShortcut.className = 'bottom-nav-recipes-popover';
+        recipesShortcut.href = 'recipes.html';
+        recipesShortcut.setAttribute('aria-label', 'Рецепты');
+        recipesShortcut.title = 'Рецепты';
+        recipesShortcut.innerHTML = svg(icons.recipes);
+        recipesShortcut.hidden = true;
+        document.body.appendChild(recipesShortcut);
+
+        var pressTimer = null;
+        var longPress = false;
+        function hideRecipesShortcut() {
+            recipesShortcut.classList.remove('is-visible');
+            recipesShortcut.hidden = true;
+            menuShortcut.setAttribute('aria-expanded', 'false');
+        }
+        function showRecipesShortcut() {
+            var rect = menuShortcut.getBoundingClientRect();
+            recipesShortcut.style.left = Math.max(8, rect.left + (rect.width - 40) / 2) + 'px';
+            recipesShortcut.style.top = Math.max(8, rect.top - 48) + 'px';
+            recipesShortcut.hidden = false;
+            menuShortcut.setAttribute('aria-expanded', 'true');
+            requestAnimationFrame(function () { recipesShortcut.classList.add('is-visible'); });
+        }
+
+        menuShortcut.setAttribute('aria-haspopup', 'true');
+        menuShortcut.setAttribute('aria-expanded', 'false');
+        menuShortcut.addEventListener('pointerdown', function (event) {
+            if (event.button !== undefined && event.button !== 0) return;
+            event.preventDefault();
+            if (menuShortcut.setPointerCapture) menuShortcut.setPointerCapture(event.pointerId);
+            longPress = false;
+            clearTimeout(pressTimer);
+            pressTimer = window.setTimeout(function () {
+                longPress = true;
+                showRecipesShortcut();
+            }, 500);
+        });
+        menuShortcut.addEventListener('pointerup', function (event) {
+            event.preventDefault();
+            clearTimeout(pressTimer);
+            if (!longPress) window.location.href = menuShortcut.href;
+        });
+        menuShortcut.addEventListener('pointercancel', function () {
+            clearTimeout(pressTimer);
+        });
+        menuShortcut.addEventListener('lostpointercapture', function () {
+            clearTimeout(pressTimer);
+        });
+        menuShortcut.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (event.detail === 0) window.location.href = menuShortcut.href;
+        });
+        document.addEventListener('pointerdown', function (event) {
+            if (!recipesShortcut.hidden && !menuShortcut.contains(event.target) && !recipesShortcut.contains(event.target)) {
+                hideRecipesShortcut();
+            }
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !recipesShortcut.hidden) hideRecipesShortcut();
+        });
     });
     function link(label, href, icon, secondary) {
         return '<a class="catalog-link' + (secondary ? ' secondary' : '') + '" href="' + href + '">' + svg(icons[icon]) + label + '</a>';
