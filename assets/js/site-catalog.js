@@ -18,6 +18,15 @@
         store: '<path d="M3 10h18l-1.2-6H4.2L3 10zM5 10v10h14V10M9 20v-6h6v6"/><path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>'
     };
     function svg(content) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + content + '</svg>'; }
+    document.querySelectorAll('.bottom-bar .header-right').forEach(function (bar) {
+        if (bar.querySelector('[data-bottom-shortcut="menu"]')) return;
+        var reference = bar.querySelector('a[href="index.html"]') || bar.querySelector('.catalog-btn');
+        if (!reference) return;
+        reference.insertAdjacentHTML('afterend',
+            '<a class="icon-btn bottom-nav-shortcut" data-bottom-shortcut="menu" href="menu.html" aria-label="Меню" title="Меню" style="flex:0 0 40px;">' + svg(icons.menu) + '</a>' +
+            '<a class="icon-btn bottom-nav-shortcut" data-bottom-shortcut="recipes" href="recipes.html" aria-label="Рецепты" title="Рецепты" style="flex:0 0 40px;">' + svg(icons.recipes) + '</a>'
+        );
+    });
     function link(label, href, icon, secondary) {
         return '<a class="catalog-link' + (secondary ? ' secondary' : '') + '" href="' + href + '">' + svg(icons[icon]) + label + '</a>';
     }
