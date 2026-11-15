@@ -25,6 +25,39 @@
     object-fit:cover;
 }
 .author-avatar-large{width:68px;height:68px;font-size:26px;}
-.author-avatar-chef{width:76px;height:76px;margin-bottom:20px;font-size:30px;}
+.author-avatar-chef{width:76px;height:76px;min-width:76px;min-height:76px;aspect-ratio:1;margin-bottom:20px;font-size:30px;}
 .recipe-author .author-avatar{width:20px;height:20px;font-size:10px;}
 .chef-card .author-avatar-chef{border-radius:50%;}
+
+/* Keep author photos independent from broad card-image sizing and hover rules. */
+.chef .author-avatar{
+    width:24px;
+    height:24px;
+    min-width:24px;
+    min-height:24px;
+    aspect-ratio:1;
+}
+.chef .author-avatar img{
+    width:100% !important;
+    height:100% !important;
+    min-width:0;
+    min-height:0;
+    max-width:none;
+    max-height:none;
+    object-fit:cover;
+    transform:none !important;
+}
+.chef::before{
+    content:none !important;
+    display:none !important;
+}
+.chef-card .author-avatar-chef img{
+    width:100%;
+    height:100%;
+    transform:none !important;
+}
+
+@media(max-width:600px){
+    .chef-card .author-avatar-chef{width:58px;height:58px;min-width:58px;min-height:58px;margin-bottom:20px;}
+    .chefs-grid.cols-4 .chef-card .author-avatar-chef{width:40px;height:40px;min-width:40px;min-height:40px;margin-bottom:12px;}
+}
