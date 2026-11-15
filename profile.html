@@ -109,9 +109,9 @@
 /* --- Форма рецепта: ингредиенты и шаги --- */
 .ing-row{display:block;margin-bottom:12px;padding:10px;border:1px solid var(--border-color);border-radius:12px;background:var(--card-bg);}
 .ing-name-line{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.ing-name-field{position:relative;flex:1;min-width:0;}
-.ing-row .ing-name{width:100%;min-width:0;padding-right:42px!important;}
-.ing-name-clear{position:absolute;top:50%;right:7px;z-index:2;display:grid;place-items:center;width:30px;height:30px;margin:0;padding:0;transform:translateY(-50%);border:0;border-radius:0;background:transparent;color:#94a3b8;cursor:pointer;transition:color .15s;}
+.ing-name-field{position:relative;display:grid;flex:1;min-width:0;}
+.ing-row .ing-name{grid-area:1/1;width:100%;min-width:0;padding-right:42px!important;}
+.ing-name-clear{position:relative;grid-area:1/1;z-index:2;display:grid;place-self:center end;width:30px;height:30px;margin-right:7px;padding:0;transform:none;border:0;border-radius:0;background:transparent;color:#94a3b8;cursor:pointer;transition:color .15s;}
 .ing-name-clear svg{display:block;width:16px;height:16px;}
 .ing-name-clear:hover,.ing-name-clear:focus-visible{background:transparent;color:#64748b;outline:none;box-shadow:none;}
 [data-theme="dark"] .ing-name-clear{color:#94a3b8;}
