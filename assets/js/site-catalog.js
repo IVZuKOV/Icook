@@ -18,10 +18,21 @@
         store: '<path d="M3 10h18l-1.2-6H4.2L3 10zM5 10v10h14V10M9 20v-6h6v6"/><path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>'
     };
     function svg(content) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + content + '</svg>'; }
+    var siteHeader = document.querySelector('header.site-header');
+    var themeButton = document.querySelector('.bottom-bar .theme-btn');
+    if (siteHeader && themeButton) {
+        var headerTools = siteHeader.querySelector('.site-header-tools');
+        if (!headerTools) {
+            headerTools = document.createElement('div');
+            headerTools.className = 'header-right site-header-tools';
+            siteHeader.appendChild(headerTools);
+        }
+        headerTools.appendChild(themeButton);
+    }
     if (!document.getElementById('bottomNavShortcutStyles')) {
         var shortcutStyles = document.createElement('style');
         shortcutStyles.id = 'bottomNavShortcutStyles';
-        shortcutStyles.textContent = '.bottom-nav-recipes-popover{position:fixed;z-index:1100;display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid var(--border-color);border-radius:50%;background:var(--card-bg);color:var(--text-main);box-shadow:0 4px 16px var(--neon-glow);text-decoration:none;opacity:0;transform:translateY(6px) scale(.92);transition:opacity .16s ease,transform .16s ease}.bottom-nav-recipes-popover.is-visible{opacity:1;transform:translateY(0) scale(1)}.bottom-nav-recipes-popover svg{width:20px;height:20px}.bottom-nav-recipes-popover[hidden]{display:none!important}';
+        shortcutStyles.textContent = '.bottom-nav-recipes-popover{position:fixed;z-index:1100;display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid var(--border-color);border-radius:50%;background:var(--card-bg);color:var(--text-main);box-shadow:0 4px 16px var(--neon-glow);text-decoration:none;cursor:pointer;opacity:0;transform:translateY(6px) scale(.92);transition:opacity .16s ease,transform .16s ease}.bottom-nav-recipes-popover.is-visible{opacity:1;transform:translateY(0) scale(1)}.bottom-nav-recipes-popover svg{width:20px;height:20px}.bottom-nav-recipes-popover[hidden]{display:none!important}';
         document.head.appendChild(shortcutStyles);
     }
     document.querySelectorAll('.bottom-bar .header-right').forEach(function (bar) {
@@ -100,6 +111,76 @@
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape' && !recipesShortcut.hidden) hideRecipesShortcut();
         });
+
+        var profileShortcut = bar.querySelector('#userNameBtn');
+        if (profileShortcut && !bar.querySelector('[data-bottom-shortcut="notifications"]')) {
+            var notificationsShortcut = document.createElement('button');
+            notificationsShortcut.type = 'button';
+            notificationsShortcut.className = 'bottom-nav-recipes-popover';
+            notificationsShortcut.id = 'notifBellBtn';
+            notificationsShortcut.setAttribute('aria-label', 'Уведомления');
+            notificationsShortcut.title = 'Уведомления';
+            notificationsShortcut.dataset.bottomShortcut = 'notifications';
+            notificationsShortcut.style.position = 'fixed';
+            notificationsShortcut.style.display = 'none';
+            notificationsShortcut.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span id="notifBadgeMain" style="position:absolute;top:-4px;right:-4px;background:#e74c3c;color:#fff;font-size:9px;font-weight:bold;border-radius:50%;width:16px;height:16px;display:none;align-items:center;justify-content:center;">0</span>';
+            notificationsShortcut.hidden = true;
+            document.body.appendChild(notificationsShortcut);
+            var profilePressTimer = null;
+            var profileLongPress = false;
+            function hideNotificationsShortcut() {
+                notificationsShortcut.classList.remove('is-visible');
+                notificationsShortcut.hidden = true;
+                profileShortcut.setAttribute('aria-expanded', 'false');
+            }
+            function showNotificationsShortcut() {
+                var rect = profileShortcut.getBoundingClientRect();
+                notificationsShortcut.style.left = Math.max(8, rect.left + (rect.width - 40) / 2) + 'px';
+                notificationsShortcut.style.top = Math.max(8, rect.top - 48) + 'px';
+                notificationsShortcut.hidden = false;
+                profileShortcut.setAttribute('aria-expanded', 'true');
+                requestAnimationFrame(function () { notificationsShortcut.classList.add('is-visible'); });
+            }
+            profileShortcut.setAttribute('aria-haspopup', 'true');
+            profileShortcut.setAttribute('aria-expanded', 'false');
+            profileShortcut.title = 'Профиль · удерживайте для уведомлений';
+            profileShortcut.addEventListener('pointerdown', function (event) {
+                if (event.button !== undefined && event.button !== 0) return;
+                event.preventDefault();
+                if (profileShortcut.setPointerCapture) profileShortcut.setPointerCapture(event.pointerId);
+                profileLongPress = false;
+                clearTimeout(profilePressTimer);
+                profilePressTimer = window.setTimeout(function () {
+                    profileLongPress = true;
+                    showNotificationsShortcut();
+                }, 300);
+            });
+            profileShortcut.addEventListener('pointerup', function (event) {
+                event.preventDefault();
+                clearTimeout(profilePressTimer);
+                if (!profileLongPress) window.location.href = profileShortcut.href;
+            });
+            profileShortcut.addEventListener('pointercancel', function () { clearTimeout(profilePressTimer); });
+            profileShortcut.addEventListener('lostpointercapture', function () { clearTimeout(profilePressTimer); });
+            profileShortcut.addEventListener('click', function (event) {
+                event.preventDefault();
+                if (event.detail === 0) window.location.href = profileShortcut.href;
+            });
+            notificationsShortcut.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                hideNotificationsShortcut();
+                if (typeof window.toggleNotifPanel === 'function') window.toggleNotifPanel();
+            });
+            document.addEventListener('pointerdown', function (event) {
+                if (!notificationsShortcut.hidden && !profileShortcut.contains(event.target) && !notificationsShortcut.contains(event.target)) {
+                    hideNotificationsShortcut();
+                }
+            });
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && !notificationsShortcut.hidden) hideNotificationsShortcut();
+            });
+        }
     });
     function link(label, href, icon, secondary) {
         return '<a class="catalog-link' + (secondary ? ' secondary' : '') + '" href="' + href + '">' + svg(icons[icon]) + label + '</a>';

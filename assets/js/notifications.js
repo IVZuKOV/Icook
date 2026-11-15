@@ -1,21 +1,4 @@
 (function(){
-  function injectBell(){
-    var bar = document.querySelector('.bottom-bar');
-    if(!bar) return;
-    var hr = bar.querySelector('.header-right');
-    if(!hr || document.getElementById('notifBellBtn')) return;
-    var btn = document.createElement('button');
-    btn.className = 'icon-btn';
-    btn.id = 'notifBellBtn';
-    btn.setAttribute('aria-label','Уведомления');
-    btn.style.position = 'relative';
-    btn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span id="notifBadgeMain" style="position:absolute;top:-4px;right:-4px;background:#e74c3c;color:#fff;font-size:9px;font-weight:bold;border-radius:50%;width:16px;height:16px;display:none;align-items:center;justify-content:center;">0</span>';
-    btn.addEventListener('click', function(ev){ ev.stopPropagation(); toggleNotifPanel(); });
-    var themeBtn = hr.querySelector('.theme-btn');
-    if(themeBtn){ hr.insertBefore(btn, themeBtn); }
-    else { hr.appendChild(btn); }
-  }
-
   function ensurePanel(){
     if(document.getElementById('notifPanelMain')) return;
     var p = document.createElement('div');
@@ -84,7 +67,6 @@
   });
 
   function init(){
-    injectBell();
     ensurePanel();
     loadNotifMain();
     setInterval(loadNotifMain, 30000);

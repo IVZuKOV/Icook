@@ -17,6 +17,20 @@ header.site-header {
     transform: translateY(0);
 }
 header.site-header.is-scroll-hidden { transform: translateY(-100%); }
+header.site-header .header-left { flex: 1 1 auto; min-width: 0; }
+header.site-header .site-header-tools {
+    width: auto;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    margin-left: auto;
+    gap: 4px;
+}
+header.site-header .site-header-tools .theme-btn {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+}
 
 /* Размеры названия и знака точно соответствуют главной странице. */
 header.site-header .logo {
@@ -35,8 +49,10 @@ header.site-header .logo-icon {
 
 /* У старой панели продавца управляющие кнопки находятся в верхней шапке. */
 @media(max-width:900px) {
+    header.site-header { padding-left: 12px; padding-right: 12px; gap: 8px; }
     header.site-header .logo { font-size: 18px !important; gap: 10px !important; }
     header.site-header .logo-icon { width: 36px !important; height: 36px !important; }
+    header.site-header .site-header-tools .theme-btn { width: 36px; height: 36px; flex-basis: 36px; }
     header.site-header[data-header-tools] {
         padding-left: 16px; padding-right: 16px; gap: 8px;
         overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
