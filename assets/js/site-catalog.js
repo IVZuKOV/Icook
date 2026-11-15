@@ -18,6 +18,18 @@
         store: '<path d="M3 10h18l-1.2-6H4.2L3 10zM5 10v10h14V10M9 20v-6h6v6"/><path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>'
     };
     function svg(content) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + content + '</svg>'; }
+    var currentPagePath = window.location.pathname.replace(/\/+$/, '') || '/index.html';
+    if (currentPagePath === '/') currentPagePath = '/index.html';
+    var isMenuPage = /\/menu(?:\.html)?$/i.test(currentPagePath);
+    function hideCurrentPageLink() {
+        drawer.querySelectorAll('a.catalog-link[href]').forEach(function (anchor) {
+            try {
+                var linkPath = new URL(anchor.href, window.location.href).pathname.replace(/\/+$/, '') || '/index.html';
+                if (linkPath === '/') linkPath = '/index.html';
+                anchor.style.display = linkPath === currentPagePath ? 'none' : '';
+            } catch (error) {}
+        });
+    }
     var siteHeader = document.querySelector('header.site-header');
     var themeButton = document.querySelector('.bottom-bar .theme-btn');
     if (siteHeader && themeButton) {
@@ -32,7 +44,7 @@
     if (!document.getElementById('bottomNavShortcutStyles')) {
         var shortcutStyles = document.createElement('style');
         shortcutStyles.id = 'bottomNavShortcutStyles';
-        shortcutStyles.textContent = '.bottom-nav-recipes-popover{position:fixed;z-index:1100;display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid var(--border-color);border-radius:50%;background:var(--card-bg);color:var(--text-main);box-shadow:0 4px 16px var(--neon-glow);text-decoration:none;cursor:pointer;opacity:0;transform:translateY(6px) scale(.92);transition:opacity .16s ease,transform .16s ease}.bottom-nav-recipes-popover.is-visible{opacity:1;transform:translateY(0) scale(1)}.bottom-nav-recipes-popover svg{width:20px;height:20px}.bottom-nav-recipes-popover[hidden]{display:none!important}';
+        shortcutStyles.textContent = '.bottom-nav-recipes-popover{position:fixed;z-index:1100;display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid var(--border-color);border-radius:50%;background:var(--card-bg);color:var(--text-main);box-shadow:0 4px 16px var(--neon-glow);text-decoration:none;cursor:pointer;opacity:0;transform:translateY(6px) scale(.92);transition:opacity .16s ease,transform .16s ease}.bottom-nav-recipes-popover.is-visible{opacity:1;transform:translateY(0) scale(1)}.bottom-nav-recipes-popover svg{width:20px;height:20px}.bottom-nav-recipes-popover[hidden]{display:none!important}.bottom-nav-notifications-popover{color:#1e40af}.bottom-nav-notifications-popover svg{stroke:currentColor}html[data-theme=\"dark\"] .bottom-nav-notifications-popover{color:#e2e8f0}';
         document.head.appendChild(shortcutStyles);
     }
     document.querySelectorAll('.bottom-bar .header-right').forEach(function (bar) {
@@ -42,14 +54,15 @@
 
         var menuShortcut = document.createElement('a');
         menuShortcut.className = 'icon-btn bottom-nav-shortcut';
-        menuShortcut.href = 'menu.html';
-        menuShortcut.setAttribute('aria-label', 'Меню');
-        menuShortcut.title = 'Меню · удерживайте для рецептов';
-        menuShortcut.dataset.bottomShortcut = 'menu';
+        menuShortcut.href = isMenuPage ? 'recipes.html' : 'menu.html';
+        menuShortcut.setAttribute('aria-label', isMenuPage ? 'Рецепты' : 'Меню');
+        menuShortcut.title = isMenuPage ? 'Рецепты' : 'Меню · удерживайте для рецептов';
+        menuShortcut.dataset.bottomShortcut = isMenuPage ? 'recipes' : 'menu';
         menuShortcut.style.flex = '0 0 40px';
-        menuShortcut.innerHTML = svg(icons.menu);
+        menuShortcut.innerHTML = svg(isMenuPage ? icons.recipes : icons.menu);
         reference.insertAdjacentElement('afterend', menuShortcut);
 
+        if (!isMenuPage) {
         var recipesShortcut = document.createElement('a');
         recipesShortcut.className = 'bottom-nav-recipes-popover';
         recipesShortcut.href = 'recipes.html';
@@ -111,12 +124,13 @@
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape' && !recipesShortcut.hidden) hideRecipesShortcut();
         });
+        }
 
         var profileShortcut = bar.querySelector('#userNameBtn');
         if (profileShortcut && !bar.querySelector('[data-bottom-shortcut="notifications"]')) {
             var notificationsShortcut = document.createElement('button');
             notificationsShortcut.type = 'button';
-            notificationsShortcut.className = 'bottom-nav-recipes-popover';
+            notificationsShortcut.className = 'bottom-nav-recipes-popover bottom-nav-notifications-popover';
             notificationsShortcut.id = 'notifBellBtn';
             notificationsShortcut.setAttribute('aria-label', 'Уведомления');
             notificationsShortcut.title = 'Уведомления';
@@ -199,6 +213,7 @@
         '</div>' +
         '<h3 id="catalogOutletTitle" class="catalog-subheader" style="display:none;">' + svg(icons.store) + 'Наши партнёры</h3>' +
         '<div id="catalogOutletLinks"></div>';
+    hideCurrentPageLink();
     drawer.setAttribute('role', 'navigation');
     drawer.setAttribute('aria-labelledby', 'catalogTitle');
     var opener = null;
@@ -249,7 +264,10 @@
             anchor.appendChild(document.createTextNode(project.name));
             fragment.appendChild(anchor);
         });
-        if (fragment.childNodes.length) target.replaceChildren(fragment);
+        if (fragment.childNodes.length) {
+            target.replaceChildren(fragment);
+            hideCurrentPageLink();
+        }
     }
     fetch('/api/joint_projects.php?action=public', {credentials:'same-origin', cache:'no-store'})
         .then(function (response) {
@@ -296,6 +314,7 @@
             var hasOutlets = fragment.childNodes.length > 0;
             target.replaceChildren(fragment);
             heading.style.display = hasOutlets ? '' : 'none';
+            hideCurrentPageLink();
         })
         .catch(function (error) { console.error(error); });
     drawer.addEventListener('click', function (event) {

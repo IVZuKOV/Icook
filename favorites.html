@@ -258,7 +258,7 @@ button, .btn, a, label {
 .back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 </style>
 <link rel="stylesheet" href="assets/css/favorites.css?v=20261021145218">
-<link rel="stylesheet" href="assets/css/content-favorites.css?v=20261101115550">
+<link rel="stylesheet" href="assets/css/content-favorites.css?v=20261115-fav2">
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
@@ -615,6 +615,17 @@ function createFavoriteHeart(entry) {
 function createFavoriteCard(entry, item) {
     const card = document.createElement('article');
     card.className = 'card favorite-content-card';
+    if (entry.type === 'dish' || entry.type === 'recipe') {
+        const kindIcon = document.createElement('span');
+        kindIcon.className = 'favorite-content-kind-icon';
+        kindIcon.setAttribute('role', 'img');
+        kindIcon.setAttribute('aria-label', entry.type === 'recipe' ? 'Рецепт' : 'Блюдо');
+        kindIcon.title = entry.type === 'recipe' ? 'Рецепт' : 'Блюдо';
+        kindIcon.innerHTML = entry.type === 'recipe'
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>'
+            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>';
+        card.appendChild(kindIcon);
+    }
     card.appendChild(createFavoriteHeart(entry));
 
     if (item.image) {
@@ -628,10 +639,12 @@ function createFavoriteCard(entry, item) {
 
     const body = document.createElement('div');
     body.className = 'favorite-content-body';
-    const typeLabel = document.createElement('div');
-    typeLabel.className = 'favorite-content-type';
-    typeLabel.textContent = entry.type === 'place' ? 'Место' : entry.type === 'recipe' ? 'Рецепт' : 'Блюдо';
-    body.appendChild(typeLabel);
+    if (entry.type === 'place') {
+        const typeLabel = document.createElement('div');
+        typeLabel.className = 'favorite-content-type';
+        typeLabel.textContent = 'Место';
+        body.appendChild(typeLabel);
+    }
 
     const title = document.createElement('div');
     title.className = entry.type === 'dish' ? 'dish favorite-content-title' : 'favorite-content-title';
@@ -800,7 +813,7 @@ else loadFavorites();
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
-<script src="assets/js/site-catalog.js?v=20261115-nav4"></script>
+<script src="assets/js/site-catalog.js?v=20261115-nav5"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>
 <script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
 <script>
