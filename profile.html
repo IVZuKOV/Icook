@@ -860,6 +860,7 @@ button, .btn, a, label {
 <button class="tab active" data-admin-section="stats" onclick="loadAdminSection('stats',this)" aria-label="Счётчики"><span class="admin-nav-icon" aria-hidden="true">▦</span><span>Обзор и статистика</span></button>
 <button class="tab" data-admin-section="users" onclick="loadAdminSection('users',this)" aria-label="Пользователи"><span class="admin-nav-icon" aria-hidden="true">♙</span><span>Пользователи</span></button>
 <button class="tab" data-admin-section="dishes" onclick="loadAdminSection('dishes',this)" aria-label="Блюда"><span class="admin-nav-icon" aria-hidden="true">🍽</span><span>Блюда</span></button>
+<button class="tab" data-admin-section="recipes" onclick="loadAdminSection('recipes',this)" aria-label="Рецепты"><span class="admin-nav-icon" aria-hidden="true">📖</span><span>Рецепты</span></button>
 <button class="tab" data-admin-section="orders" onclick="loadAdminSection('orders',this)" aria-label="Заказы"><span class="admin-nav-icon" aria-hidden="true">▤</span><span>Заказы</span></button>
 <button class="tab" data-admin-section="categories" onclick="loadAdminSection('categories',this)" aria-label="Категории"><span class="admin-nav-icon" aria-hidden="true">▣</span><span>Категории</span></button>
 <button class="tab" data-admin-section="reviews" onclick="loadAdminSection('reviews',this)" aria-label="Отзывы"><span class="admin-nav-icon" aria-hidden="true">✳</span><span>Отзывы</span></button>
@@ -2088,6 +2089,7 @@ async function loadAdminSection(section, btn){
         stats:['Обзор и статистика','Ключевые показатели и активность платформы','Обзор'],
         users:['Пользователи','Профили, роли и быстрый переход в личный кабинет','Пользователи'],
         dishes:['Блюда','Публикация и управление блюдами на платформе','Блюда'],
+        recipes:['Рецепты','Рецепты пользователей и управление их публикацией','Рецепты'],
         orders:['Заказы','Текущие статусы и история заказов','Заказы'],
         categories:['Категории','Справочник категорий каталога','Категории'],
         reviews:['Отзывы','Модерация и проверка отзывов пользователей','Отзывы']
@@ -2136,6 +2138,8 @@ async function loadAdminSection(section, btn){
             } else if(section === 'dishes'){
                 html += '<button onclick="adminToggleDish(' + row.id + ',' + (row.is_available==1?0:1) + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:12px;">' + (row.is_available==1?'Скрыть':'Показать') + '</button>';
                 html += ' <button onclick="adminDeleteDish(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px;">Удалить</button>';
+            } else if(section === 'recipes'){
+                html += '<button onclick="adminUpdateRecipeStatus(' + row.id + ',' + (row.is_available==1?0:1) + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:12px;">' + (row.is_available==1?'Скрыть':'Опубликовать') + '</button>';
             } else if(section === 'orders'){
                 html += '<select onchange="adminUpdateOrder(' + row.id + ',this.value)" style="padding:4px 8px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);font-size:12px;">';
                 ['pending','confirmed','cooking','ready','delivered','cancelled'].forEach(function(s){ html += '<option value="' + s + '"' + (row.status===s?' selected':'') + '>' + s + '</option>'; });
@@ -2183,6 +2187,16 @@ async function adminUpdateOrder(id, status){
     showToast('Статус заказа обновлён');
 }
 
+async function adminUpdateRecipeStatus(id, isAvailable){
+    try{
+        var res=await fetch('/api/admin.php?action=update_recipe_status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,is_available:isAvailable})});
+        var data=await res.json();
+        if(!res.ok||!data.success)throw new Error(data.error||'Не удалось изменить публикацию рецепта');
+        showToast(isAvailable?'Рецепт опубликован':'Рецепт скрыт');
+        loadAdminSection('recipes');
+    }catch(error){showToast(error.message||'Ошибка обновления рецепта');}
+}
+
 // === СЧЁТЧИКИ (статистика) ===
 async function renderAdminStats(){
     var c = document.getElementById('adminContent');
@@ -2196,6 +2210,7 @@ async function renderAdminStats(){
         var cards = [
             ['👥 Пользователей', d.users],
             ['🍽️ Блюд', d.dishes],
+            ['📖 Рецептов', d.recipes],
             ['📦 Заказов', d.orders],
             ['🏷️ Категорий', d.categories],
             ['⏳ Отзывов на модерации', d.reviews_pending],

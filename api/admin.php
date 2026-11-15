@@ -29,6 +29,15 @@ switch ($action) {
         );
         json_out(['success' => true, 'data' => $stmt->fetchAll()]);
 
+    case 'recipes':
+        $stmt = $pdo->query(
+            'SELECT r.id, r.title, r.is_available, r.created_at, u.name AS author_name
+             FROM recipes r
+             LEFT JOIN users u ON r.user_id = u.id
+             ORDER BY r.id DESC'
+        );
+        json_out(['success' => true, 'data' => $stmt->fetchAll()]);
+
     case 'orders':
         $stmt = $pdo->query(
             'SELECT o.id, o.status, o.total_price as total, o.created_at,
@@ -46,7 +55,7 @@ switch ($action) {
 
     case 'stats':
         $stats = [];
-        foreach (['users' => 'users', 'dishes' => 'dishes', 'orders' => 'orders', 'categories' => 'categories'] as $key => $table) {
+        foreach (['users' => 'users', 'dishes' => 'dishes', 'recipes' => 'recipes', 'orders' => 'orders', 'categories' => 'categories'] as $key => $table) {
             $stats[$key] = (int) $pdo->query("SELECT COUNT(*) FROM $table")->fetchColumn();
         }
         try {
@@ -128,6 +137,17 @@ switch ($action) {
         if ($id > 0) {
             $pdo->prepare('DELETE FROM dishes WHERE id = ?')->execute([$id]);
         }
+        json_out(['success' => true]);
+
+    case 'update_recipe_status':
+        $data = body_json();
+        $id = (int) ($data['id'] ?? 0);
+        $isAvailable = (int) ($data['is_available'] ?? -1);
+        if ($id <= 0 || !in_array($isAvailable, [0, 1], true)) {
+            json_out(['success' => false, 'error' => 'Некорректные данные']);
+        }
+        $stmt = $pdo->prepare('UPDATE recipes SET is_available = ? WHERE id = ?');
+        $stmt->execute([$isAvailable, $id]);
         json_out(['success' => true]);
 
     case 'update_order_status':
