@@ -10,7 +10,9 @@ if ($sellerId <= 0) {
 }
 
 $stmt = $pdo->prepare(
-    'SELECT id, name, phone, address, seller_description, is_seller, created_at
+    'SELECT id, name, phone, address, seller_description, is_seller, created_at,
+            CASE WHEN avatar_public = 1 THEN avatar ELSE \'\' END AS avatar,
+            CASE WHEN avatar_public = 1 THEN avatar_version ELSE \'\' END AS avatar_version
      FROM users WHERE id = ? AND is_seller = 1 LIMIT 1'
 );
 $stmt->execute([$sellerId]);

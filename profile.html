@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261114">
 
 <style>
 .profile-.site-header{display:flex;gap:28px;align-items:center;flex-wrap:wrap;padding:24px 0;border-bottom:1px solid var(--border-color);}
@@ -63,6 +64,7 @@
 .my-dish-card .card-body{padding:14px;}
 .my-dish-card .dish-title{font-size:16px;font-weight:700;margin-bottom:4px;}
 .my-dish-card .dish-price{font-size:18px;font-weight:800;color:var(--neon-dark);margin-bottom:8px;}
+.my-publication-author{display:flex;align-items:center;gap:6px;margin:-2px 0 8px;color:var(--neon-dark);font-size:12px;font-weight:700;}
 .dish-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:8px;}
 .dish-badge.on{background:rgba(30,64,175,0.15);color:var(--neon-dark);}
 .dish-badge.off{background:rgba(239,68,68,0.1);color:#ef4444;}
@@ -243,6 +245,15 @@ body{padding-bottom:88px;}
 .avatar-modal-buttons .modal-confirm{border-color:var(--neon);background:var(--neon);color:var(--bg);}
 .avatar-modal-buttons .modal-confirm:hover{border-color:var(--neon-dark);background:var(--neon-dark);color:var(--bg);box-shadow:0 0 18px var(--neon-glow);}
 .avatar-modal-buttons .modal-cancel:disabled,.avatar-modal-buttons .modal-confirm:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
+.avatar-settings-head{display:flex;align-items:center;justify-content:center;position:relative;}
+.avatar-settings-close{position:absolute;right:-8px;top:-10px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--text-muted);font-size:26px;cursor:pointer;}
+.avatar-settings-close:hover{background:var(--neon-glow);color:var(--neon-dark);}
+.avatar-settings-preview{width:88px;height:88px;margin:4px auto 16px;overflow:hidden;border-radius:50%;border:2px solid var(--neon);background:var(--neon-glow);color:var(--neon-dark);font-size:34px;box-shadow:0 5px 20px var(--neon-glow);}
+.avatar-settings-preview img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%;}
+.avatar-settings-actions{display:grid;gap:10px;}
+.avatar-settings-actions button{width:100%;min-height:44px;}
+.avatar-visibility-hide{border-color:rgba(239,68,68,.45)!important;color:#ef4444!important;background:transparent!important;}
+.avatar-visibility-hide:hover{border-color:#ef4444!important;background:rgba(239,68,68,.08)!important;}
 .index-banner-toolbar{display:flex;justify-content:flex-end;margin-bottom:14px;}
 .index-banner-add{width:48px;height:48px;border:0;border-radius:50%;background:var(--neon);color:var(--bg);font-size:32px;font-weight:500;line-height:1;cursor:pointer;box-shadow:0 4px 14px var(--neon-glow);}
 .index-banner-add:hover{transform:scale(1.06);}
@@ -371,7 +382,7 @@ button, .btn, a, label {
 
 <main class="container" style="max-width:1100px;margin:0 auto;padding:40px 24px;">
 <div class="profile-header">
-<button type="button" class="avatar-upload-trigger" onclick="openAvatarUpload()" aria-label="Изменить фото профиля"><span class="avatar" id="avatarLetter">?</span></button>
+<button type="button" class="avatar-upload-trigger" onclick="openAvatarSettings()" aria-label="Настройки аватара"><span class="avatar" id="avatarLetter">?</span></button>
 
 
 <div class="profile-info">
@@ -692,6 +703,7 @@ button, .btn, a, label {
 </div>
 
 <script src="assets/js/config.js?v=20261105152159"></script>
+<script src="assets/js/author-avatar.js?v=20261114"></script>
 <script src="assets/js/main.js?v=20261105152159"></script>
 <script src="assets/js/theme.js?v=20261105152159"></script>
 <script>
@@ -765,6 +777,7 @@ async function loadProfile() {
                 currentUser.search_radius = data.user.search_radius || currentUser.search_radius;
                 currentUser.avatar = data.user.avatar || String();
                 currentUser.avatarVersion = data.user.avatar_version || String();
+                currentUser.avatar_public = Number(data.user.avatar_public)!==0?1:0;
                 localStorage.setItem('user', JSON.stringify(currentUser));
             }
             // Карта инициализируется при открытии вкладки настроек (switchProfileTab)
@@ -871,6 +884,7 @@ async function loadMyDishes() {
                 '<div class="card-body">' +
                     '<span class="dish-badge ' + badgeClass + '">' + badgeText + '</span>' +
                     '<div class="dish-title">' + d.title + '</div>' +
+                    '<div class="my-publication-author">' + window.IcookAuthorAvatar.html(userProfile.name,userProfile.avatar,userProfile.avatar_version) + window.IcookAuthorAvatar.escape(userProfile.name) + '</div>' +
                     '<div class="dish-price">' + d.price + ' \u20BD</div>' +
                     '<div class="dish-actions">' +
                         (isAvail ? '<button class="btn-toggle" onclick="toggleDish(' + d.id + ')">В стоп-лист</button>' : '<button class="btn-publish" onclick="toggleDish(' + d.id + ')">Разместить</button>') +
@@ -1210,6 +1224,7 @@ async function loadMyRecipes() {
                 '<div class="card-body">' +
                     '<span class="dish-badge ' + badgeClass + '">' + badgeText + '</span>' +
                     '<div class="dish-title">' + r.title + '</div>' +
+                    '<div class="my-publication-author">' + window.IcookAuthorAvatar.html(userProfile.name,userProfile.avatar,userProfile.avatar_version) + window.IcookAuthorAvatar.escape(userProfile.name) + '</div>' +
                     '<div class="dish-price" style="font-size:13px;font-weight:600;">Рецепт</div>' +
                     '<div class="dish-actions">' +
                         (isAvail ? '<button class="btn-toggle" onclick="toggleRecipe(' + r.id + ')">Скрыть</button>' : '<button class="btn-publish" onclick="toggleRecipe(' + r.id + ')">Опубликовать</button>') +
@@ -1372,7 +1387,7 @@ function saveSettings(){
     localStorage.setItem('user', JSON.stringify(currentUser));
     document.getElementById('name').textContent = n;
     document.getElementById('email').textContent = e || 'Email не указан';
-    document.getElementById('avatarLetter').textContent = n.charAt(0).toUpperCase();
+    renderProfileAvatar();
     showInfoModal('success','Сохранено','Данные профиля обновлены');
 }
 
@@ -2235,7 +2250,19 @@ async function saveLKEdit(e){
 <script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
 <script src="assets/js/site-catalog.js?v=20261105152159"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>
-<script src="assets/js/auth-email-flow.js?v=20261105152159"></script><div class="modal-overlay" id="avatarUploadModal" onclick="closeAvatarUpload(event)">
+<script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
+<div class="modal-overlay" id="avatarSettingsModal" onclick="closeAvatarSettings(event)">
+<div class="modal-box avatar-modal-box" role="dialog" aria-modal="true" aria-labelledby="avatarSettingsTitle" onclick="event.stopPropagation()">
+<div class="avatar-settings-head"><div class="modal-title" id="avatarSettingsTitle">Аватар профиля</div><button type="button" class="avatar-settings-close" aria-label="Закрыть" onclick="closeAvatarSettings()">×</button></div>
+<div class="modal-text" id="avatarVisibilityStatus">Настройте, кто будет видеть вашу фотографию.</div>
+<div class="avatar avatar-settings-preview" id="avatarSettingsPreview" aria-hidden="true">?</div>
+<div class="avatar-settings-actions">
+<button type="button" class="modal-confirm" onclick="editAvatarFromSettings()">Изменить аватар</button>
+<button type="button" class="modal-cancel avatar-visibility-hide" id="avatarVisibilityButton" onclick="toggleAvatarVisibility()">Скрыть для всех</button>
+</div>
+</div>
+</div>
+<div class="modal-overlay" id="avatarUploadModal" onclick="closeAvatarUpload(event)">
 <div class="modal-box avatar-modal-box" onclick="event.stopPropagation()">
 <div class="modal-title"><span class="morph-text" data-ru="Фото профиля" data-en="Profile photo">Фото профиля</span></div>
 <div class="modal-text"><span class="morph-text" data-ru="Выберите фото для профиля." data-en="Choose a profile photo.">Выберите фото для профиля.</span></div>
@@ -2286,6 +2313,74 @@ var avatarCropPointers=Object.create(null);
 var avatarCropPinch=null;
 var avatarUploading=false;
 var avatarSelectionVersion=0;
+var avatarVisibilitySaving=false;
+
+function isAvatarPublic(){
+  var value=userProfile&&userProfile.avatar_public!=null?userProfile.avatar_public:(currentUser&&currentUser.avatar_public!=null?currentUser.avatar_public:1);
+  return Number(value)!==0;
+}
+
+function renderAvatarSettings(){
+  var preview=document.getElementById('avatarSettingsPreview');
+  var source=document.getElementById('avatarLetter');
+  if(preview&&source){
+    preview.textContent=(currentUser&&currentUser.name?Array.from(currentUser.name)[0]:'?').toLocaleUpperCase('ru-RU');
+    var image=source.querySelector('img');
+    if(image)preview.appendChild(image.cloneNode(true));
+  }
+  var visible=isAvatarPublic();
+  var status=document.getElementById('avatarVisibilityStatus');
+  var button=document.getElementById('avatarVisibilityButton');
+  if(status)status.textContent=visible?'Фото видно всем в ваших публикациях.':'В публикациях всем видна только первая буква вашего имени.';
+  if(button){
+    button.textContent=visible?'Скрыть для всех':'Показывать всем';
+    button.classList.toggle('avatar-visibility-hide',visible);
+    button.classList.toggle('modal-confirm',!visible);
+    button.classList.toggle('modal-cancel',visible);
+    button.disabled=avatarVisibilitySaving;
+  }
+}
+
+function openAvatarSettings(){
+  renderAvatarSettings();
+  document.getElementById('avatarSettingsModal').classList.add('active');
+}
+
+function closeAvatarSettings(event){
+  var modal=document.getElementById('avatarSettingsModal');
+  if(!modal||(event&&event.target!==modal))return;
+  if(avatarVisibilitySaving)return;
+  modal.classList.remove('active');
+}
+
+function editAvatarFromSettings(){
+  document.getElementById('avatarSettingsModal').classList.remove('active');
+  openAvatarUpload();
+}
+
+async function toggleAvatarVisibility(){
+  if(avatarVisibilitySaving)return;
+  avatarVisibilitySaving=true;
+  renderAvatarSettings();
+  try{
+    var nextValue=isAvatarPublic()?0:1;
+    var response=await fetch('/api/avatar_visibility.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({avatar_public:nextValue})});
+    var data=await response.json();
+    if(!response.ok||!data.success)throw new Error(data.error||'Не удалось изменить видимость аватара');
+    if(userProfile)userProfile.avatar_public=Number(data.avatar_public);
+    if(currentUser){currentUser.avatar_public=Number(data.avatar_public);localStorage.setItem('user',JSON.stringify(currentUser));}
+    var status=document.getElementById('avatarVisibilityStatus');
+    avatarVisibilitySaving=false;
+    renderAvatarSettings();
+    if(status)status.textContent=Number(data.avatar_public)===1?'Фото теперь видно всем в ваших публикациях.':'Фото скрыто: в публикациях видна только первая буква имени.';
+  }catch(error){
+    avatarVisibilitySaving=false;
+    renderAvatarSettings();
+    var status=document.getElementById('avatarVisibilityStatus');
+    if(status)status.textContent=error.message||'Не удалось изменить видимость аватара.';
+  }
+}
+
 function clearAvatarPreview(){
   if(avatarSourceUrl){URL.revokeObjectURL(avatarSourceUrl);avatarSourceUrl='';}
   avatarSourceImage=null;
@@ -2519,6 +2614,10 @@ async function uploadAvatar(){
     if(!response.ok||!data.success)throw new Error(data.error||'Не удалось загрузить фото');
     currentUser.avatar=data.avatar;
     currentUser.avatarVersion=data.avatar_version||'';
+    if(userProfile){
+      userProfile.avatar=data.avatar;
+      userProfile.avatar_version=data.avatar_version||'';
+    }
     localStorage.setItem('user',JSON.stringify(currentUser));
     renderProfileAvatar();
     avatarUploading=false;

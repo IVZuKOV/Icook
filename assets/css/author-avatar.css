@@ -1,0 +1,30 @@
+.author-avatar{
+    position:relative;
+    display:inline-flex;
+    flex:none;
+    align-items:center;
+    justify-content:center;
+    width:24px;
+    height:24px;
+    overflow:hidden;
+    border:1px solid var(--border-color);
+    border-radius:50%;
+    background:var(--neon-glow);
+    color:var(--neon-dark);
+    font-size:12px;
+    font-weight:800;
+    line-height:1;
+    vertical-align:middle;
+}
+.author-avatar img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border-radius:inherit;
+    object-fit:cover;
+}
+.author-avatar-large{width:68px;height:68px;font-size:26px;}
+.author-avatar-chef{width:76px;height:76px;margin-bottom:20px;font-size:30px;}
+.recipe-author .author-avatar{width:20px;height:20px;font-size:10px;}
+.chef-card .author-avatar-chef{border-radius:50%;}

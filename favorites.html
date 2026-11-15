@@ -5,6 +5,7 @@
 <title>Избранное — Я готовлю — ты ешь!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261114">
 
 <style>
 /* --- CSS НАЧАЛО --- */
@@ -99,6 +100,7 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .card-content{padding:18px;background:var(--card-bg);}
 .dish{font-size:20px;margin-bottom:6px;color:var(--text-main);font-weight:700;}
 .chef{color:var(--neon-dark);margin-bottom:8px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:5px;}
+.favorite-content-author{display:flex;align-items:center;gap:6px;margin:0 0 8px;color:var(--neon-dark);font-size:13px;font-weight:700;}
 .chef::before{content:"👨‍🍳";font-size:13px;}
 .desc{color:var(--text-muted);line-height:1.5;margin-bottom:14px;font-size:14px;}
 .price{font-size:22px;color:var(--neon-dark);font-weight:800;margin-bottom:12px;text-shadow:0 0 8px rgba(30,64,175,0.3);}
@@ -593,6 +595,7 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 </script>
 
 <script src="assets/js/favorites-store.js?v=20261101115409"></script>
+<script src="assets/js/author-avatar.js?v=20261114"></script>
 <script>
 let favoritesLoadVersion = 0;
 let favoritesPageEntries = null;
@@ -638,7 +641,10 @@ function createFavoriteCard(entry, item) {
     if (entry.type === 'dish') {
         const author = document.createElement('div');
         author.className = 'chef';
-        author.textContent = item.seller_name || 'Повар';
+        author.appendChild(window.IcookAuthorAvatar.create(item.seller_name || 'Повар', item.seller_avatar, item.seller_avatar_version));
+        const authorName = document.createElement('span');
+        authorName.textContent = item.seller_name || 'Повар';
+        author.appendChild(authorName);
         body.appendChild(author);
         if (item.description) {
             const description = document.createElement('div');
@@ -662,9 +668,22 @@ function createFavoriteCard(entry, item) {
         addButton.addEventListener('click', function () { addToCartBtn(addButton); });
         body.appendChild(addButton);
     } else {
-        const details = entry.type === 'place'
-            ? [item.type, item.address].filter(Boolean).join(' · ')
-            : [item.author_name || 'Аноним', item.description].filter(Boolean).join('\n');
+        if (entry.type === 'recipe') {
+            const author = document.createElement('div');
+            author.className = 'favorite-content-author';
+            author.appendChild(window.IcookAuthorAvatar.create(item.author_name || 'Аноним', item.author_avatar, item.author_avatar_version));
+            const authorName = document.createElement('span');
+            authorName.textContent = item.author_name || 'Аноним';
+            author.appendChild(authorName);
+            body.appendChild(author);
+            if (item.description) {
+                const description = document.createElement('div');
+                description.className = 'favorite-content-description';
+                description.textContent = item.description;
+                body.appendChild(description);
+            }
+        }
+        const details = entry.type === 'place' ? [item.type, item.address].filter(Boolean).join(' · ') : '';
         if (details) {
             const description = document.createElement('div');
             description.className = 'favorite-content-description';
@@ -710,6 +729,30 @@ async function loadFavoriteDishes(entries, version) {
     return dishes;
 }
 
+async function loadFavoriteRecipes(entries, version) {
+    const wanted = new Set(entries.map(function (entry) { return entry.id; }));
+    const recipes = new Map();
+    let page = 1;
+    let pageCount = 1;
+    while (page <= pageCount && wanted.size) {
+        const response = await fetch('/api/recipes.php?page=' + page + '&limit=50');
+        if (!response.ok) throw new Error('Не удалось загрузить избранные рецепты (' + response.status + ')');
+        const data = await response.json();
+        if (!data.success || !Array.isArray(data.recipes)) throw new Error('Сервер вернул некорректный список рецептов');
+        data.recipes.forEach(function (recipe) {
+            const id = String(recipe.id);
+            if (wanted.has(id)) {
+                recipes.set(id, recipe);
+                wanted.delete(id);
+            }
+        });
+        pageCount = Number(data.pages) || 1;
+        page++;
+        if (version !== favoritesLoadVersion) return recipes;
+    }
+    return recipes;
+}
+
 async function loadFavorites() {
     const version = ++favoritesLoadVersion;
     const container = document.getElementById('favoritesGrid');
@@ -726,9 +769,12 @@ async function loadFavorites() {
         const dishEntries = entries.filter(function (entry) { return entry.type === 'dish'; });
         const dishes = dishEntries.length ? await loadFavoriteDishes(dishEntries, version) : new Map();
         if (version !== favoritesLoadVersion) return;
+        const recipeEntries = entries.filter(function (entry) { return entry.type === 'recipe'; });
+        const recipes = recipeEntries.length ? await loadFavoriteRecipes(recipeEntries, version) : new Map();
+        if (version !== favoritesLoadVersion) return;
 
         entries.forEach(function (entry) {
-            const item = entry.type === 'dish' ? dishes.get(entry.id) : entry.item;
+            const item = entry.type === 'dish' ? dishes.get(entry.id) : entry.type === 'recipe' ? (recipes.get(entry.id) || entry.item) : entry.item;
             if (!item) return;
             container.appendChild(createFavoriteCard(entry, item));
         });

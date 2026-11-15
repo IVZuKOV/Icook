@@ -33,7 +33,10 @@ if ($search !== '') {
     $params[] = $like;
 }
 
-$sql = "SELECT d.*, u.name as seller_name, c.name as category_name
+$sql = "SELECT d.*, u.name as seller_name,
+                CASE WHEN u.avatar_public = 1 THEN u.avatar ELSE '' END AS seller_avatar,
+                CASE WHEN u.avatar_public = 1 THEN u.avatar_version ELSE '' END AS seller_avatar_version,
+                c.name as category_name
         FROM dishes d
         LEFT JOIN users u ON d.user_id = u.id
         LEFT JOIN categories c ON d.category_id = c.id

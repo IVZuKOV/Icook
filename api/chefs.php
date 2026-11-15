@@ -35,6 +35,8 @@ try {
     // Только публичные данные: без телефона, email, адреса и координат.
     $stmt = $pdo->prepare(
         "SELECT u.id, u.name, u.city, u.country,
+                CASE WHEN u.avatar_public = 1 THEN u.avatar ELSE '' END AS avatar,
+                CASE WHEN u.avatar_public = 1 THEN u.avatar_version ELSE '' END AS avatar_version,
                 LEFT(u.seller_description, 500) AS description,
                 (SELECT COUNT(*) FROM dishes d WHERE d.user_id = u.id AND d.is_available = 1) AS dish_count
          FROM users u WHERE $where ORDER BY u.name ASC, u.id ASC LIMIT ? OFFSET ?"

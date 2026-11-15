@@ -158,7 +158,7 @@ function current_user(PDO $pdo): ?array
         return null;
     }
     $stmt = $pdo->prepare(
-        'SELECT id, name, email, phone, role, is_seller, seller_description, avatar,
+        'SELECT id, name, email, phone, role, is_seller, seller_description, avatar, avatar_version, avatar_public,
                 country, city, address, lat, lng, search_radius, lang
          FROM users WHERE id = ?'
     );

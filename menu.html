@@ -11,6 +11,7 @@
     
     <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
     <link rel="stylesheet" href="assets/css/menu.css?v=20261105152159">
+    <link rel="stylesheet" href="assets/css/author-avatar.css?v=20261114">
     
     <script>
         (function(){
@@ -626,6 +627,7 @@ body{padding-bottom:88px;}
     <script src="assets/js/config.js?v=20261105152159"></script>
     <script src="assets/js/main.js?v=20261105152159"></script>
     <script src="assets/js/favorites-store.js?v=20261101115409"></script>
+    <script src="assets/js/author-avatar.js?v=20261114"></script>
     <script src="assets/js/theme.js?v=20261105152159"></script>
     <script>
     function toggleFavorite(id) {
@@ -777,6 +779,11 @@ body{padding-bottom:88px;}
                             btnHtml +
                         '</div></div>';
                 }).join('');
+                var authorNodes=grid.querySelectorAll('.card .chef');
+                data.dishes.forEach(function(dish,index){
+                    var author=authorNodes[index];
+                    if(author)author.insertBefore(window.IcookAuthorAvatar.create(dish.seller_name||'Продавец',dish.seller_avatar,dish.seller_avatar_version),author.firstChild);
+                });
             } else {
                 grid.innerHTML = '';
                 empty.style.display = 'block';

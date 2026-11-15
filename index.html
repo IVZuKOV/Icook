@@ -5,6 +5,7 @@
 <title>Я готовлю — ты ешь!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261114">
 
 <style>
 /* --- CSS НАЧАЛО --- */
@@ -464,6 +465,16 @@ button, .btn, a, label {
     </footer>
 
 <script src="assets/js/favorites-store.js?v=20261101115409"></script>
+<script src="assets/js/author-avatar.js?v=20261114"></script>
+<script>
+function addDishAuthorAvatars(container,dishes){
+    var authors=container.querySelectorAll('.card .chef');
+    dishes.forEach(function(dish,index){
+        var author=authors[index];
+        if(author)author.insertBefore(window.IcookAuthorAvatar.create(dish.seller_name||'Повар',dish.seller_avatar,dish.seller_avatar_version),author.firstChild);
+    });
+}
+</script>
 <script>
 // --- JS НАЧАЛО ---
 let cart=JSON.parse(localStorage.getItem('cart'))||[];
@@ -902,6 +913,7 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
             html += '<div class="card">' + '<button class="fav-btn ' + (isFavorite(d.id)?'active':'') + '" onclick="toggleFavorite(' + d.id + ');return false;" data-id="' + d.id + '">' + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>' + imgTag + '<div class="card-content">' + cat + '<div class="dish">' + d.title + '</div><div class="chef">' + chef + '</div><div class="desc">' + desc + '</div><div class="price">' + parseFloat(d.price).toFixed(0) + ' ₽' + weight + '</div><button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g,'&quot;') + '" data-chef="' + chef.replace(/"/g,'&quot;') + '" data-price="' + parseFloat(d.price).toFixed(0) + '" data-img="' + (img||'') + '" onclick="addToCartBtn(this)">В корзину</button></div></div>';
         });
         container.innerHTML = html;
+        addDishAuthorAvatars(container,data.dishes);
     } catch(e){ console.error('Load dishes error:', e); }
 })();
 </script>
@@ -951,6 +963,7 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
                 html += '<div class="card">' + '<button class="fav-btn ' + (isFavorite(d.id)?'active':'') + '" onclick="toggleFavorite(' + d.id + ');return false;" data-id="' + d.id + '">' + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>' + imgTag + '<div class="card-content">' + cat + '<div class="dish">' + d.title + '</div><div class="chef">' + chef + '</div><div class="desc">' + desc + '</div><div class="price">' + parseFloat(d.price).toFixed(0) + ' \u20bd' + weight + '</div><button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g,'&quot;') + '" data-chef="' + chef.replace(/"/g,'&quot;') + '" data-price="' + parseFloat(d.price).toFixed(0) + '" data-img="' + (img||'') + '" onclick="addToCartBtn(this)">В корзину</button></div></div>';
             });
             container.innerHTML = html;
+            addDishAuthorAvatars(container,data.dishes);
         } catch(e){ console.error('Search error:', e); }
     }
 })();

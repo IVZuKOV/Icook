@@ -28,7 +28,9 @@ if ($search !== '') {
     $params[] = $like;
 }
 
-$sql = "SELECT r.*, u.name as author_name
+$sql = "SELECT r.*, u.name as author_name,
+                CASE WHEN u.avatar_public = 1 THEN u.avatar ELSE '' END AS author_avatar,
+                CASE WHEN u.avatar_public = 1 THEN u.avatar_version ELSE '' END AS author_avatar_version
         FROM recipes r
         LEFT JOIN users u ON r.user_id = u.id
         WHERE $where

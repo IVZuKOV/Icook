@@ -1,0 +1,2 @@
+ALTER TABLE users
+    ADD COLUMN avatar_public TINYINT(1) NOT NULL DEFAULT 1 AFTER avatar;
