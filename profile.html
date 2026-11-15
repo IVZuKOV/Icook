@@ -111,10 +111,11 @@
 .ing-name-line{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .ing-name-field{position:relative;flex:1;min-width:0;}
 .ing-row .ing-name{width:100%;min-width:0;padding-right:42px!important;}
-.ing-name-clear{position:absolute;top:0;right:7px;bottom:0;z-index:2;display:grid;place-items:center;width:30px;height:30px;margin:auto 0;padding:0;transform:none;border:0;border-radius:50%;background:transparent;color:#94a3b8;font:600 22px/1 Arial,sans-serif;cursor:pointer;transition:color .15s,background .15s;}
-.ing-name-clear:hover,.ing-name-clear:focus-visible{background:var(--neon-glow);color:#64748b;outline:none;}
+.ing-name-clear{position:absolute;top:50%;right:7px;z-index:2;display:grid;place-items:center;width:30px;height:30px;margin:0;padding:0;transform:translateY(-50%);border:0;border-radius:0;background:transparent;color:#94a3b8;cursor:pointer;transition:color .15s;}
+.ing-name-clear svg{display:block;width:16px;height:16px;}
+.ing-name-clear:hover,.ing-name-clear:focus-visible{background:transparent;color:#64748b;outline:none;box-shadow:none;}
 [data-theme="dark"] .ing-name-clear{color:#94a3b8;}
-[data-theme="dark"] .ing-name-clear:hover,[data-theme="dark"] .ing-name-clear:focus-visible{color:#e2e8f0;}
+[data-theme="dark"] .ing-name-clear:hover,[data-theme="dark"] .ing-name-clear:focus-visible{background:transparent;color:#e2e8f0;}
 .ing-suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:20;display:none;max-height:220px;overflow-y:auto;border:1px solid var(--border-color);border-radius:10px;background:var(--card-bg);box-shadow:0 8px 24px rgba(15,23,42,.18);}
 .ing-suggestions.active{display:block;}
 .ing-suggestion{display:block;width:100%;padding:10px 12px;border:0;border-bottom:1px solid var(--border-color);background:transparent;color:var(--text-main);text-align:left;font:inherit;cursor:pointer;}
@@ -1154,7 +1155,7 @@ function addIngredientRow(listId, ing) {
         return '<option value="' + unit.value + '"' + (unit.value === cur ? ' selected' : '') + '>' + unit.label + '</option>';
     }).join('');
     row.innerHTML =
-        '<div class="ing-name-line"><div class="ing-name-field"><input type="text" class="ing-name" maxlength="100" autocomplete="off" placeholder="Название ингредиента" value="' + escAttr(ing.name || '') + '"><button type="button" class="ing-name-clear" title="Очистить название" aria-label="Очистить название ингредиента" onclick="clearIngredientName(this)">&#215;</button><div class="ing-suggestions" role="listbox"></div></div>' +
+        '<div class="ing-name-line"><div class="ing-name-field"><input type="text" class="ing-name" maxlength="100" autocomplete="off" placeholder="Название ингредиента" value="' + escAttr(ing.name || '') + '"><button type="button" class="ing-name-clear" title="Очистить название" aria-label="Очистить название ингредиента" onclick="clearIngredientName(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button><div class="ing-suggestions" role="listbox"></div></div>' +
         '<button type="button" class="ing-remove-btn" title="Удалить ингредиент" aria-label="Удалить ингредиент" onclick="removeIngredientRow(this)">&#10005;</button></div>' +
         '<div class="ing-controls"><div class="ing-qty">' +
             '<button type="button" class="qty-btn" aria-label="Уменьшить количество" onclick="chgIngQty(this,-1)">&minus;</button>' +
