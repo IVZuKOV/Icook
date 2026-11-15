@@ -110,7 +110,11 @@
 .ing-row{display:block;margin-bottom:12px;padding:10px;border:1px solid var(--border-color);border-radius:12px;background:var(--card-bg);}
 .ing-name-line{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .ing-name-field{position:relative;flex:1;min-width:0;}
-.ing-row .ing-name{width:100%;min-width:0;}
+.ing-row .ing-name{width:100%;min-width:0;padding-right:42px!important;}
+.ing-name-clear{position:absolute;top:50%;right:7px;z-index:2;display:grid;place-items:center;width:30px;height:30px;padding:0;transform:translateY(-50%);border:0;border-radius:50%;background:transparent;color:#94a3b8;font:600 22px/1 Arial,sans-serif;cursor:pointer;transition:color .15s,background .15s;}
+.ing-name-clear:hover,.ing-name-clear:focus-visible{background:var(--neon-glow);color:#64748b;outline:none;}
+[data-theme="dark"] .ing-name-clear{color:#94a3b8;}
+[data-theme="dark"] .ing-name-clear:hover,[data-theme="dark"] .ing-name-clear:focus-visible{color:#e2e8f0;}
 .ing-suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:20;display:none;max-height:220px;overflow-y:auto;border:1px solid var(--border-color);border-radius:10px;background:var(--card-bg);box-shadow:0 8px 24px rgba(15,23,42,.18);}
 .ing-suggestions.active{display:block;}
 .ing-suggestion{display:block;width:100%;padding:10px 12px;border:0;border-bottom:1px solid var(--border-color);background:transparent;color:var(--text-main);text-align:left;font:inherit;cursor:pointer;}
@@ -740,7 +744,7 @@ button, .btn, a, label {
 </div>
 
 <script src="assets/js/config.js?v=20261105152159"></script>
-<script src="assets/js/author-avatar.js?v=20261114"></script>
+<script src="assets/js/author-avatar.js?v=20261114092106"></script>
 <script src="assets/js/main.js?v=20261105152159"></script>
 <script src="assets/js/theme.js?v=20261105152159"></script>
 <script>
@@ -1079,7 +1083,7 @@ function openRecipeDescriptionEditor(targetId) {
         overlay.setAttribute('role', 'dialog');
         overlay.setAttribute('aria-modal', 'true');
         overlay.setAttribute('aria-labelledby', 'recipeDescriptionEditorTitle');
-        overlay.innerHTML = '<div class="recipe-description-editor-head"><span id="recipeDescriptionEditorTitle">Описание рецепта</span></div>' +
+        overlay.innerHTML = '<div class="recipe-description-editor-head"><span id="recipeDescriptionEditorTitle">Описание</span></div>' +
             '<textarea id="recipeDescriptionEditorText" placeholder="Расскажите о рецепте..."></textarea>' +
             '<div class="recipe-description-editor-actions"><button type="button" class="recipe-description-cancel">Отменить</button><button type="button" class="recipe-description-apply">Применить</button></div>';
         document.body.appendChild(overlay);
@@ -1102,6 +1106,16 @@ function openRecipeDescriptionEditor(targetId) {
         });
     }
     overlay.dataset.targetId = targetId;
+    var title = overlay.querySelector('#recipeDescriptionEditorTitle');
+    var stepBlock = target.closest('.step-block');
+    if (stepBlock) {
+        var stepHeading = stepBlock.querySelector('.step-head span');
+        title.textContent = stepHeading ? 'Описание ' + stepHeading.textContent.toLowerCase() : 'Описание шага';
+        overlay.querySelector('textarea').placeholder = 'Опишите, что нужно сделать на шаге...';
+    } else {
+        title.textContent = 'Описание рецепта';
+        overlay.querySelector('textarea').placeholder = 'Расскажите о рецепте...';
+    }
     overlay.querySelector('textarea').value = target.value;
     overlay.classList.add('active');
     requestAnimationFrame(function () {
@@ -1140,7 +1154,7 @@ function addIngredientRow(listId, ing) {
         return '<option value="' + unit.value + '"' + (unit.value === cur ? ' selected' : '') + '>' + unit.label + '</option>';
     }).join('');
     row.innerHTML =
-        '<div class="ing-name-line"><div class="ing-name-field"><input type="text" class="ing-name" maxlength="100" autocomplete="off" placeholder="Название ингредиента" value="' + escAttr(ing.name || '') + '"><div class="ing-suggestions" role="listbox"></div></div>' +
+        '<div class="ing-name-line"><div class="ing-name-field"><input type="text" class="ing-name" maxlength="100" autocomplete="off" placeholder="Название ингредиента" value="' + escAttr(ing.name || '') + '"><button type="button" class="ing-name-clear" title="Очистить название" aria-label="Очистить название ингредиента" onclick="clearIngredientName(this)">&#215;</button><div class="ing-suggestions" role="listbox"></div></div>' +
         '<button type="button" class="ing-remove-btn" title="Удалить ингредиент" aria-label="Удалить ингредиент" onclick="removeIngredientRow(this)">&#10005;</button></div>' +
         '<div class="ing-controls"><div class="ing-qty">' +
             '<button type="button" class="qty-btn" aria-label="Уменьшить количество" onclick="chgIngQty(this,-1)">&minus;</button>' +
@@ -1154,6 +1168,15 @@ function addIngredientRow(listId, ing) {
 function removeIngredientRow(button) {
     var row = button.closest('.ing-row');
     if (row) row.remove();
+}
+
+function clearIngredientName(button) {
+    var field = button.closest('.ing-name-field');
+    var input = field && field.querySelector('.ing-name');
+    if (!input) return;
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.focus();
 }
 
 function setupIngredientSuggestions(input, dropdown) {
@@ -1226,10 +1249,11 @@ function addRecipeStep(listId, step) {
     block.className = 'step-block';
     block.dataset.listId = listId;
     var inputId = listId + '-photo-' + n;
+    var textId = listId + '-text-' + n;
     block.innerHTML =
         '<div class="step-head"><span>Шаг ' + n + '</span></div>' +
         '<button type="button" class="step-remove-btn" title="Удалить шаг" aria-label="Удалить шаг" onclick="removeRecipeStep(this)">&#10005;</button>' +
-        '<textarea class="step-text" placeholder="Опишите, что нужно сделать на шаге ' + n + '...">' + escAttr(step.text || '') + '</textarea>' +
+        '<textarea id="' + textId + '" class="step-text recipe-description-trigger" readonly onclick="openRecipeDescriptionEditor(this.id)" placeholder="Нажмите, чтобы описать шаг ' + n + '...">' + escAttr(step.text || '') + '</textarea>' +
         '<div class="step-photo">' +
             '<button type="button" class="step-photo-x" title="Убрать фото" onclick="removeStepPhoto(this)">&#10005;</button>' +
             '<div class="file-upload" onclick="document.getElementById(\'' + inputId + '\').click()">' +
@@ -1265,12 +1289,16 @@ function renumberRecipeSteps(list) {
         var number = index + 1;
         var listId = block.dataset.listId || list.id;
         var inputId = listId + '-photo-' + number;
+        var textId = listId + '-text-' + number;
         var input = block.querySelector('.step-photo input[type=file]');
         var upload = block.querySelector('.step-photo .file-upload');
         var text = block.querySelector('.step-text');
         var heading = block.querySelector('.step-head span');
         if (heading) heading.textContent = 'Шаг ' + number;
-        if (text) text.placeholder = 'Опишите, что нужно сделать на шаге ' + number + '...';
+        if (text) {
+            text.id = textId;
+            text.placeholder = 'Нажмите, чтобы описать шаг ' + number + '...';
+        }
         if (input) input.id = inputId;
         if (upload) upload.setAttribute('onclick', "document.getElementById('" + inputId + "').click()");
     });
