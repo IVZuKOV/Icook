@@ -89,7 +89,21 @@
 @keyframes glowing{0%,100%{opacity:0.35;}50%{opacity:0.95;}}
 .edit-pencil-icon{position:absolute;right:8px;top:66%;transform:translateY(-50%);width:22px;height:22px;opacity:0.7;filter:drop-shadow(0 0 6px rgba(255,255,255,0.8));cursor:pointer;transition:all 0.2s ease;pointer-events:auto;}
 .edit-pencil-icon:hover{opacity:1;filter:drop-shadow(0 0 12px #ffffff) drop-shadow(0 0 18px #ffffff);transform:translateY(-50%) scale(1.1);}
+[data-theme="dark"] .edit-recipe-pencil-icon{opacity:1;stroke:#fff;filter:drop-shadow(0 0 5px rgba(255,255,255,.5));}
+[data-theme="dark"] .edit-recipe-pencil-icon:hover{filter:drop-shadow(0 0 8px rgba(255,255,255,.75));}
+.edit-recipe-pencil-icon{opacity:1;stroke:var(--neon-dark);filter:drop-shadow(0 1px 2px rgba(30,58,138,.35));}
+.edit-recipe-pencil-icon:hover{filter:drop-shadow(0 0 7px rgba(30,64,175,.55));}
 .edit-pencil-icon:active{transform:translateY(-50%) scale(0.9);}
+#editRecipeModal .edit-recipe-save-btn,
+#editRecipeModal .edit-recipe-save-btn:hover,
+#editRecipeModal .edit-recipe-save-btn:focus,
+#editRecipeModal .edit-recipe-save-btn:focus-visible,
+#editRecipeModal .edit-recipe-save-btn:active{background:var(--neon)!important;color:#fff!important;border-color:var(--neon)!important;box-shadow:none!important;filter:none!important;text-shadow:none!important;transform:none!important;outline:none!important;}
+[data-theme="dark"] #editRecipeModal .edit-recipe-save-btn,
+[data-theme="dark"] #editRecipeModal .edit-recipe-save-btn:hover,
+[data-theme="dark"] #editRecipeModal .edit-recipe-save-btn:focus,
+[data-theme="dark"] #editRecipeModal .edit-recipe-save-btn:focus-visible,
+[data-theme="dark"] #editRecipeModal .edit-recipe-save-btn:active{background:#1e293b!important;color:#fff!important;border:1px solid rgba(255,255,255,.45)!important;box-shadow:none!important;}
 
 /* --- Добавить блюдо --- */
 .add-form{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:24px;box-shadow:0 4px 15px rgba(0,0,0,0.06);}
@@ -632,7 +646,7 @@ button, .btn, a, label {
 </div>
 <div style="display:flex;gap:10px;margin-top:16px;">
 <button onclick="closeEditRecipeModal()" style="flex:1;padding:12px;border:2px solid var(--border-color);border-radius:12px;background:transparent;color:var(--text-main);font-weight:600;cursor:pointer;">Отмена</button>
-<button class="btn" style="flex:1;padding:12px;background:var(--neon);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;" onclick="editRecipe(document.getElementById('editRecipeId').value)">Сохранить</button>
+<button class="btn edit-recipe-save-btn" style="flex:1;padding:12px;background:var(--neon);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;" onclick="editRecipe(document.getElementById('editRecipeId').value)">Сохранить</button>
 </div>
 </div>
 </div>
@@ -1460,7 +1474,7 @@ async function loadMyRecipes() {
                         (isAvail ? '<button class="btn-toggle" onclick="toggleRecipe(' + r.id + ')">Скрыть</button>' : '<button class="btn-publish" onclick="toggleRecipe(' + r.id + ')">Опубликовать</button>') +
                         '<button class="btn-delete" onclick="deleteRecipe(' + r.id + ')">Удалить</button>' +
                     '</div>' +
-                    '<svg class="edit-pencil-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="openEditRecipe(' + r.id + ')"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+                    '<svg class="edit-pencil-icon edit-recipe-pencil-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="openEditRecipe(' + r.id + ')"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
                 '</div></div>';
         }).join('');
     } else {
