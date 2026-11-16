@@ -23,8 +23,8 @@ if ($search !== '') {
     array_push($params, $like, $like, $like);
 }
 if ($categoryId > 0) {
-    $where .= ' AND EXISTS (SELECT 1 FROM dishes cd WHERE cd.user_id = u.id AND cd.is_available = 1 AND cd.category_id = ?)';
-    $params[] = $categoryId;
+    $where .= ' AND EXISTS (SELECT 1 FROM dishes cd WHERE cd.user_id = u.id AND cd.is_available = 1 AND cd.category_id IN (SELECT id FROM categories WHERE id = ? OR parent_id = ? OR parent_id IN (SELECT id FROM categories WHERE parent_id = ?)))';
+    array_push($params, $categoryId, $categoryId, $categoryId);
 }
 try {
     $count = $pdo->prepare("SELECT COUNT(*) FROM users u WHERE $where");

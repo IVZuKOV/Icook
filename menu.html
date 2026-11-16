@@ -674,8 +674,11 @@ body{padding-bottom:88px;}
             if (data.success) {
                 var sel = document.getElementById('categorySelect');
                 sel.innerHTML = '<option value="0">Все категории</option>';
+                var categoryMap = new Map(data.categories.map(function(c){ return [Number(c.id), c]; }));
                 data.categories.forEach(function(c) {
-                    sel.innerHTML += '<option value="' + c.id + '">' + c.name + '</option>';
+                    var labels = [], parent = c;
+                    while(parent) { labels.unshift(parent.name); parent = parent.parent_id ? categoryMap.get(Number(parent.parent_id)) : null; }
+                    sel.innerHTML += '<option value="' + c.id + '">' + labels.join(' › ') + '</option>';
                 });
             }
         } catch(e) { console.error('loadCategories error:', e); }

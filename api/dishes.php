@@ -23,8 +23,8 @@ if ($sellerId) {
     $params[] = $sellerId;
 }
 if ($categoryId) {
-    $where .= ' AND d.category_id = ?';
-    $params[] = $categoryId;
+    $where .= ' AND d.category_id IN (SELECT id FROM categories WHERE id = ? OR parent_id = ? OR parent_id IN (SELECT id FROM categories WHERE parent_id = ?))';
+    array_push($params, $categoryId, $categoryId, $categoryId);
 }
 if ($search !== '') {
     $where .= ' AND (d.title LIKE ? OR d.description LIKE ?)';

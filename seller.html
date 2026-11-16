@@ -93,6 +93,12 @@
     /* Панель продавца */
     .seller-panel { display: none; }
     .seller-panel.active { display: block; }
+    .category-picker{position:relative;display:grid;gap:9px;}
+    .category-picker input,.category-picker select{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:10px;background:var(--card-bg);color:var(--text-main);font:inherit;}
+    .category-search-results{position:absolute;z-index:30;top:48px;left:0;right:0;max-height:240px;overflow:auto;border:1px solid var(--border-color);border-radius:10px;background:var(--card-bg);box-shadow:0 8px 24px #0002;}
+    .category-search-results[hidden]{display:none;}
+    .category-search-result{display:block;width:100%;padding:10px 12px;border:0;border-bottom:1px solid var(--border-color);background:transparent;color:var(--text-main);text-align:left;font:inherit;cursor:pointer;}
+    .category-search-result:hover{background:var(--neon-glow);}
 
     .tabs {
         display: flex;
@@ -560,8 +566,14 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Категория</label>
-                        <select id="dishCategory"></select>
+                        <label>Категория *</label>
+                        <div class="category-picker" id="dishCategoryPicker" data-category-picker data-title-id="dishTitle" data-description-id="dishDesc">
+                            <input type="search" data-category-search placeholder="Поиск категории..." autocomplete="off">
+                            <div class="category-search-results" data-category-results hidden></div>
+                            <select data-category-main aria-label="Основная категория"></select>
+                            <select data-category-sub aria-label="Подкатегория"></select>
+                            <select data-category-subsub aria-label="Дополнительная подкатегория"></select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Фото</label>
@@ -685,15 +697,7 @@
     }
 
     async function loadCategoriesForForm() {
-        var res = await fetch('/api/categories.php');
-        var data = await res.json();
-        if(data.success) {
-            var sel = document.getElementById('dishCategory');
-            sel.innerHTML = '<option value="">Без категории</option>';
-            data.categories.forEach(function(c){
-                sel.innerHTML += '<option value="'+c.id+'">'+c.name+'</option>';
-            });
-        }
+        // Shared tree picker loads the full category hierarchy.
     }
 
     function previewImage(input) {
@@ -713,11 +717,14 @@
         var desc = document.getElementById('dishDesc').value.trim();
         var price = document.getElementById('dishPrice').value;
         var weight = document.getElementById('dishWeight').value.trim();
-        var catId = document.getElementById('dishCategory').value;
+        var picker = document.getElementById('dishCategoryPicker');
+        var catId = picker && picker.getCategoryId ? picker.getCategoryId() : '';
         var imageInput = document.getElementById('dishImage');
 
         if(!title) { showToastMsg('Введите название'); return; }
         if(!price || price <= 0) { showToastMsg('Укажите цену'); return; }
+        if(!picker || !picker.querySelector('[data-category-main]').value) { showToastMsg('Выберите категорию'); return; }
+        if(!picker.querySelector('[data-category-sub]').value) { showToastMsg('Выберите подкатегорию'); return; }
 
         var formData = new FormData();
         formData.append('title', title);
@@ -725,6 +732,7 @@
         formData.append('price', price);
         formData.append('weight', weight);
         formData.append('category_id', catId);
+        Object.keys(picker.getPath()).forEach(function(key){ formData.append(key, picker.getPath()[key]); });
         if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
 
         var res = await fetch('/api/add_dish.php', { method:'POST', body: formData });
@@ -864,4 +872,5 @@
 <script src="assets/js/footer.js?v=20261021131201"></script>
 <script src="assets/js/fav-badge.js?v=20261021133523"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script><script src="assets/js/auth-unified.js?v=20261105152301"></script></body>
+<script src="assets/js/category-picker.js?v=20261116"></script>
 </html>

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/category_path.php';
 
 $userId = require_login();
 
@@ -9,7 +10,7 @@ $title = trim((string) ($_POST['title'] ?? ''));
 $description = trim((string) ($_POST['description'] ?? ''));
 $price = (float) ($_POST['price'] ?? 0);
 $weight = trim((string) ($_POST['weight'] ?? ''));
-$categoryId = (int) ($_POST['category_id'] ?? 0) ?: null;
+$categoryId = resolve_dish_category($pdo, $_POST);
 
 if ($title === '') {
     json_out(['error' => 'Введите название блюда']);
@@ -22,6 +23,9 @@ if (mb_strlen($description) > 3000 || mb_strlen($weight) > 50) {
 }
 if ($price <= 0 || $price > 10000000) {
     json_out(['error' => 'Укажите цену']);
+}
+if ($categoryId === null) {
+    json_out(['error' => 'Выберите основную категорию и подкатегорию']);
 }
 
 $image = null;
