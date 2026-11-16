@@ -105,7 +105,7 @@
             var text = (title.value + ' ' + (description ? description.value : '')).toLocaleLowerCase('ru');
             var terms = text.match(/[а-яёa-z]{3,}/gi) || [];
             var best = null, score = 0;
-            categories.filter(function (c) { return children(c.id).length > 0 && c.parent_id; }).forEach(function (item) {
+            categories.filter(function (item) { return pathFor(item.id).length >= 2; }).forEach(function (item) {
                 var path = pathFor(item.id);
                 if (path.length < 2) return;
                 var label = path.map(function (x) { return x.name; }).join(' ').toLocaleLowerCase('ru');
