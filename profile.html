@@ -638,7 +638,7 @@ button, .btn, a, label {
 </div>
 <div class="form-group">
 <label>Описание</label>
-<textarea id="dishDesc" placeholder="Опишите блюдо..."></textarea>
+<textarea id="dishDesc" class="recipe-description-trigger dish-description-trigger" readonly onclick="openRecipeDescriptionEditor('dishDesc')" placeholder="Нажмите, чтобы написать описание..."></textarea>
 </div>
 <div class="form-row">
 <div class="form-group">
@@ -681,7 +681,7 @@ button, .btn, a, label {
 </div>
 <div class="form-group">
 <label>Описание</label>
-<textarea id="editDishDesc" placeholder="Опишите блюдо..."></textarea>
+<textarea id="editDishDesc" class="recipe-description-trigger dish-description-trigger" readonly onclick="openRecipeDescriptionEditor('editDishDesc')" placeholder="Нажмите, чтобы написать описание..."></textarea>
 </div>
 <div class="form-row">
 <div class="form-group">
@@ -1296,6 +1296,9 @@ function openRecipeDescriptionEditor(targetId) {
         var stepHeading = stepBlock.querySelector('.step-head span');
         title.textContent = stepHeading ? 'Описание ' + stepHeading.textContent.toLowerCase() : 'Описание шага';
         overlay.querySelector('textarea').placeholder = 'Опишите, что нужно сделать на шаге...';
+    } else if (target.classList.contains('dish-description-trigger')) {
+        title.textContent = 'Описание блюда';
+        overlay.querySelector('textarea').placeholder = 'Опишите блюдо...';
     } else {
         title.textContent = 'Описание рецепта';
         overlay.querySelector('textarea').placeholder = 'Расскажите о рецепте...';
