@@ -16,9 +16,8 @@
 .favorite-card-controls .content-fav-btn{position:static;top:auto;right:auto;flex:0 0 32px;width:32px;height:32px;}
 .favorite-content-kind-icon svg{width:21px;height:21px;stroke:currentColor;fill:none;}
 .favorite-content-card .qty-control{background:transparent;border-color:var(--border-color);padding:2px;}
-.favorite-content-card .qty-btn,.favorite-content-card .qty-btn:hover,.favorite-content-card .qty-btn:focus,.favorite-content-card .qty-btn:active{background:transparent!important;box-shadow:none!important;}
-.favorite-content-card .qty-btn:active{color:var(--neon-dark);transform:none;}
-.favorite-content-card .qty-btn{border-radius:50%;}
+.favorite-content-card .qty-btn{width:32px;height:32px;min-width:32px;min-height:32px;padding:0;border:1px solid var(--border-color);border-radius:50%;background:var(--card-bg)!important;color:var(--neon-dark)!important;font-size:17px;font-weight:800;line-height:1;box-shadow:none;}
+.favorite-content-card .qty-btn:hover,.favorite-content-card .qty-btn:focus,.favorite-content-card .qty-btn:focus-visible,.favorite-content-card .qty-btn:active{background:transparent!important;color:var(--neon-dark)!important;border-color:transparent;outline:none;box-shadow:none!important;transform:none;-webkit-tap-highlight-color:transparent;}
 @media(max-width:768px){.favorite-content-card .favorite-content-body{padding:8px;}.favorite-content-card .favorite-content-image{height:auto;aspect-ratio:4/3;}}
 .favorites-toolbar{display:flex;justify-content:flex-end;margin:-8px 0 20px;}
 .favorites-filter{width:100%;max-width:260px;}
