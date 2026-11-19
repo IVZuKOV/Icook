@@ -45,11 +45,11 @@
             return !option.disabled && !option.hidden && !(option.parentElement.tagName === 'OPTGROUP' && option.parentElement.disabled);
         });
     }
-    function layoutIcon(option) {
-        var count = Number(option && option.dataset.layoutCells);
+    function layoutSvg(count) {
+        count = Number(count);
         if (![1, 4, 8].includes(count)) return '';
         var columns = count === 1 ? 1 : count === 4 ? 2 : 4;
-        var rows = count / columns, cell = count === 1 ? 18 : 12, gap = count === 1 ? 0 : 3;
+        var rows = count / columns, cell = count === 1 ? 18 : count === 4 ? 11 : 7, gap = count === 1 ? 0 : count === 4 ? 3 : 2;
         var width = columns * cell + (columns - 1) * gap;
         var height = rows * cell + (rows - 1) * gap;
         var x0 = (40 - width) / 2, y0 = (28 - height) / 2, rects = '';
@@ -82,13 +82,7 @@
             item.setAttribute('role', 'option'); item.dataset.index = index;
             item.setAttribute('aria-selected', String(option.selected));
             item.setAttribute('aria-disabled', String(option.disabled || (parent.tagName === 'OPTGROUP' && parent.disabled)));
-            if (state.select.classList.contains('layout-select') && option.dataset.layoutCells) {
-                item.classList.add('site-select-layout-option');
-                item.insertAdjacentHTML('afterbegin', layoutIcon(option));
-                var optionLabel = document.createElement('span');
-                optionLabel.textContent = option.label;
-                item.appendChild(optionLabel);
-            } else item.textContent = option.label;
+            item.textContent = option.label;
             item.addEventListener('pointerdown', function (event) { event.preventDefault(); });
             item.addEventListener('click', function () { choose(state, index); });
             state.menu.appendChild(item);
@@ -96,14 +90,7 @@
     }
     function sync(state) {
         var select = state.select, option = select.options[select.selectedIndex];
-        if (state.select.classList.contains('layout-select')) {
-            state.label.classList.add('site-select-layout-label');
-            state.label.replaceChildren();
-            if (option && option.dataset.layoutCells) {
-                state.label.insertAdjacentHTML('beforeend', layoutIcon(option));
-                var text = document.createElement('span'); text.textContent = option.label; state.label.appendChild(text);
-            } else state.label.textContent = option ? option.label : 'Выберите';
-        } else state.label.textContent = option ? option.label : 'Выберите';
+        state.label.textContent = option ? option.label : 'Выберите';
         state.button.disabled = select.disabled;
         state.button.setAttribute('aria-required', String(select.required));
         state.wrapper.hidden = select.hidden || select.style.display === 'none';
@@ -203,6 +190,23 @@
         });
     }).observe(document.body, {childList: true, subtree: true});
     document.addEventListener('click', function (event) {
+        var layoutButton = event.target.closest && event.target.closest('.layout-cycle');
+        if (layoutButton) {
+            var columns = Number(layoutButton.dataset.layoutColumns) || 2;
+            var cycle = [2, 4, 1];
+            var next = cycle[(cycle.indexOf(columns) + 1) % cycle.length];
+            var grid = document.querySelector(layoutButton.dataset.layoutTarget);
+            if (grid) {
+                layoutButton.dataset.layoutColumns = String(next);
+                grid.className = (grid.id === 'dishesGrid' ? 'dishes-grid' : 'recipes-grid') + ' cols-' + next;
+                if (grid.id === 'dishesGrid') grid.style.gridTemplateColumns = '';
+                var cells = next === 1 ? 1 : next === 2 ? 4 : 8;
+                layoutButton.innerHTML = layoutSvg(cells);
+                layoutButton.setAttribute('aria-label', 'Показать ' + next + (next === 1 ? ' плитку' : ' плитки') + ' в строке');
+                layoutButton.title = 'Показать ' + next + ' в строке';
+            }
+            return;
+        }
         if (openState && !openState.wrapper.contains(event.target) && !openState.menu.contains(event.target)) close();
     });
     document.addEventListener('keydown', function (event) { if (event.key === 'Escape') close(); });

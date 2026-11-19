@@ -23,19 +23,16 @@
 .recipe-filter-row{display:flex;gap:10px;width:100%;align-items:center;}
 .recipe-filter-row select{min-width:0;padding:11px 38px 11px 14px;border:2px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main);font:inherit;font-size:14px;font-weight:700;}
 .recipe-filter-row #recipeCategory{flex:1 1 auto;}
-.recipe-filter-row #recipeCols{flex:0 0 190px;}
 .recipe-filter-row .site-select{min-width:0;width:auto;}
 .recipe-filter-row .site-select[data-select-class~="recipe-category-filter"]{flex:1 1 auto;min-width:0;}
-.recipe-filter-row .site-select[data-select-class~="recipe-cols-filter"]{flex:0 0 190px;}
-.site-select-layout-icon{display:block;width:34px;height:24px;flex:0 0 auto;color:var(--neon-dark);}
-.site-select-layout-icon .layout-icon-cell{fill:rgba(30,64,175,.08);stroke:#1e40af;stroke-width:1.6;}
-.recipe-filter-row .site-select[data-select-class~="layout-select"]{flex:0 0 150px;width:150px;min-width:0;}
-.recipe-filter-row .site-select[data-select-class~="layout-select"] .site-select-trigger{min-height:44px;padding:7px 10px;gap:7px;border-radius:12px;}
-.site-select-layout-label,.site-select-layout-option{display:flex;align-items:center;gap:7px;}
-.site-select-layout-option{min-height:40px;}
-[data-theme="dark"] .site-select-layout-icon .layout-icon-cell{fill:rgba(148,163,184,.12);stroke:rgba(203,213,225,.82);}
-[data-theme="dark"] .recipe-filter-row .site-select[data-select-class~="layout-select"] .site-select-trigger{background:rgba(148,163,184,.1);backdrop-filter:blur(14px);border-color:rgba(203,213,225,.22);}
-[data-theme="dark"] .site-select-layout-option:hover .layout-icon-cell,[data-theme="dark"] .site-select-layout-option.is-active .layout-icon-cell{fill:rgba(203,213,225,.24);}
+.layout-cycle{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;padding:5px;border:1px solid rgba(30,64,175,.24);border-radius:12px;background:rgba(30,64,175,.06);color:var(--neon-dark);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,transform .15s;}
+.layout-cycle:hover{background:rgba(30,64,175,.12);border-color:rgba(30,64,175,.42);}
+.layout-cycle:active{transform:scale(.96);}
+.layout-cycle .site-select-layout-icon{display:block;width:34px;height:24px;flex:0 0 auto;}
+.layout-cycle .layout-icon-cell{fill:rgba(30,64,175,.08);stroke:#1e40af;stroke-width:1.6;}
+[data-theme="dark"] .layout-cycle{background:rgba(148,163,184,.1);border-color:rgba(203,213,225,.22);backdrop-filter:blur(14px);}
+[data-theme="dark"] .layout-cycle .layout-icon-cell{fill:rgba(148,163,184,.12);stroke:rgba(203,213,225,.82);}
+[data-theme="dark"] .layout-cycle:hover .layout-icon-cell{fill:rgba(203,213,225,.24);}
 .add-recipe-cta{position:fixed;top:72px;right:16px;z-index:95;width:28px;height:28px;padding:0;border:none;border-radius:8px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;transition:opacity 3s ease,transform 0.3s ease,box-shadow 0.3s ease;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 7px var(--neon-glow);}
 .add-recipe-cta svg{width:13px;height:13px;stroke:var(--neon);fill:none;stroke-width:3;stroke-linecap:round;}
 .add-recipe-cta:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 11px var(--neon-glow);}
@@ -78,7 +75,7 @@
  .recipes-toolbar{margin:0 -12px 18px;padding:9px 12px;}
  .recipe-filter-row{gap:7px;}
  .recipe-filter-row select{padding:10px 28px 10px 10px;font-size:12px;}
-  .recipe-filter-row .site-select[data-select-class~="layout-select"]{flex:0 0 138px;width:138px;}
+  .layout-cycle{width:40px;height:40px;flex-basis:40px;padding:4px;}
  .recipes-grid{gap:10px;}
  .recipe-card .recipe-body{padding:10px;}
  .recipe-card .recipe-title{font-size:14px;}
@@ -194,9 +191,12 @@ button, .btn, a, label {
 <input type="text" class="search-input" id="recipeSearch" placeholder="Поиск рецептов...">
 <div class="recipe-filter-row">
 <select id="recipeCategory" class="recipe-category-filter" aria-label="Категория рецептов"><option value="0">Все категории</option></select>
-<select id="recipeCols" class="recipe-cols-filter layout-select" aria-label="Количество карточек в строке" onchange="changeRecipeCols(this.value)">
-<option value="1" data-layout-cells="1">Показать 1</option><option value="2" data-layout-cells="4" selected>Показать 2</option><option value="4" data-layout-cells="8">Показать 4</option>
-</select>
+<button type="button" class="layout-cycle" data-layout-target="#recipesGrid" data-layout-columns="2" aria-label="Показать 2 плитки в строке" title="Показать 2 в строке">
+<svg class="site-select-layout-icon" viewBox="0 0 40 28" aria-hidden="true" focusable="false">
+<rect class="layout-icon-cell" x="6.5" y="1.5" width="12" height="12" rx="2.5"/><rect class="layout-icon-cell" x="21.5" y="1.5" width="12" height="12" rx="2.5"/>
+<rect class="layout-icon-cell" x="6.5" y="14.5" width="12" height="12" rx="2.5"/><rect class="layout-icon-cell" x="21.5" y="14.5" width="12" height="12" rx="2.5"/>
+</svg>
+</button>
 </div>
 </div>
 <div class="recipes-grid cols-2" id="recipesGrid"><div class="recipes-loading">Загружаем рецепты...</div></div>
@@ -369,11 +369,6 @@ async function loadRecipeCategories() {
     } catch (error) {
         console.error('Не удалось загрузить категории рецептов', error);
     }
-}
-
-function changeRecipeCols(columns) {
-    const grid = document.getElementById('recipesGrid');
-    if (grid) grid.className = 'recipes-grid cols-' + (Number(columns) || 2);
 }
 
 function toggleRecipeText(id) {

@@ -94,15 +94,14 @@
     }
     .filters-bar .site-select{min-width:0;width:auto;}
     .filters-bar .site-select[data-select-class~="menu-category-filter"]{flex:1 1 auto;min-width:0;}
-    .filters-bar .site-select[data-select-class~="menu-cols-filter"]{flex:0 0 150px;min-width:0;}
-    .site-select-layout-icon{display:block;width:34px;height:24px;flex:0 0 auto;color:var(--neon-dark);}
-    .site-select-layout-icon .layout-icon-cell{fill:rgba(30,64,175,.08);stroke:#1e40af;stroke-width:1.6;}
-    .site-select[data-select-class~="layout-select"] .site-select-trigger{min-height:44px;padding:7px 10px;gap:7px;border-radius:12px;}
-    .site-select-layout-label,.site-select-layout-option{display:flex;align-items:center;gap:7px;}
-    .site-select-layout-option{min-height:40px;}
-    [data-theme="dark"] .site-select-layout-icon .layout-icon-cell{fill:rgba(148,163,184,.12);stroke:rgba(203,213,225,.82);}
-    [data-theme="dark"] .site-select[data-select-class~="layout-select"] .site-select-trigger{background:rgba(148,163,184,.1);backdrop-filter:blur(14px);border-color:rgba(203,213,225,.22);}
-    [data-theme="dark"] .site-select-layout-option:hover .layout-icon-cell,[data-theme="dark"] .site-select-layout-option.is-active .layout-icon-cell{fill:rgba(203,213,225,.24);}
+    .layout-cycle{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;padding:5px;border:1px solid rgba(30,64,175,.24);border-radius:12px;background:rgba(30,64,175,.06);color:var(--neon-dark);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,transform .15s;}
+    .layout-cycle:hover{background:rgba(30,64,175,.12);border-color:rgba(30,64,175,.42);}
+    .layout-cycle:active{transform:scale(.96);}
+    .layout-cycle .site-select-layout-icon{display:block;width:34px;height:24px;flex:0 0 auto;}
+    .layout-cycle .layout-icon-cell{fill:rgba(30,64,175,.08);stroke:#1e40af;stroke-width:1.6;}
+    [data-theme="dark"] .layout-cycle{background:rgba(148,163,184,.1);border-color:rgba(203,213,225,.22);backdrop-filter:blur(14px);}
+    [data-theme="dark"] .layout-cycle .layout-icon-cell{fill:rgba(148,163,184,.12);stroke:rgba(203,213,225,.82);}
+    [data-theme="dark"] .layout-cycle:hover .layout-icon-cell{fill:rgba(203,213,225,.24);}
     .menu-toolbar{position:sticky;top:0;z-index:110;padding-bottom:12px;background:var(--header-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);box-shadow:0 6px 22px rgba(15,23,42,.08);}
     .filters-bar select:focus {
         border-color: var(--neon);
@@ -213,7 +212,7 @@
         .menu-search{padding:8px 16px 0;}
         .filters-bar { gap: 8px; padding: 8px 16px 0; }
         .filters-bar select { min-width: 0; font-size: 12px; padding: 10px 28px 10px 10px; }
-        .filters-bar .site-select[data-select-class~="menu-cols-filter"] { flex:0 0 138px;min-width:0; }
+        .layout-cycle{width:40px;height:40px;flex-basis:40px;padding:4px;}
         .dishes-grid-wrapper { padding: 0 12px; }
     }
     @media (max-width: 768px) {
@@ -543,12 +542,12 @@ body{padding-bottom:88px;}
         <select id="categorySelect" class="menu-category-filter" onchange="filterCategorySelect(this.value)">
             <option value="0">Все категории</option>
         </select>
-        <select id="colsSelect" class="menu-cols-filter layout-select" aria-label="Плиток в строке" onchange="changeCols(this.value)">
-            <option value="1" data-layout-cells="1">Показать 1</option>
-            <option value="2" data-layout-cells="4" selected>Показать 2</option>
-            <option value="4" data-layout-cells="8">Показать 4</option>
-
-        </select>
+        <button type="button" class="layout-cycle" data-layout-target="#dishesGrid" data-layout-columns="2" aria-label="Показать 2 плитки в строке" title="Показать 2 в строке">
+            <svg class="site-select-layout-icon" viewBox="0 0 40 28" aria-hidden="true" focusable="false">
+                <rect class="layout-icon-cell" x="6.5" y="1.5" width="12" height="12" rx="2.5"/><rect class="layout-icon-cell" x="21.5" y="1.5" width="12" height="12" rx="2.5"/>
+                <rect class="layout-icon-cell" x="6.5" y="14.5" width="12" height="12" rx="2.5"/><rect class="layout-icon-cell" x="21.5" y="14.5" width="12" height="12" rx="2.5"/>
+            </svg>
+        </button>
     </div>
     </div>
 
@@ -727,14 +726,6 @@ body{padding-bottom:88px;}
     function filterCategorySelect(id) {
         currentCategory = parseInt(id);
         loadDishes();
-    }
-
-    function changeCols(n) {
-        var grid = document.getElementById('dishesGrid');
-        if (!grid) return;
-        n = parseInt(n);
-        grid.className = 'dishes-grid cols-' + n;
-        grid.style.gridTemplateColumns = '';
     }
 
     async function loadDishes() {
