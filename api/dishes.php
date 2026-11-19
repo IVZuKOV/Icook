@@ -36,6 +36,7 @@ if ($search !== '') {
 $sql = "SELECT d.*, u.name as seller_name,
                 CASE WHEN u.avatar_public = 1 THEN u.avatar ELSE '' END AS seller_avatar,
                 CASE WHEN u.avatar_public = 1 THEN u.avatar_version ELSE '' END AS seller_avatar_version,
+                CASE WHEN u.avatar_public = 1 THEN u.avatar_crop ELSE NULL END AS seller_avatar_crop,
                 c.name as category_name
         FROM dishes d
         LEFT JOIN users u ON d.user_id = u.id

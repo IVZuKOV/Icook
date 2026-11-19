@@ -36,6 +36,7 @@ if ($search !== '') {
 $sql = "SELECT r.*, u.name as author_name,
                 CASE WHEN u.avatar_public = 1 THEN u.avatar ELSE '' END AS author_avatar,
                 CASE WHEN u.avatar_public = 1 THEN u.avatar_version ELSE '' END AS author_avatar_version,
+                CASE WHEN u.avatar_public = 1 THEN u.avatar_crop ELSE NULL END AS author_avatar_crop,
                 c.name AS category_name
         FROM recipes r
         LEFT JOIN users u ON r.user_id = u.id

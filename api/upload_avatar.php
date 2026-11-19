@@ -43,9 +43,10 @@ if ($source === false) {
     json_out(['success' => false, 'error' => 'Файл не является корректным изображением'], 400);
 }
 
-$side = min($width, $height);
-$targetDimension = min(512, $side);
-$target = imagecreatetruecolor($targetDimension, $targetDimension);
+$scale = min(1, 2048 / max($width, $height));
+$targetWidth = max(1, (int) round($width * $scale));
+$targetHeight = max(1, (int) round($height * $scale));
+$target = imagecreatetruecolor($targetWidth, $targetHeight);
 if ($target === false) {
     imagedestroy($source);
     error_log('Avatar upload failed: unable to allocate target image');
@@ -54,19 +55,7 @@ if ($target === false) {
 imagealphablending($target, true);
 $white = imagecolorallocate($target, 255, 255, 255);
 imagefill($target, 0, 0, $white);
-$side = min($width, $height);
-imagecopyresampled(
-    $target,
-    $source,
-    0,
-    0,
-    (int) floor(($width - $side) / 2),
-    (int) floor(($height - $side) / 2),
-    $targetDimension,
-    $targetDimension,
-    $side,
-    $side
-);
+imagecopyresampled($target, $source, 0, 0, 0, 0, $targetWidth, $targetHeight, $width, $height);
 imagedestroy($source);
 
 $targetDir = dirname(__DIR__) . '/uploads/avatars';
@@ -85,21 +74,13 @@ if ($tempPath === false) {
 
 $maxBytes = 50 * 1024;
 $compressed = false;
-$dimensions = [$targetDimension];
-for ($dimension = $targetDimension; $dimension > 32; $dimension = max(32, (int) floor($dimension * 0.75))) {
-    $nextDimension = max(32, (int) floor($dimension * 0.75));
-    if ($nextDimension < $dimension && !in_array($nextDimension, $dimensions, true)) {
-        $dimensions[] = $nextDimension;
-    }
-}
-if (!in_array(32, $dimensions, true)) {
-    $dimensions[] = 32;
-}
-
-foreach ($dimensions as $dimension) {
-    $small = $dimension === $targetDimension
+$sizes = [1, 0.8, 0.64, 0.5, 0.4, 0.3, 0.2, 0.12, 0.08];
+foreach ($sizes as $sizeScale) {
+    $smallWidth = max(1, (int) round($targetWidth * $sizeScale));
+    $smallHeight = max(1, (int) round($targetHeight * $sizeScale));
+    $small = $sizeScale === 1.0
         ? $target
-        : imagecreatetruecolor($dimension, $dimension);
+        : imagecreatetruecolor($smallWidth, $smallHeight);
     if ($small === false) {
         continue;
     }
@@ -107,7 +88,7 @@ foreach ($dimensions as $dimension) {
         imagealphablending($small, true);
         $smallWhite = imagecolorallocate($small, 255, 255, 255);
         imagefill($small, 0, 0, $smallWhite);
-        imagecopyresampled($small, $target, 0, 0, 0, 0, $dimension, $dimension, $targetDimension, $targetDimension);
+        imagecopyresampled($small, $target, 0, 0, 0, 0, $smallWidth, $smallHeight, $targetWidth, $targetHeight);
     }
     foreach ([85, 75, 65, 55, 45, 35, 25, 15, 8, 2] as $quality) {
         $written = imagejpeg($small, $tempPath, $quality);
@@ -149,7 +130,7 @@ if (!chmod($absolutePath, 0644)) {
 
 try {
     $avatarVersion = bin2hex(random_bytes(8));
-    $stmt = $pdo->prepare('UPDATE users SET avatar = ?, avatar_version = ? WHERE id = ?');
+    $stmt = $pdo->prepare('UPDATE users SET avatar = ?, avatar_version = ?, avatar_crop = NULL WHERE id = ?');
     $stmt->execute([$avatarPath, $avatarVersion, $userId]);
 } catch (PDOException $error) {
     unlink($absolutePath);

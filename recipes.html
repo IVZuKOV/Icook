@@ -252,7 +252,7 @@ button, .btn, a, label {
 <script src="assets/js/infinite-feed.js?v=20261105152159"></script>
 <script src="assets/js/main.js?v=20261105152159"></script>
 <script src="assets/js/favorites-store.js?v=20261101115409"></script>
-<script src="assets/js/author-avatar.js?v=20261114"></script>
+<script src="assets/js/author-avatar.js?v=20261120-crop"></script>
 <script>
 // --- JS РЕЦЕПТОВ ---
 let recipesFeed = null;
@@ -331,7 +331,7 @@ function renderRecipes(recipes) {
     const newCards = Array.from(grid.querySelectorAll('.recipe-card')).slice(-recipes.length);
     newCards.forEach(function (card, index) {
         const authorBadge = card.querySelector('.author-letter');
-        if (authorBadge) authorBadge.replaceWith(window.IcookAuthorAvatar.create(recipes[index].author_name, recipes[index].author_avatar, recipes[index].author_avatar_version));
+        if (authorBadge) authorBadge.replaceWith(window.IcookAuthorAvatar.create(recipes[index].author_name, recipes[index].author_avatar, recipes[index].author_avatar_version, recipes[index].author_avatar_crop));
     });
 }
 

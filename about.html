@@ -794,13 +794,13 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 // --- JS КОНЕЦ ---
 </script>
 
-<script src="assets/js/author-avatar.js?v=20261114"></script>
+<script src="assets/js/author-avatar.js?v=20261120-crop"></script>
 <script>
 function addDishAuthorAvatars(container,dishes){
     var authors=container.querySelectorAll('.card .chef');
     dishes.forEach(function(dish,index){
         var author=authors[index];
-        if(author)author.insertBefore(window.IcookAuthorAvatar.create(dish.seller_name||'Повар',dish.seller_avatar,dish.seller_avatar_version),author.firstChild);
+        if(author)author.insertBefore(window.IcookAuthorAvatar.create(dish.seller_name||'Повар',dish.seller_avatar,dish.seller_avatar_version,dish.seller_avatar_crop),author.firstChild);
     });
 }
 </script>

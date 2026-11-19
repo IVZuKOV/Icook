@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 </script>
 
 <script src="assets/js/favorites-store.js?v=20261101115409"></script>
-<script src="assets/js/author-avatar.js?v=20261114"></script>
+<script src="assets/js/author-avatar.js?v=20261120-crop"></script>
 <script>
 let favoritesLoadVersion = 0;
 let favoritesPageEntries = null;
@@ -653,7 +653,7 @@ function createFavoriteCard(entry, item) {
     if (entry.type === 'dish') {
         const author = document.createElement('div');
         author.className = 'chef';
-        author.appendChild(window.IcookAuthorAvatar.create(item.seller_name || 'Повар', item.seller_avatar, item.seller_avatar_version));
+        author.appendChild(window.IcookAuthorAvatar.create(item.seller_name || 'Повар', item.seller_avatar, item.seller_avatar_version, item.seller_avatar_crop));
         const authorName = document.createElement('span');
         authorName.textContent = item.seller_name || 'Повар';
         author.appendChild(authorName);
@@ -683,7 +683,7 @@ function createFavoriteCard(entry, item) {
         if (entry.type === 'recipe') {
             const author = document.createElement('div');
             author.className = 'favorite-content-author';
-            author.appendChild(window.IcookAuthorAvatar.create(item.author_name || 'Аноним', item.author_avatar, item.author_avatar_version));
+            author.appendChild(window.IcookAuthorAvatar.create(item.author_name || 'Аноним', item.author_avatar, item.author_avatar_version, item.author_avatar_crop));
             const authorName = document.createElement('span');
             authorName.textContent = item.author_name || 'Аноним';
             author.appendChild(authorName);

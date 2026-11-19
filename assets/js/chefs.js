@@ -12,7 +12,7 @@
     }
     function card(chef) {
         var article = element('article', 'chef-card');
-        var avatar = window.IcookAuthorAvatar.create(chef.name || 'Повар', chef.avatar, chef.avatar_version, 'chef-avatar author-avatar-chef'); article.appendChild(avatar);
+        var avatar = window.IcookAuthorAvatar.create(chef.name || 'Повар', chef.avatar, chef.avatar_version, chef.avatar_crop, 'chef-avatar author-avatar-chef'); article.appendChild(avatar);
         article.appendChild(element('h2', 'chef-name', chef.name || 'Повар'));
         var location = [chef.city, chef.country].filter(Boolean).join(', ');
         if (location) article.appendChild(element('p', 'chef-location', location));

@@ -601,7 +601,7 @@ body{padding-bottom:88px;}
     <script src="assets/js/config.js?v=20261105152159"></script>
     <script src="assets/js/main.js?v=20261105152159"></script>
     <script src="assets/js/favorites-store.js?v=20261101115409"></script>
-    <script src="assets/js/author-avatar.js?v=20261114"></script>
+    <script src="assets/js/author-avatar.js?v=20261120-crop"></script>
     <script src="assets/js/theme.js?v=20261105152159"></script>
     <script>
     function toggleFavorite(id) {
@@ -751,7 +751,7 @@ body{padding-bottom:88px;}
                 var authorNodes=grid.querySelectorAll('.card .chef');
                 data.dishes.forEach(function(dish,index){
                     var author=authorNodes[index];
-                    if(author)author.insertBefore(window.IcookAuthorAvatar.create(dish.seller_name||'Продавец',dish.seller_avatar,dish.seller_avatar_version),author.firstChild);
+                    if(author)author.insertBefore(window.IcookAuthorAvatar.create(dish.seller_name||'Продавец',dish.seller_avatar,dish.seller_avatar_version,dish.seller_avatar_crop),author.firstChild);
                 });
             } else {
                 grid.innerHTML = '';

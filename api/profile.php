@@ -25,6 +25,7 @@ json_out(['success' => true, 'user' => [
     'lang' => $user['lang'] ?? 'ru',
     'avatar' => $user['avatar'] ?? '',
     'avatar_version' => $user['avatar_version'] ?? '',
+    'avatar_crop' => isset($user['avatar_crop']) ? json_decode((string) $user['avatar_crop'], true) : null,
     'avatar_public' => (int) ($user['avatar_public'] ?? 1),
     'is_seller' => (int) ($user['is_seller'] ?? 1),
 ]]);
