@@ -45,6 +45,19 @@
             return !option.disabled && !option.hidden && !(option.parentElement.tagName === 'OPTGROUP' && option.parentElement.disabled);
         });
     }
+    function layoutIcon(option) {
+        var count = Number(option && option.dataset.layoutCells);
+        if (![1, 4, 8].includes(count)) return '';
+        var columns = count === 1 ? 1 : count === 4 ? 2 : 4;
+        var rows = count / columns, cell = count === 1 ? 18 : 12, gap = count === 1 ? 0 : 3;
+        var width = columns * cell + (columns - 1) * gap;
+        var height = rows * cell + (rows - 1) * gap;
+        var x0 = (40 - width) / 2, y0 = (28 - height) / 2, rects = '';
+        for (var row = 0; row < rows; row++) for (var col = 0; col < columns; col++) {
+            rects += '<rect class="layout-icon-cell" x="' + (x0 + col * (cell + gap)) + '" y="' + (y0 + row * (cell + gap)) + '" width="' + cell + '" height="' + cell + '" rx="2.5"/>';
+        }
+        return '<svg class="site-select-layout-icon" viewBox="0 0 40 28" aria-hidden="true" focusable="false">' + rects + '</svg>';
+    }
     function choose(state, index) {
         if (available(state).indexOf(index) < 0) return;
         state.select.selectedIndex = index;
@@ -69,7 +82,13 @@
             item.setAttribute('role', 'option'); item.dataset.index = index;
             item.setAttribute('aria-selected', String(option.selected));
             item.setAttribute('aria-disabled', String(option.disabled || (parent.tagName === 'OPTGROUP' && parent.disabled)));
-            item.textContent = option.label;
+            if (state.select.classList.contains('layout-select') && option.dataset.layoutCells) {
+                item.classList.add('site-select-layout-option');
+                item.insertAdjacentHTML('afterbegin', layoutIcon(option));
+                var optionLabel = document.createElement('span');
+                optionLabel.textContent = option.label;
+                item.appendChild(optionLabel);
+            } else item.textContent = option.label;
             item.addEventListener('pointerdown', function (event) { event.preventDefault(); });
             item.addEventListener('click', function () { choose(state, index); });
             state.menu.appendChild(item);
@@ -77,7 +96,14 @@
     }
     function sync(state) {
         var select = state.select, option = select.options[select.selectedIndex];
-        state.label.textContent = option ? option.label : 'Выберите';
+        if (state.select.classList.contains('layout-select')) {
+            state.label.classList.add('site-select-layout-label');
+            state.label.replaceChildren();
+            if (option && option.dataset.layoutCells) {
+                state.label.insertAdjacentHTML('beforeend', layoutIcon(option));
+                var text = document.createElement('span'); text.textContent = option.label; state.label.appendChild(text);
+            } else state.label.textContent = option ? option.label : 'Выберите';
+        } else state.label.textContent = option ? option.label : 'Выберите';
         state.button.disabled = select.disabled;
         state.button.setAttribute('aria-required', String(select.required));
         state.wrapper.hidden = select.hidden || select.style.display === 'none';

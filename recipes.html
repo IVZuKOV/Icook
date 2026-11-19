@@ -27,6 +27,15 @@
 .recipe-filter-row .site-select{min-width:0;width:auto;}
 .recipe-filter-row .site-select[data-select-class~="recipe-category-filter"]{flex:1 1 auto;min-width:0;}
 .recipe-filter-row .site-select[data-select-class~="recipe-cols-filter"]{flex:0 0 190px;}
+.site-select-layout-icon{display:block;width:34px;height:24px;flex:0 0 auto;color:var(--neon-dark);}
+.site-select-layout-icon .layout-icon-cell{fill:rgba(30,64,175,.08);stroke:#1e40af;stroke-width:1.6;}
+.recipe-filter-row .site-select[data-select-class~="layout-select"]{flex:0 0 150px;width:150px;min-width:0;}
+.recipe-filter-row .site-select[data-select-class~="layout-select"] .site-select-trigger{min-height:44px;padding:7px 10px;gap:7px;border-radius:12px;}
+.site-select-layout-label,.site-select-layout-option{display:flex;align-items:center;gap:7px;}
+.site-select-layout-option{min-height:40px;}
+[data-theme="dark"] .site-select-layout-icon .layout-icon-cell{fill:rgba(148,163,184,.12);stroke:rgba(203,213,225,.82);}
+[data-theme="dark"] .recipe-filter-row .site-select[data-select-class~="layout-select"] .site-select-trigger{background:rgba(148,163,184,.1);backdrop-filter:blur(14px);border-color:rgba(203,213,225,.22);}
+[data-theme="dark"] .site-select-layout-option:hover .layout-icon-cell,[data-theme="dark"] .site-select-layout-option.is-active .layout-icon-cell{fill:rgba(203,213,225,.24);}
 .add-recipe-cta{position:fixed;top:72px;right:16px;z-index:95;width:28px;height:28px;padding:0;border:none;border-radius:8px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;transition:opacity 3s ease,transform 0.3s ease,box-shadow 0.3s ease;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 7px var(--neon-glow);}
 .add-recipe-cta svg{width:13px;height:13px;stroke:var(--neon);fill:none;stroke-width:3;stroke-linecap:round;}
 .add-recipe-cta:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 11px var(--neon-glow);}
@@ -69,7 +78,7 @@
  .recipes-toolbar{margin:0 -12px 18px;padding:9px 12px;}
  .recipe-filter-row{gap:7px;}
  .recipe-filter-row select{padding:10px 28px 10px 10px;font-size:12px;}
-  .recipe-filter-row .site-select[data-select-class~="recipe-cols-filter"]{flex-basis:38%;}
+  .recipe-filter-row .site-select[data-select-class~="layout-select"]{flex:0 0 138px;width:138px;}
  .recipes-grid{gap:10px;}
  .recipe-card .recipe-body{padding:10px;}
  .recipe-card .recipe-title{font-size:14px;}
@@ -133,7 +142,7 @@ button, .btn, a, label {
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
-<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<script src="assets/js/site-select.js?v=20261119-layout1" defer></script>
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115-tools1">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
 </head>
@@ -185,8 +194,8 @@ button, .btn, a, label {
 <input type="text" class="search-input" id="recipeSearch" placeholder="Поиск рецептов...">
 <div class="recipe-filter-row">
 <select id="recipeCategory" class="recipe-category-filter" aria-label="Категория рецептов"><option value="0">Все категории</option></select>
-<select id="recipeCols" class="recipe-cols-filter" aria-label="Количество карточек в строке" onchange="changeRecipeCols(this.value)">
-<option value="1">1 в строке</option><option value="2" selected>2 в строке</option><option value="4">4 в строке</option>
+<select id="recipeCols" class="recipe-cols-filter layout-select" aria-label="Количество карточек в строке" onchange="changeRecipeCols(this.value)">
+<option value="1" data-layout-cells="1">Показать 1</option><option value="2" data-layout-cells="4" selected>Показать 2</option><option value="4" data-layout-cells="8">Показать 4</option>
 </select>
 </div>
 </div>
