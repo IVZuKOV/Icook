@@ -124,6 +124,7 @@
             });
         });
         root.getCategoryId = function () { return root.dataset.categoryId || ''; };
+        root.getSelectedCategoryId = function () { return subsub.value || sub.value || main.value || ''; };
         root.getPath = function () {
             return {
                 main_category_id: main.value || '',

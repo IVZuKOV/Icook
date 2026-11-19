@@ -14,12 +14,19 @@
 
 <style>
 /* Специфичные стили только для контента рецептов */
-.recipes-page{padding:50px 20px 30px;max-width:1200px;margin:0 auto;text-align:center;}
+.recipes-page{padding:30px 20px;max-width:1200px;margin:0 auto;text-align:center;}
 .page-title{font-size:clamp(32px, 5vw, 48px);font-weight:900;color:var(--neon-dark);text-shadow:0 0 15px var(--neon-glow);margin-bottom:8px;}
 .page-desc{color:var(--text-muted);margin-bottom:30px;}
-.recipes-toolbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;}
-.recipes-toolbar .search-input{max-width:340px;width:100%;padding:12px 16px;border:2px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main);font-family:'Montserrat',sans-serif;font-size:14px;}
+.recipes-toolbar{position:sticky;top:0;z-index:110;display:grid;gap:9px;margin:0 -20px 22px;padding:10px max(20px,calc((100% - 1160px)/2));background:var(--header-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);box-shadow:0 6px 22px rgba(15,23,42,.08);text-align:left;}
+.recipes-toolbar .search-input{width:100%;padding:12px 16px;border:2px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main);font:inherit;font-size:14px;}
 .recipes-toolbar .search-input:focus{outline:none;border-color:var(--neon);}
+.recipe-filter-row{display:flex;gap:10px;width:100%;align-items:center;}
+.recipe-filter-row select{min-width:0;padding:11px 38px 11px 14px;border:2px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main);font:inherit;font-size:14px;font-weight:700;}
+.recipe-filter-row #recipeCategory{flex:1 1 auto;}
+.recipe-filter-row #recipeCols{flex:0 0 190px;}
+.recipe-filter-row .site-select{min-width:0;width:auto;}
+.recipe-filter-row .site-select[data-select-class~="recipe-category-filter"]{flex:1 1 auto;min-width:0;}
+.recipe-filter-row .site-select[data-select-class~="recipe-cols-filter"]{flex:0 0 190px;}
 .add-recipe-cta{position:fixed;top:72px;right:16px;z-index:95;width:28px;height:28px;padding:0;border:none;border-radius:8px;background:transparent;color:#ffffff;font-family:'Montserrat',sans-serif;cursor:pointer;transition:opacity 3s ease,transform 0.3s ease,box-shadow 0.3s ease;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 7px var(--neon-glow);}
 .add-recipe-cta svg{width:13px;height:13px;stroke:var(--neon);fill:none;stroke-width:3;stroke-linecap:round;}
 .add-recipe-cta:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 11px var(--neon-glow);}
@@ -29,17 +36,22 @@
 .back-to-top.visible{opacity:1;pointer-events:auto;}
 .back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow);}
 .back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.recipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;text-align:left;}
-.recipe-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;transition:all 0.3s;box-shadow:0 8px 30px rgba(0,0,0,0.08);position:relative;}
-.recipe-card:hover{transform:translateY(-4px);border-color:var(--neon);box-shadow:0 10px 35px var(--neon-glow),0 0 25px rgba(30,64,175,0.1);}
-.recipe-card .recipe-img{width:100%;height:180px;object-fit:cover;display:block;background:var(--neon-glow);}
-.recipe-card .recipe-body{padding:16px 18px 18px;}
-.recipe-card .recipe-title{font-size:17px;font-weight:800;color:var(--text-main);margin-bottom:6px;}
-.recipe-card .recipe-author{font-size:12px;font-weight:700;color:var(--neon-dark);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.recipes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;text-align:left;}
+.recipes-grid.cols-1{grid-template-columns:minmax(0,1fr);}
+.recipes-grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr));}
+.recipes-grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr));}
+.recipe-card{min-width:0;display:flex;flex-direction:column;background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;transition:all 0.3s;box-shadow:0 8px 30px rgba(0,0,0,0.08);position:relative;}
+.recipe-card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--neon);box-shadow:0 10px 30px var(--neon-glow),0 0 20px rgba(30,64,175,0.1);}
+.recipe-card .recipe-img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--neon-glow);transition:transform .4s;}
+.recipe-card:hover .recipe-img{transform:scale(1.05);}
+.recipe-card .recipe-body{flex:1;display:flex;flex-direction:column;padding:18px;background:var(--card-bg);min-width:0;}
+.recipe-card .recipe-title{font-size:clamp(15px,1.5vw,20px);line-height:1.3;font-weight:800;color:var(--text-main);margin-bottom:6px;}
+.recipe-card .recipe-author{font-size:13px;font-weight:700;color:var(--neon-dark);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
 .recipe-card .recipe-author .author-letter{width:20px;height:20px;border-radius:50%;background:var(--neon-glow);display:inline-flex;align-items:center;justify-content:center;font-size:11px;}
-.recipe-card .recipe-text{font-size:13px;line-height:1.6;color:var(--text-muted);white-space:pre-wrap;max-height:126px;overflow:hidden;position:relative;}
+.recipe-category{margin-bottom:8px;color:var(--neon-dark);font-size:12px;font-weight:700;}
+.recipe-card .recipe-text{font-size:14px;line-height:1.5;color:var(--text-muted);white-space:pre-wrap;max-height:126px;overflow:hidden;position:relative;margin-bottom:12px;}
 .recipe-card .recipe-text.expanded{max-height:none;}
-.recipe-card .recipe-more{margin-top:8px;font-size:12px;font-weight:700;color:var(--neon-dark);cursor:pointer;background:none;border:none;padding:0;font-family:'Montserrat',sans-serif;}
+.recipe-card .recipe-more{margin-top:auto;font-size:12px;font-weight:700;color:var(--neon-dark);cursor:pointer;background:none;border:none;padding:8px 0 0;font:inherit;text-align:left;}
 .recipes-empty{grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px 10px;}
 .recipes-loading{grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px 10px;}
 .load-more-wrap{margin-top:26px;}
@@ -51,6 +63,24 @@
 .logo{font-size:18px;gap:10px;order:1;width:100%;justify-content:center;}
 
 .header-right{width:100%;justify-content:space-between;align-items:center;gap:8px;}
+}
+@media(max-width:700px){
+ .recipes-page{padding:22px 12px;}
+ .recipes-toolbar{margin:0 -12px 18px;padding:9px 12px;}
+ .recipe-filter-row{gap:7px;}
+ .recipe-filter-row select{padding:10px 28px 10px 10px;font-size:12px;}
+  .recipe-filter-row .site-select[data-select-class~="recipe-cols-filter"]{flex-basis:38%;}
+ .recipes-grid{gap:10px;}
+ .recipe-card .recipe-body{padding:10px;}
+ .recipe-card .recipe-title{font-size:14px;}
+ .recipe-card .recipe-author{font-size:11px;}
+ .recipe-card .recipe-text{font-size:12px;}
+}
+@media(max-width:420px){
+ .recipes-grid.cols-4{gap:5px;}
+ .recipes-grid.cols-4 .recipe-body{padding:6px;}
+ .recipes-grid.cols-4 .recipe-title{font-size:11px;}
+ .recipes-grid.cols-4 .recipe-author,.recipes-grid.cols-4 .recipe-text,.recipes-grid.cols-4 .recipe-more{font-size:9px;}
 }
 
 .bottom-bar{height:56px;min-height:56px;max-height:56px;position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
@@ -153,8 +183,14 @@ button, .btn, a, label {
 <p class="page-desc">Домашние рецепты от наших поваров — готовьте и делитесь своими</p>
 <div class="recipes-toolbar">
 <input type="text" class="search-input" id="recipeSearch" placeholder="Поиск рецептов...">
+<div class="recipe-filter-row">
+<select id="recipeCategory" class="recipe-category-filter" aria-label="Категория рецептов"><option value="0">Все категории</option></select>
+<select id="recipeCols" class="recipe-cols-filter" aria-label="Количество карточек в строке" onchange="changeRecipeCols(this.value)">
+<option value="1">1 в строке</option><option value="2" selected>2 в строке</option><option value="4">4 в строке</option>
+</select>
 </div>
-<div class="recipes-grid" id="recipesGrid"><div class="recipes-loading">Загружаем рецепты...</div></div>
+</div>
+<div class="recipes-grid cols-2" id="recipesGrid"><div class="recipes-loading">Загружаем рецепты...</div></div>
 <div class="feed-status" id="recipesSentinel" role="status" aria-live="polite"></div>
 </section>
 
@@ -212,6 +248,7 @@ button, .btn, a, label {
 // --- JS РЕЦЕПТОВ ---
 let recipesFeed = null;
 let recipesSearchTimer = null;
+let recipesCategoryId = 0;
 
 function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}
 
@@ -276,6 +313,7 @@ function renderRecipes(recipes) {
             '<div class="recipe-body">' +
                 '<div class="recipe-title">' + escapeHtml(r.title) + '</div>' +
                 '<div class="recipe-author"><span class="author-letter">' + letter + '</span>' + author + '</div>' +
+                (r.category_name ? '<div class="recipe-category">' + escapeHtml(r.category_name) + '</div>' : '') +
                 '<div class="recipe-text" id="rtxt-' + r.id + '">' + text + '</div>' +
                 (text.length > 260 ? '<button class="recipe-more" onclick="toggleRecipeText(' + r.id + ')">Показать полностью</button>' : '') +
             '</div></div>';
@@ -286,6 +324,47 @@ function renderRecipes(recipes) {
         const authorBadge = card.querySelector('.author-letter');
         if (authorBadge) authorBadge.replaceWith(window.IcookAuthorAvatar.create(recipes[index].author_name, recipes[index].author_avatar, recipes[index].author_avatar_version));
     });
+}
+
+async function loadRecipeCategories() {
+    const select = document.getElementById('recipeCategory');
+    try {
+        const response = await fetch('/api/categories.php');
+        const data = await response.json();
+        if (!data.success) return;
+        const categories = data.categories || [];
+        const byId = new Map(categories.map(function (item) { return [Number(item.id), item]; }));
+        const paths = categories.map(function (item) {
+            const names = [];
+            let parent = item;
+            while (parent) {
+                names.unshift(parent.name);
+                parent = parent.parent_id ? byId.get(Number(parent.parent_id)) : null;
+            }
+            return {item: item, path: names.join(' › '), root: names[0]};
+        });
+        const roots = new Set(paths.map(function (entry) { return entry.root; }));
+        select.innerHTML = '<option value="0">Все категории</option>';
+        roots.forEach(function (rootName) {
+            const group = document.createElement('optgroup');
+            group.label = rootName;
+            paths.filter(function (entry) { return entry.root === rootName; }).forEach(function (entry) {
+                const option = document.createElement('option');
+                option.value = entry.item.id;
+                option.textContent = entry.path;
+                group.appendChild(option);
+            });
+            select.appendChild(group);
+        });
+        select.value = String(recipesCategoryId);
+    } catch (error) {
+        console.error('Не удалось загрузить категории рецептов', error);
+    }
+}
+
+function changeRecipeCols(columns) {
+    const grid = document.getElementById('recipesGrid');
+    if (grid) grid.className = 'recipes-grid cols-' + (Number(columns) || 2);
 }
 
 function toggleRecipeText(id) {
@@ -304,7 +383,11 @@ async function fetchRecipes(reset) {
         sentinel: document.getElementById('recipesSentinel'),
         url: '/api/recipes.php', key: 'recipes', loadingText: 'Загружаем рецепты…',
         endText: 'Вы посмотрели все рецепты',
-        params: function () { return {search: document.getElementById('recipeSearch').value.trim()}; },
+        params: function () {
+            const params = {search: document.getElementById('recipeSearch').value.trim()};
+            if (recipesCategoryId) params.category_id = recipesCategoryId;
+            return params;
+        },
         emptyText: function () { return document.getElementById('recipeSearch').value.trim() ? 'Рецепты не найдены. Попробуйте изменить поиск.' : 'Рецептов пока нет. Будьте первым — добавьте свой рецепт!'; },
         render: renderRecipes
     });
@@ -326,10 +409,15 @@ document.addEventListener('DOMContentLoaded', function(){
     updateUI();
     updateCartBadge();
     if(typeof hideCurrentPageInCatalog === 'function') hideCurrentPageInCatalog();
+    loadRecipeCategories();
     fetchRecipes(true);
     document.getElementById('recipeSearch').addEventListener('input', function(){
         clearTimeout(recipesSearchTimer);
         recipesSearchTimer = setTimeout(function(){ fetchRecipes(true); }, 350);
+    });
+    document.getElementById('recipeCategory').addEventListener('change', function(){
+        recipesCategoryId = Number(this.value) || 0;
+        fetchRecipes(true);
     });
     // После успешной авторизации — перебросить в «Мои рецепты»
     try {

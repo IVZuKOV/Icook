@@ -24,7 +24,7 @@
     .menu-search {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 30px 40px 0;
+        padding: 10px 40px 0;
     }
     .menu-search input {
         width: 100%;
@@ -65,11 +65,11 @@
     .filters-bar {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 20px 40px 0;
+        padding: 10px 40px 0;
         display: flex;
         gap: 12px;
         align-items: center;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
     }
     .filters-bar select {
         padding: 12px 40px 12px 18px;
@@ -92,6 +92,10 @@
         background-size: 12px;
         min-width: 180px;
     }
+    .filters-bar .site-select{min-width:0;width:auto;}
+    .filters-bar .site-select[data-select-class~="menu-category-filter"]{flex:1 1 auto;min-width:0;}
+    .filters-bar .site-select[data-select-class~="menu-cols-filter"]{flex:0 0 190px;}
+    .menu-toolbar{position:sticky;top:0;z-index:110;padding-bottom:12px;background:var(--header-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);box-shadow:0 6px 22px rgba(15,23,42,.08);}
     .filters-bar select:focus {
         border-color: var(--neon);
         box-shadow: 0 0 0 4px rgba(30,64,175,0.15), 0 0 20px rgba(30,64,175,0.25);
@@ -198,8 +202,10 @@
         .dishes-grid.cols-4 { grid-template-columns: repeat(4, 1fr) !important; }
         .dishes-grid .card .card-content { padding: 8px !important; }
         .dishes-grid .card .btn { padding: 8px 10px !important; font-size: 12px !important; }
-        .filters-bar { gap: 8px; padding: 14px 16px 0; }
-        .filters-bar select { min-width: 0; flex: 1; font-size: 13px; padding: 10px 30px 10px 12px; }
+        .menu-search{padding:8px 16px 0;}
+        .filters-bar { gap: 8px; padding: 8px 16px 0; }
+        .filters-bar select { min-width: 0; font-size: 12px; padding: 10px 28px 10px 10px; }
+        .filters-bar .site-select[data-select-class~="menu-cols-filter"] { flex-basis:36%; }
         .dishes-grid-wrapper { padding: 0 12px; }
     }
     @media (max-width: 768px) {
@@ -237,75 +243,43 @@
             margin: 1vw 0 !important;
         }
         .dishes-grid.cols-4 .card .btn,
-        .dishes-grid.cols-4 .card button:not(.fav-btn) {
-            padding: 2vw 0 !important;
-            font-size: 2.4vw !important;
-            border-radius: 1.5vw !important;
-            width: 90% !important;
-            min-width: 0 !important;
-            max-width: 90% !important;
-            margin: 0 auto !important;
-            display: block !important;
-            box-sizing: border-box !important;
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            min-height: 0 !important;
-            line-height: 1.2 !important;
-        }
+        .dishes-grid.cols-4 .card .btn { padding:2vw 0!important;font-size:2.4vw!important;border-radius:1.5vw!important;width:90%!important;min-width:0!important;max-width:90%!important;margin:0 auto!important;display:block!important;box-sizing:border-box!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;min-height:0!important;line-height:1.2!important; }
     }
 
 
     .qty-control {
         display: flex;
         align-items: center;
-        gap: 0;
-        background: var(--card-bg);
-        border: 2px solid var(--neon);
+        gap: 10px;
+        background: var(--bg);
+        border: 1px solid var(--border-color);
         border-radius: 12px;
-        padding: 2px;
+        padding: 4px;
+        width: 100%;
+        justify-content: space-between;
         margin-top: auto;
-        width: fit-content;
-        align-self: center;
     }
     .qty-btn {
         width: 32px;
         height: 32px;
         border: none;
         border-radius: 8px;
-        background: transparent;
-        color: var(--neon-dark);
+        background: var(--card-bg);
+        color: var(--text-main);
         cursor: pointer;
-        font-size: 18px;
-        font-weight: 700;
+        font-size: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: 0.2s;
-        padding: 0;
-        min-width: 32px;
+        position: relative;
+        z-index: 2;
+        transition: background .05s,color .05s,transform .05s;
     }
-    .qty-btn:hover {
-        background: var(--neon-glow);
-        color: var(--neon-dark);
-    }
-    .qty-btn:active {
-        background: var(--neon);
-        color: #ffffff;
-        transform: scale(0.9);
-    }
-    .qty-val {
-        font-weight: 700;
-        font-size: 16px;
-        width: 28px;
-        text-align: center;
-        color: var(--text-main);
-    }
-    @media (max-width: 768px) {
-        .dishes-grid.cols-4 .qty-control { border-radius: 1vw; padding: 1px; width: 100%; justify-content: space-between; }
-        .dishes-grid.cols-4 .qty-btn { width: 5vw; height: 5vw; min-width: 5vw; font-size: 3vw; border-radius: 0.8vw; }
-        .dishes-grid.cols-4 .qty-val { font-size: 2.4vw; width: auto; flex: 1; text-align: center; }
-    }
+    .qty-btn:hover{background:transparent;color:var(--neon-dark);}
+    .qty-btn:focus{background:var(--card-bg);color:var(--text-main);outline:none;}
+    .qty-btn:active{background:var(--neon);color:#fff;transform:scale(.9);}
+    [data-theme="dark"] .qty-btn:active{background:transparent;color:#000;transform:scale(.95);}
+    .qty-val{font-weight:700;font-size:16px;width:20px;text-align:center;color:var(--text-main);}
 
     .empty-msg {
         text-align: center;
@@ -538,6 +512,7 @@ body{padding-bottom:88px;}
         </h2>
     </div>
 
+    <div class="menu-toolbar">
     <!-- Поиск -->
     <div class="menu-search">
         <input type="text" id="searchInput" placeholder="Поиск блюд...">
@@ -548,15 +523,16 @@ body{padding-bottom:88px;}
 
     <!-- Фильтры -->
     <div class="filters-bar">
-        <select id="categorySelect" onchange="filterCategorySelect(this.value)">
+        <select id="categorySelect" class="menu-category-filter" onchange="filterCategorySelect(this.value)">
             <option value="0">Все категории</option>
         </select>
-        <select id="colsSelect" onchange="changeCols(this.value)">
+        <select id="colsSelect" class="menu-cols-filter" onchange="changeCols(this.value)">
             <option value="1">Показать 1</option>
             <option value="2" selected>Показать 2</option>
             <option value="4">Показать 4</option>
 
         </select>
+    </div>
     </div>
 
     <!-- Каталог блюд -->

@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/bootstrap.php';
 
 $authorId = (int) ($_GET['author_id'] ?? 0);
+$categoryId = (int) ($_GET['category_id'] ?? 0);
 $search = trim((string) ($_GET['search'] ?? ''));
 if (mb_strlen($search) > 100) {
     $search = mb_substr($search, 0, 100);
@@ -21,6 +22,10 @@ if ($authorId) {
     $where .= ' AND r.user_id = ?';
     $params[] = $authorId;
 }
+if ($categoryId > 0) {
+    $where .= ' AND r.category_id IN (SELECT id FROM categories WHERE id = ? OR parent_id = ? OR parent_id IN (SELECT id FROM categories WHERE parent_id = ?))';
+    array_push($params, $categoryId, $categoryId, $categoryId);
+}
 if ($search !== '') {
     $where .= ' AND (r.title LIKE ? OR r.description LIKE ?)';
     $like = '%' . $search . '%';
@@ -30,9 +35,11 @@ if ($search !== '') {
 
 $sql = "SELECT r.*, u.name as author_name,
                 CASE WHEN u.avatar_public = 1 THEN u.avatar ELSE '' END AS author_avatar,
-                CASE WHEN u.avatar_public = 1 THEN u.avatar_version ELSE '' END AS author_avatar_version
+                CASE WHEN u.avatar_public = 1 THEN u.avatar_version ELSE '' END AS author_avatar_version,
+                c.name AS category_name
         FROM recipes r
         LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN categories c ON r.category_id = c.id
         WHERE $where
         ORDER BY r.created_at DESC, r.id DESC
         LIMIT ? OFFSET ?";

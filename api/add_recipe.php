@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/lib/ingredients.php';
+require_once __DIR__ . '/category_path.php';
 
 $userId = require_login();
 
 $title = trim((string) ($_POST['title'] ?? ''));
 $description = trim((string) ($_POST['description'] ?? ''));
+$categoryId = resolve_optional_recipe_category($pdo, $_POST);
 
 if ($title === '') {
     json_out(['error' => 'Введите название рецепта']);
@@ -17,6 +19,9 @@ if (mb_strlen($title) > 150) {
 }
 if (mb_strlen($description) > 10000) {
     json_out(['error' => 'Слишком длинное описание']);
+}
+if ($categoryId === -1) {
+    json_out(['error' => 'Некорректная категория рецепта']);
 }
 
 // --- Ингредиенты: JSON-массив [{name, qty, unit}] ---
@@ -121,10 +126,10 @@ if (isset($_FILES['image']) && is_array($_FILES['image']) && ($_FILES['image']['
 try {
     $pdo->beginTransaction();
     $stmt = $pdo->prepare(
-        'INSERT INTO recipes (user_id, title, description, ingredients, steps, image) VALUES (?, ?, ?, ?, ?, ?)'
+        'INSERT INTO recipes (user_id, category_id, title, description, ingredients, steps, image) VALUES (?, ?, ?, ?, ?, ?, ?)'
     );
     $stmt->execute([
-        $userId, $title, $description,
+        $userId, $categoryId, $title, $description,
         json_encode($ingOut, JSON_UNESCAPED_UNICODE),
         json_encode($stepOut, JSON_UNESCAPED_UNICODE), $image,
     ]);

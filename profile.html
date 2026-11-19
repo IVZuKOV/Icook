@@ -746,6 +746,16 @@ button, .btn, a, label {
 <textarea id="recipeDesc" class="recipe-description-trigger" readonly onclick="openRecipeDescriptionEditor('recipeDesc')" style="min-height:80px;" placeholder="Нажмите, чтобы написать описание..."></textarea>
 </div>
 <div class="form-group">
+<label>Категория рецепта (необязательно)</label>
+<div class="category-picker" id="recipeCategoryPicker" data-category-picker data-title-id="recipeTitle" data-description-id="recipeDesc">
+<input type="search" data-category-search placeholder="Поиск категории..." autocomplete="off">
+<div class="category-search-results" data-category-results hidden></div>
+<select data-category-main aria-label="Основная категория рецепта"></select>
+<select data-category-sub aria-label="Подкатегория рецепта"></select>
+<select data-category-subsub aria-label="Дополнительная подкатегория рецепта"></select>
+</div>
+</div>
+<div class="form-group">
 <label>Состав / Ингредиенты</label>
 <div id="recipeIngList" class="ing-list"></div>
 <button type="button" class="sub-add-btn" onclick="addIngredientRow('recipeIngList')">＋ Добавить ингредиент</button>
@@ -785,6 +795,16 @@ button, .btn, a, label {
 <div class="form-group">
 <label>Описание</label>
 <textarea id="editRecipeDesc" class="recipe-description-trigger" readonly onclick="openRecipeDescriptionEditor('editRecipeDesc')" style="min-height:80px;" placeholder="Нажмите, чтобы написать описание..."></textarea>
+</div>
+<div class="form-group">
+<label>Категория рецепта (необязательно)</label>
+<div class="category-picker" id="editRecipeCategoryPicker" data-category-picker data-title-id="editRecipeTitle" data-description-id="editRecipeDesc">
+<input type="search" data-category-search placeholder="Поиск категории..." autocomplete="off">
+<div class="category-search-results" data-category-results hidden></div>
+<select data-category-main aria-label="Основная категория рецепта"></select>
+<select data-category-sub aria-label="Подкатегория рецепта"></select>
+<select data-category-subsub aria-label="Дополнительная подкатегория рецепта"></select>
+</div>
 </div>
 <div class="form-group">
 <label>Состав / Ингредиенты</label>
@@ -1582,6 +1602,8 @@ function collectSteps(listId) {
 function openAddRecipeModal() {
     document.getElementById('recipeTitle').value = '';
     document.getElementById('recipeDesc').value = '';
+    var recipeCategoryPicker = document.getElementById('recipeCategoryPicker');
+    if(recipeCategoryPicker && recipeCategoryPicker.resetCategory) recipeCategoryPicker.resetCategory();
     document.getElementById('recipeImagePreview').removeAttribute('src');
     document.getElementById('recipeImage').value = '';
     document.getElementById('recipeImageField').closest('.form-group').classList.remove('has-recipe-image');
@@ -1621,8 +1643,12 @@ async function addRecipe() {
     if(!ingredients.length) { showToastMsg('Добавьте хотя бы один ингредиент'); return; }
     if(!col.steps.length) { showToastMsg('Добавьте хотя бы один шаг'); return; }
     var formData = new FormData();
+    var categoryPicker = document.getElementById('recipeCategoryPicker');
+    var categoryId = categoryPicker && categoryPicker.getSelectedCategoryId ? categoryPicker.getSelectedCategoryId() : '';
     formData.append('title', title);
     formData.append('description', desc);
+    formData.append('category_id', categoryId);
+    if(categoryPicker && categoryPicker.getPath) Object.keys(categoryPicker.getPath()).forEach(function(key){ formData.append(key, categoryPicker.getPath()[key]); });
     formData.append('ingredients', JSON.stringify(ingredients));
     formData.append('steps', JSON.stringify(col.steps));
     col.files.forEach(function(f){ formData.append('step_photos[]', f); });
@@ -1696,6 +1722,9 @@ function openEditRecipe(id) {
     document.getElementById('editRecipeId').value = r.id;
     document.getElementById('editRecipeTitle').value = r.title || '';
     document.getElementById('editRecipeDesc').value = r.description || '';
+    var recipeCategoryPicker = document.getElementById('editRecipeCategoryPicker');
+    if(recipeCategoryPicker && recipeCategoryPicker.setCategoryId) recipeCategoryPicker.setCategoryId(r.category_id || '');
+    if(!r.category_id) document.getElementById('editRecipeTitle').dispatchEvent(new Event('input', {bubbles:true}));
     document.getElementById('editRecipeImagePreview').removeAttribute('src');
     document.getElementById('editRecipeImage').value = '';
     document.getElementById('editRecipeImageField').closest('.form-group').classList.remove('has-recipe-image');
@@ -1724,8 +1753,12 @@ async function editRecipe(id) {
     var ingredients = collectIngredients('editRecipeIngList');
     var col = collectSteps('editRecipeStepList');
     var formData = new FormData();
+    var categoryPicker = document.getElementById('editRecipeCategoryPicker');
+    var categoryId = categoryPicker && categoryPicker.getSelectedCategoryId ? categoryPicker.getSelectedCategoryId() : '';
     formData.append('recipe_id', id);
     formData.append('action', 'update');
+    formData.append('category_id', categoryId);
+    if(categoryPicker && categoryPicker.getPath) Object.keys(categoryPicker.getPath()).forEach(function(key){ formData.append(key, categoryPicker.getPath()[key]); });
     formData.append('title', title);
     formData.append('description', desc);
     formData.append('ingredients', JSON.stringify(ingredients));
@@ -3600,6 +3633,6 @@ async function confirmDeleteAdminIndexBanner(){
 })();
 </script>
 
-<script src="assets/js/category-picker.js?v=20261116-2"></script>
+<script src="assets/js/category-picker.js?v=20261119-1"></script>
 </body>
 </html>

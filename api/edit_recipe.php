@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/lib/ingredients.php';
+require_once __DIR__ . '/category_path.php';
 
 $recipeFilesToRemove = [];
 $newRecipeImages = [];
@@ -63,6 +64,13 @@ if ($action === 'toggle') {
 // --- update ---
 $title = trim((string) ($data['title'] ?? $recipe['title']));
 $description = trim((string) ($data['description'] ?? $recipe['description']));
+$categoryId = $recipe['category_id'] !== null ? (int) $recipe['category_id'] : null;
+if (array_key_exists('category_id', $data) || array_key_exists('main_category_id', $data)) {
+    $categoryId = resolve_optional_recipe_category($pdo, $data);
+    if ($categoryId === -1) {
+        json_out(['error' => 'Некорректная категория рецепта']);
+    }
+}
 
 if ($title === '' || mb_strlen($title) > 150) {
     json_out(['error' => 'Некорректное название']);
@@ -228,17 +236,17 @@ try {
     if ($image) {
         remove_recipe_file($recipe['image']);
         $pdo->prepare(
-            'UPDATE recipes SET title=?, description=?, ingredients=COALESCE(?, ingredients), steps=COALESCE(?, steps), image=? WHERE id=? AND user_id=?'
-        )->execute([$title, $description, $ingOut, $stepOut, $image, $recipeId, $userId]);
+            'UPDATE recipes SET title=?, description=?, category_id=?, ingredients=COALESCE(?, ingredients), steps=COALESCE(?, steps), image=? WHERE id=? AND user_id=?'
+        )->execute([$title, $description, $categoryId, $ingOut, $stepOut, $image, $recipeId, $userId]);
     } elseif ($removeImage) {
         remove_recipe_file($recipe['image']);
         $pdo->prepare(
-            'UPDATE recipes SET title=?, description=?, ingredients=COALESCE(?, ingredients), steps=COALESCE(?, steps), image=NULL WHERE id=? AND user_id=?'
-        )->execute([$title, $description, $ingOut, $stepOut, $recipeId, $userId]);
+            'UPDATE recipes SET title=?, description=?, category_id=?, ingredients=COALESCE(?, ingredients), steps=COALESCE(?, steps), image=NULL WHERE id=? AND user_id=?'
+        )->execute([$title, $description, $categoryId, $ingOut, $stepOut, $recipeId, $userId]);
     } else {
         $pdo->prepare(
-            'UPDATE recipes SET title=?, description=?, ingredients=COALESCE(?, ingredients), steps=COALESCE(?, steps) WHERE id=? AND user_id=?'
-        )->execute([$title, $description, $ingOut, $stepOut, $recipeId, $userId]);
+            'UPDATE recipes SET title=?, description=?, category_id=?, ingredients=COALESCE(?, ingredients), steps=COALESCE(?, steps) WHERE id=? AND user_id=?'
+        )->execute([$title, $description, $categoryId, $ingOut, $stepOut, $recipeId, $userId]);
     }
     if ($ingOut !== null) {
         ingredient_catalog_sync($pdo, $recipeId, json_decode($ingOut, true, 512, JSON_THROW_ON_ERROR));
