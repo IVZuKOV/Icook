@@ -302,7 +302,9 @@ body{padding-bottom:88px;}
 .avatar-settings-head{display:flex;align-items:center;justify-content:center;position:relative;}
 .avatar-settings-close{position:absolute;right:-8px;top:-10px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--text-muted);font-size:26px;cursor:pointer;}
 .avatar-settings-close:hover{background:var(--neon-glow);color:var(--neon-dark);}
-.avatar-settings-preview{width:88px;height:88px;margin:4px auto 16px;overflow:hidden;border-radius:50%;border:2px solid var(--neon);background:var(--neon-glow);color:var(--neon-dark);font-size:34px;box-shadow:0 5px 20px var(--neon-glow);}
+.avatar-settings-preview{width:88px;height:88px;margin:4px auto 16px;padding:0;overflow:hidden;border:2px solid var(--neon);border-radius:50%;background:var(--neon-glow);color:var(--neon-dark);font-size:34px;box-shadow:0 5px 20px var(--neon-glow);cursor:pointer;appearance:none;-webkit-appearance:none;}
+.avatar-settings-preview:focus-visible{outline:3px solid var(--neon);outline-offset:4px;}
+.avatar-settings-preview:hover{filter:brightness(.92);}
 .avatar-settings-preview img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%;}
 .avatar-settings-actions{display:grid;gap:10px;}
 .avatar-settings-actions .logout-modal-cancel,.avatar-settings-actions .logout-modal-confirm{width:100%;min-height:44px;}
@@ -2751,7 +2753,7 @@ async function saveLKEdit(e){
 <div class="modal-box avatar-modal-box" role="dialog" aria-modal="true" aria-labelledby="avatarSettingsTitle" onclick="event.stopPropagation()">
 <div class="avatar-settings-head"><div class="modal-title" id="avatarSettingsTitle">Аватар профиля</div><button type="button" class="avatar-settings-close" aria-label="Закрыть" onclick="closeAvatarSettings()">×</button></div>
 <div class="modal-text" id="avatarVisibilityStatus">Настройте, кто будет видеть вашу фотографию.</div>
-<div class="avatar avatar-settings-preview" id="avatarSettingsPreview" aria-hidden="true">?</div>
+<button type="button" class="avatar avatar-settings-preview" id="avatarSettingsPreview" aria-label="Изменить кадрирование текущего фото" title="Нажмите, чтобы изменить масштаб и центровку" onclick="recropCurrentAvatar()">?</button>
 <div class="avatar-settings-actions">
 <button type="button" class="logout-modal-cancel" onclick="editAvatarFromSettings()">Изменить аватар</button>
 <button type="button" class="logout-modal-confirm" id="avatarVisibilityButton" onclick="toggleAvatarVisibility()">Скрыть для всех</button>
@@ -2816,15 +2818,29 @@ function isAvatarPublic(){
   return Number(value)!==0;
 }
 
+function getCurrentAvatarUrl(){
+  var value=currentUser&&typeof currentUser.avatar==='string'?currentUser.avatar:'';
+  if(!value)return '';
+  if(value.indexOf('preset:')===0)return '/api/avatar_image.php?id='+encodeURIComponent(value.slice(7));
+  var version=currentUser&&typeof currentUser.avatarVersion==='string'?currentUser.avatarVersion:'';
+  return '/'+value.replace(/^\/+/,'')+(version?'?v='+encodeURIComponent(version):'');
+}
+
 function renderAvatarSettings(){
   var preview=document.getElementById('avatarSettingsPreview');
-  var source=document.getElementById('avatarLetter');
-  if(preview&&source){
+  if(preview){
     var initial=(currentUser&&currentUser.name?Array.from(currentUser.name)[0]:'?').toLocaleUpperCase('ru-RU');
-    var image=isAvatarPublic()?source.querySelector('img'):null;
     preview.replaceChildren();
-    if(image)preview.appendChild(image.cloneNode(true));
-    else preview.textContent=initial;
+    var avatarUrl=getCurrentAvatarUrl();
+    if(avatarUrl){
+      var image=document.createElement('img');
+      image.alt='';
+      image.draggable=false;
+      image.src=avatarUrl;
+      image.onerror=function(){preview.replaceChildren();preview.textContent=initial;};
+      preview.appendChild(image);
+    }else preview.textContent=initial;
+    preview.setAttribute('aria-label',avatarUrl?'Изменить кадрирование текущего фото':'Добавить фото профиля');
   }
   var visible=isAvatarPublic();
   var status=document.getElementById('avatarVisibilityStatus');
@@ -2853,6 +2869,30 @@ function closeAvatarSettings(event){
 function editAvatarFromSettings(){
   document.getElementById('avatarSettingsModal').classList.remove('active');
   openAvatarUpload();
+}
+
+async function recropCurrentAvatar(){
+  var avatarUrl=getCurrentAvatarUrl();
+  if(!avatarUrl){
+    editAvatarFromSettings();
+    return;
+  }
+  resetAvatarUpload();
+  var loadVersion=avatarSelectionVersion;
+  document.getElementById('avatarSettingsModal').classList.remove('active');
+  document.getElementById('avatarCropModal').classList.add('active');
+  setAvatarStatus('Загружаем сохранённое фото…');
+  try{
+    var response=await fetch(avatarUrl,{credentials:'same-origin',cache:'no-store'});
+    if(!response.ok)throw new Error('Не удалось открыть сохранённое фото');
+    var blob=await response.blob();
+    if(!blob.size)throw new Error('Сохранённое фото пустое или недоступно');
+    if(loadVersion!==avatarSelectionVersion)return;
+    var file=new File([blob],'current-avatar.jpg',{type:'image/jpeg',lastModified:Date.now()});
+    await handleAvatarSelection(file);
+  }catch(error){
+    if(loadVersion===avatarSelectionVersion)setAvatarStatus(error.message||'Не удалось открыть сохранённое фото.','error');
+  }
 }
 
 async function toggleAvatarVisibility(){
@@ -3139,18 +3179,13 @@ function renderProfileAvatar(){
     avatar.textContent=initial;
     return;
   }
-  var value=currentUser&&typeof currentUser.avatar==='string'?currentUser.avatar:'';
-  if(!value){avatar.textContent=initial;return;}
+  var avatarUrl=getCurrentAvatarUrl();
+  if(!avatarUrl){avatar.textContent=initial;return;}
   var image=document.createElement('img');
   image.alt='';
   image.draggable=false;
   image.addEventListener('error',function(){avatar.replaceChildren();avatar.textContent=isAvatarPublic()?initial:'';});
-  if(value.indexOf('preset:')===0){
-    image.src='/api/avatar_image.php?id='+encodeURIComponent(value.slice(7));
-  }else{
-    var version=currentUser&&typeof currentUser.avatarVersion==='string'?currentUser.avatarVersion:'';
-    image.src='/'+value.replace(/^\/+/,'')+(version?'?v='+encodeURIComponent(version):'');
-  }
+  image.src=avatarUrl;
   avatar.appendChild(image);
 }
 </script>
