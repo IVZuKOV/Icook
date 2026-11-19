@@ -307,9 +307,7 @@ body{padding-bottom:88px;}
 .avatar-settings-preview{width:88px;height:88px;margin:4px auto 16px;overflow:hidden;border-radius:50%;border:2px solid var(--neon);background:var(--neon-glow);color:var(--neon-dark);font-size:34px;box-shadow:0 5px 20px var(--neon-glow);}
 .avatar-settings-preview img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%;}
 .avatar-settings-actions{display:grid;gap:10px;}
-.avatar-settings-actions button{width:100%;min-height:44px;}
-.avatar-visibility-hide{border-color:rgba(239,68,68,.45)!important;color:#ef4444!important;background:transparent!important;}
-.avatar-visibility-hide:hover{border-color:#ef4444!important;background:rgba(239,68,68,.08)!important;}
+.avatar-settings-actions .logout-modal-cancel,.avatar-settings-actions .logout-modal-confirm{width:100%;min-height:44px;}
 .index-banner-toolbar{display:flex;justify-content:flex-end;margin-bottom:14px;}
 .index-banner-add{width:48px;height:48px;border:0;border-radius:50%;background:var(--neon);color:var(--bg);font-size:32px;font-weight:500;line-height:1;cursor:pointer;box-shadow:0 4px 14px var(--neon-glow);}
 .index-banner-add:hover{transform:scale(1.06);}
@@ -2757,8 +2755,8 @@ async function saveLKEdit(e){
 <div class="modal-text" id="avatarVisibilityStatus">Настройте, кто будет видеть вашу фотографию.</div>
 <div class="avatar avatar-settings-preview" id="avatarSettingsPreview" aria-hidden="true">?</div>
 <div class="avatar-settings-actions">
-<button type="button" class="modal-confirm" onclick="editAvatarFromSettings()">Изменить аватар</button>
-<button type="button" class="modal-cancel avatar-visibility-hide" id="avatarVisibilityButton" onclick="toggleAvatarVisibility()">Скрыть для всех</button>
+<button type="button" class="logout-modal-cancel" onclick="editAvatarFromSettings()">Изменить аватар</button>
+<button type="button" class="logout-modal-confirm" id="avatarVisibilityButton" onclick="toggleAvatarVisibility()">Скрыть для всех</button>
 </div>
 </div>
 </div>
@@ -2824,9 +2822,11 @@ function renderAvatarSettings(){
   var preview=document.getElementById('avatarSettingsPreview');
   var source=document.getElementById('avatarLetter');
   if(preview&&source){
-    preview.textContent=(currentUser&&currentUser.name?Array.from(currentUser.name)[0]:'?').toLocaleUpperCase('ru-RU');
-    var image=source.querySelector('img');
+    var initial=(currentUser&&currentUser.name?Array.from(currentUser.name)[0]:'?').toLocaleUpperCase('ru-RU');
+    var image=isAvatarPublic()?source.querySelector('img'):null;
+    preview.replaceChildren();
     if(image)preview.appendChild(image.cloneNode(true));
+    else preview.textContent=initial;
   }
   var visible=isAvatarPublic();
   var status=document.getElementById('avatarVisibilityStatus');
@@ -2834,9 +2834,8 @@ function renderAvatarSettings(){
   if(status)status.textContent=visible?'Фото видно всем в ваших публикациях.':'В публикациях всем видна только первая буква вашего имени.';
   if(button){
     button.textContent=visible?'Скрыть для всех':'Показывать всем';
-    button.classList.toggle('avatar-visibility-hide',visible);
-    button.classList.toggle('modal-confirm',!visible);
-    button.classList.toggle('modal-cancel',visible);
+    button.classList.toggle('logout-modal-confirm',visible);
+    button.classList.toggle('logout-modal-cancel',!visible);
     button.disabled=avatarVisibilitySaving;
   }
 }
@@ -2869,6 +2868,7 @@ async function toggleAvatarVisibility(){
     if(!response.ok||!data.success)throw new Error(data.error||'Не удалось изменить видимость аватара');
     if(userProfile)userProfile.avatar_public=Number(data.avatar_public);
     if(currentUser){currentUser.avatar_public=Number(data.avatar_public);localStorage.setItem('user',JSON.stringify(currentUser));}
+    renderProfileAvatar();
     var status=document.getElementById('avatarVisibilityStatus');
     avatarVisibilitySaving=false;
     renderAvatarSettings();
@@ -3136,20 +3136,23 @@ function renderProfileAvatar(){
   var avatar=document.getElementById('avatarLetter');
   if(!avatar)return;
   var initial=(currentUser&&currentUser.name?currentUser.name.charAt(0):'?').toUpperCase();
-  avatar.textContent=initial;
+  avatar.replaceChildren();
+  if(!isAvatarPublic()){
+    avatar.textContent=initial;
+    return;
+  }
   var value=currentUser&&typeof currentUser.avatar==='string'?currentUser.avatar:'';
-  if(!value)return;
+  if(!value){avatar.textContent=initial;return;}
   var image=document.createElement('img');
   image.alt='';
   image.draggable=false;
-  image.addEventListener('error',function(){avatar.textContent=initial;});
+  image.addEventListener('error',function(){avatar.replaceChildren();avatar.textContent=isAvatarPublic()?initial:'';});
   if(value.indexOf('preset:')===0){
     image.src='/api/avatar_image.php?id='+encodeURIComponent(value.slice(7));
   }else{
     var version=currentUser&&typeof currentUser.avatarVersion==='string'?currentUser.avatarVersion:'';
     image.src='/'+value.replace(/^\/+/,'')+(version?'?v='+encodeURIComponent(version):'');
   }
-  avatar.textContent='';
   avatar.appendChild(image);
 }
 </script>
