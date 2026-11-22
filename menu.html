@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
     <link rel="stylesheet" href="assets/css/menu.css?v=20261105152159">
     <link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
+    <link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261122-spacing">
+<script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
     
     <script>
         (function(){
@@ -736,7 +738,7 @@ body{padding-bottom:88px;}
                     } else {
                         btnHtml = '<button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g, '&quot;') + '" data-chef="' + (d.seller_name||'Продавец').replace(/"/g, '&quot;') + '" data-price="' + d.price + '" onclick="addToCartMenuBtn(this)">В корзину</button>';
                     }
-                    return '<div class="card">' +
+                    return '<div class="card content-detail-card" data-detail-type="dish" data-detail-id="' + String(d.id).replace(/[^0-9]/g, '') + '">' +
                         '<button class="fav-btn ' + (isFavorite(d.id)?'active':'') + '" onclick="toggleFavorite(' + d.id + ');return false;" data-id="' + d.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>' +
                         '<img src="' + imgSrc + '" alt="' + d.title + '">' +
                         '<div class="card-content">' +

@@ -21,6 +21,8 @@
     var currentPagePath = window.location.pathname.replace(/\/+$/, '') || '/index.html';
     if (currentPagePath === '/') currentPagePath = '/index.html';
     var isMenuPage = /\/menu(?:\.html)?$/i.test(currentPagePath);
+    var isRecipeDetailPage = /\/favorite-detail\.html$/i.test(currentPagePath) &&
+        new URLSearchParams(window.location.search).get('type') === 'recipe';
     function hideCurrentPageLink() {
         drawer.querySelectorAll('a.catalog-link[href]').forEach(function (anchor) {
             try {
@@ -56,13 +58,13 @@
         menuShortcut.className = 'icon-btn bottom-nav-shortcut';
         menuShortcut.href = isMenuPage ? 'recipes.html' : 'menu.html';
         menuShortcut.setAttribute('aria-label', isMenuPage ? 'Рецепты' : 'Меню');
-        menuShortcut.title = isMenuPage ? 'Рецепты' : 'Меню · удерживайте для рецептов';
+        menuShortcut.title = isMenuPage ? 'Рецепты' : (isRecipeDetailPage ? 'Меню' : 'Меню · удерживайте для рецептов');
         menuShortcut.dataset.bottomShortcut = isMenuPage ? 'recipes' : 'menu';
         menuShortcut.style.flex = '0 0 40px';
         menuShortcut.innerHTML = svg(isMenuPage ? icons.recipes : icons.menu);
         reference.insertAdjacentElement('afterend', menuShortcut);
 
-        if (!isMenuPage) {
+        if (!isMenuPage && !isRecipeDetailPage) {
         var recipesShortcut = document.createElement('a');
         recipesShortcut.className = 'bottom-nav-recipes-popover';
         recipesShortcut.href = 'recipes.html';

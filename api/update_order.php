@@ -9,7 +9,7 @@ $data = body_json();
 $orderId = (int) ($data['order_id'] ?? 0);
 $status = (string) ($data['status'] ?? '');
 
-$allowed = ['confirmed', 'cooking', 'ready', 'delivered', 'cancelled'];
+$allowed = ['confirmed', 'cooking', 'ready', 'in_transit', 'delivered', 'cancelled'];
 if (!in_array($status, $allowed, true)) {
     json_out(['error' => 'Неверный статус']);
 }
@@ -31,6 +31,7 @@ $statusNames = [
     'confirmed' => 'Подтверждён',
     'cooking' => 'Готовится',
     'ready' => 'Готов',
+    'in_transit' => 'В пути',
     'delivered' => 'Доставлен',
     'cancelled' => 'Отменён',
 ];

@@ -6,6 +6,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
+<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261122-spacing">
+<script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
 
 <style>
 /* --- CSS НАЧАЛО --- */
@@ -253,7 +255,7 @@ button, .btn, a, label {
 .back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 </style>
 <link rel="stylesheet" href="assets/css/favorites.css?v=20261021145218">
-<link rel="stylesheet" href="assets/css/content-favorites.css?v=20261119-favqty3">
+<link rel="stylesheet" href="assets/css/content-favorites.css?v=20261122-details1">
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
@@ -591,6 +593,7 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 </script>
 
 <script src="assets/js/favorites-store.js?v=20261101115409"></script>
+<script src="assets/js/default-place-image.js?v=20261122-mesto"></script>
 <script src="assets/js/author-avatar.js?v=20261120-crop"></script>
 <script>
 let favoritesLoadVersion = 0;
@@ -610,7 +613,9 @@ function createFavoriteHeart(entry) {
 
 function createFavoriteCard(entry, item) {
     const card = document.createElement('article');
-    card.className = 'card favorite-content-card';
+    card.className = 'card favorite-content-card content-detail-card';
+    card.dataset.detailType = entry.type;
+    card.dataset.detailId = String(entry.id);
     const controls = document.createElement('div');
     controls.className = 'favorite-card-controls';
     if (entry.type === 'dish' || entry.type === 'recipe') {
@@ -627,10 +632,12 @@ function createFavoriteCard(entry, item) {
     controls.appendChild(createFavoriteHeart(entry));
     card.appendChild(controls);
 
-    if (item.image) {
+    if (item.image || entry.type === 'place') {
         const image = document.createElement('img');
         image.className = 'favorite-content-image';
-        image.src = item.image;
+        image.src = item.image || (entry.type === 'place' && window.IcookDefaultPlaceImage
+            ? window.IcookDefaultPlaceImage.random()
+            : '');
         image.alt = item.title || item.name || '';
         image.loading = 'lazy';
         card.appendChild(image);

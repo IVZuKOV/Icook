@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Подробнее — Я готовлю — ты ешь!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
+<link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261115-tools1">
+<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261120-stretch">
+<script src="assets/js/site-header.js?v=20261105152159" defer></script>
+<style>
+:root{--neon:#1e40af;--neon-dark:#1e3a8a;--neon-glow:rgba(30,64,175,.12);--bg:#fff;--text-main:#1e293b;--text-muted:#64748b;--card-bg:#f8fafc;--header-bg:rgba(255,255,255,.95);--border-color:rgba(30,64,175,.12)}
+[data-theme=dark]{--neon:#fff;--neon-dark:#e2e8f0;--neon-glow:rgba(255,255,255,.15);--bg:#0f172a;--text-main:#f8fafc;--text-muted:#94a3b8;--card-bg:#1e293b;--header-bg:rgba(15,23,42,.95);--border-color:rgba(255,255,255,.15)}
+*{box-sizing:border-box}body{margin:0;padding-bottom:88px;background:var(--bg);color:var(--text-main);font:15px/1.6 'Rubik','Nunito',system-ui,sans-serif}a{color:inherit}
+.site-header{width:100%;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);background:var(--header-bg);border-bottom:1px solid var(--border-color);box-shadow:0 4px 30px rgba(30,64,175,.1)}
+.site-header .header-left{display:flex;align-items:center}
+.site-header .logo{display:flex;align-items:center;gap:12px;color:var(--neon-dark);font-size:clamp(16px,3.5vw,28px);font-weight:800;text-shadow:0 0 8px rgba(30,64,175,.4),0 0 20px rgba(30,64,175,.2);white-space:nowrap;text-decoration:none}
+.site-header .logo-icon{width:44px;height:44px;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(30,64,175,1)) drop-shadow(0 0 20px rgba(30,64,175,.6));animation:logoPulse 3s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px var(--neon)) drop-shadow(0 0 20px rgba(30,64,175,.6))}50%{transform:scale(1.06);filter:drop-shadow(0 0 15px var(--neon)) drop-shadow(0 0 35px rgba(30,64,175,.8)) drop-shadow(0 0 50px rgba(59,130,246,.4))}}
+@keyframes logoPulseDark{0%,100%{transform:scale(1);filter:brightness(0) invert(1) drop-shadow(0 0 8px rgba(255,255,255,.5))}50%{transform:scale(1.06);filter:brightness(0) invert(1) drop-shadow(0 0 15px rgba(255,255,255,.7))}}
+.catalog-btn,.icon-btn{width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.95);border:2px solid var(--neon);border-radius:12px;cursor:pointer;transition:.3s;color:var(--neon-dark);box-shadow:0 0 6px rgba(30,64,175,.15);flex-shrink:0;position:relative}
+.catalog-btn svg{width:22px;height:22px}
+.icon-btn svg{width:20px;height:20px}
+.catalog-btn:hover,.icon-btn:hover{background:rgba(30,64,175,.15);border-color:var(--neon);transform:scale(1.05);box-shadow:0 0 15px rgba(30,64,175,.3)}
+.theme-btn .sun{display:none}[data-theme="dark"] .theme-btn .moon{display:none}[data-theme="dark"] .theme-btn .sun{display:block}
+.user-btn-wrap{position:relative;display:none;align-items:center;overflow:hidden;border-radius:12px;border:2px solid var(--border-color);background:var(--card-bg);height:44px;min-width:44px;max-width:44px;flex-shrink:0;text-decoration:none}
+.user-btn-letter{flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--neon-dark);background:linear-gradient(135deg,var(--neon-glow),transparent);border-radius:10px}
+.catalog-drawer h3{font-size:19px;font-weight:800;color:var(--neon-dark);margin:0 0 24px;padding-left:6px;display:flex;align-items:center;gap:8px}
+.catalog-drawer h3 svg{width:22px;height:22px}
+.catalog-link{display:flex;align-items:center;gap:12px;padding:14px 12px;margin-bottom:8px;border-radius:12px;font-weight:600;color:var(--text-main);text-decoration:none;transition:.25s}
+.catalog-link svg{width:20px;height:20px;stroke:currentColor;fill:none;flex-shrink:0}
+.catalog-link:hover{background:transparent;color:var(--neon-dark);transform:translateX(5px)}
+.catalog-divider{height:1px;background:linear-gradient(90deg,transparent,var(--neon-glow),transparent);margin:16px 0}
+.catalog-divider.thick{height:2px;background:linear-gradient(90deg,transparent,rgba(30,64,175,.4),transparent);margin:18px 0}
+.catalog-subheader{font-size:19px;font-weight:800;color:var(--neon-dark);margin:26px 0 16px;padding-left:6px;display:flex;align-items:center;gap:8px}
+.catalog-link.secondary{padding-left:18px}
+.catalog-link.secondary:hover{background:rgba(15,23,42,.06);transform:translateX(3px)}
+[data-theme="dark"] .catalog-btn,[data-theme="dark"] .icon-btn{background:var(--card-bg);color:var(--neon-dark);border-color:var(--border-color)}
+[data-theme="dark"] .catalog-btn:hover,[data-theme="dark"] .icon-btn:hover{border-color:var(--neon);background:var(--neon-glow)}
+[data-theme="dark"] .site-header{background:rgba(11,17,32,.98)}
+[data-theme="dark"] .logo{color:#fff;text-shadow:0 0 10px rgba(255,255,255,.5),0 0 25px rgba(255,255,255,.25)}
+[data-theme="dark"] .logo-icon{animation:logoPulseDark 3s ease-in-out infinite}
+.bottom-bar{height:56px;min-height:56px;max-height:56px;position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,.1)}
+.bottom-bar .header-right{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:4px}
+.bottom-bar .catalog-btn,.bottom-bar .icon-btn,.bottom-bar .user-btn-wrap{width:40px;height:40px;min-width:40px;background:transparent;border:0;border-radius:50%;box-shadow:none;color:var(--neon-dark);display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+.bottom-bar .catalog-btn:hover,.bottom-bar .icon-btn:hover{background:var(--neon-glow);transform:scale(1.05)}
+.bottom-bar .user-btn-letter{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:transparent;font-weight:800}
+.bottom-bar svg{width:20px;height:20px}
+[data-theme="dark"] .site-header{background:rgba(11,17,32,.98)}
+.catalog-overlay{position:fixed;inset:0;z-index:998;background:rgba(15,23,42,.4);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s}
+.catalog-overlay.active{opacity:1;pointer-events:auto}
+.catalog-drawer{position:fixed;top:0;left:0;z-index:999;width:min(320px,100vw);height:100vh;height:100dvh;padding:28px 20px;overflow-y:auto;background:var(--card-bg);transform:translateX(-100%);transition:transform .4s cubic-bezier(.25,.8,.25,1)}
+.catalog-drawer.active{transform:translateX(0)}
+.catalog-subheader{margin:22px 0 10px;color:var(--neon-dark)}
+.detail-page{width:min(100% - 32px,1000px);margin:28px auto 100px}.detail-card{overflow:hidden;border:1px solid var(--border-color);border-radius:20px;background:var(--card-bg);box-shadow:0 8px 30px rgba(15,23,42,.08)}
+.detail-image{display:block;width:100%;max-height:520px;aspect-ratio:16/9;object-fit:cover;background:var(--neon-glow)}
+.detail-body{padding:clamp(18px,4vw,36px)}.detail-kind{color:var(--text-muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.detail-title{margin:4px 0 12px;color:var(--neon-dark);font-size:clamp(26px,5vw,42px);line-height:1.15}.detail-author{display:flex;align-items:center;gap:8px;margin:0 0 18px;color:var(--neon-dark);font-weight:700}
+.detail-description{margin:16px 0 24px;color:var(--text-main);white-space:pre-wrap;overflow-wrap:anywhere}.detail-section{margin-top:24px;padding-top:20px;border-top:1px solid var(--border-color)}.detail-section h2{margin:0 0 12px;color:var(--neon-dark);font-size:21px}.detail-list{margin:0;padding-left:22px}.detail-list li{margin:7px 0}.recipe-step{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;margin:16px 0;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:var(--bg)}.recipe-step-number{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--neon-glow);color:var(--neon-dark);font-weight:800}.recipe-step-text{white-space:pre-wrap;overflow-wrap:anywhere}.recipe-step img{grid-column:2;width:min(100%,540px);max-height:420px;object-fit:cover;border-radius:10px}.detail-meta{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;color:var(--text-muted)}.detail-meta span{padding:6px 10px;border:1px solid var(--border-color);border-radius:9px}.detail-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.detail-button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 18px;border:1px solid var(--neon);border-radius:11px;background:var(--neon);color:#fff;font:700 14px 'Montserrat',sans-serif;text-decoration:none;cursor:pointer}.detail-button.secondary{background:transparent;color:var(--neon-dark);border-color:var(--border-color)}.detail-state{padding:45px 20px;text-align:center;color:var(--text-muted)}
+.cart-add-btn{box-shadow:none!important;text-shadow:none!important}
+[data-theme="dark"] .cart-add-btn{background:#1e293b!important;border-color:#64748b!important;color:#f8fafc!important;box-shadow:none!important}
+.detail-qty-control{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--border-color);border-radius:12px;padding:4px;width:min(100%,280px);justify-content:space-between}
+.detail-qty-control .qty-val{font-weight:700;font-size:16px;min-width:24px;text-align:center;color:var(--text-main)}
+.detail-qty-control .qty-btn{background:var(--card-bg)}
+.back-to-top{position:fixed;bottom:70px;right:16px;z-index:102;width:40px;height:40px;padding:0;border:0;border-radius:12px;background:var(--card-bg);color:var(--neon);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s,box-shadow .3s;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 14px var(--neon-glow)}
+.back-to-top.visible{opacity:1;pointer-events:auto}.back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow)}.back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:900px){.site-header{padding:12px 16px;flex-direction:column;gap:8px}.site-header .header-left{width:100%;justify-content:center;flex-wrap:wrap;gap:8px}.site-header .logo{font-size:18px;gap:10px;width:100%;justify-content:center}.site-header .logo-icon{width:36px;height:36px}.bottom-bar .header-right{width:100%;justify-content:center;align-items:center;gap:4px}.bottom-bar .icon-btn{width:40px;height:40px}}
+@media(max-width:600px){.detail-page{margin-top:16px}.detail-card{border-radius:14px}.detail-image{aspect-ratio:4/3}.recipe-step{gap:8px;padding:10px}.detail-section h2{font-size:18px}}
+</style>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('site-theme')==='dark'?'dark':'light'}catch(e){}</script>
+</head>
+<body>
+<div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
+<div class="catalog-drawer" id="catalogDrawer">
+    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Каталог сайта</h3>
+    <a href="restaurants.html" class="catalog-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>Рестораны/бары/кафе</a>
+    <a href="menu.html" class="catalog-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Меню</a>
+    <a href="recipes.html" class="catalog-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>Рецепты</a>
+    <a href="#" class="catalog-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Повара</a>
+    <a href="reviews.html" class="catalog-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L2 9.27l6.91-1.01L12 2z"/></svg>Отзывы</a>
+    <a href="about.html" class="catalog-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 11v5"/><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"/></svg>О нас</a>
+    <div class="catalog-divider thick"></div>
+    <a href="#" class="catalog-link" onclick="openAuth();toggleCatalog();return false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>Войти / Регистрация</a>
+    <a href="cart.html" class="catalog-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Корзина</a>
+    <div class="catalog-divider thick"></div>
+    <h3 class="catalog-subheader">Совместные проекты</h3>
+    <a href="#" class="catalog-link secondary">Еду ем</a>
+    <a href="cheap-honest.html" class="catalog-link secondary">Дёшево! Честно!</a>
+</div>
+<header class="site-header">
+    <div class="header-left">
+        <div class="logo">
+            <svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1e40af"/><stop offset="50%" style="stop-color:#1e40af"/><stop offset="100%" style="stop-color:#1e3a8a"/></linearGradient><filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M10 44 C10 26 20 12 32 12 C44 12 54 26 54 44" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><path d="M24 12 V6 A8 8 0 0 1 40 6 V12" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="4" r="3" fill="url(#logoGrad)" filter="url(#neonGlow)"/><ellipse cx="32" cy="48" rx="22" ry="4" fill="none" stroke="url(#logoGrad)" stroke-width="2.5" opacity="0.7"/><path d="M16 36 Q20 26 28 22" fill="none" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/></svg>
+            Я готовлю — ты ешь!
+        </div>
+    </div>
+</header>
+<nav class="bottom-bar" aria-label="Основная навигация"><div class="header-right">
+    <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Открыть каталог"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <a href="index.html" class="icon-btn" aria-label="Главная"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+    <button class="icon-btn" id="authBtnIcon" onclick="openAuth()" aria-label="Войти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+    <a href="profile.html" id="userNameBtn" class="user-btn-wrap" style="display:none" aria-label="Профиль"><span class="user-btn-letter" id="userLetter"></span></a>
+    <a href="cart.html" class="icon-btn" aria-label="Корзина"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="cartBadge" style="display:none"></span></a>
+    <button class="icon-btn theme-btn" onclick="toggleTheme()" aria-label="Сменить тему"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
+</div></nav>
+<button class="back-to-top" id="backToTop" aria-label="Наверх" title="Наверх"><svg viewBox="0 0 24 24"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
+<main class="detail-page"><div id="favoriteDetail" class="detail-card"><div class="detail-state">Загружаем…</div></div></main>
+<script src="assets/js/author-avatar.js?v=20261120-crop"></script>
+<script src="assets/js/favorites-store.js?v=20261101115409"></script>
+<script src="assets/js/default-place-image.js?v=20261122-mesto"></script>
+<script>
+(function(){
+    const params=new URLSearchParams(location.search);
+    const type=params.get('type');
+    const id=params.get('id')||'';
+    const container=document.getElementById('favoriteDetail');
+    const validTypes=['dish','recipe','place'];
+    const fallbackImages={dish:'/assets/images/default-dishes/noodles.jpg',recipe:'/assets/images/default-dishes/noodles.jpg'};
+    function node(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;}
+    function section(title){const wrap=node('section','detail-section');wrap.appendChild(node('h2','',title));return wrap;}
+    function safeExternalUrl(value){try{const url=new URL(value,location.origin);return ['http:','https:','mailto:','tel:'].includes(url.protocol)?url.href:''}catch(e){return ''}}
+    function parseArray(value){if(Array.isArray(value))return value;if(typeof value==='string'){try{const parsed=JSON.parse(value);return Array.isArray(parsed)?parsed:[]}catch(e){return []}}return []}
+    function imageUrl(path,fallback){return typeof path==='string'&&path.trim()?path:fallback}
+    function readCart(){try{return JSON.parse(localStorage.getItem('cart')||'[]')}catch(e){return []}}
+    function writeCart(cart){localStorage.setItem('cart',JSON.stringify(cart));if(typeof window.updateCartBadge==='function')window.updateCartBadge()}
+    function showCartToast(name){if(typeof window.showToast==='function')window.showToast(name+' добавлен в корзину')}
+    function makeCartButton(item){
+        const button=node('button','detail-button cart-add-btn','В корзину');
+        button.type='button';
+        button.addEventListener('click',function(){
+            const cart=readCart();
+            const existing=cart.find(function(row){return String(row.id)===String(item.id)});
+            if(existing)existing.qty=(Number(existing.qty)||1)+1;
+            else cart.push({id:Number(item.id),name:item.title||'',chef:item.seller_name||'Повар',price:Number(item.price),img:item.image||'',qty:1});
+            writeCart(cart);
+            showCartToast(item.title||'Блюдо');
+            button.replaceWith(renderCartQuantity(item));
+        });
+        return button;
+    }
+    function renderCartQuantity(item){
+        const old=document.getElementById('detailCartControl');
+        if(old)old.remove();
+        const cart=readCart();
+        const inCart=cart.find(function(row){return String(row.id)===String(item.id)});
+        if(!inCart||Number(inCart.qty)<1)return;
+        const control=node('div','qty-control detail-qty-control');
+        control.id='detailCartControl';
+        const minus=node('button','qty-btn','−');
+        minus.type='button';minus.setAttribute('aria-label','Уменьшить количество');
+        const value=node('span','qty-val',String(inCart.qty));
+        const plus=node('button','qty-btn','+');
+        plus.type='button';plus.setAttribute('aria-label','Увеличить количество');
+        minus.addEventListener('click',function(){
+            const rows=readCart();
+            const row=rows.find(function(entry){return String(entry.id)===String(item.id)});
+            if(!row)return;
+            row.qty=(Number(row.qty)||1)-1;
+            if(row.qty<=0){
+                writeCart(rows.filter(function(entry){return String(entry.id)!==String(item.id)}));
+                control.replaceWith(makeCartButton(item));
+            }else{
+                writeCart(rows);value.textContent=String(row.qty);
+            }
+        });
+        plus.addEventListener('click',function(){
+            const rows=readCart();
+            const row=rows.find(function(entry){return String(entry.id)===String(item.id)});
+            if(!row)return;
+            row.qty=(Number(row.qty)||1)+1;writeCart(rows);value.textContent=String(row.qty);
+            showCartToast(item.title||'Блюдо');
+        });
+        control.append(minus,value,plus);
+        return control;
+    }
+    function addHeader(item,label){
+        const body=node('div','detail-body');
+        body.appendChild(node('div','detail-kind',label));
+        body.appendChild(node('h1','detail-title',item.title||item.name||'Подробнее'));
+        return body;
+    }
+    function renderDish(item){
+        const body=addHeader(item,'Блюдо');
+        const author=node('div','detail-author');
+        author.appendChild(window.IcookAuthorAvatar.create(item.seller_name||'Повар',item.seller_avatar,item.seller_avatar_version,item.seller_avatar_crop));
+        author.appendChild(node('span','',item.seller_name||'Повар'));
+        body.appendChild(author);
+        const meta=node('div','detail-meta');
+        if(item.category_name)meta.appendChild(node('span','',item.category_name));
+        if(item.weight)meta.appendChild(node('span','',String(item.weight)+' г'));
+        if(Number(item.price)>0)meta.appendChild(node('span','',Number(item.price).toLocaleString('ru-RU')+' ₽'));
+        body.appendChild(meta);
+        body.appendChild(node('div','detail-description',item.description||'Подробное описание блюда пока не добавлено.'));
+        const actions=node('div','detail-actions');
+        if(Number(item.price)>0){const cart=readCart();const existing=cart.find(function(row){return String(row.id)===String(item.id)});actions.appendChild(existing&&Number(existing.qty)>0?renderCartQuantity(item):makeCartButton(item))}
+        if(actions.childElementCount)body.appendChild(actions);
+        renderCard(item,body,'dish');
+    }
+    function renderRecipe(item){
+        const body=addHeader(item,'Рецепт');
+        const author=node('div','detail-author');
+        author.appendChild(window.IcookAuthorAvatar.create(item.author_name||'Автор',item.author_avatar,item.author_avatar_version,item.author_avatar_crop));
+        author.appendChild(node('span','',item.author_name||'Автор'));body.appendChild(author);
+        if(item.category_name)body.appendChild(node('div','detail-meta')).appendChild(node('span','',item.category_name));
+        body.appendChild(node('div','detail-description',item.description||'Подробное описание рецепта пока не добавлено.'));
+        const ingredients=parseArray(item.ingredients);
+        if(ingredients.length){const block=section('Ингредиенты');const list=node('ul','detail-list');ingredients.forEach(function(ingredient){const name=typeof ingredient==='string'?ingredient:[ingredient.name,ingredient.qty,ingredient.unit].filter(Boolean).join(' ');if(name)list.appendChild(node('li','',name))});block.appendChild(list);body.appendChild(block)}
+        const steps=parseArray(item.steps);
+        if(steps.length){const block=section('Приготовление');steps.forEach(function(step,index){const row=node('article','recipe-step');row.appendChild(node('span','recipe-step-number',String(index+1)));row.appendChild(node('div','recipe-step-text',step.text||step.description||''));const pictures=Array.isArray(step.images)?step.images:(step.image?[step.image]:[]);pictures.forEach(function(path){if(typeof path!=='string'||!path)return;const pic=node('img');pic.src=path;pic.alt='Фото шага '+(index+1);pic.loading='lazy';row.appendChild(pic)});block.appendChild(row)});body.appendChild(block)}
+        renderCard(item,body,'recipe');
+    }
+    function renderPlace(item){
+        const body=addHeader(item,'Место');
+        const meta=node('div','detail-meta');
+        if(item.type)meta.appendChild(node('span','',item.type));
+        if(item.distance)meta.appendChild(node('span','',item.distance));
+        if(meta.childElementCount)body.appendChild(meta);
+        if(item.address)body.appendChild(node('div','detail-description','Адрес: '+item.address));
+        const actions=node('div','detail-actions');
+        [['website','Открыть сайт'],['phone','Позвонить'],['email','Написать']].forEach(function(pair){const url=item[pair[0]]?safeExternalUrl(pair[0]==='phone'?'tel:'+item[pair[0]]:pair[0]==='email'?'mailto:'+item[pair[0]]:item[pair[0]]):'';if(url){const link=node('a','detail-button secondary',pair[1]);link.href=url;link.target=/^https?:/.test(url)?'_blank':'';if(link.target)link.rel='noopener noreferrer';actions.appendChild(link)}});
+        if(item.address){const map=node('a','detail-button secondary','На карте');map.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(item.address);map.target='_blank';map.rel='noopener noreferrer';actions.appendChild(map)}
+        body.appendChild(actions);
+        renderCard(item,body,'place');
+    }
+    function renderCard(item,body,kind){
+        container.replaceChildren();
+        const src=imageUrl(item.image,kind==='place'&&window.IcookDefaultPlaceImage?window.IcookDefaultPlaceImage.random():(fallbackImages[kind]||''));
+        if(src){const picture=node('img','detail-image');picture.src=src;picture.alt=item.title||item.name||'';picture.onerror=function(){this.onerror=null;if(fallbackImages[kind])this.src=fallbackImages[kind];else this.remove()};picture.loading='eager';container.appendChild(picture)}
+        container.appendChild(body);
+    }
+    async function load(){
+        if(!validTypes.includes(type)||!id){container.innerHTML='<div class="detail-state">Не удалось определить избранный материал.</div>';return}
+        const entry=window.getFavoriteContent().find(function(row){return row.type===type&&String(row.id)===id});
+        try{
+            if(type==='place'){
+                let placeItem=null;
+                try{placeItem=JSON.parse(sessionStorage.getItem('icook-place-detail-'+id)||'null');sessionStorage.removeItem('icook-place-detail-'+id)}catch(e){}
+                if(!placeItem)placeItem=entry&&entry.item;
+                if(!placeItem)throw new Error('Не удалось загрузить информацию о месте.');
+                renderPlace(placeItem);document.title=(placeItem.name||'Подробнее')+' — Я готовлю — ты ешь!';return;
+            }
+            const endpoint=type==='dish'?'/api/dishes.php?ids=':'/api/recipes.php?ids=';
+            const response=await fetch(endpoint+encodeURIComponent(id),{cache:'no-store'});
+            if(!response.ok)throw new Error('Не удалось загрузить подробную информацию.');
+            const data=await response.json();
+            const list=type==='dish'?data.dishes:data.recipes;
+            const item=Array.isArray(list)&&list[0];
+            if(!data.success||!item)throw new Error('Материал не найден или больше недоступен.');
+            type==='dish'?renderDish(item):renderRecipe(item);
+            document.title=(item.title||'Подробнее')+' — Я готовлю — ты ешь!';
+        }catch(error){container.innerHTML='';container.appendChild(node('div','detail-state',error.message||'Не удалось загрузить материал.'))}
+    }
+    load();
+})();
+</script>
+<script src="assets/js/main.js?v=20261105152159"></script>
+<script src="assets/js/auth-home.js?v=20261105152159"></script>
+<script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
+<script src="assets/js/phone-country.js?v=20261105152151"></script>
+<script src="assets/js/bubble-btn.js?v=20261105152151"></script>
+<script src="assets/js/site-catalog.js?v=20261122-detail-no-hold"></script>
+<script>
+(function(){
+    var button=document.getElementById('backToTop');
+    function update(){button.classList.toggle('visible',window.scrollY>300)}
+    window.addEventListener('scroll',update,{passive:true});
+    window.addEventListener('scrollend',update);
+    button.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+    update();
+})();
+</script>
+</body>
+</html>

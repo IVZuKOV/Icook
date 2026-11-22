@@ -10,7 +10,9 @@
 <!-- Подключаем общие стили -->
 <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/content-favorites.css?v=20261115-fav2">
+<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261122-spacing">
 <link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
+<script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
 
 <style>
 /* Специфичные стили только для контента рецептов */
@@ -46,7 +48,12 @@
 .recipes-grid.cols-1{grid-template-columns:minmax(0,1fr);}
 .recipes-grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr));}
 .recipes-grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr));}
-.recipe-card{min-width:0;display:flex;flex-direction:column;background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;transition:all 0.3s;box-shadow:0 8px 30px rgba(0,0,0,0.08);position:relative;}
+.recipe-card{min-width:0;display:flex;flex-direction:column;background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;transition:all 0.3s;box-shadow:0 8px 30px rgba(0,0,0,0.08);position:relative;cursor:pointer;}
+.recipes-grid.cols-2 .recipe-card>.content-fav-btn,.recipes-grid.cols-4 .recipe-card>.content-fav-btn{top:4px;right:4px;}
+.recipes-grid.cols-4 .recipe-card .recipe-img{aspect-ratio:16/9;}
+.recipes-grid.cols-4 .recipe-card .recipe-body{padding:8px;}
+.recipes-grid.cols-4 .recipe-card .recipe-author,.recipes-grid.cols-4 .recipe-card .recipe-category,.recipes-grid.cols-4 .recipe-card .recipe-text{display:none;}
+.recipes-grid.cols-4 .recipe-card .recipe-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:13px;line-height:1.25;margin:0 0 6px;}
 .recipe-card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--neon);box-shadow:0 10px 30px var(--neon-glow),0 0 20px rgba(30,64,175,0.1);}
 .recipe-card .recipe-img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--neon-glow);transition:transform .4s;}
 .recipe-card:hover .recipe-img{transform:scale(1.05);}
@@ -86,7 +93,7 @@
  .recipes-grid.cols-4{gap:5px;}
  .recipes-grid.cols-4 .recipe-body{padding:6px;}
  .recipes-grid.cols-4 .recipe-title{font-size:11px;}
- .recipes-grid.cols-4 .recipe-author,.recipes-grid.cols-4 .recipe-text,.recipes-grid.cols-4 .recipe-more{font-size:9px;}
+  .recipes-grid.cols-4 .recipe-author,.recipes-grid.cols-4 .recipe-text,.recipes-grid.cols-4 .recipe-more{font-size:9px;}
 }
 
 .bottom-bar{height:56px;min-height:56px;max-height:56px;position:fixed;bottom:0;left:0;right:0;z-index:100;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(16px);background:var(--header-bg);border-top:1px solid var(--border-color);box-shadow:0 -4px 30px rgba(30,64,175,0.1);}
@@ -318,13 +325,12 @@ function renderRecipes(recipes) {
                 '" data-favorite-type="recipe" data-favorite-id="' + escapeHtml(r.id) +
                 '" data-favorite-item="' + escapeHtml(favoriteItem) +
                 '" aria-label="Добавить рецепт в избранное"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>';
-            return '<div class="recipe-card">' + favoriteButton + img +
+            return '<div class="recipe-card content-detail-card" data-detail-type="recipe" data-detail-id="' + escapeHtml(r.id) + '">' + favoriteButton + img +
             '<div class="recipe-body">' +
                 '<div class="recipe-title">' + escapeHtml(r.title) + '</div>' +
                 '<div class="recipe-author"><span class="author-letter">' + letter + '</span>' + author + '</div>' +
                 (r.category_name ? '<div class="recipe-category">' + escapeHtml(r.category_name) + '</div>' : '') +
                 '<div class="recipe-text" id="rtxt-' + r.id + '">' + text + '</div>' +
-                (text.length > 260 ? '<button class="recipe-more" onclick="toggleRecipeText(' + r.id + ')">Показать полностью</button>' : '') +
             '</div></div>';
     }).join('');
     grid.insertAdjacentHTML('beforeend', cards);
@@ -368,16 +374,6 @@ async function loadRecipeCategories() {
         select.value = String(recipesCategoryId);
     } catch (error) {
         console.error('Не удалось загрузить категории рецептов', error);
-    }
-}
-
-function toggleRecipeText(id) {
-    const el = document.getElementById('rtxt-' + id);
-    if (!el) return;
-    const expanded = el.classList.toggle('expanded');
-    const btn = el.nextElementSibling;
-    if (btn && btn.classList.contains('recipe-more')) {
-        btn.textContent = expanded ? 'Свернуть' : 'Показать полностью';
     }
 }
 

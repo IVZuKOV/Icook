@@ -6,12 +6,13 @@ require_once __DIR__ . '/lib/default_dish_images.php';
 
 $authorId = (int) ($_GET['author_id'] ?? 0);
 $categoryId = (int) ($_GET['category_id'] ?? 0);
+$recipeIds = array_slice(array_values(array_unique(array_filter(array_map('intval', explode(',', (string) ($_GET['ids'] ?? ''))), static fn (int $id): bool => $id > 0))), 0, 100);
 $search = trim((string) ($_GET['search'] ?? ''));
 if (mb_strlen($search) > 100) {
     $search = mb_substr($search, 0, 100);
 }
 $page = max(1, (int) ($_GET['page'] ?? 1));
-$limit = max(1, min(50, (int) ($_GET['limit'] ?? 12)));
+$limit = $recipeIds ? min(100, count($recipeIds)) : max(1, min(50, (int) ($_GET['limit'] ?? 12)));
 $offset = ($page - 1) * $limit;
 
 // Владелец видит и скрытые свои рецепты (для управления), остальные — только опубликованные.
@@ -26,6 +27,10 @@ if ($authorId) {
 if ($categoryId > 0) {
     $where .= ' AND r.category_id IN (SELECT id FROM categories WHERE id = ? OR parent_id = ? OR parent_id IN (SELECT id FROM categories WHERE parent_id = ?))';
     array_push($params, $categoryId, $categoryId, $categoryId);
+}
+if ($recipeIds) {
+    $where .= ' AND r.id IN (' . implode(',', array_fill(0, count($recipeIds), '?')) . ')';
+    array_push($params, ...$recipeIds);
 }
 if ($search !== '') {
     $where .= ' AND (r.title LIKE ? OR r.description LIKE ?)';

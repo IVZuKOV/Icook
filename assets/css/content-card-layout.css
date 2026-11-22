@@ -1,0 +1,30 @@
+/* Keep the spacing between content tiles consistent with the menu page. */
+.cards,
+.dishes-grid,
+.recipes-grid,
+.my-dishes-grid {
+    column-gap: 20px !important;
+    row-gap: 20px !important;
+}
+
+.recipes-grid.cols-4,
+.dishes-grid.cols-4 {
+    column-gap: 4px !important;
+    row-gap: 4px !important;
+}
+
+@media (max-width: 768px) {
+    .cards,
+    .dishes-grid,
+    .recipes-grid,
+    .my-dishes-grid {
+        column-gap: 10px !important;
+        row-gap: 10px !important;
+    }
+
+    .recipes-grid.cols-4,
+    .dishes-grid.cols-4 {
+        column-gap: 4px !important;
+        row-gap: 4px !important;
+    }
+}

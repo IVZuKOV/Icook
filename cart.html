@@ -14,7 +14,7 @@
 <style>
 /* Специфичные стили только для контента корзины */
 .cart-container{max-width:1200px;margin:0 auto;padding:40px 40px;}
-.cart-title-row{position:sticky;top:10px;z-index:110;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:35px;padding:10px 14px;border:1px solid var(--border-color);border-radius:14px;background:var(--header-bg);backdrop-filter:blur(16px);box-shadow:0 6px 22px rgba(15,23,42,.08);}
+.cart-title-row{position:sticky;top:0;z-index:110;display:flex;align-items:center;justify-content:space-between;gap:16px;width:100vw;box-sizing:border-box;margin:0 calc(50% - 50vw) 35px;padding:10px max(40px,calc((100vw - 1200px)/2));border:0;border-bottom:1px solid var(--border-color);border-radius:0;background:var(--header-bg);backdrop-filter:blur(16px);box-shadow:0 6px 22px rgba(15,23,42,.08);}
 .cart-title{font-size:clamp(24px,4vw,36px);font-weight:800;color:var(--neon-dark);margin:0;text-shadow:0 0 8px var(--neon-glow);}
 .cart-layout{display:grid;grid-template-columns:1.8fr 1fr;gap:35px;align-items:start;}
 .cart-layout.layout-cards{grid-template-columns:1fr;}
@@ -87,6 +87,7 @@
  .cart-items.layout-cols-4 .qty-control{gap:2px;padding:3px;border-radius:7px;min-width:0;}
  .cart-items.layout-cols-4 .qty-btn{height:30px;min-height:30px;padding:0;border-radius:7px;font-size:clamp(12px,3vw,16px);}
  .cart-items.layout-cols-4 .qty-val{font-size:clamp(11px,2.8vw,15px);}
+ .cart-title-row{padding:10px 16px;}
 }
 @media(max-width:900px){
 .site-header{padding:12px 16px;}
