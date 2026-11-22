@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/lib/promocodes.php';
 
 $userId = require_login();
 $data = body_json();
@@ -9,6 +10,9 @@ $data = body_json();
 $items = $data['items'] ?? [];
 $paymentMethod = trim((string) ($data['payment_method'] ?? ''));
 $deliveryAddress = trim((string) ($data['delivery_address'] ?? ''));
+$deliveryLat = $data['delivery_lat'] ?? null;
+$deliveryLng = $data['delivery_lng'] ?? null;
+$promoCodes = $data['promocodes'] ?? [];
 
 if (!is_array($items) || count($items) === 0) {
     json_out(['error' => 'Корзина пуста']);
@@ -18,6 +22,23 @@ if (count($items) > 50) {
 }
 if (mb_strlen($paymentMethod) > 30 || mb_strlen($deliveryAddress) > 500) {
     json_out(['error' => 'Некорректные данные заказа']);
+}
+if (($deliveryLat === null) !== ($deliveryLng === null)) {
+    json_out(['error' => 'Некорректные координаты адреса доставки'], 400);
+}
+if ($deliveryLat !== null) {
+    if (!is_numeric($deliveryLat) || !is_numeric($deliveryLng)
+        || (float) $deliveryLat < -90 || (float) $deliveryLat > 90
+        || (float) $deliveryLng < -180 || (float) $deliveryLng > 180
+        || $deliveryAddress === '' || mb_strlen($deliveryAddress) > 450) {
+        json_out(['error' => 'Некорректные координаты или слишком длинный адрес доставки'], 400);
+    }
+    $deliveryAddress = trim($deliveryAddress) . ' (координаты: '
+        . number_format((float) $deliveryLat, 6, '.', '') . ', '
+        . number_format((float) $deliveryLng, 6, '.', '') . ')';
+}
+if (!is_array($promoCodes) || count($promoCodes) > 20) {
+    json_out(['error' => 'Некорректный список промокодов']);
 }
 
 if ($deliveryAddress === '') {
@@ -31,46 +52,136 @@ if ($deliveryAddress === '') {
 
 try {
     $pdo->beginTransaction();
-
-    $dishStmt = $pdo->prepare(
-        'SELECT id, price, user_id AS seller_id FROM dishes WHERE id = ? AND is_available = 1'
-    );
-    $insert = $pdo->prepare(
-        "INSERT INTO orders (buyer_id, seller_id, dish_id, quantity, total_price, status, payment_method, delivery_address)
-         VALUES (?, ?, ?, ?, ?, 'new', ?, ?)"
-    );
-
+    $qtyByDish = [];
     foreach ($items as $item) {
         if (!is_array($item)) {
             continue;
         }
         $dishId = (int) ($item['id'] ?? 0);
-        $qty = (int) ($item['qty'] ?? 1);
         if ($dishId <= 0) {
             continue;
         }
-        $qty = max(1, min($qty, 50));
+        $qtyByDish[$dishId] = max(1, min(50, (int) ($qtyByDish[$dishId] ?? 0) + (int) ($item['qty'] ?? 1)));
+    }
+    if (!$qtyByDish) {
+        json_out(['error' => 'В корзине нет действительных блюд'], 400);
+    }
 
-        $dishStmt->execute([$dishId]);
-        $dish = $dishStmt->fetch();
-        if (!$dish) {
+    $dishIds = array_keys($qtyByDish);
+    $dishPlaceholders = implode(',', array_fill(0, count($dishIds), '?'));
+    $dishStmt = $pdo->prepare(
+        "SELECT id, price, user_id AS seller_id FROM dishes
+         WHERE id IN ($dishPlaceholders) AND is_available = 1 FOR UPDATE"
+    );
+    $dishStmt->execute($dishIds);
+    $dishesById = [];
+    $dishSubtotalsByCook = [];
+    foreach ($dishStmt->fetchAll() as $dish) {
+        $dishId = (int) $dish['id'];
+        $cookId = (int) $dish['seller_id'];
+        $dish['quantity'] = $qtyByDish[$dishId];
+        $dish['line_subtotal'] = round((float) $dish['price'] * $dish['quantity'], 2);
+        $dishesById[$dishId] = $dish;
+        $dishSubtotalsByCook[$cookId][] = $dish['line_subtotal'];
+    }
+    if (count($dishesById) !== count($qtyByDish)) {
+        json_out(['error' => 'Одно или несколько блюд больше недоступны. Обновите корзину.'], 409);
+    }
+
+    $discountPercentByCook = [];
+    $seenCodes = [];
+    $promoIdByCook = [];
+    $promoCodeByCook = [];
+    $sellerIds = array_keys($dishSubtotalsByCook);
+    $sellerPlaceholders = implode(',', array_fill(0, count($sellerIds), '?'));
+    foreach ($promoCodes as $rawCode) {
+        try {
+            $code = normalize_promocode((string) $rawCode);
+        } catch (InvalidArgumentException $error) {
+            json_out(['error' => $error->getMessage()], 422);
+        }
+        if (isset($seenCodes[$code])) {
+            json_out(['error' => 'Один и тот же промокод указан несколько раз'], 422);
+        }
+        $seenCodes[$code] = true;
+        $promoStmt = $pdo->prepare(
+            "SELECT id, cook_id, code, discount_percent FROM promocodes
+             WHERE code = ? AND cook_id IN ($sellerPlaceholders) AND is_active = 1 FOR UPDATE"
+        );
+        $promoStmt->execute(array_merge([$code], $sellerIds));
+        $matches = $promoStmt->fetchAll();
+        if (count($matches) !== 1) {
+            $message = count($matches) > 1
+                ? 'Промокод подходит нескольким поварам. Удалите его и примените уникальный код.'
+                : 'Промокод не найден или не подходит к блюдам в корзине.';
+            json_out(['error' => $message], 422);
+        }
+        $promo = $matches[0];
+        $cookId = (int) $promo['cook_id'];
+        if (!promocode_belongs_to_cook($promo, $cookId) || isset($discountPercentByCook[$cookId])) {
+            json_out(['error' => 'Можно применить не более одного промокода одного повара'], 422);
+        }
+        $discountPercentByCook[$cookId] = (int) $promo['discount_percent'];
+        $promoIdByCook[$cookId] = (int) $promo['id'];
+        $promoCodeByCook[$cookId] = $code;
+    }
+
+    $lineTotalsByDish = [];
+    $discountTotal = 0.0;
+    foreach ($dishSubtotalsByCook as $cookId => $lineSubtotals) {
+        if (!isset($discountPercentByCook[$cookId])) {
+            foreach ($dishesById as $dishId => $dish) {
+                if ((int) $dish['seller_id'] === (int) $cookId) {
+                    $lineTotalsByDish[$dishId] = $dish['line_subtotal'];
+                }
+            }
             continue;
         }
+        $cookDishIds = [];
+        foreach ($dishesById as $dishId => $dish) {
+            if ((int) $dish['seller_id'] === (int) $cookId) {
+                $cookDishIds[] = $dishId;
+            }
+        }
+        $allocation = promocode_discount_lines($lineSubtotals, $discountPercentByCook[$cookId]);
+        $discountTotal += $allocation['discount'];
+        foreach ($cookDishIds as $index => $dishId) {
+            $lineTotalsByDish[$dishId] = $allocation['line_totals'][$index];
+        }
+    }
 
-        $totalPrice = round((float) $dish['price'] * $qty, 2);
+    $insert = $pdo->prepare(
+        "INSERT INTO orders (buyer_id, seller_id, dish_id, quantity, total_price, status, payment_method, delivery_address)
+         VALUES (?, ?, ?, ?, ?, 'new', ?, ?)"
+    );
+    foreach ($dishesById as $dishId => $dish) {
         $insert->execute([
             $userId,
             (int) $dish['seller_id'],
             $dishId,
-            $qty,
-            $totalPrice,
+            (int) $dish['quantity'],
+            (float) $lineTotalsByDish[$dishId],
             $paymentMethod,
             $deliveryAddress,
         ]);
     }
 
     $pdo->commit();
-    json_out(['success' => true, 'message' => 'Заказ оформлен']);
+    json_out([
+        'success' => true,
+        'message' => 'Заказ оформлен',
+        'discount_amount' => round($discountTotal, 2),
+        'applied_promocodes' => array_values(array_map(
+            static fn (int $cookId, int $percent): array => [
+                'id' => $promoIdByCook[$cookId],
+                'code' => $promoCodeByCook[$cookId],
+                'cook_id' => $cookId,
+                'discount_percent' => $percent,
+            ],
+            array_map('intval', array_keys($discountPercentByCook)),
+            array_values($discountPercentByCook)
+        )),
+    ]);
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/lib/default_dish_images.php';
 
 $authorId = (int) ($_GET['author_id'] ?? 0);
 $categoryId = (int) ($_GET['category_id'] ?? 0);
@@ -55,6 +56,7 @@ $stmt->bindValue($i, $offset, PDO::PARAM_INT);
 $stmt->execute();
 
 $recipes = $stmt->fetchAll();
+$recipes = apply_default_dish_images($recipes);
 
 $countStmt = $pdo->prepare("SELECT COUNT(*) FROM recipes r WHERE $where");
 $countStmt->execute($params);

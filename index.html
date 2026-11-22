@@ -86,7 +86,11 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .search-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;border:none;background:none;cursor:pointer;padding:0;display:none;opacity:0.35;transition:opacity 0.2s;}
 .search-clear:hover{opacity:0.7;}
 .search-clear svg{width:20px;height:20px;stroke:var(--text-main);}
-.search-bar-wrap{width:100%;margin:0;padding:8px 40px;box-sizing:border-box;position:sticky;top:0;z-index:110;background:var(--header-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);box-shadow:0 6px 22px rgba(15,23,42,.08);}
+  .home-toolbar-title{max-width:1200px;margin:12px auto 0;padding:0 40px;font-size:24px;}
+  .search-bar-wrap{position:sticky;top:0;z-index:110;padding-bottom:12px;background:var(--header-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);box-shadow:0 6px 22px rgba(15,23,42,.08);}
+  .menu-search{position:relative;max-width:1200px;margin:0 auto;padding:10px 40px 0;}
+  .menu-search input{width:100%;padding:16px 20px;border:2px solid var(--border-color);border-radius:14px;background:var(--card-bg);color:var(--text-main);font-size:15px;outline:none;transition:.3s;}
+  .menu-search input:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(30,64,175,.15),0 0 20px rgba(30,64,175,.25);}
 .hero-glow{position:absolute;width:400px;height:400px;border-radius:50%;filter:blur(100px);opacity:0.12;z-index:1;pointer-events:none;}
 .hero-glow-1{background:var(--neon);top:-100px;right:-100px;}
 .hero-glow-2{background:#1e40af;bottom:-100px;left:-100px;opacity:0.1;}
@@ -111,12 +115,58 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .section-transparent{padding:16px 40px;background:transparent;position:relative;z-index:2;}
 .section-title{font-size:32px;font-weight:800;margin-bottom:25px;color:var(--neon-dark);text-shadow:0 0 8px rgba(30,64,175,0.3);display:flex;align-items:center;gap:10px;}
 .section-icon{width:26px;height:26px;flex-shrink:0;filter:drop-shadow(0 0 3px rgba(30,64,175,0.5));}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+ .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+ .cards.cols-1{grid-template-columns:1fr;}
+ .cards.cols-2{grid-template-columns:repeat(2,minmax(0,1fr));}
+ .cards.cols-4{grid-template-columns:repeat(4,minmax(0,1fr));}
+   .filters-bar{max-width:1200px;margin:0 auto;padding:10px 40px 0;display:flex;gap:12px;align-items:center;flex-wrap:nowrap;}
+  .filters-bar select{min-width:180px;padding:12px 40px 12px 18px;border:2px solid var(--border-color);border-radius:14px;background-color:var(--card-bg);color:var(--text-main);font-size:14px;font-weight:600;font-family:'Montserrat',sans-serif;cursor:pointer;transition:.3s;outline:none;appearance:none;-webkit-appearance:none;-moz-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:12px;}
+  .filters-bar .site-select{min-width:0;width:auto;}
+  .filters-bar .site-select[data-select-class~="menu-category-filter"]{flex:1 1 auto;min-width:0;}
+  .filters-bar .site-select-trigger{min-height:44px;border-radius:14px;}
+  .filters-bar select:focus{border-color:var(--neon);box-shadow:0 0 0 4px rgba(30,64,175,.15),0 0 20px rgba(30,64,175,.25);}
+  .filters-bar select option{background:var(--card-bg);color:var(--text-main);}
+  [data-theme="dark"] .filters-bar select{background-color:#1e293b;color:#f8fafc;border-color:rgba(255,255,255,.15);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23e2e8f0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");}
+  [data-theme="dark"] .filters-bar select option{background:#1e293b;color:#f8fafc;}
+ .layout-cycle{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;padding:5px;border:1px solid rgba(30,64,175,.24);border-radius:12px;background:rgba(30,64,175,.06);color:var(--neon-dark);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,transform .15s;}
+ .layout-cycle:hover{background:rgba(30,64,175,.12);border-color:rgba(30,64,175,.42);}
+ .layout-cycle:active{transform:scale(.96);}
+ .layout-cycle .site-select-layout-icon{display:block;width:34px;height:24px;flex:0 0 auto;}
+ .layout-cycle .layout-icon-cell{fill:rgba(30,64,175,.08);stroke:#1e40af;stroke-width:1.6;}
+ [data-theme="dark"] .layout-cycle{background:rgba(148,163,184,.1);border-color:rgba(203,213,225,.22);backdrop-filter:blur(14px);}
+ [data-theme="dark"] .layout-cycle .layout-icon-cell{fill:rgba(148,163,184,.12);stroke:rgba(203,213,225,.82);}
+ [data-theme="dark"] .layout-cycle:hover .layout-icon-cell{fill:rgba(203,213,225,.24);}
+   @media(max-width:768px){.home-toolbar-title{font-size:21px;margin-top:8px;padding:0 16px;}.menu-search{padding:8px 16px 0;}.menu-search input{padding:16px 20px;}.filters-bar{gap:8px;padding:8px 16px 0;}.filters-bar select{min-width:0;font-size:12px;padding:10px 28px 10px 10px;}.layout-cycle{width:40px;height:40px;flex-basis:40px;padding:4px;}.cards.cols-4{gap:4px;}.cards.cols-4 .card{border-radius:8px;}.cards.cols-4 .card img{aspect-ratio:1/1;height:auto;}.cards.cols-4 .card-content{padding:1.5vw;overflow:hidden;}.cards.cols-4 .dish{font-size:2vw;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cards.cols-4 .chef{font-size:1.6vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cards.cols-4 .desc{display:none;}.cards.cols-4 .price{font-size:2vw;margin:1vw 0;}.cards.cols-4 .btn{padding:2vw 0;font-size:2.4vw;border-radius:1.5vw;width:90%;min-width:0;max-width:90%;margin:0 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cards.cols-4 .qty-control{gap:2px;padding:3px;border-radius:7px;min-width:0;}.cards.cols-4 .qty-btn{height:30px;min-height:30px;padding:0;border-radius:7px;font-size:clamp(12px,3vw,16px);}.cards.cols-4 .qty-val{font-size:clamp(11px,2.8vw,15px);}}
+ @media(max-width:380px){.cards.cols-4 .qty-control{gap:1px;padding:2px;border-radius:6px;}.cards.cols-4 .qty-btn{height:28px;min-height:28px;font-size:12px;}.cards.cols-4 .qty-val{font-size:11px;}}
 .card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 6px 20px rgba(0,0,0,0.08);position:relative;z-index:3;}
-.card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--neon);box-shadow:0 10px 30px var(--neon-glow),0 0 20px rgba(30,64,175,0.1);}
-.card img{width:100%;height:200px;object-fit:cover;transition:0.4s;}
-.card:hover img{transform:scale(1.05);}
-.card-content{padding:18px;background:var(--card-bg);}
+ .card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--neon);box-shadow:0 10px 30px var(--neon-glow),0 0 20px rgba(30,64,175,0.1);}
+ .card img{width:100%;height:200px;object-fit:cover;transition:0.4s;}
+ .card:hover img{transform:scale(1.05);}
+ .card-content{padding:18px;background:var(--card-bg);}
+ .cards .card{width:100%;display:flex;flex-direction:column;overflow:hidden;}
+ .cards .card img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block;}
+ .cards .card .card-content{flex:1;display:flex;flex-direction:column;padding:12px;}
+ .cards .card .dish{font-size:clamp(13px,1.2vw,18px);line-height:1.3;}
+ .cards .card .chef{font-size:clamp(11px,.9vw,14px);}
+ .cards .card .desc{font-size:clamp(10px,.8vw,13px);line-height:1.4;}
+ .cards .card .price{font-size:clamp(14px,1.3vw,20px);}
+ .cards .card .btn{margin-top:auto;padding:clamp(8px,.8vw,14px) clamp(12px,1vw,20px);font-size:clamp(11px,.9vw,15px);}
+ @media(max-width:768px){
+   .cards .card .card-content{padding:8px;}
+   .cards .card .btn{padding:8px 10px;font-size:12px;}
+   .cards.cols-4{gap:4px;}
+   .cards.cols-4 .card{border-radius:8px;}
+   .cards.cols-4 .card img{aspect-ratio:1/1;height:auto;}
+   .cards.cols-4 .card .card-content{padding:1.5vw;overflow:hidden;}
+   .cards.cols-4 .card .dish{font-size:2vw;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+   .cards.cols-4 .card .chef{font-size:1.6vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+   .cards.cols-4 .card .desc{display:none;}
+   .cards.cols-4 .card .price{font-size:2vw;margin:1vw 0;}
+   .cards.cols-4 .card .btn{padding:2vw 0;font-size:2.4vw;border-radius:1.5vw;width:90%;min-width:0;max-width:90%;margin:0 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+   .cards.cols-4 .card .qty-control{gap:2px;padding:3px;border-radius:7px;min-width:0;}
+   .cards.cols-4 .card .qty-btn{height:30px;min-height:30px;padding:0;border-radius:7px;font-size:clamp(12px,3vw,16px);}
+   .cards.cols-4 .card .qty-val{font-size:clamp(11px,2.8vw,15px);}
+ }
 .dish{font-size:20px;margin-bottom:6px;color:var(--text-main);font-weight:700;}
 .chef{color:var(--neon-dark);margin-bottom:8px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:5px;}
 .chef::before{content:"👨‍🍳";font-size:13px;}
@@ -208,7 +258,7 @@ footer svg{width:20px;height:20px;}
 .search{flex-direction:column;justify-content:center;}
 .search input{max-width:100%;}
 .search-clear{left:auto;right:14px;}
-.search-bar-wrap{padding:0 16px;}
+.search-bar-wrap{padding:0 0 12px;}
 .section-title{font-size:26px;}
 .qr-container{top:auto;position:relative;right:auto;justify-content:center;margin-top:10px;z-index:2;}
 .qr-wrapper{width:90px;height:90px;}
@@ -334,7 +384,7 @@ button, .btn, a, label {
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
-<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<script src="assets/js/site-select.js?v=20261121-home-layout" defer></script>
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115-tools1">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
 <link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261120-stretch">
@@ -364,7 +414,19 @@ button, .btn, a, label {
 Я готовлю — ты ешь!</div>
 </div>
 </header>
-<div class="search-bar-wrap"><div class="search"><input type="text" id="heroSearch" placeholder="Поиск блюд..."><button class="search-clear" id="heroSearchClear" onclick="document.getElementById('heroSearch').value='';this.style.display='none';if(typeof loadRestaurants==='function')loadRestaurants();" aria-label="Очистить"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div></div>
+<h2 class="section-title home-toolbar-title">Популярные блюда</h2><div class="search-bar-wrap">
+<div class="menu-search"><input type="text" id="heroSearch" placeholder="Поиск блюд..."><button class="search-clear" id="heroSearchClear" onclick="document.getElementById('heroSearch').value='';this.style.display='none';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));" aria-label="Очистить"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+ <div class="filters-bar">
+     <select id="homeCategorySelect" class="menu-category-filter" onchange="filterHomeCategory(this.value)">
+        <option value="0">Все категории</option>
+    </select>
+    <button type="button" class="layout-cycle" data-layout-target="#popularDishes" data-layout-columns="2" data-layout-grid-class="cards" aria-label="Показать 2 плитки в строке" title="Показать 2 в строке">
+        <svg class="site-select-layout-icon" viewBox="0 0 40 28" aria-hidden="true" focusable="false">
+            <rect class="layout-icon-cell" x="6.5" y="1.5" width="12" height="12" rx="2.5"/><rect class="layout-icon-cell" x="21.5" y="1.5" width="12" height="12" rx="2.5"/>
+            <rect class="layout-icon-cell" x="6.5" y="14.5" width="12" height="12" rx="2.5"/><rect class="layout-icon-cell" x="21.5" y="14.5" width="12" height="12" rx="2.5"/>
+        </svg>
+    </button>
+</div></div>
 <nav class="bottom-bar">
   <div class="header-right">
 <button class="catalog-btn" onclick="toggleCatalog()" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
@@ -401,8 +463,8 @@ button, .btn, a, label {
     <!-- Кнопка «Наверх» -->
     <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх"><svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
 
-<section class="section-transparent"><h2 class="section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Популярные блюда</h2>
-<div class="cards" id="popularDishes"></div></section>
+<section class="section-transparent">
+<div class="cards cols-2" id="popularDishes"></div></section>
 
 <div class="modal" id="authModal"><div class="modal-box"><div class="close" onclick="closeAuth()">✕</div><h2 id="authTitle">Личный кабинет</h2><form id="loginForm" onsubmit="login();return false;"><input id="loginName" placeholder="Email" type="email"><div class="error-msg" id="loginNameError"></div><input id="loginPassword" type="password" placeholder="Пароль" minlength="8"><div class="error-msg" id="loginPasswordError"></div><button class="btn" style="width:100%;margin-top:6px;" id="loginBtn" type="submit">Войти</button><p style="text-align:center;margin-top:12px;font-size:14px;"><a href="#" onclick="switchTab('reset');return false;" style="color:#ef4444;font-weight:600;">Забыли пароль?</a></p>
 <p style="text-align:center;margin-top:8px;font-size:14px;"><a href="#" onclick="switchTab('sms');return false;" style="color:var(--neon-dark);font-weight:600;">Войти по SMS</a></p>
@@ -477,6 +539,31 @@ function addDishAuthorAvatars(container,dishes){
 // --- JS НАЧАЛО ---
 let cart=JSON.parse(localStorage.getItem('cart'))||[];
 function updateCartBadge(){const c=cart.reduce((s,x)=>s+x.qty,0);const b=document.getElementById('cartBadge');if(b){b.textContent=c;b.style.display=c>0?'flex':'none';}}
+var currentHomeCategory=0;
+var homeDishRequest=0;
+function filterHomeCategory(categoryId){
+    currentHomeCategory=parseInt(categoryId,10)||0;
+    document.dispatchEvent(new Event('home-category-change'));
+}
+async function loadHomeCategories(){
+    try{
+        var response=await fetch('/api/categories.php');
+        var data=await response.json();
+        if(!data.success||!Array.isArray(data.categories))return;
+        var select=document.getElementById('homeCategorySelect');
+        if(!select)return;
+        var categoryMap=new Map(data.categories.map(function(category){return [Number(category.id),category];}));
+        select.replaceChildren(new Option('Все категории','0'));
+        data.categories.forEach(function(category){
+            var labels=[],parent=category;
+            while(parent){
+                labels.unshift(parent.name);
+                parent=parent.parent_id?categoryMap.get(Number(parent.parent_id)):null;
+            }
+            select.add(new Option(labels.join(' › '),String(category.id)));
+        });
+    }catch(error){console.error('Home categories could not be loaded:',error);}
+}
 function addToCart(id,n,c,p,i){const ex=cart.find(x=>x.id===id);if(ex)ex.qty++;else cart.push({id,name:n,chef:c,price:p,img:i,qty:1});localStorage.setItem('cart',JSON.stringify(cart));updateCartBadge();showToast(n+' добавлен в корзину');}
 function addToCartBtn(btn){var id=parseInt(btn.dataset.id),name=btn.dataset.name,chef=btn.dataset.chef,price=parseFloat(btn.dataset.price),img=btn.dataset.img||'';addToCart(id,name,chef,price,img);var item=cart.find(function(c){return c.id==id;});var qty=item?item.qty:1;var div=document.createElement('div');div.className='qty-control';div.id='qty-'+id;div.innerHTML='<button class="qty-btn" onclick="chgQtyMain('+id+',-1)">&minus;</button><span class="qty-val">'+qty+'</span><button class="qty-btn" onclick="chgQtyMain('+id+',1)">+</button>';btn.replaceWith(div);}
 function chgQtyMain(id,delta){var item=cart.find(function(c){return c.id==id;});if(!item)return;var sn=item.name,sc=item.chef,sp=item.price,si=item.img||'';item.qty+=delta;if(item.qty<=0){cart=cart.filter(function(c){return c.id!=id;});var qd=document.getElementById('qty-'+id);if(qd){var btn=document.createElement('button');btn.className='btn';btn.id='cartBtn-'+id;btn.dataset.id=id;btn.dataset.name=sn;btn.dataset.chef=sc;btn.dataset.price=sp;btn.dataset.img=si;btn.textContent='\u0412 \u043a\u043e\u0440\u0437\u0438\u043d\u0443';btn.onclick=function(){addToCartBtn(btn);};qd.replaceWith(btn);}}else{var vs=document.querySelector('#qty-'+id+' .qty-val');if(vs)vs.textContent=item.qty;}localStorage.setItem('cart',JSON.stringify(cart));updateCartBadge();}
@@ -885,15 +972,23 @@ function sharePageNative(){
     }
 }
 
-document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); updateUI(); });
+document.addEventListener('DOMContentLoaded', function(){
+    updateCartBadge();
+    updateUI();
+    loadHomeCategories();
+});
 // --- JS КОНЕЦ ---
 </script>
 
 <script>
 (async function loadPopularDishes(){
+    var requestId=++homeDishRequest;
     try {
-        var res = await fetch('/api/dishes.php?limit=10');
+        var url='/api/dishes.php?page=1&limit=10';
+        if(currentHomeCategory)url+='&category_id='+currentHomeCategory;
+        var res = await fetch(url);
         var data = await res.json();
+        if(requestId!==homeDishRequest)return;
         var container = document.getElementById('popularDishes');
         if(!data.success || !data.dishes.length){
             container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px;">Блюд пока нет</p>';
@@ -923,6 +1018,7 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
     
     // Живой поиск с задержкой 400мс
     var heroSearchClear = document.getElementById('heroSearchClear');
+    document.addEventListener('home-category-change',filterPopularDishes);
     searchInput.addEventListener('input', function(){
         heroSearchClear.style.display = this.value ? 'block' : 'none';
         clearTimeout(searchTimeout);
@@ -938,13 +1034,16 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
     });
     
     async function filterPopularDishes(){
+        var requestId=++homeDishRequest;
         var q = searchInput.value.trim();
         var container = document.getElementById('popularDishes');
         try {
             var url = '/api/dishes.php?page=1&limit=10';
+            if(currentHomeCategory) url += '&category_id=' + currentHomeCategory;
             if(q) url += '&search=' + encodeURIComponent(q);
             var res = await fetch(url);
             var data = await res.json();
+            if(requestId!==homeDishRequest)return;
             if(!data.success || !data.dishes.length){
                 container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px;">Ничего не найдено</p>';
                 return;

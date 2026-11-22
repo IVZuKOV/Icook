@@ -198,7 +198,9 @@
             var grid = document.querySelector(layoutButton.dataset.layoutTarget);
             if (grid) {
                 layoutButton.dataset.layoutColumns = String(next);
-                grid.className = (grid.id === 'dishesGrid' ? 'dishes-grid' : 'recipes-grid') + ' cols-' + next;
+                var gridClass = layoutButton.dataset.layoutGridClass
+                    || (grid.id === 'dishesGrid' ? 'dishes-grid' : grid.id === 'recipesGrid' ? 'recipes-grid' : 'recipes-grid');
+                grid.className = gridClass + ' cols-' + next;
                 if (grid.id === 'dishesGrid') grid.style.gridTemplateColumns = '';
                 var cells = next === 1 ? 1 : next === 2 ? 4 : 8;
                 layoutButton.innerHTML = layoutSvg(cells);

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/lib/default_dish_images.php';
 
 $sellerId = (int) ($_GET['seller_id'] ?? 0);
 
@@ -30,5 +31,6 @@ $stmt = $pdo->prepare(
      ORDER BY d.created_at DESC'
 );
 $stmt->execute([$sellerId]);
+$dishes = apply_default_dish_images($stmt->fetchAll());
 
-json_out(['success' => true, 'seller' => $seller, 'dishes' => $stmt->fetchAll()]);
+json_out(['success' => true, 'seller' => $seller, 'dishes' => $dishes]);
