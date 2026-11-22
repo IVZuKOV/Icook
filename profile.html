@@ -249,7 +249,7 @@
 .info-modal-btn.error{background:#ef4444;color:#fff;}
 .info-modal-btn.error:hover{box-shadow:0 0 20px rgba(239,68,68,0.4);transform:scale(1.03);}
 
-.toast{position:fixed;bottom:30px;right:30px;padding:16px 28px;border-radius:14px;background:var(--card-bg);border:2px solid var(--neon);color:var(--neon-dark);font-weight:700;font-size:15px;z-index:20000;transform:translateY(100px);opacity:0;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 8px 30px var(--neon-glow);}
+.toast{position:fixed;bottom:72px;right:30px;padding:16px 28px;border-radius:14px;background:var(--card-bg);border:2px solid var(--neon);color:var(--neon-dark);font-weight:700;font-size:15px;z-index:20000;transform:translateY(100px);opacity:0;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 8px 30px var(--neon-glow);}
 .toast.show{transform:translateY(0);opacity:1;}
 
 [data-theme="dark"] .setting-card{background:#1e293b;border-color:rgba(255,255,255,0.1);}
@@ -568,7 +568,7 @@ button, .btn, a, label {
 <script src="assets/js/site-select.js?v=20261105152159" defer></script>
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261120-stretch">
+<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261122-bordered">
 </head>
 <body>
 <script>if(new URLSearchParams(location.search).get('admin')==='1')document.body.classList.add('admin-standalone');</script>
@@ -1016,7 +1016,7 @@ button, .btn, a, label {
 
 <script src="assets/js/config.js?v=20261105152159"></script>
 <script src="assets/js/author-avatar.js?v=20261120-crop"></script>
-<script src="assets/js/main.js?v=20261105152159"></script>
+<script src="assets/js/main.js?v=20261122-toast-cartcount"></script>
 <script src="assets/js/theme.js?v=20261105152159"></script>
 <script>
 const currentUser = JSON.parse(localStorage.getItem('user')) || null;
@@ -2895,7 +2895,7 @@ async function saveLKEdit(e){
 
 <script src="assets/js/lang.js?v=20261021162340"></script>
 <script src="assets/js/notifications.js?v=20261115141314"></script>
-<script src="assets/js/fav-badge.js?v=20261021133523"></script>
+<script src="assets/js/fav-badge.js?v=20261122-countall"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
 <script src="assets/js/site-catalog.js?v=20261115142432"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>

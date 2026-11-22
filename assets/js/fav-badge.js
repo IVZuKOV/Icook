@@ -1,5 +1,10 @@
 (function(){
-  function getFavorites(){ try { return JSON.parse(localStorage.getItem('favorites')||'[]'); } catch(e){ return []; } }
+  function getFavoriteCount(){
+    if(typeof window.getFavoriteContent === 'function'){
+      try { return window.getFavoriteContent().length; } catch(e){}
+    }
+    try { return JSON.parse(localStorage.getItem('favorites')||'[]').length; } catch(e){ return 0; }
+  }
 
   function injectFavBtn(){
     var bar = document.querySelector('.bottom-bar');
@@ -22,7 +27,7 @@
   function updateFavBadge(){
     var badge = document.getElementById('favHeaderBadge');
     if(!badge) return;
-    var count = getFavorites().length;
+    var count = getFavoriteCount();
     if(count > 0){ badge.style.display='flex'; badge.textContent = count; }
     else { badge.style.display='none'; }
   }
@@ -30,7 +35,7 @@
   window.updateFavBadge = updateFavBadge;
 
   window.addEventListener('storage', function(e){
-    if(e.key === 'favorites') updateFavBadge();
+    if(e.key === 'favorites' || e.key === 'favoriteContent') updateFavBadge();
   });
 
   function init(){

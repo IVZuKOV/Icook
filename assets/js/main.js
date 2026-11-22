@@ -24,7 +24,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 let cart=JSON.parse(localStorage.getItem('cart'))||[];
-function updateCartBadge(){const c=cart.reduce((s,x)=>s+x.qty,0);const b=document.getElementById('cartBadge');if(b){b.textContent=c;b.style.display=c>0?'flex':'none';}}
+function updateCartBadge(){try{cart=JSON.parse(localStorage.getItem('cart')||'[]');if(!Array.isArray(cart))cart=[];}catch(e){cart=[];}const c=cart.reduce((s,x)=>s+(Number(x.qty)||0),0);const b=document.getElementById('cartBadge');if(b){b.textContent=c;b.style.display=c>0?'flex':'none';}}
 function addToCart(id,n,c,p,i){const ex=cart.find(x=>x.id===id);if(ex)ex.qty++;else cart.push({id,name:n,chef:c,price:p,img:i,qty:1});localStorage.setItem('cart',JSON.stringify(cart));updateCartBadge();showToast(`✅ ${n} добавлен`);}
 function toggleCatalog(){document.getElementById('catalogDrawer').classList.toggle('active');document.getElementById('catalogOverlay').classList.toggle('active');}
 function updateCatalogVisibility() {
@@ -53,7 +53,7 @@ function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const b=doc
 function showErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.classList.add('show');}
 function clearErrors(){document.querySelectorAll('.error-msg').forEach(e=>{e.textContent='';e.classList.remove('show');});}
 function setLoading(id, state){const b=document.getElementById(id);state?b.classList.add('loading'):b.classList.remove('loading');}
-function showToast(msg){const t=document.createElement('div');t.textContent=msg;Object.assign(t.style,{position:'fixed',bottom:'24px',right:'24px',background:'var(--card-bg)',color:'var(--neon-dark)',padding:'14px 20px',borderRadius:'12px',border:'1px solid var(--border-color)',boxShadow:'0 10px 30px var(--neon-glow)',zIndex:'9999',fontWeight:'600',transition:'all 0.3s',transform:'translateY(20px)',opacity:'0'});document.body.appendChild(t);requestAnimationFrame(()=>{t.style.transform='translateY(0)';t.style.opacity='1';});setTimeout(()=>{t.style.transform='translateY(20px)';t.style.opacity='0';setTimeout(()=>t.remove(),300);},3000);}
+function showToast(msg){const t=document.createElement('div');t.textContent=msg;Object.assign(t.style,{position:'fixed',bottom:'72px',right:'24px',background:'var(--card-bg)',color:'var(--neon-dark)',padding:'14px 20px',borderRadius:'12px',border:'1px solid var(--border-color)',boxShadow:'0 10px 30px var(--neon-glow)',zIndex:'9999',fontWeight:'600',transition:'all 0.3s',transform:'translateY(20px)',opacity:'0'});document.body.appendChild(t);requestAnimationFrame(()=>{t.style.transform='translateY(0)';t.style.opacity='1';});setTimeout(()=>{t.style.transform='translateY(20px)';t.style.opacity='0';setTimeout(()=>t.remove(),300);},3000);}
 async function login(){
 const n = document.getElementById('loginName').value.trim();
 const p = document.getElementById('loginPassword').value;

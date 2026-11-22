@@ -10,6 +10,7 @@
 <!-- Подключаем общие стили -->
 <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
+<script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
 
 <style>
 /* Специфичные стили только для контента корзины */
@@ -77,6 +78,7 @@
 .delivery-map-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;}
 .delivery-map-hint{margin:8px 0;color:var(--text-muted);font-size:13px;}
 @media(max-width:768px){
+ .cart-items{gap:10px;}
  .cart-items.layout-cols-4{gap:4px;}
  .cart-items.layout-cols-4 .cart-item{border-radius:8px;}
  .cart-items.layout-cols-4 .item-img{aspect-ratio:1/1;height:auto;}
@@ -156,7 +158,7 @@ button, .btn, a, label {
 <script src="assets/js/site-select.js?v=20261105152159" defer></script>
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115-tools1">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261120-stretch">
+<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261122-bordered">
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -283,7 +285,7 @@ button, .btn, a, label {
         © 2026 Я готовлю — ты ешь!
     </footer>
 
-<script src="assets/js/main.js?v=20261105152159"></script>
+<script src="assets/js/main.js?v=20261122-toast-cartcount"></script>
 <script src="assets/js/favorites-store.js?v=20261101115409"></script>
 <script src="assets/js/author-avatar.js?v=20261120-crop"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -367,7 +369,7 @@ function renderCart(){
     }
 
     let h = cart.map(i => `
-    <div class="cart-item">
+    <div class="cart-item content-detail-card" data-detail-type="dish" data-detail-id="${escapeHtml(i.id)}">
         <button class="fav-btn ${isFavorite(i.id)?'active':''}" onclick="toggleFavorite(${i.id});return false;" data-id="${i.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
         <img src="${escapeHtml(i.img||i.image||defaultDishImageForName(i.name))}" class="item-img" alt="${escapeHtml(i.name||'Блюдо')}" onerror="this.onerror=null;this.src='/assets/images/default-dishes/noodles.jpg'">
         <div class="item-info">
@@ -742,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 <script src="assets/js/footer.js?v=20261021131201"></script>
-<script src="assets/js/fav-badge.js?v=20261021133523"></script>
+<script src="assets/js/fav-badge.js?v=20261122-countall"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
 <script src="assets/js/site-catalog.js?v=20261115-nav5"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>

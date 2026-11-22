@@ -389,7 +389,7 @@ button, .btn, a, label {
 <script src="assets/js/site-select.js?v=20261121-home-layout" defer></script>
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115-tools1">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261120-stretch">
+<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261122-bordered">
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -625,7 +625,7 @@ function toggleFavorite(id){
   if(typeof updateFavBadge==='function') updateFavBadge();
 }
 
-function showToast(msg){const t=document.createElement('div');t.textContent=msg;Object.assign(t.style,{position:'fixed',bottom:'24px',right:'24px',background:'var(--card-bg)',color:'var(--neon-dark)',padding:'14px 20px',borderRadius:'12px',border:'1px solid var(--border-color)',boxShadow:'0 10px 30px var(--neon-glow)',zIndex:'10001',fontWeight:'600',transition:'all 0.3s',transform:'translateY(20px)',opacity:'0'});document.body.appendChild(t);requestAnimationFrame(()=>{t.style.transform='translateY(0)';t.style.opacity='1';});setTimeout(()=>{t.style.transform='translateY(20px)';t.style.opacity='0';setTimeout(()=>t.remove(),300);},3000);}
+function showToast(msg){const t=document.createElement('div');t.textContent=msg;Object.assign(t.style,{position:'fixed',bottom:'72px',right:'24px',background:'var(--card-bg)',color:'var(--neon-dark)',padding:'14px 20px',borderRadius:'12px',border:'1px solid var(--border-color)',boxShadow:'0 10px 30px var(--neon-glow)',zIndex:'10001',fontWeight:'600',transition:'all 0.3s',transform:'translateY(20px)',opacity:'0'});document.body.appendChild(t);requestAnimationFrame(()=>{t.style.transform='translateY(0)';t.style.opacity='1';});setTimeout(()=>{t.style.transform='translateY(20px)';t.style.opacity='0';setTimeout(()=>t.remove(),300);},3000);}
 async function login(){
 const e = document.getElementById('loginName').value.trim();
 const p = document.getElementById('loginPassword').value;
@@ -1073,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="assets/js/lang.js?v=20261021162340"></script>
 <script src="assets/js/notifications.js?v=20261115-bell1"></script>
 <script src="assets/js/footer.js?v=20261021131201"></script>
-<script src="assets/js/fav-badge.js?v=20261021133523"></script>
+<script src="assets/js/fav-badge.js?v=20261122-countall"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
 <script src="assets/js/site-catalog.js?v=20261115-nav5"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>

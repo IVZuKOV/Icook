@@ -70,7 +70,7 @@
 .order-status.status-in_transit{background:rgba(14,165,233,.14);color:#0284c7}
 .order-total{font-weight:800;white-space:nowrap}
 .table-state{padding:48px 20px;text-align:center;color:var(--text-muted)}
-.toast{position:fixed;right:20px;bottom:20px;z-index:50;max-width:min(440px,calc(100vw - 32px));padding:13px 18px;border:1px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main);box-shadow:0 10px 30px rgba(0,0,0,.16);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .2s,transform .2s}
+.toast{position:fixed;right:20px;bottom:72px;z-index:200;max-width:min(440px,calc(100vw - 32px));padding:13px 18px;border:1px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main);box-shadow:0 10px 30px rgba(0,0,0,.16);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .2s,transform .2s}
 .toast.visible{opacity:1;transform:translateY(0)}
 @media(max-width:900px){.site-header{padding:12px 16px}.logo{font-size:18px;gap:10px}.logo-icon{width:36px;height:36px}}
 @media(max-width:600px){.page-heading{align-items:flex-start;flex-direction:column}.bulk-toolbar{align-items:stretch}.selection-summary{width:100%;justify-content:space-between;margin:0}.bulk-toolbar select,.apply-status{width:100%}.orders-table th{top:0}}
@@ -225,7 +225,7 @@
     loadOrders();
 })();
 </script>
-<script src="assets/js/main.js?v=20261105152159"></script>
+<script src="assets/js/main.js?v=20261122-toast-cartcount"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>
 <script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script>
