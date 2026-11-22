@@ -383,7 +383,7 @@ body{padding-bottom:88px;}
 .avatar-zoom-control input{flex:1;accent-color:var(--neon);}
 .avatar-preview-info{min-width:0;color:var(--text-main);font-size:13px;line-height:1.6;}
 /* --- Admin dashboard: Venix/Dataflow-inspired, keeps existing admin actions --- */
-.admin-dashboard{--admin-sidebar:#0b1830;--admin-sidebar-muted:#9eacc2;max-width:1440px;margin:20px auto 30px;overflow:hidden;border:1px solid var(--border-color);border-radius:22px;background:var(--card-bg);box-shadow:0 18px 55px rgba(15,23,42,.1);}
+.admin-dashboard{--admin-sidebar:#0b1830;--admin-sidebar-muted:#9eacc2;max-width:1440px;margin:20px auto 30px;overflow:clip;border:1px solid var(--border-color);border-radius:22px;background:var(--card-bg);box-shadow:0 18px 55px rgba(15,23,42,.1);}
 .admin-dashboard-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 26px;border-bottom:1px solid var(--border-color);background:var(--card-bg);}
 .admin-dashboard-brand{display:flex;align-items:center;gap:13px;min-width:0;}
 .admin-dashboard-brand-icon{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:14px;background:linear-gradient(145deg,#315fd5,#6d8eff);color:#fff;font-size:21px;box-shadow:0 6px 18px rgba(49,95,213,.23);}
@@ -406,7 +406,7 @@ body{padding-bottom:88px;}
 .admin-workspace-description{margin:6px 0 0;color:var(--text-muted);font-size:13px;line-height:1.5;}
 .admin-workspace-badge{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid var(--border-color);border-radius:10px;background:var(--card-bg);color:var(--text-muted);font-size:11px;font-weight:700;white-space:nowrap;}
 .admin-workspace-badge span{color:var(--neon-dark);}
-#adminContent{min-width:0;overflow-x:auto;}
+#adminContent{min-width:0;overflow:visible;}
 #adminContent .admin-table-wrap{overflow:auto;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);box-shadow:0 3px 14px rgba(15,23,42,.035);}
 #adminContent .admin-table{width:100%;border-collapse:collapse;font-size:12px;}
 #adminContent .admin-table th{padding:13px 12px;border-bottom:1px solid var(--border-color);background:var(--card-bg);color:var(--text-muted);font-size:10px;font-weight:800;letter-spacing:.45px;text-align:left;text-transform:uppercase;white-space:nowrap;}
@@ -417,8 +417,35 @@ body{padding-bottom:88px;}
 #adminContent .admin-search-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
 #adminContent .admin-search-row input{min-width:0;flex:1;padding:12px 15px;border:1px solid var(--border-color)!important;border-radius:12px;background:var(--card-bg)!important;color:var(--text-main)!important;font-size:13px;box-shadow:none!important;}
 #adminContent .admin-search-row input:focus{border-color:var(--neon)!important;box-shadow:0 0 0 3px var(--neon-glow)!important;}
+.admin-users-toolbar{position:relative;z-index:110;display:grid;gap:8px;margin:0 0 14px;padding:10px 0;background:var(--header-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);box-shadow:0 6px 22px rgba(15,23,42,.08);}
+.admin-users-toolbar.is-fixed{position:fixed;top:var(--admin-users-fixed-top,0px);left:var(--admin-users-fixed-left,0px);width:var(--admin-users-fixed-width,100%);margin:0;padding:10px 0;}
+.admin-users-toolbar-spacer{display:none;height:0;}
+.admin-users-toolbar-spacer.is-active{display:block;}
+.admin-users-toolbar .admin-search-row{margin:0;}
+.admin-users-toolbar .admin-search-row input{box-sizing:border-box;width:100%;height:38px;min-width:0;flex:1;padding:7px 12px;border:1px solid var(--border-color);border-radius:10px;background:var(--card-bg);color:var(--text-main);font:500 13px 'Montserrat',sans-serif;outline:none;box-shadow:none;transition:border-color .18s,box-shadow .18s;}
+.admin-users-toolbar .admin-search-row input:focus{border-color:#fff;box-shadow:0 0 0 2px rgba(30,64,175,.45),0 0 10px rgba(255,255,255,.45);}
+[data-theme="dark"] .admin-users-toolbar .admin-search-row input:focus{border-color:#fff;box-shadow:0 0 0 1px #fff,0 0 12px rgba(255,255,255,.65);}
+.admin-search-count{justify-self:end;min-height:16px;color:var(--text-muted);font-size:12px;line-height:16px;white-space:nowrap;}
+.admin-user-column-toggles{display:flex;align-items:center;gap:7px;max-width:100%;overflow-x:auto;padding:2px 0 5px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;}
+.admin-user-column-toggle{flex:none;min-width:42px;padding:6px 9px;border:1px solid var(--border-color);border-radius:9px;background:transparent;color:var(--text-muted);font:800 11px 'Montserrat',sans-serif;cursor:pointer;transition:color .18s,border-color .18s,background .18s,box-shadow .18s;}
+.admin-user-column-toggle:hover{border-color:var(--neon);color:var(--neon-dark);}
+.admin-user-column-toggle.active{border-color:var(--neon);background:var(--neon);color:#fff;box-shadow:0 0 12px var(--neon-glow);}
+[data-theme="dark"] .admin-user-column-toggle.active{border-color:#fff;background:#fff;color:#0f172a;box-shadow:0 0 12px rgba(255,255,255,.7),0 0 24px rgba(255,255,255,.3);}
+.admin-user-primary-cell{min-width:0;}
+.admin-user-primary-line{display:flex;align-items:center;gap:10px;min-width:0;}
+.admin-user-primary-label{display:none;}
+.admin-user-primary-value{flex:1;min-width:0;overflow:hidden;overflow-wrap:anywhere;text-overflow:ellipsis;white-space:nowrap;}
+.admin-user-row-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex:none;}
+.admin-user-icon-btn{display:grid;place-items:center;width:30px;height:30px;min-height:30px;flex:none;padding:0;border:1px solid var(--border-color);border-radius:8px;background:var(--card-bg);color:var(--neon-dark);cursor:pointer;transition:transform .18s,border-color .18s,background .18s,box-shadow .18s;}
+#adminUsersTableWrap .admin-table tbody tr{height:46px;}
+#adminUsersTableWrap .admin-table tbody td{height:46px;padding:6px 10px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.admin-user-icon-btn:hover{transform:translateY(-1px);border-color:var(--neon);background:var(--neon-glow);box-shadow:0 3px 10px var(--neon-glow);}
+.admin-user-icon-btn svg{display:block;width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.admin-user-icon-btn.admin-user-pencil svg{width:18px;height:18px;}
+[data-theme="dark"] .admin-user-icon-btn{color:#fff;}
+[data-theme="dark"] .admin-user-icon-btn:hover{border-color:#fff;background:rgba(255,255,255,.08);box-shadow:0 0 10px rgba(255,255,255,.45);}
 #adminContent .admin-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:13px;}
-#adminContent .admin-stat-card{position:relative;min-height:112px;padding:18px;border:1px solid var(--border-color);border-radius:15px;background:var(--card-bg);text-align:left;box-shadow:0 3px 14px rgba(15,23,42,.04);transition:transform .2s,border-color .2s,box-shadow .2s;}
+#adminContent .admin-stat-card{position:relative;display:block;width:100%;min-height:112px;padding:18px;border:1px solid var(--border-color);border-radius:15px;background:var(--card-bg);color:var(--text-main);font:inherit;text-align:left;cursor:pointer;box-shadow:0 3px 14px rgba(15,23,42,.04);transition:transform .2s,border-color .2s,box-shadow .2s;}
 #adminContent .admin-stat-card:hover{transform:translateY(-2px);border-color:var(--neon);box-shadow:0 9px 22px var(--neon-glow);}
 #adminContent .admin-stat-value{color:var(--text-main);font-size:27px;font-weight:850;letter-spacing:-.6px;}
 #adminContent .admin-stat-label{margin-top:8px;color:var(--text-muted);font-size:12px;font-weight:650;}
@@ -436,7 +463,7 @@ body{padding-bottom:88px;}
     .admin-workspace{padding:20px;}
 }
 @media(max-width:720px){
-    .admin-dashboard{width:720px;max-width:none;margin:12px 0 22px;border-radius:16px;zoom:calc((100vw - 32px)/720px);}
+    .admin-dashboard{width:100%;max-width:100%;min-width:0;margin:12px 0 22px;border-radius:16px;zoom:1;}
     .admin-dashboard-layout{grid-template-columns:180px minmax(0,1fr);min-height:600px;}
     .admin-sidebar{padding:18px 10px;}
     .admin-sidebar-caption,.admin-sidebar-divider{display:block;}
@@ -466,6 +493,27 @@ body{padding-bottom:88px;}
     #adminContent .admin-table td select{max-width:none;min-height:0;}
     #adminContent .admin-review-card{padding:17px;}
 }
+@media(max-width:600px){
+    html,body{max-width:100%;overflow-x:clip;}
+    main.container{width:100%;max-width:100%;margin-left:0!important;margin-right:0!important;padding:24px 16px!important;}
+    main.container>*{min-width:0;max-width:100%;}
+    .settings-grid,.my-dishes-grid{grid-template-columns:minmax(0,1fr);min-width:0;}
+    .admin-dashboard,.admin-dashboard-layout,.admin-workspace{min-width:0;max-width:100%;}
+    .admin-users-toolbar{gap:7px;padding:8px 0;}
+    .admin-users-toolbar .admin-search-row{flex-direction:row;align-items:center;}
+    .admin-users-toolbar .admin-search-row input{min-width:0;}
+    .admin-user-column-toggles{gap:6px;}
+    .admin-user-column-toggle{min-width:38px;padding:6px 8px;}
+    #adminUsersTableWrap .admin-table tbody tr{height:auto;min-height:0;}
+    #adminUsersTableWrap .admin-table tbody td{height:34px;min-height:34px;padding:6px 0;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    #adminUsersTableWrap .admin-table tbody td.admin-user-primary-cell{display:grid;grid-template-columns:minmax(62px,25%) minmax(0,1fr) auto;align-items:center;gap:8px;height:34px;min-height:34px;padding:3px 0;overflow:hidden;}
+    #adminUsersTableWrap .admin-user-primary-cell .admin-user-icon-btn{width:26px;height:26px;min-height:26px;}
+    #adminContent .admin-table td.admin-user-primary-cell:before{display:none;content:none;}
+    .admin-user-primary-line{display:contents;}
+    .admin-user-primary-label{display:block;grid-column:1;grid-row:1;color:var(--text-muted);font-size:10px;font-weight:800;letter-spacing:.2px;text-transform:uppercase;}
+    .admin-user-primary-value{grid-column:2;grid-row:1;min-width:0;}
+    .admin-user-primary-cell .admin-user-row-actions{grid-column:3;grid-row:1;}
+}
 [data-theme="dark"] .admin-dashboard{box-shadow:0 18px 55px rgba(0,0,0,.22);}
 [data-theme="dark"] .admin-workspace{background:#0b1220;}
 [data-theme="dark"] #adminContent .admin-table-wrap,[data-theme="dark"] #adminContent .admin-stat-card,[data-theme="dark"] #adminContent .admin-review-card{box-shadow:none;}
@@ -475,6 +523,7 @@ body.admin-standalone .site-header,body.admin-standalone .bottom-bar,body.admin-
 body.admin-standalone .catalog-overlay,body.admin-standalone .catalog-drawer,
 body.admin-standalone main>.profile-header,body.admin-standalone main>.tabs,
 body.admin-standalone main>.tab-content:not(#tab-admin){display:none!important;}
+body.admin-standalone .bottom-bar{display:none!important;}
 body.admin-standalone main.container{width:100%;max-width:none!important;margin:0!important;padding:0!important;}
 body.admin-standalone #tab-admin{display:block!important;margin:0!important;}
 body.admin-standalone .admin-dashboard{width:auto!important;max-width:none!important;min-height:calc(100vh - 64px);margin:0!important;overflow:visible;border:0;border-radius:0;box-shadow:none;zoom:1!important;}
@@ -506,12 +555,18 @@ body.admin-standalone .admin-sidebar-backdrop{display:none;}
     body.admin-standalone.admin-sidebar-collapsed .admin-sidebar-divider,
     body.admin-standalone.admin-sidebar-collapsed .admin-nav button>span:last-child{display:block;}
     body.admin-standalone.admin-sidebar-collapsed .admin-sidebar .admin-nav .tab{justify-content:flex-start;padding:10px 12px;}
-    body.admin-standalone .admin-workspace{min-height:calc(100vh - 64px);padding:18px 14px 28px;}
+    body.admin-standalone .admin-workspace{min-width:0;min-height:calc(100vh - 64px);padding:18px 14px 28px;overflow-x:clip;}
     body.admin-standalone .admin-workspace-header{align-items:flex-start;}
     body.admin-standalone .admin-workspace-title{font-size:24px;}
     body.admin-standalone #adminContent .admin-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
-    body.admin-standalone #adminContent .admin-table-wrap{overflow-x:auto;}
+    body.admin-standalone #adminContent,
+    body.admin-standalone #adminUsersTableWrap{width:100%;min-width:0;max-width:100%;overflow:visible;}
+    body.admin-standalone #adminContent .admin-table-wrap{width:100%;min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;}
     body.admin-standalone #adminContent .admin-table{min-width:640px;}
+}
+@media(max-width:600px){
+    body.admin-standalone #adminContent .admin-table{width:100%;min-width:0;}
+    body.admin-standalone #adminContent .admin-table td{min-width:0;overflow-wrap:anywhere;}
 }
 @media(max-width:900px){.admin-dashboard-layout{grid-template-columns:1fr;min-height:0;}.admin-sidebar{padding:12px 14px 10px;}.admin-sidebar-caption,.admin-sidebar-divider{display:none;}.admin-sidebar .admin-nav{flex-direction:row;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;padding:0 0 5px;-webkit-overflow-scrolling:touch;}.admin-sidebar .admin-nav .tab{width:auto;min-width:max-content;min-height:42px;padding:8px 11px;}.admin-sidebar .admin-nav .tab.active{box-shadow:inset 0 -3px #7da0ff;}.admin-workspace{padding:22px;}}
 @media(max-width:600px){.admin-dashboard{margin:12px auto 22px;border-radius:16px;}.admin-dashboard-top{padding:15px 16px;}.admin-dashboard-brand-icon{width:38px;height:38px;border-radius:12px;}.admin-dashboard-brand-title{font-size:15px;}.admin-dashboard-brand-subtitle{font-size:11px;}.admin-dashboard-security{padding:7px 9px;font-size:10px;}.admin-sidebar{padding:10px 12px 7px;}.admin-sidebar .admin-nav .tab{min-height:40px;padding:7px 10px;font-size:12px;}.admin-nav-icon{width:23px;height:23px;font-size:12px;}.admin-workspace{padding:18px 14px 20px;}.admin-workspace-header{margin-bottom:15px;}.admin-workspace-title{font-size:22px;}.admin-workspace-description{font-size:12px;}.admin-workspace-badge{display:none;}#adminContent .admin-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}#adminContent .admin-stat-card{min-height:96px;padding:14px;}#adminContent .admin-stat-value{font-size:23px;}#adminContent .admin-stat-label{font-size:11px;}#adminContent .admin-search-row{align-items:stretch;flex-direction:column;}#adminContent .admin-search-row input{min-height:44px;}#adminContent .admin-table-wrap{overflow:visible;border:0;background:transparent;box-shadow:none;}#adminContent .admin-table,#adminContent .admin-table tbody{display:block;width:100%;}#adminContent .admin-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}#adminContent .admin-table tr{display:block;margin-bottom:10px;padding:6px 12px;border:1px solid var(--border-color);border-radius:13px;background:var(--card-bg);}#adminContent .admin-table td{display:grid;grid-template-columns:minmax(82px,32%) minmax(0,1fr);gap:10px;padding:9px 0;border-bottom:1px solid var(--border-color);font-size:12px;white-space:normal;overflow-wrap:anywhere;}#adminContent .admin-table td:before{color:var(--text-muted);font-size:10px;font-weight:800;letter-spacing:.25px;text-transform:uppercase;content:attr(data-label);}#adminContent .admin-table td:last-child{white-space:normal;}#adminContent .admin-table td:has(button),#adminContent .admin-table td:has(select){grid-template-columns:1fr;}#adminContent .admin-table td:has(button):before,#adminContent .admin-table td:has(select):before{content:"Действия";}#adminContent .admin-table td button{min-height:34px;margin:3px!important;}#adminContent .admin-table td select{max-width:100%;min-height:38px;}#adminContent .admin-review-card{padding:14px;}}
@@ -2290,8 +2345,15 @@ function setAdminSectionHeading(title, description, badge){
     if(badgeNode) badgeNode.textContent=badge||title;
 }
 
-async function loadAdminSection(section, btn){
+async function loadAdminSection(section, btn, historyState){
+    if(historyState&&section==='reviews'&&['pending','approved','rejected'].includes(historyState.reviewStatus)){
+        adminReviewStatus=historyState.reviewStatus;
+    }
     currentAdminSection = section;
+    clearAdminUsersToolbar();
+    if(new URLSearchParams(location.search).get('admin')==='1'&&window.parent!==window&&!(historyState&&historyState.fromHistory)){
+        window.parent.postMessage({type:'admin-section-change',section:section,reviewStatus:section==='reviews'?adminReviewStatus:'pending'},location.origin);
+    }
     var headings={
         stats:['Обзор и статистика','Ключевые показатели и активность платформы','Обзор'],
         users:['Пользователи','Профили, роли и быстрый переход в личный кабинет','Пользователи'],
@@ -2329,7 +2391,9 @@ async function loadAdminSection(section, btn){
         var html = '<div class="admin-table-wrap"><table class="admin-table' + (section === 'dishes' ? ' admin-dishes-table' : '') + '"><thead><tr>';
         var keys = Object.keys(rows[0]);
         keys.forEach(function(k){ html += '<th scope="col">' + adminEsc(k) + '</th>'; });
-        html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
+        html += section === 'users'
+            ? '<th scope="col" aria-label="Действия"></th></tr></thead><tbody>'
+            : '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
         
         rows.forEach(function(row){
             html += '<tr>';
@@ -2337,11 +2401,10 @@ async function loadAdminSection(section, btn){
                 var val = row[k] !== null ? row[k] : '—';
                 html += '<td data-label="' + adminEsc(k) + '">' + adminEsc(val) + '</td>';
             });
-            html += '<td data-label="Действия">';
+            html += section === 'users' ? '<td>' : '<td data-label="Действия">';
             
             if(section === 'users'){
-                html += '<button onclick="openAdminViewLK(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #8b5cf6;background:transparent;color:#8b5cf6;cursor:pointer;font-size:12px;margin-right:4px;">👁️ ЛК</button>';
-                html += '<button onclick="openAdminEditUser(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--neon);background:transparent;color:var(--neon-dark);cursor:pointer;font-size:12px;">✏️ Изменить</button>';
+                html += adminUserActionButtons(row.id);
             } else if(section === 'dishes'){
                 html += '<button onclick="adminToggleDish(' + row.id + ',' + (row.is_available==1?0:1) + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:12px;">' + (row.is_available==1?'Скрыть':'Показать') + '</button>';
                 html += ' <button onclick="adminDeleteDish(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px;">Удалить</button>';
@@ -2359,12 +2422,22 @@ async function loadAdminSection(section, btn){
         html += '</tbody></table></div>';
         // Для users разделяем поиск и таблицу
         if(section === 'users'){
-            container.innerHTML = '<div class="admin-search-row">' +
-                '<input type="text" id="adminUserSearch" placeholder="🔍 Поиск по имени, телефону или email..." oninput="filterAdminUsers()" style="flex:1;min-width:200px;padding:10px 16px;border-radius:12px;border:2px solid #94a3b8;background:#ffffff;color:#1e293b;font-size:14px;outline:none;">' +
-                '<span id="adminSearchCount" style="font-size:12px;color:var(--text-muted);white-space:nowrap;"></span>' +
+            adminUserVisibleColumns = [];
+            container.innerHTML = '<div class="admin-users-toolbar">' +
+                '<div class="admin-search-row"><input type="text" id="adminUserSearch" placeholder="Поиск по имени, телефону или email..." oninput="filterAdminUsers()" aria-label="Поиск пользователей"></div>' +
+                '<div class="admin-user-column-toggles" id="adminUserColumnToggles" role="group" aria-label="Показывать поля пользователей"></div>' +
+                '<span id="adminSearchCount" class="admin-search-count" aria-live="polite"></span>' +
                 '</div>' +
                 '<div id="adminUsersTableWrap"></div>';
-            document.getElementById('adminUsersTableWrap').innerHTML = html;
+            var usersToolbar=container.querySelector('.admin-users-toolbar');
+            var usersWorkspace=container.closest('.admin-workspace');
+            if(usersToolbar&&usersWorkspace){
+                usersWorkspace.insertBefore(usersToolbar,container);
+                watchAdminUsersToolbar(usersToolbar,usersWorkspace);
+            }
+            bindAdminUserLongPress();
+            renderAdminUserColumnToggles(rows[0]);
+            filterAdminUsers();
         } else {
             container.innerHTML = html;
         }
@@ -2415,28 +2488,34 @@ async function renderAdminStats(){
         if(!data.success){ c.innerHTML = '<p style="color:#ef4444;">' + (data.error||'Ошибка') + '</p>'; return; }
         var d = data.data || {};
         var cards = [
-            ['👥 Пользователей', d.users],
-            ['🍽️ Блюд', d.dishes],
-            ['📖 Рецептов', d.recipes],
-            ['📦 Заказов', d.orders],
-            ['🏷️ Категорий', d.categories],
-            ['⏳ Отзывов на модерации', d.reviews_pending],
-            ['✅ Одобренных отзывов', d.reviews_approved],
-            ['🚫 Отклонённых отзывов', d.reviews_rejected],
-            ['💬 Всего отзывов', d.reviews_total]
+            {section:'users',label:'👥 Пользователей',value:d.users},
+            {section:'dishes',label:'🍽️ Блюд',value:d.dishes},
+            {section:'recipes',label:'📖 Рецептов',value:d.recipes},
+            {section:'orders',label:'📦 Заказов',value:d.orders},
+            {section:'categories',label:'🏷️ Категорий',value:d.categories},
+            {section:'reviews',reviewStatus:'pending',label:'⏳ Отзывов на модерации',value:d.reviews_pending},
+            {section:'reviews',reviewStatus:'approved',label:'✅ Одобренных отзывов',value:d.reviews_approved},
+            {section:'reviews',reviewStatus:'rejected',label:'🚫 Отклонённых отзывов',value:d.reviews_rejected},
+            {section:'reviews',reviewStatus:'pending',label:'💬 Всего отзывов',value:d.reviews_total}
         ];
         var html = '<div class="admin-stat-grid">';
         cards.forEach(function(card){
-            var v = (card[1] != null ? card[1] : 0);
-            html += '<div class="admin-stat-card">' +
+            var v = (card.value != null ? card.value : 0);
+            html += '<button type="button" class="admin-stat-card" onclick="openAdminStatCard(\''+card.section+'\',\''+(card.reviewStatus||'')+'\')" aria-label="'+adminEsc(card.label)+', открыть раздел">' +
                 '<div class="admin-stat-value">' + adminEsc(v) + '</div>' +
-                '<div class="admin-stat-label">' + card[0] + '</div></div>';
+                '<div class="admin-stat-label">' + card.label + '</div></button>';
         });
         html += '</div>';
         c.innerHTML = html;
     } catch(e){
         c.innerHTML = '<p style="color:#ef4444;">Ошибка загрузки</p>';
     }
+}
+
+function openAdminStatCard(section,reviewStatus){
+    if(section==='reviews'&&['pending','approved','rejected'].includes(reviewStatus))adminReviewStatus=reviewStatus;
+    var tab=document.querySelector('#tab-admin .admin-nav [data-admin-section="'+section+'"]');
+    loadAdminSection(section,tab);
 }
 
 // === МОДЕРАЦИЯ ОТЗЫВОВ ===
@@ -2449,7 +2528,11 @@ function adminEsc(s){
 }
 
 async function renderAdminReviews(status){
+    var previousStatus=adminReviewStatus;
     if(status) adminReviewStatus = status;
+    if(status&&status!==previousStatus&&new URLSearchParams(location.search).get('admin')==='1'&&window.parent!==window){
+        window.parent.postMessage({type:'admin-section-change',section:'reviews',reviewStatus:adminReviewStatus},location.origin);
+    }
     setAdminSectionHeading('Отзывы','Модерация и проверка отзывов пользователей','Отзывы');
     var c = document.getElementById('adminContent');
     if(!c) return;
@@ -2521,6 +2604,14 @@ document.addEventListener('DOMContentLoaded', checkAdminRole);
 <input type="text" id="aeCountry" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
 <label style="font-size:13px;color:var(--text-muted);">Город</label>
 <input type="text" id="aeCity" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Широта</label>
+<input type="number" step="any" id="aeLat" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Долгота</label>
+<input type="number" step="any" id="aeLng" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Радиус поиска</label>
+<input type="number" step="any" id="aeSearchRadius" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
+<label style="font-size:13px;color:var(--text-muted);">Описание продавца</label>
+<textarea id="aeSellerDescription" rows="3" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);resize:vertical;"></textarea>
 <label style="font-size:13px;color:var(--text-muted);">Новый пароль (оставьте пустым чтобы не менять)</label>
 <input type="password" id="aePassword" placeholder="Новый пароль" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:2px solid var(--border-color);background:var(--card-bg);color:var(--text-main);">
 <label style="font-size:13px;color:var(--text-muted);">Роль</label>
@@ -2538,10 +2629,118 @@ document.addEventListener('DOMContentLoaded', checkAdminRole);
 </div>
 </div>
 
+<div id="adminUserFieldModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(4px);z-index:10003;align-items:center;justify-content:center;padding:18px;" onclick="if(event.target===this)closeAdminUserFieldEdit()">
+    <div style="width:min(100%,440px);padding:24px;border:1px solid var(--border-color);border-radius:18px;background:var(--card-bg);box-shadow:0 20px 60px rgba(0,0,0,.25);">
+        <h3 id="adminUserFieldTitle" style="margin:0 0 16px;color:var(--neon-dark);font-size:18px;">Изменить поле</h3>
+        <div style="margin:0 0 16px;padding:10px 12px;border-radius:10px;background:var(--bg);color:var(--text-muted);font-size:13px;">Пользователь: <strong id="adminUserFieldUserName" style="color:var(--text-main);"></strong></div>
+        <label id="adminUserFieldLabel" for="adminUserFieldInput" style="display:block;margin-bottom:7px;color:var(--text-muted);font-size:13px;font-weight:700;"></label>
+        <div id="adminUserFieldControl"></div>
+        <div style="display:flex;gap:10px;margin-top:18px;">
+            <button type="button" class="btn" id="adminUserFieldSave" onclick="saveAdminUserFieldEdit()" style="flex:1;">Сохранить</button>
+            <button type="button" class="btn" onclick="closeAdminUserFieldEdit()" style="flex:1;border:1px solid var(--border-color);background:transparent;color:var(--text-main);">Отмена</button>
+        </div>
+    </div>
+</div>
+
 <script>
 var adminUsersCache = {};
+var adminUserFieldEditState = null;
 
-function openAdminEditUser(id){
+function closeAdminUserFieldEdit(){
+    var modal=document.getElementById('adminUserFieldModal');
+    if(modal)modal.style.display='none';
+    adminUserFieldEditState=null;
+}
+
+function openAdminUserFieldEdit(id,field){
+    var editable={
+        name:{label:'Имя',type:'text'},
+        email:{label:'Email',type:'email'},
+        phone:{label:'Телефон',type:'tel'},
+        address:{label:'Адрес',type:'text'},
+        country:{label:'Страна',type:'text'},
+        city:{label:'Город',type:'text'},
+        lat:{label:'Широта',type:'number'},
+        lng:{label:'Долгота',type:'number'},
+        search_radius:{label:'Радиус поиска',type:'number'},
+        seller_description:{label:'Описание продавца',type:'textarea'},
+        role:{label:'Роль',type:'select',options:[['user','user'],['admin','admin'],['superuser','superuser']]},
+        is_seller:{label:'Продавец',type:'select',options:[['0','Нет'],['1','Да']]}
+    };
+    var config=editable[field];
+    var user=adminUsersCache[id];
+    if(!config||!user)return;
+    adminUserFieldEditState={id:id,field:field,type:config.type};
+    document.getElementById('adminUserFieldTitle').textContent='Изменить: '+config.label;
+    document.getElementById('adminUserFieldUserName').textContent=user.name||'Имя не указано';
+    document.getElementById('adminUserFieldLabel').textContent=config.label;
+    var control=document.getElementById('adminUserFieldControl');
+    control.replaceChildren();
+    var input;
+    if(config.type==='select'){
+        input=document.createElement('select');
+        config.options.forEach(function(option){
+            var element=document.createElement('option');
+            element.value=option[0];
+            element.textContent=option[1];
+            input.appendChild(element);
+        });
+        input.value=String(user[field]==null?'':user[field]);
+    }else if(config.type==='textarea'){
+        input=document.createElement('textarea');
+        input.rows=4;
+        input.value=user[field]==null?'':String(user[field]);
+    }else{
+        input=document.createElement('input');
+        input.type=config.type;
+        if(config.type==='number')input.step='any';
+        input.value=user[field]==null?'':String(user[field]);
+    }
+    input.id='adminUserFieldInput';
+    input.style.cssText='display:block;box-sizing:border-box;width:100%;min-height:42px;padding:10px 12px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;';
+    control.appendChild(input);
+    var saveButton=document.getElementById('adminUserFieldSave');
+    saveButton.disabled=false;
+    saveButton.textContent='Сохранить';
+    document.getElementById('adminUserFieldModal').style.display='flex';
+    window.setTimeout(function(){input.focus();},0);
+}
+
+async function saveAdminUserFieldEdit(){
+    if(!adminUserFieldEditState)return;
+    var state=adminUserFieldEditState;
+    var input=document.getElementById('adminUserFieldInput');
+    var value=input.value;
+    if(state.type==='number')value=value===''?null:Number(value);
+    else if(state.field==='is_seller')value=parseInt(value,10);
+    var data={id:parseInt(state.id,10)};
+    data[state.field]=value;
+    var saveButton=document.getElementById('adminUserFieldSave');
+    saveButton.disabled=true;
+    saveButton.textContent='Сохранение…';
+    try{
+        var response=await fetch('/api/admin.php?action=update_user',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+        var result=await response.json();
+        if(!result.success){
+            showToast(result.error||'Не удалось сохранить значение');
+            saveButton.disabled=false;
+            saveButton.textContent='Сохранить';
+            return;
+        }
+        var user=adminUsersCache[state.id];
+        if(user)user[state.field]=value;
+        adminUsersAllRows.forEach(function(row){if(String(row.id)===String(state.id))row[state.field]=value;});
+        closeAdminUserFieldEdit();
+        filterAdminUsers();
+        showToast('Значение сохранено');
+    }catch(error){
+        showToast('Ошибка сети');
+        saveButton.disabled=false;
+        saveButton.textContent='Сохранить';
+    }
+}
+
+function openAdminEditUser(id,focusField){
     var u = adminUsersCache[id];
     if(!u) return;
     document.getElementById('aeId').value = u.id;
@@ -2551,10 +2750,17 @@ function openAdminEditUser(id){
     document.getElementById('aeAddress').value = u.address || '';
     document.getElementById('aeCountry').value = u.country || '';
     document.getElementById('aeCity').value = u.city || '';
+    document.getElementById('aeLat').value = u.lat == null ? '' : u.lat;
+    document.getElementById('aeLng').value = u.lng == null ? '' : u.lng;
+    document.getElementById('aeSearchRadius').value = u.search_radius == null ? '' : u.search_radius;
+    document.getElementById('aeSellerDescription').value = u.seller_description || '';
     document.getElementById('aePassword').value = '';
     document.getElementById('aeRole').value = u.role || 'user';
     document.getElementById('aeSeller').value = u.is_seller != null ? u.is_seller : '0';
     document.getElementById('adminEditModal').style.display = 'flex';
+    var focusTargets={name:'aeName',email:'aeEmail',phone:'aePhone',address:'aeAddress',country:'aeCountry',city:'aeCity',lat:'aeLat',lng:'aeLng',search_radius:'aeSearchRadius',seller_description:'aeSellerDescription',role:'aeRole',is_seller:'aeSeller'};
+    var focusId=focusTargets[focusField];
+    if(focusId)window.setTimeout(function(){var field=document.getElementById(focusId);if(field)field.focus();},0);
 }
 
 async function saveAdminUser(){
@@ -2566,6 +2772,10 @@ async function saveAdminUser(){
         address: document.getElementById('aeAddress').value,
         country: document.getElementById('aeCountry').value,
         city: document.getElementById('aeCity').value,
+        lat: document.getElementById('aeLat').value === '' ? null : Number(document.getElementById('aeLat').value),
+        lng: document.getElementById('aeLng').value === '' ? null : Number(document.getElementById('aeLng').value),
+        search_radius: document.getElementById('aeSearchRadius').value === '' ? null : Number(document.getElementById('aeSearchRadius').value),
+        seller_description: document.getElementById('aeSellerDescription').value,
         role: document.getElementById('aeRole').value,
         is_seller: parseInt(document.getElementById('aeSeller').value)
     };
@@ -2811,9 +3021,198 @@ async function deleteAllUserOrders(type){
 
 
 var adminUsersAllRows = [];
+var adminUsersToolbarController = null;
+
+function clearAdminUsersToolbar(){
+    if(adminUsersToolbarController){
+        adminUsersToolbarController();
+        adminUsersToolbarController=null;
+    }
+    var toolbar=document.querySelector('.admin-users-toolbar');
+    var spacer=document.querySelector('.admin-users-toolbar-spacer');
+    var dashboard=toolbar&&toolbar.closest('.admin-dashboard');
+    if(dashboard){
+        dashboard.style.removeProperty('overflow');
+        dashboard.style.removeProperty('overflow-x');
+        dashboard.style.removeProperty('overflow-y');
+    }
+    if(toolbar)toolbar.remove();
+    if(spacer)spacer.remove();
+}
+
+function watchAdminUsersToolbar(toolbar,workspace){
+    if(adminUsersToolbarController){
+        adminUsersToolbarController();
+        adminUsersToolbarController=null;
+    }
+    var oldSpacer=document.querySelector('.admin-users-toolbar-spacer');
+    if(oldSpacer)oldSpacer.remove();
+    var spacer=document.createElement('div');
+    spacer.className='admin-users-toolbar-spacer';
+    workspace.insertBefore(spacer,toolbar);
+    var dashboard=toolbar.closest('.admin-dashboard');
+    if(dashboard)dashboard.style.setProperty('overflow','visible','important');
+    var header=document.body.classList.contains('admin-standalone')?null:document.querySelector('.site-header');
+    function updateToolbarPosition(){
+        if(!toolbar.isConnected)return;
+        var headerOffset=0;
+        if(header){
+            var headerStyle=window.getComputedStyle(header);
+            if(headerStyle.display!=='none'&&(headerStyle.position==='sticky'||headerStyle.position==='fixed')){
+                headerOffset=Math.max(0,header.getBoundingClientRect().bottom);
+            }
+        }
+        var spacerActive=spacer.classList.contains('is-active');
+        var naturalRect=(spacerActive?spacer:toolbar).getBoundingClientRect();
+        if(naturalRect.top<=headerOffset){
+            if(!spacerActive){
+                spacer.style.height=toolbar.offsetHeight+'px';
+                spacer.classList.add('is-active');
+                naturalRect=spacer.getBoundingClientRect();
+            }
+            toolbar.style.setProperty('--admin-users-fixed-top',headerOffset+'px');
+            toolbar.style.setProperty('--admin-users-fixed-left',naturalRect.left+'px');
+            toolbar.style.setProperty('--admin-users-fixed-width',naturalRect.width+'px');
+            toolbar.classList.add('is-fixed');
+        }else{
+            toolbar.classList.remove('is-fixed');
+            spacer.classList.remove('is-active');
+            spacer.style.height='0px';
+        }
+    }
+    window.addEventListener('scroll',updateToolbarPosition,{passive:true});
+    window.addEventListener('resize',updateToolbarPosition,{passive:true});
+    document.addEventListener('scroll',updateToolbarPosition,{passive:true,capture:true});
+    if(header)header.addEventListener('transitionend',updateToolbarPosition);
+    adminUsersToolbarController=function(){
+        window.removeEventListener('scroll',updateToolbarPosition);
+        window.removeEventListener('resize',updateToolbarPosition);
+        document.removeEventListener('scroll',updateToolbarPosition,true);
+        if(header)header.removeEventListener('transitionend',updateToolbarPosition);
+    };
+    updateToolbarPosition();
+}
+
+var adminUserVisibleColumns = [];
+function adminUserActionButtons(id){
+    var userId=parseInt(id,10);
+    if(!Number.isFinite(userId))return '';
+    return '<button type="button" class="admin-user-icon-btn" onclick="openAdminViewLK('+userId+')" title="Открыть личный кабинет" aria-label="Открыть личный кабинет пользователя">'+
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>'+
+        '<button type="button" class="admin-user-icon-btn admin-user-pencil" onclick="openAdminEditUser('+userId+')" title="Изменить пользователя" aria-label="Изменить пользователя">'+
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>';
+}
+var adminUserColumnOptions = [
+    {key:'name',label:'NA',title:'Имя пользователя'},
+    {key:'id',label:'I',title:'ID'},
+    {key:'email',label:'EM',title:'Электронная почта'},
+    {key:'phone',label:'PH',title:'Телефон'},
+    {key:'address',label:'AD',title:'Адрес'},
+    {key:'country',label:'CO',title:'Страна'},
+    {key:'city',label:'CI',title:'Город'},
+    {key:'lat',label:'LAT',title:'Широта'},
+    {key:'lng',label:'LNG',title:'Долгота'},
+    {key:'search_radius',label:'R',title:'Радиус поиска'},
+    {key:'role',label:'RO',title:'Роль'},
+    {key:'is_seller',label:'S',title:'Продавец'},
+    {key:'seller_description',label:'SD',title:'Описание продавца'},
+    {key:'created_at',label:'DT',title:'Дата регистрации'}
+];
+var adminUserLongPressBound=false;
+var adminUserLongPressState=null;
+var adminUserLastLongPress={id:null,at:0};
+
+function bindAdminUserLongPress(){
+    if(adminUserLongPressBound)return;
+    adminUserLongPressBound=true;
+    function targetElement(event){
+        return event.target&&event.target.nodeType===1?event.target:event.target&&event.target.parentElement;
+    }
+    function rowFromEvent(event){
+        var target=targetElement(event);
+        return target&&target.closest?target.closest('#adminUsersTableWrap tr[data-admin-user-id]'):null;
+    }
+    function interactiveTarget(event){
+        var target=targetElement(event);
+        return !!(target&&target.closest&&target.closest('button,a,input,select,textarea,[contenteditable="true"]'));
+    }
+    function clearPress(){
+        if(adminUserLongPressState&&adminUserLongPressState.timer)window.clearTimeout(adminUserLongPressState.timer);
+        adminUserLongPressState=null;
+    }
+    function openFromRow(row,field){
+        var id=parseInt(row&&row.getAttribute('data-admin-user-id'),10);
+        if(!id)return;
+        adminUserLastLongPress={id:id,at:Date.now()};
+        openAdminUserFieldEdit(id,field||'');
+    }
+    document.addEventListener('pointerdown',function(event){
+        if(!event.isPrimary||event.button!==0||interactiveTarget(event)){clearPress();return;}
+        var row=rowFromEvent(event);
+        if(!row){clearPress();return;}
+        var fieldCell=targetElement(event).closest('[data-admin-user-field]');
+        var state={row:row,id:row.getAttribute('data-admin-user-id'),field:fieldCell&&fieldCell.getAttribute('data-admin-user-field')||'',pointerId:event.pointerId,x:event.clientX,y:event.clientY,timer:null};
+        adminUserLongPressState=state;
+        state.timer=window.setTimeout(function(){
+            if(adminUserLongPressState!==state)return;
+            state.triggered=true;
+            openFromRow(row,state.field);
+        },550);
+    },true);
+    document.addEventListener('pointermove',function(event){
+        var state=adminUserLongPressState;
+        if(!state||event.pointerId!==state.pointerId)return;
+        if(Math.abs(event.clientX-state.x)>12||Math.abs(event.clientY-state.y)>12)clearPress();
+    },true);
+    document.addEventListener('pointerup',function(event){
+        if(adminUserLongPressState&&event.pointerId===adminUserLongPressState.pointerId)clearPress();
+    },true);
+    document.addEventListener('pointercancel',function(event){
+        if(adminUserLongPressState&&event.pointerId===adminUserLongPressState.pointerId)clearPress();
+    },true);
+    document.addEventListener('contextmenu',function(event){
+        var row=rowFromEvent(event);
+        if(!row||interactiveTarget(event))return;
+        var state=adminUserLongPressState;
+        if(state&&state.row===row){
+            event.preventDefault();
+            if(state.triggered){clearPress();return;}
+            clearPress();
+            openFromRow(row,state.field);
+            return;
+        }
+        var id=parseInt(row.getAttribute('data-admin-user-id'),10);
+        if(adminUserLastLongPress.id===id&&Date.now()-adminUserLastLongPress.at<1200){
+            event.preventDefault();
+        }
+    },true);
+}
+
+function renderAdminUserColumnToggles(sampleRow){
+    var toggles=document.getElementById('adminUserColumnToggles');
+    if(!toggles)return;
+    toggles.innerHTML=adminUserColumnOptions.filter(function(option){
+        return Object.prototype.hasOwnProperty.call(sampleRow,option.key);
+    }).map(function(option){
+        return '<button type="button" class="admin-user-column-toggle" data-user-column="'+option.key+'" aria-pressed="false" title="'+option.title+'" aria-label="Показать поле: '+option.title+'">'+option.label+'</button>';
+    }).join('');
+    toggles.querySelectorAll('[data-user-column]').forEach(function(button){
+        button.addEventListener('click',function(){
+            var key=button.getAttribute('data-user-column');
+            var index=adminUserVisibleColumns.indexOf(key);
+            if(index===-1)adminUserVisibleColumns.push(key);
+            else adminUserVisibleColumns.splice(index,1);
+            button.classList.toggle('active',index===-1);
+            button.setAttribute('aria-pressed',String(index===-1));
+            filterAdminUsers();
+        });
+    });
+}
 
 function filterAdminUsers(){
-    var q = (document.getElementById('adminUserSearch').value || '').toLowerCase().trim();
+    var searchInput=document.getElementById('adminUserSearch');
+    if(!searchInput)return;
+    var q = (searchInput.value || '').toLowerCase().trim();
     var filtered = adminUsersAllRows.filter(function(r){
         if(!q) return true;
         return (r.name || '').toLowerCase().indexOf(q) !== -1 
@@ -2831,20 +3230,28 @@ function renderAdminUsersTable(rows){
     if(!rows.length){ tableContainer.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Ничего не найдено</p>'; return; }
     
     var html = '<div class="admin-table-wrap"><table class="admin-table"><thead><tr>';
-    var keys = Object.keys(rows[0]);
-    keys.forEach(function(k){ html += '<th scope="col">' + adminEsc(k) + '</th>'; });
-    html += '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
+    var keys = adminUserVisibleColumns.filter(function(key){
+        return Object.prototype.hasOwnProperty.call(rows[0],key);
+    });
+    var labels={name:'Имя',id:'ID',email:'Email',phone:'Телефон',address:'Адрес',country:'Страна',city:'Город',lat:'Широта',lng:'Долгота',search_radius:'Радиус',role:'Роль',is_seller:'Продавец',seller_description:'Описание продавца',created_at:'Дата регистрации'};
+    keys.forEach(function(k){ html += '<th scope="col">' + adminEsc(labels[k]||k) + '</th>'; });
+    if(!keys.length)html += '<th scope="col">Поля</th>';
+    html += '</tr></thead><tbody>';
     
     rows.forEach(function(row){
-        html += '<tr>';
-        keys.forEach(function(k){
+        html += '<tr data-admin-user-id="' + adminEsc(row.id) + '">';
+        if(!keys.length){
+            html += '<td class="admin-user-primary-cell" data-admin-user-field=""><div class="admin-user-primary-line"><span class="admin-user-primary-label">Поля</span><span class="admin-user-primary-value">Поля не выбраны</span><div class="admin-user-row-actions">'+adminUserActionButtons(row.id)+'</div></div></td>';
+        }
+        keys.forEach(function(k,index){
             var val = row[k] !== null ? row[k] : '—';
-            html += '<td data-label="' + adminEsc(k) + '">' + adminEsc(val) + '</td>';
+            if(index===0){
+                html += '<td class="admin-user-primary-cell" data-admin-user-field="' + adminEsc(k) + '"><div class="admin-user-primary-line"><span class="admin-user-primary-label">' + adminEsc(labels[k]||k) + '</span><span class="admin-user-primary-value">' + adminEsc(val) + '</span><div class="admin-user-row-actions">' + adminUserActionButtons(row.id) + '</div></div></td>';
+            }else{
+                html += '<td data-label="' + adminEsc(labels[k]||k) + '" data-admin-user-field="' + adminEsc(k) + '">' + adminEsc(val) + '</td>';
+            }
         });
-        html += '<td data-label="Действия">';
-        html += '<button onclick="openAdminViewLK(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #8b5cf6;background:transparent;color:#8b5cf6;cursor:pointer;font-size:12px;margin-right:4px;">👁️ ЛК</button> ';
-        html += '<button onclick="openAdminEditUser(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--neon);background:transparent;color:var(--neon-dark);cursor:pointer;font-size:12px;">✏️ Изменить</button>';
-        html += '</td></tr>';
+        html += '</tr>';
     });
     
     html += '</tbody></table></div>';
@@ -3403,21 +3810,26 @@ function bannerManagementContainer(){
     return document.getElementById('bannerManagementContent')||document.getElementById('adminContent');
 }
 
-function showBannerManagement(button){
+function showBannerManagement(button,historyState){
+    clearAdminUsersToolbar();
     setAdminSectionHeading('Баннеры и проекты','Баннеры главной страницы и совместные проекты','Баннеры');
     if(button){
         button.closest('.tabs').querySelectorAll('.tab').forEach(function(tab){tab.classList.remove('active');});
         button.classList.add('active');
     }
-    currentAdminSection='banner_management';
+    currentAdminSection=historyState&&historyState.subsection||'joint_projects';
+    if(new URLSearchParams(location.search).get('admin')==='1'&&window.parent!==window&&!(historyState&&historyState.fromHistory)){
+        window.parent.postMessage({type:'admin-section-change',section:'joint_projects',reviewStatus:'pending'},location.origin);
+    }
     var container=document.getElementById('adminContent');
     container.innerHTML='<div class="tabs banner-management-tabs" style="margin:0 0 14px;display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="tab active" data-banner-section="joint">🤝 Совместные проекты</button><button type="button" class="tab" data-banner-section="index">🏠 Баннеры главной</button></div><div id="bannerManagementContent" style="overflow-x:auto;"></div>';
     var first=container.querySelector('[data-banner-section="joint"]');
     container.querySelectorAll('[data-banner-section]').forEach(function(tab){tab.addEventListener('click',function(){showBannerManagementSection(tab.getAttribute('data-banner-section'),tab);});});
-    showBannerManagementSection('joint',first);
+    var subsection=historyState&&historyState.subsection==='index_banners'?'index':'joint';
+    showBannerManagementSection(subsection,container.querySelector('[data-banner-section="'+subsection+'"]'),historyState);
 }
 
-function showBannerManagementSection(section,button){
+function showBannerManagementSection(section,button,historyState){
     setAdminSectionHeading(
         section==='index'?'Баннеры главной страницы':'Совместные проекты',
         section==='index'?'Создание, оформление и публикация промо-баннеров':'Партнёрские проекты и их отображение на сайте',
@@ -3428,6 +3840,9 @@ function showBannerManagementSection(section,button){
         button.classList.add('active');
     }
     currentAdminSection=section==='index'?'index_banners':'joint_projects';
+    if(new URLSearchParams(location.search).get('admin')==='1'&&window.parent!==window&&!(historyState&&historyState.fromHistory)){
+        window.parent.postMessage({type:'admin-section-change',section:currentAdminSection,reviewStatus:'pending'},location.origin);
+    }
     if(section==='index')renderAdminIndexBanners();
     else renderAdminJointProjects();
 }
@@ -3854,6 +4269,20 @@ async function confirmDeleteAdminIndexBanner(){
             document.body.classList.remove('admin-sidebar-open');
             window.parent.postMessage({type:'admin-sidebar-changed'},location.origin);
         }
+    });
+    window.addEventListener('message',function(event){
+        if(event.source!==window.parent||event.origin!==location.origin||!event.data||
+            event.data.type!=='admin-traverse-section')return;
+        var section=event.data.section||'stats';
+        var status=['pending','approved','rejected'].includes(event.data.reviewStatus)
+            ?event.data.reviewStatus:'pending';
+        if(section==='joint_projects'||section==='index_banners'){
+            var bannerTab=document.querySelector('#tab-admin .admin-nav [data-admin-section="banner_management"]');
+            showBannerManagement(bannerTab,{fromHistory:true,subsection:section});
+            return;
+        }
+        var tab=document.querySelector('#tab-admin .admin-nav [data-admin-section="'+section+'"]');
+        loadAdminSection(section,tab,{fromHistory:true,reviewStatus:status});
     });
     fetch('/api/admin.php?action=users',{credentials:'same-origin',cache:'no-store'})
         .then(function(response){return response.json();})
