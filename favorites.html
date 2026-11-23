@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
-<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261122-spacing">
+<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261123-discount-photo3">
 <script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
 
 <style>
@@ -640,7 +640,21 @@ function createFavoriteCard(entry, item) {
             : '');
         image.alt = item.title || item.name || '';
         image.loading = 'lazy';
-        card.appendChild(image);
+        if (entry.type === 'dish') {
+            const photo = document.createElement('div');
+            photo.className = 'dish-card-photo';
+            photo.appendChild(image);
+            const discount = Math.max(0, Math.min(90, Number(item.discount_percent) || 0));
+            if (discount > 0) {
+                const badge = document.createElement('span');
+                badge.className = 'dish-discount-tile-badge';
+                badge.textContent = '−' + discount + '%';
+                photo.appendChild(badge);
+            }
+            card.appendChild(photo);
+        } else {
+            card.appendChild(image);
+        }
     }
 
     const body = document.createElement('div');
@@ -672,9 +686,26 @@ function createFavoriteCard(entry, item) {
             body.appendChild(description);
         }
         const price = document.createElement('div');
-        price.className = 'price';
-        price.textContent = (Number(item.price) || 0).toFixed(0) + ' ₽' + (item.weight ? ' · ' + item.weight + 'г' : '');
-        body.appendChild(price);
+        price.className = 'price card-purchase-info';
+        const weightValue = item.weight == null ? '' : String(item.weight).trim();
+        const weight = weightValue ? ' · ' + (/[a-zа-я]/i.test(weightValue) ? weightValue : weightValue + ' г') : '';
+        const discount = Math.max(0, Math.min(90, Number(item.discount_percent) || 0));
+        const salePrice = Math.round((Number(item.price) || 0) * (1 - discount / 100) * 100) / 100;
+        price.classList.toggle('price-discount-row', discount > 0);
+        if (discount > 0) {
+            const original = document.createElement('span');
+            original.className = 'price-original';
+            original.textContent = Number(item.price).toLocaleString('ru-RU', { maximumFractionDigits: 2 }) + ' ₽';
+            const discounted = document.createElement('span');
+            discounted.className = 'price-discounted';
+            discounted.textContent = salePrice.toLocaleString('ru-RU', { maximumFractionDigits: 2 }) + ' ₽';
+            price.append(original, discounted, document.createTextNode(weight));
+        } else {
+            price.textContent = salePrice.toLocaleString('ru-RU', { maximumFractionDigits: 2 }) + ' ₽' + weight;
+        }
+        const purchaseArea = document.createElement('div');
+        purchaseArea.className = 'card-purchase-area';
+        purchaseArea.appendChild(price);
         const addButton = document.createElement('button');
         addButton.type = 'button';
         addButton.className = 'btn';
@@ -682,10 +713,11 @@ function createFavoriteCard(entry, item) {
         addButton.dataset.id = String(item.id);
         addButton.dataset.name = item.title || '';
         addButton.dataset.chef = item.seller_name || 'Повар';
-        addButton.dataset.price = String(Number(item.price) || 0);
+        addButton.dataset.price = String(salePrice);
         addButton.dataset.img = item.image || '';
         addButton.addEventListener('click', function () { addToCartBtn(addButton); });
-        body.appendChild(addButton);
+        purchaseArea.appendChild(addButton);
+        body.appendChild(purchaseArea);
     } else {
         if (entry.type === 'recipe') {
             const author = document.createElement('div');

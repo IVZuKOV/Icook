@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
-<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261122-spacing">
+<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261123-discount-photo3">
 <script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
 
 <style>
@@ -823,9 +823,14 @@ function addDishAuthorAvatars(container,dishes){
             var chef = d.seller_name || 'Повар';
             var desc = d.description || '';
             if(desc.length > 80) desc = desc.substring(0,80) + '...';
-            var weight = d.weight ? ' · ' + d.weight + 'г' : '';
+            var weightValue = d.weight == null ? '' : String(d.weight).trim();
+            var weight = weightValue ? ' · ' + (/[a-zа-я]/i.test(weightValue) ? weightValue : weightValue + ' г') : '';
             var cat = d.category_name ? '<span style="font-size:12px;color:var(--text-muted);">' + d.category_name + '</span>' : '';
-            html += '<div class="card content-detail-card" data-detail-type="dish" data-detail-id="' + d.id + '">' + imgTag + '<div class="card-content">' + cat + '<div class="dish">' + d.title + '</div><div class="chef">' + chef + '</div><div class="desc">' + desc + '</div><div class="price">' + parseFloat(d.price).toFixed(0) + ' ₽' + weight + '</div><button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g,'&quot;') + '" data-chef="' + chef.replace(/"/g,'&quot;') + '" data-price="' + parseFloat(d.price).toFixed(0) + '" data-img="' + (img||'') + '" onclick="addToCartBtn(this)">В корзину</button></div></div>';
+            var discount = Math.max(0, Math.min(90, Number(d.discount_percent) || 0));
+            var salePrice = Math.round(Number(d.price) * (1 - discount / 100) * 100) / 100;
+            var priceLabel = discount > 0 ? '<span class="price-original">' + Number(d.price).toLocaleString('ru-RU',{maximumFractionDigits:2}) + ' ₽</span><span class="price-discounted">' + salePrice.toLocaleString('ru-RU',{maximumFractionDigits:2}) + ' ₽</span>' : salePrice.toLocaleString('ru-RU',{maximumFractionDigits:2}) + ' ₽';
+            var imageTile = img ? '<div class="dish-card-photo">' + imgTag + (discount > 0 ? '<span class="dish-discount-tile-badge">−' + discount + '%</span>' : '') + '</div>' : '';
+            html += '<div class="card content-detail-card" data-detail-type="dish" data-detail-id="' + d.id + '">' + imageTile + '<div class="card-content">' + cat + '<div class="dish">' + d.title + '</div><div class="chef">' + chef + '</div><div class="desc">' + desc + '</div><div class="card-purchase-area"><div class="price card-purchase-info' + (discount > 0 ? ' price-discount-row' : '') + '">' + priceLabel + weight + '</div><button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g,'&quot;') + '" data-chef="' + chef.replace(/"/g,'&quot;') + '" data-price="' + salePrice + '" data-img="' + (img||'') + '" onclick="addToCartBtn(this)">В корзину</button></div></div></div>';
         });
         container.innerHTML = html;
         addDishAuthorAvatars(container,data.dishes);
@@ -873,9 +878,14 @@ function addDishAuthorAvatars(container,dishes){
                 var chef = d.seller_name || 'Повар';
                 var desc = d.description || '';
                 if(desc.length > 80) desc = desc.substring(0,80) + '...';
-                var weight = d.weight ? ' \u00b7 ' + d.weight + 'г' : '';
+                var weightValue = d.weight == null ? '' : String(d.weight).trim();
+                var weight = weightValue ? ' \u00b7 ' + (/[a-zа-я]/i.test(weightValue) ? weightValue : weightValue + ' г') : '';
                 var cat = d.category_name ? '<span style="font-size:12px;color:var(--text-muted);">' + d.category_name + '</span>' : '';
-                html += '<div class="card content-detail-card" data-detail-type="dish" data-detail-id="' + d.id + '">' + imgTag + '<div class="card-content">' + cat + '<div class="dish">' + d.title + '</div><div class="chef">' + chef + '</div><div class="desc">' + desc + '</div><div class="price">' + parseFloat(d.price).toFixed(0) + ' \u20bd' + weight + '</div><button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g,'&quot;') + '" data-chef="' + chef.replace(/"/g,'&quot;') + '" data-price="' + parseFloat(d.price).toFixed(0) + '" data-img="' + (img||'') + '" onclick="addToCartBtn(this)">В корзину</button></div></div>';
+                var discount = Math.max(0, Math.min(90, Number(d.discount_percent) || 0));
+                var salePrice = Math.round(Number(d.price) * (1 - discount / 100) * 100) / 100;
+                var priceLabel = discount > 0 ? '<span class="price-original">' + Number(d.price).toLocaleString('ru-RU',{maximumFractionDigits:2}) + ' ₽</span><span class="price-discounted">' + salePrice.toLocaleString('ru-RU',{maximumFractionDigits:2}) + ' ₽</span>' : salePrice.toLocaleString('ru-RU',{maximumFractionDigits:2}) + ' ₽';
+                var imageTile = img ? '<div class="dish-card-photo">' + imgTag + (discount > 0 ? '<span class="dish-discount-tile-badge">−' + discount + '%</span>' : '') + '</div>' : '';
+                html += '<div class="card content-detail-card" data-detail-type="dish" data-detail-id="' + d.id + '">' + imageTile + '<div class="card-content">' + cat + '<div class="dish">' + d.title + '</div><div class="chef">' + chef + '</div><div class="desc">' + desc + '</div><div class="card-purchase-area"><div class="price card-purchase-info' + (discount > 0 ? ' price-discount-row' : '') + '">' + priceLabel + weight + '</div><button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g,'&quot;') + '" data-chef="' + chef.replace(/"/g,'&quot;') + '" data-price="' + salePrice + '" data-img="' + (img||'') + '" onclick="addToCartBtn(this)">В корзину</button></div></div></div>';
             });
             container.innerHTML = html;
             addDishAuthorAvatars(container,data.dishes);

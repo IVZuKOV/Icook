@@ -11,7 +11,7 @@
     
     <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
     <link rel="stylesheet" href="assets/css/menu.css?v=20261105152159">
-    <link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261122-spacing">
+    <link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261123104005">
     
     <script>
         (function(){
@@ -411,8 +411,9 @@
     </style>
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
-<script src="assets/js/site-select.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261115-tools1">
+<link rel="stylesheet" href="assets/css/ingredient-autocomplete.css?v=20261123-dish-ingredients-fix1">
+<script src="assets/js/site-select.js?v=20261122072403" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
 </head>
 <body>
@@ -566,6 +567,8 @@
                             <input type="text" id="dishWeight" placeholder="400 г">
                         </div>
                     </div>
+                    <div class="form-group"><label>Скидка (%)</label><input type="number" id="dishDiscount" min="0" max="90" value="0" placeholder="0"></div>
+                    <div class="form-group"><label>Состав и энергетическая ценность *</label><div id="dishIngredients"></div><button type="button" class="btn" onclick="addDishIngredientRow()">＋ Ингредиент</button></div>
                     <div class="form-group">
                         <label>Категория *</label>
                         <div class="category-picker" id="dishCategoryPicker" data-category-picker data-title-id="dishTitle" data-description-id="dishDesc">
@@ -641,7 +644,7 @@
     </footer>
 
     <script src="assets/js/config.js?v=20261105152159"></script>
-    <script src="assets/js/main.js?v=20261122-toast-cartcount"></script>
+    <script src="assets/js/main.js?v=20261122141107"></script>
     <script src="assets/js/cart.js?v=20260926044921"></script>
     <script src="assets/js/theme.js?v=20261105152159"></script>
     <script>
@@ -713,11 +716,28 @@
         }
     }
 
+    function addDishIngredientRow(ingredient) {
+        ingredient = ingredient || {};
+        var row = document.createElement('div');
+        row.innerHTML = '<input class="dish-ingredient-name" type="text" maxlength="100" autocomplete="off" placeholder="Ингредиент" aria-label="Название ингредиента"><input type="number" min="0.01" step="0.01" placeholder="г" aria-label="Вес в граммах"><div class="dish-energy-field"><input type="number" min="0" max="10000" step="0.01" placeholder="кДж/100г" aria-label="Энергетическая ценность"><button class="dish-ingredient-remove" type="button" aria-label="Удалить ингредиент" title="Удалить ингредиент">×</button></div>';
+        var inputs = row.querySelectorAll('input');
+        inputs[0].value = ingredient.name || '';
+        inputs[1].value = ingredient.amount_grams || '';
+        inputs[2].value = ingredient.energy_kj_per_100g == null ? '' : ingredient.energy_kj_per_100g;
+        row.querySelector('.dish-ingredient-remove').onclick = function(){ row.remove(); };
+        document.getElementById('dishIngredients').appendChild(row);
+    }
     async function addDish() {
         var title = document.getElementById('dishTitle').value.trim();
         var desc = document.getElementById('dishDesc').value.trim();
         var price = document.getElementById('dishPrice').value;
         var weight = document.getElementById('dishWeight').value.trim();
+        var ingredients = Array.from(document.querySelectorAll('#dishIngredients input')).reduce(function(rows,input,index){
+            var pos = Math.floor(index / 3), part = index % 3;
+            rows[pos] = rows[pos] || {};
+            rows[pos][['name','amount_grams','energy_kj_per_100g'][part]] = input.value;
+            return rows;
+        }, []).filter(function(row){return row.name || row.amount_grams || row.energy_kj_per_100g});
         var picker = document.getElementById('dishCategoryPicker');
         var catId = picker && picker.getCategoryId ? picker.getCategoryId() : '';
         var imageInput = document.getElementById('dishImage');
@@ -732,6 +752,8 @@
         formData.append('description', desc);
         formData.append('price', price);
         formData.append('weight', weight);
+        formData.append('discount_percent', document.getElementById('dishDiscount').value || '0');
+        formData.append('ingredients', JSON.stringify(ingredients));
         formData.append('category_id', catId);
         Object.keys(picker.getPath()).forEach(function(key){ formData.append(key, picker.getPath()[key]); });
         if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
@@ -744,6 +766,9 @@
             document.getElementById('dishDesc').value = '';
             document.getElementById('dishPrice').value = '';
             document.getElementById('dishWeight').value = '';
+            document.getElementById('dishDiscount').value = '0';
+            document.getElementById('dishIngredients').replaceChildren();
+            addDishIngredientRow();
             document.getElementById('imagePreview').style.display = 'none';
             imageInput.value = '';
             switchTab('dishes', document.querySelectorAll('.tab-btn')[0]);
@@ -865,13 +890,14 @@
 
     document.addEventListener('DOMContentLoaded', function(){
         updateUI(); updateCartBadge(); checkSeller();
+        addDishIngredientRow();
         if(typeof hideCurrentPageInCatalog === 'function') hideCurrentPageInCatalog();
     });
     </script>
 <script src="assets/js/lang.js?v=20261021162340"></script>
-<script src="assets/js/notifications.js?v=20261115-bell1"></script>
+<script src="assets/js/notifications.js?v=20261115141314"></script>
 <script src="assets/js/footer.js?v=20261021131201"></script>
-<script src="assets/js/fav-badge.js?v=20261122-countall"></script>
-<script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script><script src="assets/js/auth-unified.js?v=20261105152301"></script><script src="assets/js/modal-back.js?v=20261120-modal1" defer></script></body>
-<script src="assets/js/category-picker.js?v=20261116-2"></script>
+<script src="assets/js/fav-badge.js?v=20261122141107"></script>
+<script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script><script src="assets/js/auth-unified.js?v=20261105152301"></script><script src="assets/js/modal-back.js?v=20261120145819" defer></script><script src="assets/js/ingredient-autocomplete.js?v=20261123-dish-ingredients-fix1"></script></body>
+<script src="assets/js/category-picker.js?v=20261119135250"></script>
 </html>

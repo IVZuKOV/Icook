@@ -450,6 +450,9 @@ async function hydrateCartImages(){
         cart.forEach(function(item){
             const dish=byId.get(String(item.id));
             if(!dish)return;
+            const discount=Math.max(0,Math.min(90,Number(dish.discount_percent)||0));
+            const salePrice=Math.round(Number(dish.price)*(1-discount/100)*100)/100;
+            if(Number(item.price)!==salePrice){item.price=salePrice;changed=true;}
             if(dish.image&&item.img!==dish.image){item.img=dish.image;changed=true;}
             if(item.image){delete item.image;changed=true;}
             const fields={

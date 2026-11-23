@@ -7,9 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
-<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
-<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261122-spacing">
-<script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
+<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120145819">
+<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261123104005">
+<script src="assets/js/content-card-navigation.js?v=20261122120829" defer></script>
 
 <style>
 .profile-.site-header{display:flex;gap:28px;align-items:center;flex-wrap:wrap;padding:24px 0;border-bottom:1px solid var(--border-color);}
@@ -620,10 +620,11 @@ button, .btn, a, label {
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
-<script src="assets/js/site-select.js?v=20261105152159" defer></script>
+<link rel="stylesheet" href="assets/css/ingredient-autocomplete.css?v=20261123-dish-ingredients-fix1">
+<script src="assets/js/site-select.js?v=20261122072403" defer></script>
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261122-bordered">
+<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261122144329">
 </head>
 <body>
 <script>if(new URLSearchParams(location.search).get('admin')==='1')document.body.classList.add('admin-standalone');</script>
@@ -742,6 +743,10 @@ button, .btn, a, label {
 <select data-category-subsub aria-label="Дополнительная подкатегория"></select>
 </div>
 </div>
+<div class="form-row">
+<div class="form-group"><label>Скидка (%)</label><input type="number" id="dishDiscount" min="0" max="90" value="0" placeholder="0"></div>
+<div class="form-group"><label>Состав и энергетическая ценность *</label><div id="dishIngredients" class="dish-ingredients"></div><button type="button" class="sub-add-btn" onclick="addDishIngredientRow('dishIngredients')">＋ Ингредиент</button></div>
+</div>
 <div class="form-group dish-promocode-box">
 <label for="dishPromoSelect">Промокоды этого повара</label>
 <div class="dish-promocode-picker">
@@ -804,6 +809,10 @@ button, .btn, a, label {
 <select data-category-sub aria-label="Подкатегория"></select>
 <select data-category-subsub aria-label="Дополнительная подкатегория"></select>
 </div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Скидка (%)</label><input type="number" id="editDishDiscount" min="0" max="90" value="0" placeholder="0"></div>
+<div class="form-group"><label>Состав и энергетическая ценность *</label><div id="editDishIngredients" class="dish-ingredients"></div><button type="button" class="sub-add-btn" onclick="addDishIngredientRow('editDishIngredients')">＋ Ингредиент</button></div>
 </div>
 <div class="form-group dish-promocode-box">
 <label for="editDishPromoSelect">Промокоды этого повара</label>
@@ -1070,8 +1079,8 @@ button, .btn, a, label {
 </div>
 
 <script src="assets/js/config.js?v=20261105152159"></script>
-<script src="assets/js/author-avatar.js?v=20261120-crop"></script>
-<script src="assets/js/main.js?v=20261122-toast-cartcount"></script>
+<script src="assets/js/author-avatar.js?v=20261119161218"></script>
+<script src="assets/js/main.js?v=20261122141107"></script>
 <script src="assets/js/theme.js?v=20261105152159"></script>
 <script>
 const currentUser = JSON.parse(localStorage.getItem('user')) || null;
@@ -1272,6 +1281,25 @@ async function deleteDishPromocode(context){
     }
 }
 
+function addDishIngredientRow(listId, ingredient) {
+    ingredient = ingredient || {};
+    var row = document.createElement('div');
+    row.className = 'dish-ingredient-row';
+    row.innerHTML = '<input class="dish-ingredient-name" type="text" maxlength="100" autocomplete="off" placeholder="Ингредиент" aria-label="Название ингредиента"><input type="number" min="0.01" step="0.01" placeholder="г" aria-label="Вес в граммах"><div class="dish-energy-field"><input type="number" min="0" max="10000" step="0.01" placeholder="кДж/100 г" aria-label="Энергетическая ценность"><button class="dish-ingredient-remove" type="button" aria-label="Удалить ингредиент" title="Удалить ингредиент">×</button></div>';
+    var fields = row.querySelectorAll('input');
+    fields[0].value = ingredient.name || '';
+    fields[1].value = ingredient.amount_grams || '';
+    fields[2].value = ingredient.energy_kj_per_100g == null ? '' : ingredient.energy_kj_per_100g;
+    row.querySelector('.dish-ingredient-remove').addEventListener('click', function(){ row.remove(); });
+    document.getElementById(listId).appendChild(row);
+}
+function collectDishIngredients(listId) {
+    return Array.from(document.querySelectorAll('#' + listId + ' .dish-ingredient-row')).map(function(row){
+        var fields = row.querySelectorAll('input');
+        return {name: fields[0].value.trim(), amount_grams: fields[1].value, energy_kj_per_100g: fields[2].value};
+    }).filter(function(row){ return row.name || row.amount_grams || row.energy_kj_per_100g; });
+}
+
 // --- ДОБАВИТЬ БЛЮДО ---
 function openAddDishModal() {
     document.getElementById('dishTitle').value = '';
@@ -1280,6 +1308,9 @@ function openAddDishModal() {
     if(categoryPicker && categoryPicker.resetCategory) categoryPicker.resetCategory();
     document.getElementById('dishPrice').value = '';
     document.getElementById('dishWeight').value = '';
+    document.getElementById('dishDiscount').value = '0';
+    document.getElementById('dishIngredients').replaceChildren();
+    addDishIngredientRow('dishIngredients');
     document.getElementById('imagePreview').style.display = 'none';
     document.getElementById('dishImage').value = '';
     resetDishPromocodeFields('add',true);
@@ -1301,6 +1332,7 @@ async function addDish() {
     var desc = document.getElementById('dishDesc').value.trim();
     var price = document.getElementById('dishPrice').value;
     var weight = document.getElementById('dishWeight').value.trim();
+    var ingredients = collectDishIngredients('dishIngredients');
     var picker = document.getElementById('dishCategoryPicker');
     var catId = picker && picker.getCategoryId ? picker.getCategoryId() : '';
     var imageInput = document.getElementById('dishImage');
@@ -1313,6 +1345,8 @@ async function addDish() {
     formData.append('description', desc);
     formData.append('price', price);
     formData.append('weight', weight);
+    formData.append('discount_percent', document.getElementById('dishDiscount').value || '0');
+    formData.append('ingredients', JSON.stringify(ingredients));
     formData.append('category_id', catId);
     Object.keys(picker.getPath()).forEach(function(key){ formData.append(key, picker.getPath()[key]); });
     if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
@@ -1391,6 +1425,10 @@ function openEditDish(id) {
     document.getElementById('editDishDesc').value = d.description || '';
     document.getElementById('editDishPrice').value = d.price || '';
     document.getElementById('editDishWeight').value = d.weight || '';
+    document.getElementById('editDishDiscount').value = d.discount_percent || 0;
+    var ingredientsList = document.getElementById('editDishIngredients');
+    ingredientsList.replaceChildren();
+    (Array.isArray(d.ingredients) && d.ingredients.length ? d.ingredients : [{}]).forEach(function(ingredient){ addDishIngredientRow('editDishIngredients', ingredient); });
     var categoryPicker = document.getElementById('editDishCategoryPicker');
     if(categoryPicker && categoryPicker.setCategoryId) categoryPicker.setCategoryId(d.category_id || '');
     document.getElementById('editImagePreview').style.display = 'none';
@@ -1438,6 +1476,7 @@ async function editDish(id) {
     var desc = document.getElementById('editDishDesc').value.trim();
     var price = document.getElementById('editDishPrice').value;
     var weight = document.getElementById('editDishWeight').value.trim();
+    var ingredients = collectDishIngredients('editDishIngredients');
     var picker = document.getElementById('editDishCategoryPicker');
     var catId = picker && picker.getCategoryId ? picker.getCategoryId() : '';
     var imageInput = document.getElementById('editDishImage');
@@ -1452,6 +1491,8 @@ async function editDish(id) {
     formData.append('description', desc);
     formData.append('price', price);
     formData.append('weight', weight);
+    formData.append('discount_percent', document.getElementById('editDishDiscount').value || '0');
+    formData.append('ingredients', JSON.stringify(ingredients));
     formData.append('category_id', catId);
     Object.keys(picker.getPath()).forEach(function(key){ formData.append(key, picker.getPath()[key]); });
     if(imageInput.files[0]) formData.append('image', imageInput.files[0]);
@@ -3302,9 +3343,9 @@ async function saveLKEdit(e){
 
 <script src="assets/js/lang.js?v=20261021162340"></script>
 <script src="assets/js/notifications.js?v=20261115141314"></script>
-<script src="assets/js/fav-badge.js?v=20261122-countall"></script>
+<script src="assets/js/fav-badge.js?v=20261122141107"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
-<script src="assets/js/site-catalog.js?v=20261115142432"></script>
+<script src="assets/js/site-catalog.js?v=20261122120829"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>
 <script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
 <div class="modal-overlay" id="avatarSettingsModal" onclick="closeAvatarSettings(event)">
@@ -4306,7 +4347,8 @@ async function confirmDeleteAdminIndexBanner(){
 })();
 </script>
 
-<script src="assets/js/category-picker.js?v=20261119-1"></script>
-<script src="assets/js/modal-back.js?v=20261120-modal1" defer></script>
+<script src="assets/js/category-picker.js?v=20261119135250"></script>
+<script src="assets/js/ingredient-autocomplete.js?v=20261123-dish-ingredients-fix1"></script>
+<script src="assets/js/modal-back.js?v=20261120145819" defer></script>
 </body>
 </html>

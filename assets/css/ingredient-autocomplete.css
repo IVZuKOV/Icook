@@ -7,4 +7,41 @@
 .ingredient-option-count { flex-shrink: 0; font-size: 11px; color: var(--text-muted); white-space: nowrap; }
 .ingredient-suggestion-note { padding: 10px 14px; color: var(--text-muted); font-size: 13px; line-height: 1.5; }
 .ingredient-suggestions .ingredient-option.is-active { box-shadow: inset 0 0 0 1px rgba(255,255,255,.8); }
+.ingredient-suggestions.is-dish-suggestions .ingredient-option-count { display: none; }
+.dish-ingredient-row {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(64px, 1fr) minmax(90px, 1fr);
+    gap: 8px;
+    margin: 12px 8px 12px 0;
+    position: relative;
+}
+.dish-ingredient-row > input { min-width: 0; }
+.dish-energy-field { position: relative; min-width: 0; }
+.dish-energy-field input { width: 100%; min-width: 0; padding-right: 32px !important; }
+.dish-ingredient-remove {
+    position: absolute;
+    top: -9px;
+    right: -8px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 2px solid var(--card-bg);
+    border-radius: 50%;
+    background: #ef4444;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(239,68,68,.55), 0 0 12px rgba(255,255,255,.35);
+}
+.dish-ingredient-remove:active { transform: scale(.92); }
+.dish-ingredient-name { position: relative; }
 @media(max-width:420px) { .ingredient-option-count { font-size: 10px; } }
+@media(max-width:480px) {
+    .dish-ingredient-row { grid-template-columns: minmax(0, 1.5fr) minmax(52px, .8fr) minmax(84px, 1fr); gap: 6px; }
+}

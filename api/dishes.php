@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/lib/default_dish_images.php';
+require_once __DIR__ . '/lib/dish_ingredients.php';
 
 $categoryId = (int) ($_GET['category_id'] ?? 0);
 $sellerId = (int) ($_GET['seller_id'] ?? 0);
@@ -61,6 +62,13 @@ $stmt->bindValue($i, $offset, PDO::PARAM_INT);
 $stmt->execute();
 
 $dishes = $stmt->fetchAll();
+$ingredientGroups = dish_ingredients_group($pdo, array_column($dishes, 'id'));
+foreach ($dishes as &$dish) {
+    $dish['ingredients'] = $ingredientGroups[(int) $dish['id']] ?? [];
+    $dish['nutrition'] = $dish['ingredients']['_nutrition'] ?? null;
+    if (isset($dish['ingredients']['_nutrition'])) unset($dish['ingredients']['_nutrition']);
+}
+unset($dish);
 $dishes = apply_default_dish_images($dishes);
 
 $countStmt = $pdo->prepare("SELECT COUNT(*) FROM dishes d WHERE $where");

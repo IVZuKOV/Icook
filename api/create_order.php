@@ -70,7 +70,7 @@ try {
     $dishIds = array_keys($qtyByDish);
     $dishPlaceholders = implode(',', array_fill(0, count($dishIds), '?'));
     $dishStmt = $pdo->prepare(
-        "SELECT id, price, user_id AS seller_id FROM dishes
+        "SELECT id, price, discount_percent, user_id AS seller_id FROM dishes
          WHERE id IN ($dishPlaceholders) AND is_available = 1 FOR UPDATE"
     );
     $dishStmt->execute($dishIds);
@@ -80,7 +80,8 @@ try {
         $dishId = (int) $dish['id'];
         $cookId = (int) $dish['seller_id'];
         $dish['quantity'] = $qtyByDish[$dishId];
-        $dish['line_subtotal'] = round((float) $dish['price'] * $dish['quantity'], 2);
+        $dish['sale_price'] = round((float) $dish['price'] * (1 - (int) $dish['discount_percent'] / 100), 2);
+        $dish['line_subtotal'] = round($dish['sale_price'] * $dish['quantity'], 2);
         $dishesById[$dishId] = $dish;
         $dishSubtotalsByCook[$cookId][] = $dish['line_subtotal'];
     }

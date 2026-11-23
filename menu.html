@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="assets/css/app.css?v=20261105152159">
     <link rel="stylesheet" href="assets/css/menu.css?v=20261105152159">
     <link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
-    <link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261122-spacing">
+    <link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261123-discount-photo3">
 <script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
     
     <script>
@@ -195,7 +195,7 @@
         font-size: clamp(14px, 1.3vw, 20px);
     }
     .dishes-grid .card .btn {
-        margin-top: auto;
+        margin-top: 0;
         padding: clamp(8px, 0.8vw, 14px) clamp(12px, 1vw, 20px);
         font-size: clamp(11px, 0.9vw, 15px);
     }
@@ -270,7 +270,7 @@
     }
     .qty-val{font-weight:700;font-size:16px;width:20px;text-align:center;color:var(--text-main);}
     @media(max-width:768px){
-        .dishes-grid.cols-4 .qty-control{gap:2px;padding:3px;border-radius:7px;min-width:0;box-sizing:border-box;}
+        .dishes-grid.cols-4 .qty-control{gap:2px;padding:3px;border-radius:7px;min-width:0;box-sizing:border-box;margin-top:0;}
         .dishes-grid.cols-4 .qty-btn{height:30px;min-height:30px;padding:0;border-radius:7px;font-size:clamp(12px,3vw,16px);line-height:1;}
         .dishes-grid.cols-4 .qty-val{font-size:clamp(11px,2.8vw,15px);line-height:1;}
     }
@@ -727,6 +727,14 @@ body{padding-bottom:88px;}
                 empty.style.display = 'none';
                 grid.innerHTML = data.dishes.map(function(d) {
                     var imgSrc = d.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop';
+                    var weightValue = d.weight == null ? '' : String(d.weight).trim();
+                    var weight = weightValue ? ' · ' + (/[a-zа-я]/i.test(weightValue) ? weightValue : weightValue + ' г') : '';
+                    var discount = Math.max(0, Math.min(90, Number(d.discount_percent) || 0));
+                    var salePrice = Math.round(Number(d.price) * (1 - discount / 100) * 100) / 100;
+                    var priceLabel = discount > 0
+                        ? '<span class="price-original">' + Number(d.price).toLocaleString('ru-RU', {maximumFractionDigits:2}) + ' ₽</span><span class="price-discounted">' + salePrice.toLocaleString('ru-RU', {maximumFractionDigits:2}) + ' ₽</span>'
+                        : salePrice.toLocaleString('ru-RU', {maximumFractionDigits:2}) + ' ₽';
+                    var imageTile = '<div class="dish-card-photo"><img src="' + imgSrc + '" alt="' + d.title + '">' + (discount > 0 ? '<span class="dish-discount-tile-badge">−' + discount + '%</span>' : '') + '</div>';
                     var inCart = cart.find(function(c){ return c.id == d.id; });
                     var btnHtml;
                     if (inCart) {
@@ -736,19 +744,18 @@ body{padding-bottom:88px;}
                             '<button class="qty-btn" onclick="menuChgQty(' + d.id + ',1)">+</button>' +
                             '</div>';
                     } else {
-                        btnHtml = '<button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g, '&quot;') + '" data-chef="' + (d.seller_name||'Продавец').replace(/"/g, '&quot;') + '" data-price="' + d.price + '" onclick="addToCartMenuBtn(this)">В корзину</button>';
+                        btnHtml = '<button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g, '&quot;') + '" data-chef="' + (d.seller_name||'Продавец').replace(/"/g, '&quot;') + '" data-price="' + salePrice + '" onclick="addToCartMenuBtn(this)">В корзину</button>';
                     }
                     return '<div class="card content-detail-card" data-detail-type="dish" data-detail-id="' + String(d.id).replace(/[^0-9]/g, '') + '">' +
                         '<button class="fav-btn ' + (isFavorite(d.id)?'active':'') + '" onclick="toggleFavorite(' + d.id + ');return false;" data-id="' + d.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>' +
-                        '<img src="' + imgSrc + '" alt="' + d.title + '">' +
+                        imageTile +
                         '<div class="card-content">' +
                             '<div class="dish">' + d.title + '</div>' +
                             '<div class="chef">' + (d.seller_name || 'Продавец') + '</div>' +
                             '<div class="desc">' + (d.description ? d.description.substring(0,80) : '') + '</div>' +
-                            (d.weight ? '<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">' + d.weight + '</div>' : '') +
-                            '<div class="price">' + d.price + ' \u20BD</div>' +
+                            '<div class="card-purchase-area"><div class="price card-purchase-info' + (discount > 0 ? ' price-discount-row' : '') + '">' + priceLabel + weight + '</div>' +
                             btnHtml +
-                        '</div></div>';
+                        '</div></div></div>';
                 }).join('');
                 var authorNodes=grid.querySelectorAll('.card .chef');
                 data.dishes.forEach(function(dish,index){

@@ -13,6 +13,97 @@
     row-gap: 4px !important;
 }
 
+/* Keep dish price/weight directly above the cart button or quantity selector. */
+.content-detail-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.dish-card-photo {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.dish-card-photo > img {
+    display: block;
+    width: 100%;
+}
+
+.dish-discount-tile-badge {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    z-index: 3;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: #e84393;
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .24);
+}
+
+.content-detail-card > .card-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.card-purchase-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-top: auto;
+}
+
+.card-purchase-area > .card-purchase-info {
+    margin: 0 !important;
+    line-height: 1.25;
+}
+
+.price-discount-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.price-original {
+    color: #1e40af !important;
+    font-size: .86em;
+    font-weight: 800;
+    text-decoration: line-through;
+    text-decoration-color: #dc2626;
+    text-decoration-thickness: 3px;
+    text-shadow: none !important;
+}
+
+[data-theme="dark"] .price-original {
+    color: #fff !important;
+}
+
+.price-discounted {
+    color: #e84393 !important;
+    font-weight: 900;
+    text-shadow: none !important;
+}
+
+.content-detail-card .card-purchase-area > .btn,
+.content-detail-card .card-purchase-area > .qty-control,
+.favorite-content-card .card-purchase-area > .btn,
+.favorite-content-card .card-purchase-area > .qty-control {
+    width: 100%;
+    margin: 0 !important;
+}
+
+.favorite-content-card .favorite-content-body > .card-purchase-area {
+    margin-top: auto;
+}
+
 @media (max-width: 768px) {
     .cards,
     .dishes-grid,

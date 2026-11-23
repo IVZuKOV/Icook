@@ -1,9 +1,12 @@
-/* Ingredient suggestions for both recipe modals. Typing never writes to the dictionary. */
+/* Shared dictionary suggestions for dish ingredient fields. Typing never writes to the dictionary. */
 (function () {
     var input = null, menu = null, items = [], active = -1, controller = null;
     var timer = null, generation = 0, sequence = 0, selecting = false;
     function field(target) {
-        return target instanceof HTMLInputElement && target.matches('.ing-name') && target.closest('#addRecipeModal,#editRecipeModal');
+        if (!(target instanceof HTMLInputElement)) return false;
+        var recipeField = target.matches('.ing-name') && target.closest('#addRecipeModal,#editRecipeModal');
+        var dishField = target.matches('.dish-ingredient-name') && target.closest('#dishIngredients,#editDishIngredients');
+        return !!dishField || (!!recipeField && typeof window.setupIngredientSuggestions !== 'function');
     }
     function close() {
         generation++;
@@ -25,7 +28,7 @@
         if (rect.bottom < top || rect.top > top + height || !input.getClientRects().length) { close(); return; }
         var above = rect.top - top - 12, below = top + height - rect.bottom - 12;
         var upwards = below < 130 && above > below;
-        var size = Math.min(rect.width, width - 16);
+        var size = Math.min(Math.max(rect.width, 240), width - 16);
         menu.style.width = size + 'px';
         menu.style.maxHeight = Math.min(280, Math.max(60, upwards ? above : below)) + 'px';
         menu.style.left = Math.min(Math.max(left + 8, rect.left), left + width - size - 8) + 'px';
@@ -35,6 +38,7 @@
         if (menu) return;
         menu = document.createElement('div');
         menu.className = 'site-select-menu ingredient-suggestions';
+        if (input.matches('.dish-ingredient-name')) menu.classList.add('is-dish-suggestions');
         menu.id = input.dataset.ingredientSuggestions;
         menu.setAttribute('role', 'listbox'); menu.setAttribute('aria-label', 'Ингредиенты');
         if (typeof menu.showPopover === 'function') menu.setAttribute('popover', 'manual');
@@ -153,7 +157,8 @@
     }
     new MutationObserver(function () {
         if (!menu || !input) return;
-        var modal = input.closest('#addRecipeModal,#editRecipeModal');
-        if (!input.isConnected || !modal || !modal.classList.contains('active')) close();
+         var modal = input.closest('#addRecipeModal,#editRecipeModal,#addDishModal,#editDishModal');
+         var validContainer = modal || input.closest('#dishIngredients,#editDishIngredients');
+         if (!input.isConnected || !validContainer || (modal && !modal.classList.contains('active'))) close();
     }).observe(document.body, {childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
 })();
