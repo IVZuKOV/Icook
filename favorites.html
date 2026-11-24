@@ -5,9 +5,9 @@
 <title>Избранное — Я готовлю — ты ешь!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
-<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261123-discount-neon5">
-<script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
+<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120145819">
+<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261124120115">
+<script src="assets/js/content-card-navigation.js?v=20261122120829" defer></script>
 
 <style>
 /* --- CSS НАЧАЛО --- */
@@ -97,8 +97,9 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
 .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
 .card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 6px 20px rgba(0,0,0,0.08);position:relative;z-index:3;}
 .card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--neon);box-shadow:0 10px 30px var(--neon-glow),0 0 20px rgba(30,64,175,0.1);}
-.card img{width:100%;height:200px;object-fit:cover;transition:0.4s;}
-.card:hover img{transform:scale(1.05);}
+.card > img{width:100%;height:200px;object-fit:cover;transition:0.4s;}
+.card .dish-card-photo > img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;transition:0.4s;}
+.card:hover > img,.card:hover .dish-card-photo > img{transform:scale(1.05);}
 .card-content{padding:18px;background:var(--card-bg);}
 .dish{font-size:20px;margin-bottom:6px;color:var(--text-main);font-weight:700;}
 .chef{color:var(--neon-dark);margin-bottom:8px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:5px;}
@@ -255,14 +256,14 @@ button, .btn, a, label {
 .back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 </style>
 <link rel="stylesheet" href="assets/css/favorites.css?v=20261021145218">
-<link rel="stylesheet" href="assets/css/content-favorites.css?v=20261122-cardtap">
+<link rel="stylesheet" href="assets/css/content-favorites.css?v=20261124-home-card-height">
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
-<script src="assets/js/site-select.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261115-tools1">
+<script src="assets/js/site-select.js?v=20261122072403" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261122-bordered">
+<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261124-touch-hover-stable">
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -330,7 +331,8 @@ button, .btn, a, label {
 let cart=JSON.parse(localStorage.getItem('cart'))||[];
 function updateCartBadge(){const c=cart.reduce((s,x)=>s+x.qty,0);const b=document.getElementById('cartBadge');if(b){b.textContent=c;b.style.display=c>0?'flex':'none';}}
 function addToCart(id,n,c,p,i){const ex=cart.find(x=>x.id===id);if(ex)ex.qty++;else cart.push({id,name:n,chef:c,price:p,img:i,qty:1});localStorage.setItem('cart',JSON.stringify(cart));updateCartBadge();showToast(n+' добавлен в корзину');}
-function addToCartBtn(btn){var id=parseInt(btn.dataset.id),name=btn.dataset.name,chef=btn.dataset.chef,price=parseFloat(btn.dataset.price),img=btn.dataset.img||'';addToCart(id,name,chef,price,img);var item=cart.find(function(c){return c.id==id;});var qty=item?item.qty:1;var div=document.createElement('div');div.className='qty-control';div.id='qty-'+id;div.innerHTML='<button class="qty-btn" onclick="chgQtyMain('+id+',-1)">&minus;</button><span class="qty-val">'+qty+'</span><button class="qty-btn" onclick="chgQtyMain('+id+',1)">+</button>';btn.replaceWith(div);}
+function createFavoriteQtyControl(id,qty){var div=document.createElement('div');div.className='qty-control';div.id='qty-'+id;var minus=document.createElement('button');minus.type='button';minus.className='qty-btn';minus.setAttribute('aria-label','Уменьшить количество');minus.textContent='−';minus.onclick=function(){chgQtyMain(Number(id),-1);};var value=document.createElement('span');value.className='qty-val';value.textContent=qty;var plus=document.createElement('button');plus.type='button';plus.className='qty-btn';plus.setAttribute('aria-label','Увеличить количество');plus.textContent='+';plus.onclick=function(){chgQtyMain(Number(id),1);};div.append(minus,value,plus);return div;}
+function addToCartBtn(btn){var id=parseInt(btn.dataset.id),name=btn.dataset.name,chef=btn.dataset.chef,price=parseFloat(btn.dataset.price),img=btn.dataset.img||'';addToCart(id,name,chef,price,img);var item=cart.find(function(c){return String(c.id)===String(id);});btn.replaceWith(createFavoriteQtyControl(id,item?item.qty:1));}
 function chgQtyMain(id,delta){var item=cart.find(function(c){return c.id==id;});if(!item)return;var sn=item.name,sc=item.chef,sp=item.price,si=item.img||'';item.qty+=delta;if(item.qty<=0){cart=cart.filter(function(c){return c.id!=id;});var qd=document.getElementById('qty-'+id);if(qd){var btn=document.createElement('button');btn.className='btn';btn.id='cartBtn-'+id;btn.dataset.id=id;btn.dataset.name=sn;btn.dataset.chef=sc;btn.dataset.price=sp;btn.dataset.img=si;btn.textContent='\u0412 \u043a\u043e\u0440\u0437\u0438\u043d\u0443';btn.onclick=function(){addToCartBtn(btn);};qd.replaceWith(btn);}}else{var vs=document.querySelector('#qty-'+id+' .qty-val');if(vs)vs.textContent=item.qty;}localStorage.setItem('cart',JSON.stringify(cart));updateCartBadge();}
 function toggleCatalog(){document.getElementById('catalogDrawer').classList.toggle('active');document.getElementById('catalogOverlay').classList.toggle('active');}
 function updateCatalogVisibility() {
@@ -593,8 +595,8 @@ document.addEventListener('DOMContentLoaded', function(){ updateCartBadge(); upd
 </script>
 
 <script src="assets/js/favorites-store.js?v=20261101115409"></script>
-<script src="assets/js/default-place-image.js?v=20261122-mesto"></script>
-<script src="assets/js/author-avatar.js?v=20261120-crop"></script>
+<script src="assets/js/default-place-image.js?v=20261122081936"></script>
+<script src="assets/js/author-avatar.js?v=20261119161218"></script>
 <script>
 let favoritesLoadVersion = 0;
 let favoritesPageEntries = null;
@@ -709,6 +711,7 @@ function createFavoriteCard(entry, item) {
         const addButton = document.createElement('button');
         addButton.type = 'button';
         addButton.className = 'btn';
+        addButton.id = 'cartBtn-' + item.id;
         addButton.textContent = 'В корзину';
         addButton.dataset.id = String(item.id);
         addButton.dataset.name = item.title || '';
@@ -716,7 +719,12 @@ function createFavoriteCard(entry, item) {
         addButton.dataset.price = String(salePrice);
         addButton.dataset.img = item.image || '';
         addButton.addEventListener('click', function () { addToCartBtn(addButton); });
-        purchaseArea.appendChild(addButton);
+        const cartItem = cart.find(function (cartDish) {
+            return String(cartDish.id) === String(item.id) && Number(cartDish.qty) > 0;
+        });
+        purchaseArea.appendChild(cartItem
+            ? createFavoriteQtyControl(item.id, Number(cartItem.qty))
+            : addButton);
         body.appendChild(purchaseArea);
     } else {
         if (entry.type === 'recipe') {
@@ -848,10 +856,10 @@ else loadFavorites();
 
 
 <script src="assets/js/footer.js?v=20261021131201"></script>
-<script src="assets/js/fav-badge.js?v=20261122-countall"></script>
+<script src="assets/js/fav-badge.js?v=20261122141107"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
-<script src="assets/js/site-catalog.js?v=20261123-external-links1"></script>
+<script src="assets/js/site-catalog.js?v=20261123160004"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>
 <script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
 <script>
@@ -866,5 +874,5 @@ else loadFavorites();
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();
 })();
-</script><script src="assets/js/modal-back.js?v=20261120-modal1" defer></script></body>
+</script><script src="assets/js/modal-back.js?v=20261120145819" defer></script></body>
 </html>
