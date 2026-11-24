@@ -26,7 +26,12 @@
     function hideCurrentPageLink() {
         drawer.querySelectorAll('a.catalog-link[href]').forEach(function (anchor) {
             try {
-                var linkPath = new URL(anchor.href, window.location.href).pathname.replace(/\/+$/, '') || '/index.html';
+                var url = new URL(anchor.href, window.location.href);
+                if (url.origin !== window.location.origin) {
+                    anchor.style.display = '';
+                    return;
+                }
+                var linkPath = url.pathname.replace(/\/+$/, '') || '/index.html';
                 if (linkPath === '/') linkPath = '/index.html';
                 anchor.style.display = linkPath === currentPagePath ? 'none' : '';
             } catch (error) {}

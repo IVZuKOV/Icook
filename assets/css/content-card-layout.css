@@ -38,11 +38,12 @@
     padding: 4px 8px;
     border-radius: 8px;
     background: #e84393;
-    color: #dc2626;
+    color: #fff;
     font-size: 14px;
     font-weight: 900;
     line-height: 1.2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .24);
+    text-shadow: 0 0 3px #fff, 0 0 7px rgba(255, 255, 255, .75);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .24), 0 0 6px rgba(255, 255, 255, .35);
 }
 
 .content-detail-card > .card-content {
