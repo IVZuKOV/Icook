@@ -198,6 +198,13 @@ footer svg{width:20px;height:20px;}
 .bottom-bar .header-right{width:100%;height:100%;align-items:center;justify-content:center;flex-wrap:nowrap;gap:4px;}
 .site-header{transition:transform 0.35s ease;}
 .site-header.hidden{transform:translateY(-100%);}
+.favorites-toolbar-sticky{position:sticky;top:0;z-index:110;padding:10px 0 12px;background:var(--header-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);box-shadow:0 6px 22px rgba(15,23,42,.08);}
+.favorites-toolbar-sticky.is-pinned{position:fixed;top:0;left:0;right:0;}
+.favorites-toolbar-pinned header.site-header{transform:translateY(-100%)!important;transition:none!important;}
+.favorites-toolbar-placeholder{height:0;}
+.favorites-toolbar-sticky .favorites-toolbar{max-width:1200px;margin:0 auto;padding:0;justify-content:flex-end;}
+.favorites-toolbar-sticky.is-pinned .favorites-toolbar{padding:0 40px;}
+@media(max-width:768px){.favorites-toolbar-sticky .favorites-toolbar{padding:0;}.favorites-toolbar-sticky.is-pinned .favorites-toolbar{padding:0 16px;}}
 body{padding-bottom:88px;}
 
 
@@ -306,14 +313,14 @@ button, .btn, a, label {
     <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх"><svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
 
 <section class="section-transparent"><h2 class="section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Избранное</h2>
-<div class="favorites-toolbar">
+<div class="favorites-toolbar-placeholder" aria-hidden="true"></div><div class="favorites-toolbar-sticky"><div class="favorites-toolbar">
     <select id="favoritesFilter" class="favorites-filter" aria-label="Фильтр избранного">
         <option value="all">Все избранное</option>
         <option value="place">Места</option>
         <option value="recipe">Рецепты</option>
         <option value="dish">Блюда</option>
     </select>
-</div>
+</div></div>
 <div class="cards" id="favoritesGrid"></div>
 <p id="favoritesEmpty" style="text-align:center;color:var(--text-muted);padding:40px;display:none;">В избранном пока ничего нет</p>
 </section>
@@ -848,6 +855,39 @@ async function loadFavorites() {
 }
 
 document.getElementById('favoritesFilter').addEventListener('change', loadFavorites);
+(function(){
+    const toolbar=document.querySelector('.favorites-toolbar-sticky');
+    const placeholder=document.querySelector('.favorites-toolbar-placeholder');
+    if(!toolbar||!placeholder)return;
+    let pinned=false,returnToTopRequested=false,touchStartY=null;
+    const filter=document.getElementById('favoritesFilter');
+    if(filter)filter.addEventListener('change',function(){returnToTopRequested=false;});
+    function updatePinnedState(){
+        const atPageTop=window.scrollY<=0;
+        const shouldPin=pinned?!(atPageTop&&returnToTopRequested):placeholder.getBoundingClientRect().top<=0;
+        if(shouldPin===pinned)return;
+        pinned=shouldPin;
+        if(pinned)placeholder.style.height=toolbar.getBoundingClientRect().height+'px';
+        toolbar.classList.toggle('is-pinned',pinned);
+        document.body.classList.toggle('favorites-toolbar-pinned',pinned);
+        if(!pinned){placeholder.style.height='0px';returnToTopRequested=false;}
+    }
+    window.addEventListener('wheel',function(event){if(pinned&&event.deltaY<0)returnToTopRequested=true;},{passive:true});
+    window.addEventListener('touchstart',function(event){touchStartY=event.touches[0]?.clientY??null;},{passive:true});
+    window.addEventListener('touchmove',function(event){
+        const y=event.touches[0]?.clientY;
+        if(pinned&&touchStartY!==null&&y>touchStartY)returnToTopRequested=true;
+        if(y!==undefined)touchStartY=y;
+    },{passive:true});
+    window.addEventListener('keydown',function(event){
+        if(pinned&&['ArrowUp','PageUp','Home'].includes(event.key))returnToTopRequested=true;
+    });
+    const backToTop=document.querySelector('.back-to-top');
+    if(backToTop)backToTop.addEventListener('click',function(){if(pinned)returnToTopRequested=true;});
+    window.addEventListener('scroll',updatePinnedState,{passive:true});
+    window.addEventListener('resize',updatePinnedState);
+    updatePinnedState();
+})();
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadFavorites);
 else loadFavorites();
 </script>
@@ -859,7 +899,7 @@ else loadFavorites();
 <script src="assets/js/fav-badge.js?v=20261122141107"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script>
-<script src="assets/js/site-catalog.js?v=20261123160004"></script>
+<script src="assets/js/site-catalog.js?v=20261124-people-menu-icons"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>
 <script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
 <script>

@@ -8,7 +8,7 @@
         restaurants: '<path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>',
         menu: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
         recipes: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/>',
-        chefs: '<circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>',
+        chefs: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 0 0 7.75"/>',
         reviews: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
         about: '<circle cx="12" cy="12" r="10"/><path d="M12 11v5"/><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"/>',
         login: '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>',
@@ -214,11 +214,11 @@
         '<div class="catalog-divider thick"></div>' +
         '<a class="catalog-link" href="#" data-catalog-auth>' + svg(icons.login) + 'Войти / Регистрация</a>' +
         link('Корзина', 'cart.html', 'cart') + '<div class="catalog-divider thick"></div>' +
-        '<h3 class="catalog-subheader">' + svg('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 0 0 7.75"/>') + 'Совместные проекты</h3>' +
+        '<h3 class="catalog-subheader">Совместные проекты</h3>' +
         '<div id="catalogProjectLinks">' +
         link('Еду ем', 'sitoedu.html', 'calendar', true) + link('Дёшево! Честно!', 'cheap-honest.html', 'cheap', true) +
         '</div>' +
-        '<h3 id="catalogOutletTitle" class="catalog-subheader" style="display:none;">' + svg(icons.store) + 'Наши партнёры</h3>' +
+        '<h3 id="catalogOutletTitle" class="catalog-subheader" style="display:none;">Наши партнёры</h3>' +
         '<div id="catalogOutletLinks"></div>';
     hideCurrentPageLink();
     drawer.setAttribute('role', 'navigation');
