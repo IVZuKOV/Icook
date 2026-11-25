@@ -7,6 +7,15 @@
     row-gap: 20px !important;
 }
 
+.card,
+.card *,
+.content-detail-card,
+.content-detail-card *,
+.favorite-content-card,
+.favorite-content-card * {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .recipes-grid.cols-4,
 .dishes-grid.cols-4 {
     column-gap: 4px !important;

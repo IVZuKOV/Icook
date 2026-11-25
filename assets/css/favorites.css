@@ -519,7 +519,7 @@ html[data-theme="dark"] .fav-btn.active svg {
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: #e60023;
+  color: #64748b;
   box-shadow: none;
   cursor: pointer;
   transition: transform .15s ease, color .2s ease;

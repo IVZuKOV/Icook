@@ -44,6 +44,16 @@
     box-shadow: none;
 }
 
+/* Remove the browser tap flash without changing a tile's own background. */
+.card,
+.card *,
+.content-detail-card,
+.content-detail-card *,
+.favorite-content-card,
+.favorite-content-card * {
+    -webkit-tap-highlight-color: transparent;
+}
+
 [data-theme="dark"] .qty-btn,
 [data-theme="dark"] .ing-qty .qty-btn {
     color: var(--text-main);
@@ -66,6 +76,27 @@
     width: auto;
     min-width: 0;
     flex: 1 1 0;
+}
+
+/* Touch devices retain a sticky :hover after taps. Don't animate the entire
+   tile there; on desktop the normal hover treatment is preserved. */
+@media (hover: none) {
+    .card:hover,
+    .content-detail-card:hover,
+    .favorite-content-card:hover {
+        transform: none !important;
+        border-color: var(--border-color) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, .08) !important;
+    }
+
+    .card:hover > img,
+    .card:hover .dish-card-photo > img,
+    .content-detail-card:hover > img,
+    .content-detail-card:hover .dish-card-photo > img,
+    .favorite-content-card:hover > img,
+    .favorite-content-card:hover .dish-card-photo > img {
+        transform: none !important;
+    }
 }
 
 .qty-control > .qty-val {

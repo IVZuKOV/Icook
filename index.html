@@ -5,9 +5,9 @@
 <title>Я готовлю — ты ешь!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120-centered">
-<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261123-discount-neon5">
-<script src="assets/js/content-card-navigation.js?v=20261122-cardnav" defer></script>
+<link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120145819">
+<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261124120115">
+<script src="assets/js/content-card-navigation.js?v=20261122120829" defer></script>
 
 <style>
 /* --- CSS НАЧАЛО --- */
@@ -138,15 +138,15 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
  [data-theme="dark"] .layout-cycle{background:rgba(148,163,184,.1);border-color:rgba(203,213,225,.22);backdrop-filter:blur(14px);}
  [data-theme="dark"] .layout-cycle .layout-icon-cell{fill:rgba(148,163,184,.12);stroke:rgba(203,213,225,.82);}
  [data-theme="dark"] .layout-cycle:hover .layout-icon-cell{fill:rgba(203,213,225,.24);}
-   @media(max-width:768px){.home-toolbar-title{font-size:21px;margin-top:8px;padding:0 16px;}.menu-search{padding:8px 16px 0;}.menu-search input{padding:16px 20px;}.filters-bar{gap:8px;padding:8px 16px 0;}.filters-bar select{min-width:0;font-size:12px;padding:10px 28px 10px 10px;}.layout-cycle{width:40px;height:40px;flex-basis:40px;padding:4px;}.cards.cols-4{gap:4px;}.cards.cols-4 .card{border-radius:8px;}.cards.cols-4 .card img{aspect-ratio:1/1;height:auto;}.cards.cols-4 .card-content{padding:1.5vw;overflow:hidden;}.cards.cols-4 .dish{font-size:2vw;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cards.cols-4 .chef{font-size:1.6vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cards.cols-4 .desc{display:none;}.cards.cols-4 .price{font-size:2vw;margin:1vw 0;}.cards.cols-4 .btn{padding:2vw 0;font-size:2.4vw;border-radius:1.5vw;width:90%;min-width:0;max-width:90%;margin:0 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cards.cols-4 .qty-control{gap:2px;padding:3px;border-radius:7px;min-width:0;}.cards.cols-4 .qty-btn{height:30px;min-height:30px;padding:0;border-radius:7px;font-size:clamp(12px,3vw,16px);}.cards.cols-4 .qty-val{font-size:clamp(11px,2.8vw,15px);}}
+   @media(max-width:768px){.home-toolbar-title{font-size:21px;margin-top:8px;padding:0 16px;}.menu-search{padding:8px 16px 0;}.menu-search input{padding:16px 20px;}.filters-bar{gap:8px;padding:8px 16px 0;}.filters-bar select{min-width:0;font-size:12px;padding:10px 28px 10px 10px;}.layout-cycle{width:40px;height:40px;flex-basis:40px;padding:4px;}.cards.cols-4{gap:4px;}.cards.cols-4 .card{border-radius:8px;}.cards.cols-4 .card > img,.cards.cols-4 .card .dish-card-photo > img{aspect-ratio:1/1;height:auto;}.cards.cols-4 .card-content{padding:1.5vw;overflow:hidden;}.cards.cols-4 .dish{font-size:2vw;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cards.cols-4 .chef{font-size:1.6vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cards.cols-4 .desc{display:none;}.cards.cols-4 .price{font-size:2vw;margin:1vw 0;}.cards.cols-4 .btn{padding:2vw 0;font-size:2.4vw;border-radius:1.5vw;width:90%;min-width:0;max-width:90%;margin:0 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cards.cols-4 .qty-control{gap:2px;padding:3px;border-radius:7px;min-width:0;}.cards.cols-4 .qty-btn{height:30px;min-height:30px;padding:0;border-radius:7px;font-size:clamp(12px,3vw,16px);}.cards.cols-4 .qty-val{font-size:clamp(11px,2.8vw,15px);}}
  @media(max-width:380px){.cards.cols-4 .qty-control{gap:1px;padding:2px;border-radius:6px;}.cards.cols-4 .qty-btn{height:28px;min-height:28px;font-size:12px;}.cards.cols-4 .qty-val{font-size:11px;}}
 .card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 6px 20px rgba(0,0,0,0.08);position:relative;z-index:3;}
  .card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--neon);box-shadow:0 10px 30px var(--neon-glow),0 0 20px rgba(30,64,175,0.1);}
- .card img{width:100%;height:200px;object-fit:cover;transition:0.4s;}
- .card:hover img{transform:scale(1.05);}
+ .card > img,.card .dish-card-photo > img{width:100%;height:200px;object-fit:cover;transition:0.4s;}
+ .card:hover > img,.card:hover .dish-card-photo > img{transform:scale(1.05);}
  .card-content{padding:18px;background:var(--card-bg);}
  .cards .card{width:100%;display:flex;flex-direction:column;overflow:hidden;}
- .cards .card img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block;}
+ .cards .card > img,.card .dish-card-photo > img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block;}
  .cards .card .card-content{flex:1;display:flex;flex-direction:column;padding:12px;}
  .cards .card .dish{font-size:clamp(13px,1.2vw,18px);line-height:1.3;}
  .cards .card .chef{font-size:clamp(11px,.9vw,14px);}
@@ -158,7 +158,7 @@ a{text-decoration:none;color:inherit;transition:0.3s ease;}
    .cards .card .btn{padding:8px 10px;font-size:12px;}
    .cards.cols-4{gap:4px;}
    .cards.cols-4 .card{border-radius:8px;}
-   .cards.cols-4 .card img{aspect-ratio:1/1;height:auto;}
+   .cards.cols-4 .card > img,.cards.cols-4 .card .dish-card-photo > img{aspect-ratio:1/1;height:auto;}
    .cards.cols-4 .card .card-content{padding:1.5vw;overflow:hidden;}
    .cards.cols-4 .card .dish{font-size:2vw;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
    .cards.cols-4 .card .chef{font-size:1.6vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -386,10 +386,10 @@ button, .btn, a, label {
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-select.css?v=20261105152159">
-<script src="assets/js/site-select.js?v=20261121-home-layout" defer></script>
-<link rel="stylesheet" href="assets/css/site-header.css?v=20261115-tools1">
+<script src="assets/js/site-select.js?v=20261122072403" defer></script>
+<link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261122-bordered">
+<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261124121839">
 </head>
 <body>
 <div class="catalog-overlay" id="catalogOverlay" onclick="toggleCatalog()"></div>
@@ -527,7 +527,7 @@ button, .btn, a, label {
     </footer>
 
 <script src="assets/js/favorites-store.js?v=20261101115409"></script>
-<script src="assets/js/author-avatar.js?v=20261120-crop"></script>
+<script src="assets/js/author-avatar.js?v=20261119161218"></script>
 <script>
 function addDishAuthorAvatars(container,dishes){
     var authors=container.querySelectorAll('.card .chef');
@@ -1081,11 +1081,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 <script src="assets/js/lang.js?v=20261021162340"></script>
-<script src="assets/js/notifications.js?v=20261115-bell1"></script>
+<script src="assets/js/notifications.js?v=20261115141314"></script>
 <script src="assets/js/footer.js?v=20261021131201"></script>
-<script src="assets/js/fav-badge.js?v=20261122-countall"></script>
+<script src="assets/js/fav-badge.js?v=20261122141107"></script>
 <script src="assets/js/cart-sync.js?v=20261021162338"></script>
-<script src="assets/js/site-catalog.js?v=20261124-people-menu-icons"></script>
+<script src="assets/js/site-catalog.js?v=20261124134252"></script>
 <script src="assets/js/auth-home.js?v=20261105152159"></script>
 <script src="assets/js/auth-email-flow.js?v=20261105152159"></script>
 <script src="assets/js/phone-country.js?v=20261105152151"></script>
@@ -1317,6 +1317,6 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 
-<script src="assets/js/modal-back.js?v=20261120-modal1" defer></script>
+<script src="assets/js/modal-back.js?v=20261120145819" defer></script>
 </body>
 </html>

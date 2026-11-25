@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
-<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261122144329">
+<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261124121839">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
 <style>
 :root{--neon:#1e40af;--neon-dark:#1e3a8a;--neon-glow:rgba(30,64,175,.12);--bg:#fff;--text-main:#1e293b;--text-muted:#64748b;--card-bg:#f8fafc;--header-bg:rgba(255,255,255,.95);--border-color:rgba(30,64,175,.12)}
@@ -240,6 +240,12 @@
     function makeSimilarDishCard(dish){
         const card=node('article','card content-detail-card');
         card.dataset.detailType='dish';card.dataset.detailId=String(dish.id);
+        const detailUrl='favorite-detail.html?type=dish&id='+encodeURIComponent(dish.id);
+        card.style.cursor='pointer';
+        card.addEventListener('click',function(event){
+            if(event.target.closest('a,button'))return;
+            window.location.href=detailUrl;
+        });
         const image=node('img');image.src=dish.image||fallbackImages.dish;image.alt=dish.title||'Блюдо';image.loading='lazy';
         const discount=Math.max(0,Math.min(90,Number(dish.discount_percent)||0));
         const photo=node('div','dish-card-photo');photo.appendChild(image);
@@ -249,7 +255,7 @@
         if(window.isContentFavorite&&window.isContentFavorite('dish',dish.id))favorite.classList.add('active');
         favorite.addEventListener('click',function(event){event.preventDefault();event.stopPropagation();if(window.toggleContentFavorite)favorite.classList.toggle('active',window.toggleContentFavorite('dish',dish.id,dish));});
         const body=node('div','card-content');
-        const titleLink=node('a','dish',dish.title||'Блюдо');titleLink.href='favorite-detail.html?type=dish&id='+encodeURIComponent(dish.id);titleLink.style.cssText='color:inherit;text-decoration:none';
+        const titleLink=node('a','dish',dish.title||'Блюдо');titleLink.href=detailUrl;titleLink.style.cssText='color:inherit;text-decoration:none';
         body.appendChild(titleLink);
         const chef=node('div','chef');chef.appendChild(window.IcookAuthorAvatar.create(dish.seller_name||'Повар',dish.seller_avatar,dish.seller_avatar_version,dish.seller_avatar_crop));chef.appendChild(node('span','',dish.seller_name||'Повар'));body.appendChild(chef);
         const description=node('div','desc',String(dish.description||'').slice(0,80));body.appendChild(description);
@@ -478,7 +484,7 @@
 <script src="assets/js/phone-country.js?v=20261105152151"></script>
 <script src="assets/js/bubble-btn.js?v=20261105152151"></script>
 <script src="assets/js/fav-badge.js?v=20261122141107"></script>
-<script src="assets/js/site-catalog.js?v=20261124-people-menu-icons"></script>
+<script src="assets/js/site-catalog.js?v=20261124134252"></script>
 <script>
 (function(){
     var button=document.getElementById('backToTop');

@@ -9,3 +9,10 @@ assets/apk/
 *.orig
 *.swp
 .DS_Store
+# Local secrets and server-specific backups/notes
+.env
+.env.*
+!.env.example
+_notes/
+**/_notes/
+*.before-*
