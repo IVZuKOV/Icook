@@ -15,7 +15,7 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: #64748b;
+  color: #e60023;
   box-shadow: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -59,7 +59,7 @@
 [data-theme="dark"] .fav-btn,
 html[data-theme="dark"] .fav-btn {
   background: transparent;
-  color: #cbd5e1;
+  color: #e60023;
 }
 [data-theme="dark"] .fav-btn:hover,
 [data-theme="dark"] .fav-btn.active,
@@ -519,7 +519,7 @@ html[data-theme="dark"] .fav-btn.active svg {
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: #64748b;
+  color: #e60023;
   box-shadow: none;
   cursor: pointer;
   transition: transform .15s ease, color .2s ease;
