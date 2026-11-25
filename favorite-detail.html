@@ -88,6 +88,7 @@
   .similar-dishes-grid .similar-dish-cart-control>.btn,.similar-dishes-grid .similar-dish-cart-control>.qty-control{width:100%;margin:0}
   .similar-dishes-grid .card-purchase-area>.similar-dish-cart-control>.btn{width:100%;margin-top:auto;padding:clamp(8px,.8vw,14px) clamp(12px,1vw,20px);border:0;border-radius:12px;background:var(--neon);color:var(--bg);font:700 clamp(11px,.9vw,15px) 'Rubik',sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .similar-dishes-grid .card-purchase-area>.similar-dish-cart-control>.btn:active{transform:translateY(1px);filter:brightness(.9);box-shadow:inset 0 2px 4px rgba(15,23,42,.2)}
+  .dish-seller-stats{margin:0;white-space:nowrap;overflow-x:auto;scrollbar-width:thin;font-size:14px}
   .similar-dishes-section{margin-top:24px;padding:0;border:0;background:transparent;box-shadow:none}
   .similar-dishes-section h2{margin:0 0 16px;padding:0;border:0;color:var(--neon-dark);font-size:21px}
   .similar-dishes-grid .similar-dish-cart-control .qty-control{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;box-sizing:border-box;padding:4px;border:1px solid var(--border-color);border-radius:12px;background:var(--bg);user-select:none;-webkit-user-select:none}
@@ -97,6 +98,22 @@
   @media(max-width:768px){.similar-dishes-grid{width:calc(100vw - 32px);gap:10px}.similar-dishes-grid .card-content{padding:8px}.similar-dishes-grid .card-content>.btn{padding:8px 10px;font-size:12px}}
   .cart-add-btn{box-shadow:none!important;text-shadow:none!important}
 [data-theme="dark"] .cart-add-btn{background:#1e293b!important;border-color:#64748b!important;color:#f8fafc!important;box-shadow:none!important}
+.dish-chat-box .detail-button,
+.dish-review-form .detail-button{background:transparent!important;color:var(--neon-dark)!important;border-color:var(--border-color)!important;box-shadow:none!important;text-shadow:none!important;filter:none!important}
+.dish-chat-box .detail-button:hover,
+.dish-chat-box .detail-button:focus,
+.dish-chat-box .detail-button:focus-visible,
+.dish-review-form .detail-button:hover,
+.dish-review-form .detail-button:focus,
+.dish-review-form .detail-button:focus-visible{background:transparent!important;color:var(--neon-dark)!important;border-color:var(--border-color)!important;box-shadow:none!important;text-shadow:none!important;filter:none!important;outline:none!important}
+[data-theme="dark"] .dish-chat-box textarea:focus,
+[data-theme="dark"] .dish-review-form textarea:focus,
+[data-theme="dark"] .dish-chat-box textarea:invalid,
+[data-theme="dark"] .dish-review-form textarea:invalid{border-color:var(--border-color)!important;box-shadow:none!important;outline:none!important}
+.dish-seller-header{display:grid;grid-template-columns:minmax(0,1fr) 60px;grid-template-rows:auto auto;align-items:center;column-gap:12px;row-gap:4px}
+.dish-seller-header h2{grid-column:1;grid-row:1}
+.dish-seller-header strong{grid-column:1;grid-row:2}
+.dish-seller-avatar{grid-column:2;grid-row:1/3;width:56px!important;height:56px!important;justify-self:end}
 .detail-qty-control{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--border-color);border-radius:12px;padding:4px;width:100%;max-width:100%;box-sizing:border-box;justify-content:space-between}.detail-actions>.detail-qty-control{flex:0 0 100%;}.detail-qty-control>.qty-btn{flex:1 1 0;min-width:0;}
 .detail-qty-control .qty-val{font-weight:700;font-size:16px;min-width:24px;text-align:center;color:var(--text-main)}
 .detail-qty-control .qty-btn{background:var(--card-bg)}
@@ -169,7 +186,7 @@
         return link;
     }
     function formatCount(value){value=Number(value)||0;return value>=1000?(value/1000).toFixed(value>=10000?0:1).replace('.',',')+'К':String(value)}
-    function sellerTenure(date){if(!date)return 'на сайте';var months=Math.max(0,Math.floor((Date.now()-new Date(date).getTime())/(30.4375*86400000)));return months<1?'менее месяца':months<12?months+' мес.':Math.floor(months/12)+' г.'+(months%12?' '+months%12+' мес.':'')}
+    function sellerTenure(date){if(!date)return 'на сайте';var createdAt=new Date(date).getTime();if(!Number.isFinite(createdAt))return 'на сайте';var days=Math.max(0,Math.floor((Date.now()-createdAt)/86400000));if(days<30)return Math.max(1,days)+' д.';var months=Math.max(1,Math.floor(days/30.4375));return months<12?months+' мес.':Math.floor(months/12)+' г.'+(months%12?' '+months%12+' мес.':'')}
     async function openDishChat(dishId,sellerName){
         if(!localStorage.getItem('user')){if(typeof window.openAuth==='function')window.openAuth();return}
         let box=document.getElementById('dishChatBox');
@@ -375,10 +392,12 @@
         body.append(tabs,panels);
         const seller=detailData.seller||{};
         const sellerCard=node('section','dish-seller-card');
-        sellerCard.appendChild(node('h2','', 'Продавец'));
-        sellerCard.appendChild(node('strong','',seller.name||item.seller_name||'Повар'));
-        sellerCard.appendChild(node('p','', '★ '+Number(seller.rating||0).toFixed(1)+' · '+formatCount(seller.reviews_count)+' отзывов · '+formatCount(seller.orders_count)+' заказов'));
-        sellerCard.appendChild(node('small','', 'На IC '+sellerTenure(seller.created_at)));
+        const sellerHeader=node('div','dish-seller-header');
+        sellerHeader.appendChild(node('h2','', 'Продавец'));
+        sellerHeader.appendChild(node('strong','',seller.name||item.seller_name||'Повар'));
+        sellerHeader.appendChild(window.IcookAuthorAvatar.create(seller.name||item.seller_name||'Повар',item.seller_avatar,item.seller_avatar_version,item.seller_avatar_crop,'author-avatar-large dish-seller-avatar'));
+        sellerCard.appendChild(sellerHeader);
+        sellerCard.appendChild(node('p','dish-seller-stats', '★ '+Number(seller.rating||0).toFixed(1)+' · '+formatCount(seller.reviews_count)+' отзывов · '+formatCount(seller.orders_count)+' заказов · На IC '+sellerTenure(seller.created_at)));
         const chatButton=node('button','detail-button secondary','Написать продавцу');chatButton.type='button';
         chatButton.addEventListener('click',function(){openDishChat(item.id,seller.name||item.seller_name)});
         sellerCard.appendChild(chatButton);sellerCard.classList.add('dish-separated-card');
