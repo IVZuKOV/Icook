@@ -25,8 +25,9 @@ if (!$seller) {
 }
 
 $stmt = $pdo->prepare(
-    'SELECT d.*, c.name as category_name FROM dishes d
+    'SELECT d.*, c.name as category_name, inventory.remaining_count AS remaining_count FROM dishes d
      LEFT JOIN categories c ON d.category_id = c.id
+     LEFT JOIN dish_inventory inventory ON inventory.dish_id = d.id
      WHERE d.user_id = ? AND d.is_available = 1
      ORDER BY d.created_at DESC'
 );

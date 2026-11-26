@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="assets/css/app.css?v=20261125230329">
     <link rel="stylesheet" href="assets/css/menu.css?v=20261105152159">
     <link rel="stylesheet" href="assets/css/author-avatar.css?v=20261120145819">
-    <link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261124120115">
+    <link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261126181500">
 <script src="assets/js/content-card-navigation.js?v=20261122120829" defer></script>
     
     <script>
@@ -746,7 +746,7 @@ body{padding-bottom:88px;}
                     } else {
                         btnHtml = '<button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g, '&quot;') + '" data-chef="' + (d.seller_name||'Продавец').replace(/"/g, '&quot;') + '" data-price="' + salePrice + '" onclick="addToCartMenuBtn(this)">В корзину</button>';
                     }
-                    return '<div class="card content-detail-card" data-detail-type="dish" data-detail-id="' + String(d.id).replace(/[^0-9]/g, '') + '">' +
+                    return '<div class="card content-detail-card" data-stock-count="' + (d.remaining_count === null || d.remaining_count === undefined ? '' : d.remaining_count) + '" data-detail-type="dish" data-detail-id="' + String(d.id).replace(/[^0-9]/g, '') + '">' +
                         '<button class="fav-btn ' + (isFavorite(d.id)?'active':'') + '" onclick="toggleFavorite(' + d.id + ');return false;" data-id="' + d.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>' +
                         imageTile +
                         '<div class="card-content">' +
@@ -825,5 +825,6 @@ body{padding-bottom:88px;}
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();
 })();
-</script><script src="assets/js/modal-back.js?v=20261120145819" defer></script></body>
+</script><script src="assets/js/modal-back.js?v=20261120145819" defer></script><script src="assets/js/dish-stock-state.js?v=20261126181501" defer></script>
+</body>
 </html>

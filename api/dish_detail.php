@@ -9,13 +9,14 @@ $dishId = (int) ($_GET['id'] ?? 0);
 if ($dishId <= 0) json_out(['success' => false, 'error' => 'Блюдо не найдено'], 404);
 
 $stmt = $pdo->prepare(
-    "SELECT d.*, u.name AS seller_name, u.created_at AS seller_created_at,
+    "SELECT d.*, inventory.remaining_count AS remaining_count, u.name AS seller_name, u.created_at AS seller_created_at,
             CASE WHEN u.avatar_public = 1 THEN u.avatar ELSE '' END AS seller_avatar,
             CASE WHEN u.avatar_public = 1 THEN u.avatar_version ELSE '' END AS seller_avatar_version,
             CASE WHEN u.avatar_public = 1 THEN u.avatar_crop ELSE NULL END AS seller_avatar_crop,
             c.name AS category_name
      FROM dishes d JOIN users u ON u.id = d.user_id
      LEFT JOIN categories c ON c.id = d.category_id
+     LEFT JOIN dish_inventory inventory ON inventory.dish_id = d.id
      WHERE d.id = ? AND (d.is_available = 1 OR d.user_id = ?)"
 );
 $stmt->execute([$dishId, (int) ($_SESSION['user_id'] ?? 0)]);
@@ -43,10 +44,11 @@ $sellerReviews->execute([(int) $dish['user_id']]);
 $sellerRating = $sellerReviews->fetch(PDO::FETCH_ASSOC);
 
 $similarStmt = $pdo->prepare(
-    "SELECT DISTINCT d.*, u.name AS seller_name, c.name AS category_name
+    "SELECT DISTINCT d.*, inventory.remaining_count AS remaining_count, u.name AS seller_name, c.name AS category_name
      FROM dishes d
      LEFT JOIN users u ON u.id = d.user_id
      LEFT JOIN categories c ON c.id = d.category_id
+     LEFT JOIN dish_inventory inventory ON inventory.dish_id = d.id
      LEFT JOIN dish_ingredients i ON i.dish_id = d.id
      WHERE d.is_available = 1 AND d.id <> ? AND
        (d.title LIKE ? OR i.ingredient_name IN
@@ -56,7 +58,9 @@ $similarStmt = $pdo->prepare(
 $similarStmt->execute([$dishId, '%' . (string) $dish['title'] . '%', $dishId]);
 $similar = apply_default_dish_images($similarStmt->fetchAll(PDO::FETCH_ASSOC));
 $chefStmt = $pdo->prepare(
-    'SELECT id, title, image, discount_percent FROM dishes WHERE user_id = ? AND is_available = 1 AND id <> ? ORDER BY created_at DESC'
+    'SELECT d.id, d.title, d.image, d.discount_percent, inventory.remaining_count
+     FROM dishes d LEFT JOIN dish_inventory inventory ON inventory.dish_id = d.id
+     WHERE d.user_id = ? AND d.is_available = 1 AND d.id <> ? ORDER BY d.created_at DESC'
 );
 $chefStmt->execute([(int) $dish['user_id'], $dishId]);
 $chefDishes = apply_default_dish_images($chefStmt->fetchAll(PDO::FETCH_ASSOC));

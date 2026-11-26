@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="assets/css/site-fonts.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-catalog.css?v=20261105152159">
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
+<link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261126181500">
 <link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261124121839">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
 <style>
@@ -93,7 +94,10 @@
   .similar-dishes-section h2{margin:0 0 16px;padding:0;border:0;color:var(--neon-dark);font-size:21px}
   .similar-dishes-grid .similar-dish-cart-control .qty-control{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;box-sizing:border-box;padding:4px;border:1px solid var(--border-color);border-radius:12px;background:var(--bg);user-select:none;-webkit-user-select:none}
   .similar-dishes-grid .similar-dish-cart-control .qty-control>.qty-btn{flex:1 1 0;width:auto;min-width:0;height:32px;min-height:32px;padding:0;font-size:16px;line-height:1;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-  .similar-dishes-grid .similar-dish-cart-control .qty-control>.qty-btn:active{transform:translateY(1px);background:rgba(30,64,175,.14);box-shadow:inset 0 1px 2px rgba(15,23,42,.2)}
+  .similar-dishes-grid .similar-dish-cart-control .qty-control>.qty-btn:hover,
+  .similar-dishes-grid .similar-dish-cart-control .qty-control>.qty-btn:focus,
+  .similar-dishes-grid .similar-dish-cart-control .qty-control>.qty-btn:focus-visible{transform:none;background:var(--card-bg);color:var(--neon-dark);box-shadow:none;outline:none}
+  .similar-dishes-grid .similar-dish-cart-control .qty-control>.qty-btn:active{transform:translateY(1px);background:var(--card-bg);color:var(--neon-dark);box-shadow:inset 0 1px 2px rgba(15,23,42,.18)}
   .similar-dishes-grid .similar-dish-cart-control .qty-control>.qty-val{flex:0 0 20px;width:20px;min-width:20px;text-align:center;font-size:16px;font-weight:700;color:var(--text-main);user-select:none;-webkit-user-select:none}
   @media(max-width:768px){.similar-dishes-grid{width:calc(100vw - 32px);gap:10px}.similar-dishes-grid .card-content{padding:8px}.similar-dishes-grid .card-content>.btn{padding:8px 10px;font-size:12px}}
   .cart-add-btn{box-shadow:none!important;text-shadow:none!important}
@@ -178,6 +182,7 @@
     function imageUrl(path,fallback){return typeof path==='string'&&path.trim()?path:fallback}
     function makeMiniDishTile(dish){
         const link=document.createElement('a');
+        if(dish.remaining_count!==null&&dish.remaining_count!==undefined)link.dataset.stockCount=String(dish.remaining_count);
         link.href='favorite-detail.html?type=dish&id='+encodeURIComponent(dish.id);
         link.setAttribute('aria-label',dish.title+(Number(dish.discount_percent)>0?' — скидка '+Number(dish.discount_percent)+'%':''));
         const image=node('img');image.src=dish.image||fallbackImages.dish;image.alt=dish.title||'Блюдо';link.appendChild(image);
@@ -240,6 +245,7 @@
     function makeSimilarDishCard(dish){
         const card=node('article','card content-detail-card');
         card.dataset.detailType='dish';card.dataset.detailId=String(dish.id);
+        if(dish.remaining_count!==null&&dish.remaining_count!==undefined)card.dataset.stockCount=String(dish.remaining_count);
         const detailUrl='favorite-detail.html?type=dish&id='+encodeURIComponent(dish.id);
         card.style.cursor='pointer';
         card.addEventListener('click',function(event){
@@ -368,7 +374,7 @@
         body.appendChild(meta);
         body.appendChild(node('div','detail-description',item.description||'Подробное описание блюда пока не добавлено.'));
         const actions=node('div','detail-actions');
-        if(Number(item.price)>0){const cart=readCart();const existing=cart.find(function(row){return String(row.id)===String(item.id)});actions.appendChild(existing&&Number(existing.qty)>0?renderCartQuantity(item):makeCartButton(item))}
+        if(Number(item.price)>0){if(Number(item.remaining_count)===0){const sold=node('button','detail-button','Закончилось на сегодня');sold.type='button';sold.disabled=true;actions.appendChild(sold)}else{const cart=readCart();const existing=cart.find(function(row){return String(row.id)===String(item.id)});actions.appendChild(existing&&Number(existing.qty)>0?renderCartQuantity(item):makeCartButton(item))}}
         if(actions.childElementCount)body.appendChild(actions);
         const tabs=node('nav','dish-detail-tabs');
         const panels=node('div','dish-detail-panels');
@@ -495,5 +501,6 @@
     update();
 })();
 </script>
+<script src="assets/js/dish-stock-state.js?v=20261126181501" defer></script>
 </body>
 </html>

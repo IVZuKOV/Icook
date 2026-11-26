@@ -70,8 +70,11 @@ try {
     $dishIds = array_keys($qtyByDish);
     $dishPlaceholders = implode(',', array_fill(0, count($dishIds), '?'));
     $dishStmt = $pdo->prepare(
-        "SELECT id, price, discount_percent, user_id AS seller_id FROM dishes
-         WHERE id IN ($dishPlaceholders) AND is_available = 1 FOR UPDATE"
+        "SELECT d.id, d.price, d.discount_percent, d.user_id AS seller_id,
+                inventory.remaining_count
+         FROM dishes d
+         LEFT JOIN dish_inventory inventory ON inventory.dish_id = d.id
+         WHERE d.id IN ($dishPlaceholders) AND d.is_available = 1 FOR UPDATE"
     );
     $dishStmt->execute($dishIds);
     $dishesById = [];
@@ -80,6 +83,22 @@ try {
         $dishId = (int) $dish['id'];
         $cookId = (int) $dish['seller_id'];
         $dish['quantity'] = $qtyByDish[$dishId];
+        if ($dish['remaining_count'] !== null && $dish['quantity'] > (int) $dish['remaining_count']) {
+            $pdo->rollBack();
+            $remaining = (int) $dish['remaining_count'];
+            $dishTitleStmt = $pdo->prepare('SELECT title FROM dishes WHERE id = ?');
+            $dishTitleStmt->execute([$dishId]);
+            $dishTitle = (string) ($dishTitleStmt->fetchColumn() ?: 'Блюдо');
+            $message = $remaining === 0
+                ? 'Блюдо «' . $dishTitle . '» закончилось на сегодня. Попробуйте заказать завтра или договоритесь о предзаказе с поваром.'
+                : 'Для блюда «' . $dishTitle . '» осталось только ' . $remaining . ' шт. Уменьшите количество или договоритесь о предзаказе с поваром.';
+            json_out([
+                'error' => $message,
+                'code' => 'out_of_stock',
+                'dish_id' => $dishId,
+                'remaining_count' => $remaining,
+            ], 409);
+        }
         $dish['sale_price'] = round((float) $dish['price'] * (1 - (int) $dish['discount_percent'] / 100), 2);
         $dish['line_subtotal'] = round($dish['sale_price'] * $dish['quantity'], 2);
         $dishesById[$dishId] = $dish;
@@ -165,6 +184,21 @@ try {
             $paymentMethod,
             $deliveryAddress,
         ]);
+    }
+
+    $decrementInventory = $pdo->prepare(
+        'UPDATE dish_inventory SET remaining_count = remaining_count - ?
+         WHERE dish_id = ? AND remaining_count >= ?'
+    );
+    foreach ($dishesById as $dishId => $dish) {
+        if ($dish['remaining_count'] === null) {
+            continue;
+        }
+        $quantity = (int) $dish['quantity'];
+        $decrementInventory->execute([$quantity, $dishId, $quantity]);
+        if ($decrementInventory->rowCount() !== 1) {
+            throw new RuntimeException('Dish stock changed while the order was being created');
+        }
     }
 
     $pdo->commit();

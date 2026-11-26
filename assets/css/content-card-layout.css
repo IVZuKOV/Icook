@@ -55,6 +55,59 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, .24), 0 0 6px rgba(255, 255, 255, .35);
 }
 
+.dish-sold-out {
+    position: relative;
+    filter: grayscale(.72);
+    opacity: .58 !important;
+}
+
+.dish-sold-out::after {
+    content: "Закончилось на сегодня";
+    position: absolute;
+    z-index: 5;
+    left: 10px;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: rgba(30, 41, 59, .88);
+    color: #fff;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    pointer-events: none;
+}
+
+.dish-sold-out .btn,
+.dish-sold-out .qty-btn,
+.dish-sold-out .qty-control {
+    pointer-events: none;
+    opacity: .55;
+}
+
+[data-theme="dark"] .dish-sold-out::after {
+    background: rgba(15, 23, 42, .92);
+    color: #cbd5e1;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .28);
+}
+
+.detail-actions .detail-button:disabled {
+    background: var(--card-bg);
+    color: var(--text-muted);
+    border-color: var(--border-color);
+    box-shadow: none;
+    text-shadow: none;
+    filter: none;
+    opacity: .85;
+    cursor: not-allowed;
+}
+
+[data-theme="dark"] .detail-actions .detail-button:disabled {
+    background: #1e293b;
+    color: #94a3b8;
+}
+
 .content-detail-card > .card-content {
     display: flex;
     flex: 1 1 auto;

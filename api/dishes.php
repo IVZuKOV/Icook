@@ -41,6 +41,7 @@ if ($search !== '') {
 }
 
 $sql = "SELECT d.*, u.name as seller_name,
+                inventory.remaining_count AS remaining_count,
                 CASE WHEN u.avatar_public = 1 THEN u.avatar ELSE '' END AS seller_avatar,
                 CASE WHEN u.avatar_public = 1 THEN u.avatar_version ELSE '' END AS seller_avatar_version,
                 CASE WHEN u.avatar_public = 1 THEN u.avatar_crop ELSE NULL END AS seller_avatar_crop,
@@ -48,6 +49,7 @@ $sql = "SELECT d.*, u.name as seller_name,
         FROM dishes d
         LEFT JOIN users u ON d.user_id = u.id
         LEFT JOIN categories c ON d.category_id = c.id
+        LEFT JOIN dish_inventory inventory ON inventory.dish_id = d.id
         WHERE $where
         ORDER BY d.created_at DESC
         LIMIT ? OFFSET ?";

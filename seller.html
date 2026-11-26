@@ -11,7 +11,7 @@
     
     <link rel="stylesheet" href="assets/css/app.css?v=20261125230329">
     <link rel="stylesheet" href="assets/css/menu.css?v=20261105152159">
-    <link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261124120115">
+    <link rel="stylesheet" href="assets/css/content-card-layout.css?v=20261126181500">
     
     <script>
         (function(){
@@ -794,7 +794,7 @@
                 var imgSrc = d.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop';
                 var statusClass = d.is_available == 1 ? 'on' : 'off';
                 var statusText = d.is_available == 1 ? 'Активно' : 'Скрыто';
-                return '<div class="my-dish-card">' +
+                return '<div class="my-dish-card" data-stock-count="' + (d.remaining_count === null || d.remaining_count === undefined ? '' : d.remaining_count) + '">' +
                     '<img src="'+imgSrc+'" alt="'+d.title+'">' +
                     '<div class="card-body">' +
                         '<span class="dish-status '+statusClass+'">'+statusText+'</span>' +
@@ -898,6 +898,7 @@
 <script src="assets/js/notifications.js?v=20261115141314"></script>
 <script src="assets/js/footer.js?v=20261021131201"></script>
 <script src="assets/js/fav-badge.js?v=20261122141107"></script>
-<script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script><script src="assets/js/auth-unified.js?v=20261105152301"></script><script src="assets/js/modal-back.js?v=20261120145819" defer></script><script src="assets/js/ingredient-autocomplete.js?v=20261123141759"></script></body>
+<script src="assets/js/phone-country.js?v=20261105152151"></script><script src="assets/js/bubble-btn.js?v=20261105152151"></script><script src="assets/js/auth-unified.js?v=20261105152301"></script><script src="assets/js/modal-back.js?v=20261120145819" defer></script><script src="assets/js/ingredient-autocomplete.js?v=20261123141759"></script><script src="assets/js/dish-stock-state.js?v=20261126181501" defer></script>
+</body>
 <script src="assets/js/category-picker.js?v=20261119135250"></script>
 </html>
