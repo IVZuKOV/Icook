@@ -458,6 +458,13 @@ body{padding-bottom:88px;}
 .admin-user-icon-btn:hover{transform:translateY(-1px);border-color:var(--neon);background:var(--neon-glow);box-shadow:0 3px 10px var(--neon-glow);}
 .admin-user-icon-btn svg{display:block;width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .admin-user-icon-btn.admin-user-pencil svg{width:18px;height:18px;}
+.admin-dish-id-cell{display:flex;align-items:center;gap:8px;min-width:112px;}
+.admin-dish-actions{display:inline-flex;align-items:center;gap:5px;margin-left:auto;}
+.admin-dish-action{display:inline-grid;place-items:center;width:20px;height:20px;min-height:20px;padding:0;border:0;border-radius:5px;background:transparent;color:var(--neon-dark);cursor:pointer;}
+.admin-dish-action svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.admin-dish-action-delete{color:#ef4444;}
+.admin-dish-action-delete:hover{background:rgba(239,68,68,.1);}
+.admin-dish-action-pencil:hover,.admin-dish-action-eye:hover{background:var(--neon-glow);}
 [data-theme="dark"] .admin-user-icon-btn{color:#fff;}
 [data-theme="dark"] .admin-user-icon-btn:hover{border-color:#fff;background:rgba(255,255,255,.08);box-shadow:0 0 10px rgba(255,255,255,.45);}
 #adminContent .admin-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:13px;}
@@ -530,6 +537,7 @@ body{padding-bottom:88px;}
     .admin-user-primary-value{grid-column:2;grid-row:1;min-width:0;}
     .admin-user-primary-cell .admin-user-row-actions{grid-column:3;grid-row:1;}
 }
+#adminContent .admin-table td .admin-dish-action{width:20px;height:20px;min-height:20px;padding:0;border:0;}
 [data-theme="dark"] .admin-dashboard{box-shadow:0 18px 55px rgba(0,0,0,.22);}
 [data-theme="dark"] .admin-workspace{background:#0b1220;}
 [data-theme="dark"] #adminContent .admin-table-wrap,[data-theme="dark"] #adminContent .admin-stat-card,[data-theme="dark"] #adminContent .admin-review-card{box-shadow:none;}
@@ -2472,28 +2480,34 @@ async function loadAdminSection(section, btn, historyState){
             adminUsersAllRows = rows;
             rows.forEach(function(r){ adminUsersCache[r.id] = r; }); 
         }
+        if(section === 'dishes')adminDishesAllRows=rows;
         if(!rows.length){ container.innerHTML = '<p style="text-align:center;padding:30px;">Нет данных</p>'; return; }
         
         var html = '<div class="admin-table-wrap"><table class="admin-table' + (section === 'dishes' ? ' admin-dishes-table' : '') + '"><thead><tr>';
         var keys = Object.keys(rows[0]);
-        keys.forEach(function(k){ html += '<th scope="col">' + adminEsc(k) + '</th>'; });
+        keys.forEach(function(k){ html += '<th scope="col" data-admin-column="' + adminEsc(k) + '"' + (k==='id'?'':' style="display:none"') + '>' + adminEsc(k) + '</th>'; });
         html += section === 'users'
             ? '<th scope="col" aria-label="Действия"></th></tr></thead><tbody>'
+            : section === 'dishes' ? '</tr></thead><tbody>'
             : '<th style="padding:10px 8px;border-bottom:2px solid var(--border-color);">Действия</th></tr></thead><tbody>';
         
         rows.forEach(function(row){
-            html += '<tr>';
+            var adminFilterValue = section === 'dishes' || section === 'recipes'
+                ? (Number(row.is_available) === 1 ? 'active' : 'hidden')
+                : section === 'orders' ? String(row.status || '').trim().toLocaleLowerCase() : 'all';
+            html += '<tr data-admin-filter-value="' + adminEsc(adminFilterValue) + '">';
             keys.forEach(function(k){
                 var val = row[k] !== null ? row[k] : '—';
-                html += '<td data-label="' + adminEsc(k) + '">' + adminEsc(val) + '</td>';
+                if(section==='dishes'&&k==='id'){
+                    html += '<td data-label="' + adminEsc(k) + '"><div class="admin-dish-id-cell"><span data-admin-column="' + adminEsc(k) + '">' + adminEsc(val) + '</span>' + adminDishActionButtons(row) + '</div></td>';
+                }else{
+                    html += '<td data-label="' + adminEsc(k) + '" data-admin-column="' + adminEsc(k) + '"' + (k==='id'?'':' style="display:none"') + '>' + adminEsc(val) + '</td>';
+                }
             });
-            html += section === 'users' ? '<td>' : '<td data-label="Действия">';
+            html += section === 'users' ? '<td>' : section==='dishes' ? '' : '<td data-label="Действия">';
             
             if(section === 'users'){
                 html += adminUserActionButtons(row.id);
-            } else if(section === 'dishes'){
-                html += '<button onclick="adminToggleDish(' + row.id + ',' + (row.is_available==1?0:1) + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:12px;">' + (row.is_available==1?'Скрыть':'Показать') + '</button>';
-                html += ' <button onclick="adminDeleteDish(' + row.id + ')" style="padding:4px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer;font-size:12px;">Удалить</button>';
             } else if(section === 'recipes'){
                 html += '<button onclick="adminUpdateRecipeStatus(' + row.id + ',' + (row.is_available==1?0:1) + ')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main);cursor:pointer;font-size:12px;">' + (row.is_available==1?'Скрыть':'Опубликовать') + '</button>';
             } else if(section === 'orders'){
@@ -2502,13 +2516,13 @@ async function loadAdminSection(section, btn, historyState){
                 html += '</select>';
             }
             
-            html += '</td></tr>';
+            html += section==='dishes' ? '</tr>' : '</td></tr>';
         });
         
         html += '</tbody></table></div>';
         // Для users разделяем поиск и таблицу
         if(section === 'users'){
-            adminUserVisibleColumns = [];
+            adminUserVisibleColumns = ['id'];
             container.innerHTML = '<div class="admin-users-toolbar">' +
                 '<div class="admin-search-row"><input type="text" id="adminUserSearch" placeholder="Поиск по имени, телефону или email..." oninput="filterAdminUsers()" aria-label="Поиск пользователей"></div>' +
                 '<div class="admin-user-column-toggles" id="adminUserColumnToggles" role="group" aria-label="Показывать поля пользователей"></div>' +
@@ -2525,9 +2539,99 @@ async function loadAdminSection(section, btn, historyState){
             renderAdminUserColumnToggles(rows[0]);
             filterAdminUsers();
         } else {
-            container.innerHTML = html;
+            container.innerHTML = buildAdminSectionToolbar(section, rows) +
+                '<div id="adminDataTableWrap">' + html + '</div>';
+            var sectionToolbar = container.querySelector('.admin-section-toolbar');
+            if(sectionToolbar){
+                watchAdminUsersToolbar(sectionToolbar,container.closest('.admin-workspace'));
+                bindAdminSectionToolbar(sectionToolbar);
+            }
+            filterAdminSectionData();
         }
     } catch(e){ container.innerHTML = '<p style="color:#ef4444;">Ошибка загрузки</p>'; }
+}
+
+function buildAdminSectionToolbar(section,rows){
+    var filters=[{value:'all',label:'Все'}];
+    if(section==='dishes'||section==='recipes'){
+        filters.push({value:'active',label:'Опубликованные'},{value:'hidden',label:'Скрытые'});
+    }else if(section==='orders'){
+        var labels={new:'Новые',pending:'Ожидают',confirmed:'Подтверждены',cooking:'Готовятся',ready:'Готовы',delivered:'Доставлены',completed:'Завершены',cancelled:'Отменены'};
+        var statuses=['new','pending','confirmed','cooking','ready','delivered','completed','cancelled'];
+        statuses.forEach(function(status){filters.push({value:status,label:labels[status]||status});});
+    }
+    var buttons=filters.map(function(filter,index){
+        return '<button type="button" class="admin-user-column-toggle'+(index===0?' active':'')+'" data-admin-filter="'+adminEsc(filter.value)+'">'+adminEsc(filter.label)+'</button>';
+    }).join('');
+    var columnLabels={id:'ID',title:'TI',price:'PR',weight:'WE',is_available:'AV',created_at:'DT',seller_name:'SE',category_name:'CA',author_name:'AU',status:'ST',total:'TO',buyer_name:'BY',name:'NA',parent_id:'PA',sort_order:'SO'};
+    var columnButtons=Object.keys(rows[0]||{}).map(function(key){
+        var label=columnLabels[key]||key.slice(0,2).toUpperCase();
+        var active=key==='id';
+        return '<button type="button" class="admin-user-column-toggle'+(active?' active':'')+'" data-admin-column-toggle="'+adminEsc(key)+'" aria-pressed="'+active+'" title="'+(active?'Скрыть':'Показать')+' столбец: '+adminEsc(key)+'" aria-label="'+(active?'Скрыть':'Показать')+' столбец: '+adminEsc(key)+'">'+adminEsc(label)+'</button>';
+    }).join('');
+    return '<div class="admin-users-toolbar admin-section-toolbar" data-filter="all">'+
+        '<div class="admin-search-row"><input type="search" id="adminSectionSearch" placeholder="Поиск по таблице..." aria-label="Поиск по таблице"></div>'+
+        '<div class="admin-user-column-toggles" role="group" aria-label="Показывать столбцы">'+columnButtons+'</div>'+
+        '<div class="admin-user-column-toggles" role="group" aria-label="Фильтры таблицы">'+buttons+'</div>'+
+        '<span id="adminSectionSearchCount" class="admin-search-count" aria-live="polite"></span>'+
+        '</div>';
+}
+
+function toggleAdminSectionColumn(button){
+    var key=button.dataset.adminColumnToggle;
+    var visible=button.getAttribute('aria-pressed')!=='true';
+    button.setAttribute('aria-pressed',String(visible));
+    button.classList.toggle('active',visible);
+    button.title=(visible?'Скрыть столбец: ':'Показать столбец: ')+key;
+    button.setAttribute('aria-label',button.title);
+    document.querySelectorAll('#adminDataTableWrap [data-admin-column]').forEach(function(cell){
+        if(cell.dataset.adminColumn===key){
+            cell.hidden=false;
+            cell.style.display=visible?'':'none';
+        }
+    });
+}
+
+function bindAdminSectionToolbar(toolbar){
+    if(!toolbar||toolbar.dataset.handlersBound==='1')return;
+    toolbar.dataset.handlersBound='1';
+    var search=toolbar.querySelector('#adminSectionSearch');
+    if(search)search.addEventListener('input',filterAdminSectionData);
+    toolbar.addEventListener('click',function(event){
+        var button=event.target.closest('button');
+        if(!button||!toolbar.contains(button))return;
+        if(button.hasAttribute('data-admin-filter'))setAdminSectionFilter(button);
+        if(button.hasAttribute('data-admin-column-toggle'))toggleAdminSectionColumn(button);
+    });
+}
+
+function setAdminSectionFilter(button){
+    var toolbar=button.closest('.admin-section-toolbar');
+    if(!toolbar)return;
+    toolbar.dataset.filter=button.dataset.adminFilter||'all';
+    toolbar.querySelectorAll('[data-admin-filter]').forEach(function(item){item.classList.toggle('active',item===button);});
+    filterAdminSectionData();
+}
+
+function filterAdminSectionData(){
+    var toolbar=document.querySelector('.admin-section-toolbar');
+    var tableWrap=document.getElementById('adminDataTableWrap');
+    if(!toolbar||!tableWrap)return;
+    var input=toolbar.querySelector('#adminSectionSearch');
+    var query=(input&&input.value||'').trim().toLocaleLowerCase();
+    var filter=String(toolbar.dataset.filter||'all').trim().toLocaleLowerCase();
+    var rows=tableWrap.querySelectorAll('tbody tr');
+    var visible=0;
+    rows.forEach(function(row){
+        var matchesFilter=filter==='all'||String(row.dataset.adminFilterValue||'').trim().toLocaleLowerCase()===filter;
+        var matchesSearch=!query||row.textContent.toLocaleLowerCase().includes(query);
+        var show=matchesFilter&&matchesSearch;
+        row.hidden=false;
+        row.style.display=show?'':'none';
+        if(show)visible++;
+    });
+    var count=document.getElementById('adminSectionSearchCount');
+    if(count)count.textContent=visible+' из '+rows.length;
 }
 
 async function adminUpdateUser(id, role){
@@ -2535,17 +2639,100 @@ async function adminUpdateUser(id, role){
     showToast('Роль обновлена');
 }
 
-async function adminToggleDish(id, available){
-    await fetch('/api/admin.php?action=update_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id, is_available:available})});
-    showToast('Статус блюда обновлён');
-    loadAdminSection('dishes');
+var adminDishesAllRows = [];
+var adminDishDeleteId = 0;
+
+function adminDishActionButtons(row){
+    var id=parseInt(row.id,10)||0;
+    var available=Number(row.is_available)===1;
+    return '<div class="admin-dish-actions">'+
+        '<button type="button" class="admin-dish-action admin-dish-action-eye" onclick="adminToggleDish('+id+','+(available?0:1)+')" title="'+(available?'Скрыть блюдо':'Показать блюдо')+'" aria-label="'+(available?'Скрыть блюдо':'Показать блюдо')+'">'+
+        (available?'<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>':'<svg viewBox="0 0 24 24"><path d="M3 3l18 18"></path><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"></path><path d="M9.9 5.2A11 11 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1 0 1.9-.2 2.8-.5"></path></svg>')+
+        '</button>'+
+        '<button type="button" class="admin-dish-action admin-dish-action-pencil" onclick="openAdminEditDish('+id+')" title="Редактировать блюдо" aria-label="Редактировать блюдо"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>'+
+        '<button type="button" class="admin-dish-action admin-dish-action-delete" onclick="openAdminDeleteDish('+id+')" title="Удалить блюдо" aria-label="Удалить блюдо"><svg viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12"></path></svg></button>'+
+        '</div>';
 }
 
-async function adminDeleteDish(id){
-    if(!confirm('Удалить это блюдо?')) return;
-    await fetch('/api/admin.php?action=delete_dish', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id})});
-    showToast('Блюдо удалено');
-    loadAdminSection('dishes');
+async function adminToggleDish(id, available){
+    try{
+        var res=await fetch('/api/admin.php?action=update_dish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,is_available:available})});
+        var data=await res.json();
+        if(!res.ok||!data.success)throw new Error(data.error||'Не удалось изменить видимость блюда');
+        showToast(available?'Блюдо опубликовано':'Блюдо скрыто');
+        loadAdminSection('dishes');
+    }catch(error){showToast(error.message||'Ошибка обновления блюда');}
+}
+
+function openAdminDeleteDish(id){
+    adminDishDeleteId=parseInt(id,10)||0;
+    var modal=document.getElementById('adminDishDeleteModal');
+    var title=document.getElementById('adminDishDeleteTitle');
+    var row=adminDishesAllRows.find(function(item){return Number(item.id)===adminDishDeleteId;});
+    if(title)title.textContent='Удалить блюдо «'+(row&&row.title||'')+'»?';
+    if(modal)modal.classList.add('active');
+}
+function closeAdminDeleteDish(event){
+    if(event&&event.target!==document.getElementById('adminDishDeleteModal'))return;
+    var modal=document.getElementById('adminDishDeleteModal');
+    if(modal)modal.classList.remove('active');
+    adminDishDeleteId=0;
+}
+async function confirmAdminDeleteDish(){
+    if(!adminDishDeleteId)return;
+    try{
+        var res=await fetch('/api/admin.php?action=delete_dish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:adminDishDeleteId})});
+        var data=await res.json();
+        if(!res.ok||!data.success)throw new Error(data.error||'Не удалось удалить блюдо');
+        closeAdminDeleteDish();
+        showToast('Блюдо удалено');
+        loadAdminSection('dishes');
+    }catch(error){showToast(error.message||'Ошибка удаления блюда');}
+}
+
+async function openAdminEditDish(id){
+    var row=adminDishesAllRows.find(function(item){return Number(item.id)===Number(id);});
+    if(!row)return;
+    var modal=document.getElementById('adminDishEditModal');
+    document.getElementById('adminDishEditId').value=row.id;
+    document.getElementById('adminDishEditTitle').value=row.title||'';
+    document.getElementById('adminDishEditDescription').value=row.description||'';
+    document.getElementById('adminDishEditPrice').value=row.price||'';
+    document.getElementById('adminDishEditWeight').value=row.weight||'';
+    var category=document.getElementById('adminDishEditCategory');
+    if(category.options.length<=1){
+        try{
+            var response=await fetch('/api/admin.php?action=categories');
+            var result=await response.json();
+            (result.data||[]).forEach(function(item){
+                var option=document.createElement('option');
+                option.value=item.id;option.textContent=item.name;category.appendChild(option);
+            });
+        }catch(e){}
+    }
+    category.value=String(row.category_id||'');
+    modal.classList.add('active');
+}
+function closeAdminEditDish(event){
+    var modal=document.getElementById('adminDishEditModal');
+    if(event&&event.target!==modal)return;
+    if(modal)modal.classList.remove('active');
+}
+async function saveAdminDishEdit(event){
+    if(event)event.preventDefault();
+    var id=document.getElementById('adminDishEditId').value;
+    var payload={id:Number(id),title:document.getElementById('adminDishEditTitle').value.trim(),description:document.getElementById('adminDishEditDescription').value.trim(),price:document.getElementById('adminDishEditPrice').value,weight:document.getElementById('adminDishEditWeight').value.trim()};
+    var categoryId=document.getElementById('adminDishEditCategory').value;
+    if(categoryId)payload.category_id=categoryId;
+    if(!payload.title||!payload.price){showToast('Заполните название и цену блюда');return;}
+    try{
+        var res=await fetch('/api/admin.php?action=update_dish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        var data=await res.json();
+        if(!res.ok||!data.success)throw new Error(data.error||'Не удалось сохранить блюдо');
+        closeAdminEditDish();
+        showToast('Блюдо обновлено');
+        loadAdminSection('dishes');
+    }catch(error){showToast(error.message||'Ошибка сохранения блюда');}
 }
 
 async function adminUpdateOrder(id, status){
@@ -2623,18 +2810,26 @@ async function renderAdminReviews(status){
     var c = document.getElementById('adminContent');
     if(!c) return;
     c.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Загрузка...</p>';
-    var tabsHtml = '<div style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;">';
+    var tabsHtml = '<div class="admin-users-toolbar admin-review-toolbar">'+
+        '<div class="admin-search-row"><input type="search" id="adminReviewSearch" placeholder="Поиск по отзывам..." oninput="filterAdminReviews()" aria-label="Поиск по отзывам"></div><span id="adminReviewSearchCount" class="admin-search-count" aria-live="polite"></span>'+
+        '<div class="admin-user-column-toggles" role="group" aria-label="Фильтр отзывов">';
     [['pending','⏳ На модерации'],['approved','✅ Одобренные'],['rejected','🚫 Отклонённые']].forEach(function(s){
         var active = s[0] === adminReviewStatus;
-        tabsHtml += '<button onclick="renderAdminReviews(\'' + s[0] + '\')" style="padding:8px 14px;border-radius:10px;border:2px solid ' + (active ? 'var(--neon)' : 'var(--border-color)') + ';background:' + (active ? 'var(--neon-glow)' : 'var(--card-bg)') + ';color:var(--neon-dark);cursor:pointer;font-size:13px;font-weight:600;">' + s[1] + '</button>';
+        tabsHtml += '<button type="button" class="admin-user-column-toggle' + (active ? ' active' : '') + '" onclick="renderAdminReviews(\'' + s[0] + '\')">' + s[1] + '</button>';
     });
-    tabsHtml += '</div>';
+    tabsHtml += '</div></div>';
+    function showReviews(html){
+        c.innerHTML=html;
+        var toolbar=c.querySelector('.admin-review-toolbar');
+        if(toolbar)watchAdminUsersToolbar(toolbar,c.closest('.admin-workspace'));
+        filterAdminReviews();
+    }
     try {
         var res = await fetch('/api/reviews.php?action=pending&status=' + encodeURIComponent(adminReviewStatus));
         var data = await res.json();
-        if(!res.ok || !data.success){ c.innerHTML = tabsHtml + '<p style="color:#ef4444;">' + adminEsc(data.error||'Ошибка') + '</p>'; return; }
+        if(!res.ok || !data.success){ showReviews(tabsHtml + '<p style="color:#ef4444;">' + adminEsc(data.error||'Ошибка') + '</p>'); return; }
         var reviews = data.reviews || [];
-        if(!reviews.length){ c.innerHTML = tabsHtml + '<p style="text-align:center;padding:30px;color:var(--text-muted);">Нет отзывов</p>'; return; }
+        if(!reviews.length){ showReviews(tabsHtml + '<p style="text-align:center;padding:30px;color:var(--text-muted);">Нет отзывов</p>'); return; }
         var html = tabsHtml;
         reviews.forEach(function(r){
             var rating = Math.max(0, Math.min(5, Number(r.rating) || 0));
@@ -2650,10 +2845,24 @@ async function renderAdminReviews(status){
             }
             html += '</div>';
         });
-        c.innerHTML = html;
+        showReviews(html);
     } catch(e){
-        c.innerHTML = tabsHtml + '<p style="color:#ef4444;">Ошибка загрузки</p>';
+        showReviews(tabsHtml + '<p style="color:#ef4444;">Ошибка загрузки</p>');
     }
+}
+
+function filterAdminReviews(){
+    var input=document.getElementById('adminReviewSearch');
+    var count=document.getElementById('adminReviewSearchCount');
+    if(!input||!count)return;
+    var query=input.value.trim().toLocaleLowerCase();
+    var cards=document.querySelectorAll('#adminContent .admin-review-card');
+    var visible=0;
+    cards.forEach(function(card){
+        card.hidden=!!query&&!card.textContent.toLocaleLowerCase().includes(query);
+        if(!card.hidden)visible++;
+    });
+    count.textContent=visible+' из '+cards.length;
 }
 
 async function adminModerateReview(id, status){
@@ -2713,6 +2922,44 @@ document.addEventListener('DOMContentLoaded', checkAdminRole);
 <button class="btn" onclick="document.getElementById('adminEditModal').style.display='none'" style="flex:1;background:transparent;border:2px solid var(--border-color);color:var(--text-main);">Отмена</button>
 </div>
 </div>
+</div>
+
+<div class="delete-modal-overlay" id="adminDishDeleteModal" onclick="closeAdminDeleteDish(event)">
+    <div class="delete-modal-box" onclick="event.stopPropagation()">
+        <div class="delete-modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01"></path><path d="M10.3 3.9 1.8 18.2A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"></path></svg></div>
+        <div class="delete-modal-title" id="adminDishDeleteTitle">Удалить блюдо?</div>
+        <div class="delete-modal-text">Это действие нельзя будет отменить.</div>
+        <div class="delete-modal-buttons">
+            <button type="button" class="delete-modal-cancel" onclick="closeAdminDeleteDish()">Я передумал</button>
+            <button type="button" class="delete-modal-confirm" onclick="confirmAdminDeleteDish()">Уверен</button>
+        </div>
+    </div>
+</div>
+
+<div class="info-modal-overlay" id="adminDishEditModal" onclick="closeAdminEditDish(event)">
+    <div class="info-modal-box" style="max-width:520px;text-align:left;max-height:88vh;overflow:auto;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;">
+            <h2 style="margin:0;color:var(--neon-dark);font-size:20px;">Редактировать блюдо</h2>
+            <button type="button" class="admin-dish-action admin-dish-action-delete" aria-label="Закрыть" onclick="closeAdminEditDish()"><svg viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12"></path></svg></button>
+        </div>
+        <form onsubmit="saveAdminDishEdit(event)">
+            <input type="hidden" id="adminDishEditId">
+            <label style="display:block;margin:0 0 6px;color:var(--text-muted);font-size:13px;">Название</label>
+            <input id="adminDishEditTitle" required style="box-sizing:border-box;width:100%;margin:0 0 12px;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;">
+            <label style="display:block;margin:0 0 6px;color:var(--text-muted);font-size:13px;">Описание</label>
+            <textarea id="adminDishEditDescription" rows="4" style="box-sizing:border-box;width:100%;margin:0 0 12px;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;resize:vertical;"></textarea>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div><label style="display:block;margin:0 0 6px;color:var(--text-muted);font-size:13px;">Цена, ₽</label><input id="adminDishEditPrice" type="number" min="1" step="0.01" required style="box-sizing:border-box;width:100%;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;"></div>
+                <div><label style="display:block;margin:0 0 6px;color:var(--text-muted);font-size:13px;">Вес</label><input id="adminDishEditWeight" style="box-sizing:border-box;width:100%;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;"></div>
+            </div>
+            <label style="display:block;margin:12px 0 6px;color:var(--text-muted);font-size:13px;">Категория</label>
+            <select id="adminDishEditCategory" style="box-sizing:border-box;width:100%;margin:0 0 18px;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;"><option value="">Не менять категорию</option></select>
+            <div style="display:flex;gap:10px;">
+                <button type="submit" class="info-modal-btn success" style="flex:1;">Сохранить</button>
+                <button type="button" class="delete-modal-cancel" onclick="closeAdminEditDish()" style="flex:1;">Отмена</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div id="adminUserFieldModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(4px);z-index:10003;align-items:center;justify-content:center;padding:18px;" onclick="if(event.target===this)closeAdminUserFieldEdit()">
@@ -3135,7 +3382,7 @@ function watchAdminUsersToolbar(toolbar,workspace){
     if(oldSpacer)oldSpacer.remove();
     var spacer=document.createElement('div');
     spacer.className='admin-users-toolbar-spacer';
-    workspace.insertBefore(spacer,toolbar);
+    toolbar.parentNode.insertBefore(spacer,toolbar);
     var dashboard=toolbar.closest('.admin-dashboard');
     if(dashboard)dashboard.style.setProperty('overflow','visible','important');
     var header=document.body.classList.contains('admin-standalone')?null:document.querySelector('.site-header');
@@ -3280,7 +3527,8 @@ function renderAdminUserColumnToggles(sampleRow){
     toggles.innerHTML=adminUserColumnOptions.filter(function(option){
         return Object.prototype.hasOwnProperty.call(sampleRow,option.key);
     }).map(function(option){
-        return '<button type="button" class="admin-user-column-toggle" data-user-column="'+option.key+'" aria-pressed="false" title="'+option.title+'" aria-label="Показать поле: '+option.title+'">'+option.label+'</button>';
+        var active=adminUserVisibleColumns.indexOf(option.key)!==-1;
+        return '<button type="button" class="admin-user-column-toggle'+(active?' active':'')+'" data-user-column="'+option.key+'" aria-pressed="'+active+'" title="'+option.title+'" aria-label="'+(active?'Скрыть':'Показать')+' поле: '+option.title+'">'+option.label+'</button>';
     }).join('');
     toggles.querySelectorAll('[data-user-column]').forEach(function(button){
         button.addEventListener('click',function(){
@@ -3908,7 +4156,9 @@ function showBannerManagement(button,historyState){
         window.parent.postMessage({type:'admin-section-change',section:'joint_projects',reviewStatus:'pending'},location.origin);
     }
     var container=document.getElementById('adminContent');
-    container.innerHTML='<div class="tabs banner-management-tabs" style="margin:0 0 14px;display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="tab active" data-banner-section="joint">🤝 Совместные проекты</button><button type="button" class="tab" data-banner-section="index">🏠 Баннеры главной</button></div><div id="bannerManagementContent" style="overflow-x:auto;"></div>';
+    container.innerHTML='<div class="tabs banner-management-tabs admin-users-toolbar admin-section-toolbar" style="margin:0 0 14px;display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="tab active" data-banner-section="joint">🤝 Совместные проекты</button><button type="button" class="tab" data-banner-section="index">🏠 Баннеры главной</button></div><div id="bannerManagementContent" style="overflow-x:auto;"></div>';
+    var bannerToolbar=container.querySelector('.banner-management-tabs');
+    if(bannerToolbar)watchAdminUsersToolbar(bannerToolbar,container.closest('.admin-workspace'));
     var first=container.querySelector('[data-banner-section="joint"]');
     container.querySelectorAll('[data-banner-section]').forEach(function(tab){tab.addEventListener('click',function(){showBannerManagementSection(tab.getAttribute('data-banner-section'),tab);});});
     var subsection=historyState&&historyState.subsection==='index_banners'?'index':'joint';

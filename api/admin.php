@@ -20,7 +20,7 @@ switch ($action) {
 
     case 'dishes':
         $stmt = $pdo->query(
-            'SELECT d.id, d.title, d.price, d.weight, d.is_available, d.created_at,
+            'SELECT d.id, d.title, d.description, d.price, d.weight, d.is_available, d.category_id, d.created_at,
                     u.name as seller_name, c.name as category_name
              FROM dishes d
              LEFT JOIN users u ON d.user_id = u.id
@@ -119,7 +119,7 @@ switch ($action) {
         }
         $fields = [];
         $params = [];
-        foreach (['title', 'price', 'weight', 'is_available', 'category_id'] as $f) {
+        foreach (['title', 'description', 'price', 'weight', 'is_available', 'category_id'] as $f) {
             if (array_key_exists($f, $data)) {
                 $fields[] = "$f = ?";
                 $params[] = $data[$f];
