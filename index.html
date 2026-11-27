@@ -466,7 +466,7 @@ button, .btn, a, label {
     <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх"><svg viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
 
 <section class="section-transparent">
-<div class="cards cols-2" id="popularDishes"></div></section>
+<div class="cards cols-2" id="popularDishes"></div><div class="feed-status" id="homeDishesSentinel" role="status" aria-live="polite" style="min-height:1.5em;margin:16px auto;text-align:center;color:var(--text-muted);font-size:14px;"></div></section>
 
 <div class="modal" id="authModal"><div class="modal-box"><div class="close" onclick="closeAuth()">✕</div><h2 id="authTitle">Личный кабинет</h2><form id="loginForm" onsubmit="login();return false;"><input id="loginName" placeholder="Email" type="email"><div class="error-msg" id="loginNameError"></div><input id="loginPassword" type="password" placeholder="Пароль" minlength="8"><div class="error-msg" id="loginPasswordError"></div><button class="btn" style="width:100%;margin-top:6px;" id="loginBtn" type="submit">Войти</button><p style="text-align:center;margin-top:12px;font-size:14px;"><a href="#" onclick="switchTab('reset');return false;" style="color:#ef4444;font-weight:600;">Забыли пароль?</a></p>
 <p style="text-align:center;margin-top:8px;font-size:14px;"><a href="#" onclick="switchTab('sms');return false;" style="color:var(--neon-dark);font-weight:600;">Войти по SMS</a></p>
@@ -542,7 +542,7 @@ function addDishAuthorAvatars(container,dishes){
 let cart=JSON.parse(localStorage.getItem('cart'))||[];
 function updateCartBadge(){const c=cart.reduce((s,x)=>s+x.qty,0);const b=document.getElementById('cartBadge');if(b){b.textContent=c;b.style.display=c>0?'flex':'none';}}
 var currentHomeCategory=0;
-var homeDishRequest=0;
+var homeDishesFeed=null;
 function filterHomeCategory(categoryId){
     currentHomeCategory=parseInt(categoryId,10)||0;
     document.dispatchEvent(new Event('home-category-change'));
@@ -982,22 +982,11 @@ document.addEventListener('DOMContentLoaded', function(){
 // --- JS КОНЕЦ ---
 </script>
 
+<script src="assets/js/infinite-feed.js?v=20261127150100"></script>
 <script>
-(async function loadPopularDishes(){
-    var requestId=++homeDishRequest;
-    try {
-        var url='/api/dishes.php?page=1&limit=10';
-        if(currentHomeCategory)url+='&category_id='+currentHomeCategory;
-        var res = await fetch(url);
-        var data = await res.json();
-        if(requestId!==homeDishRequest)return;
-        var container = document.getElementById('popularDishes');
-        if(!data.success || !data.dishes.length){
-            container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px;">Блюд пока нет</p>';
-            return;
-        }
+function renderHomeDishes(dishes,container){
         var html = '';
-        data.dishes.forEach(function(d){
+        dishes.forEach(function(d){
             var img = d.image ? d.image : '';
             var imgTag = img ? '<img src="' + img + '" alt="' + d.title + '">' : '';
             var chef = d.seller_name || 'Повар';
@@ -1012,10 +1001,28 @@ document.addEventListener('DOMContentLoaded', function(){
             var imageTile = img ? '<div class="dish-card-photo">' + imgTag + (discount > 0 ? '<span class="dish-discount-tile-badge">−' + discount + '%</span>' : '') + '</div>' : '';
             html += '<div class="card content-detail-card" data-stock-count="' + (d.remaining_count === null || d.remaining_count === undefined ? '' : d.remaining_count) + '" data-detail-type="dish" data-detail-id="' + d.id + '">' + '<button class="fav-btn ' + (isFavorite(d.id)?'active':'') + '" onclick="toggleFavorite(' + d.id + ');return false;" data-id="' + d.id + '">' + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>' + imageTile + '<div class="card-content">' + cat + '<div class="dish">' + d.title + '</div><div class="chef">' + chef + '</div><div class="desc">' + desc + '</div><div class="card-purchase-area"><div class="price card-purchase-info' + (discount > 0 ? ' price-discount-row' : '') + '">' + priceLabel + weight + '</div><button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g,'&quot;') + '" data-chef="' + chef.replace(/"/g,'&quot;') + '" data-price="' + salePrice + '" data-img="' + (img||'') + '" onclick="addToCartBtn(this)">В корзину</button></div></div></div>';
         });
-        container.innerHTML = html;
-        addDishAuthorAvatars(container,data.dishes);
-    } catch(e){ console.error('Load dishes error:', e); }
-})();
+        var start=container.querySelectorAll('.card .chef').length;
+        container.insertAdjacentHTML('beforeend',html);
+        var authors=container.querySelectorAll('.card .chef');
+        dishes.forEach(function(dish,index){
+            var author=authors[start+index];
+            if(author)author.insertBefore(window.IcookAuthorAvatar.create(dish.seller_name||'Повар',dish.seller_avatar,dish.seller_avatar_version,dish.seller_avatar_crop),author.firstChild);
+        });
+}
+function initHomeDishesFeed(){
+    if(homeDishesFeed)return;
+    homeDishesFeed=new InfiniteFeed({
+        grid:document.getElementById('popularDishes'),
+        sentinel:document.getElementById('homeDishesSentinel'),
+        url:'/api/dishes.php',key:'dishes',loadingText:'Загружаем блюда…',
+        endText:'Вы посмотрели все блюда',
+        params:function(){var params={};if(currentHomeCategory)params.category_id=currentHomeCategory;var q=document.getElementById('heroSearch').value.trim();if(q)params.search=q;return params;},
+        emptyText:function(){return 'Блюда не найдены';},
+        render:function(dishes){renderHomeDishes(dishes,document.getElementById('popularDishes'));}
+    });
+    homeDishesFeed.reset();
+}
+initHomeDishesFeed();
 </script>
 
 <script>
@@ -1040,41 +1047,7 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     });
     
-    async function filterPopularDishes(){
-        var requestId=++homeDishRequest;
-        var q = searchInput.value.trim();
-        var container = document.getElementById('popularDishes');
-        try {
-            var url = '/api/dishes.php?page=1&limit=10';
-            if(currentHomeCategory) url += '&category_id=' + currentHomeCategory;
-            if(q) url += '&search=' + encodeURIComponent(q);
-            var res = await fetch(url);
-            var data = await res.json();
-            if(requestId!==homeDishRequest)return;
-            if(!data.success || !data.dishes.length){
-                container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px;">Ничего не найдено</p>';
-                return;
-            }
-            var html = '';
-            data.dishes.forEach(function(d){
-                var img = d.image ? d.image : '';
-                var imgTag = img ? '<img src="' + img + '" alt="' + d.title + '">' : '';
-                var chef = d.seller_name || 'Повар';
-                var desc = d.description || '';
-                if(desc.length > 80) desc = desc.substring(0,80) + '...';
-                var weightValue = d.weight == null ? '' : String(d.weight).trim();
-                var weight = weightValue ? ' \u00b7 ' + (/[a-zа-я]/i.test(weightValue) ? weightValue : weightValue + ' г') : '';
-                var cat = d.category_name ? '<span style="font-size:12px;color:var(--text-muted);">' + d.category_name + '</span>' : '';
-                var discount = Math.max(0, Math.min(90, Number(d.discount_percent) || 0));
-                var salePrice = Math.round(Number(d.price) * (1 - discount / 100) * 100) / 100;
-                var priceLabel = discount > 0 ? '<span class="price-original">' + Number(d.price).toLocaleString('ru-RU',{maximumFractionDigits:2}) + ' ₽</span><span class="price-discounted">' + salePrice.toLocaleString('ru-RU',{maximumFractionDigits:2}) + ' ₽</span>' : salePrice.toLocaleString('ru-RU',{maximumFractionDigits:2}) + ' ₽';
-                var imageTile = img ? '<div class="dish-card-photo">' + imgTag + (discount > 0 ? '<span class="dish-discount-tile-badge">−' + discount + '%</span>' : '') + '</div>' : '';
-                html += '<div class="card content-detail-card" data-stock-count="' + (d.remaining_count === null || d.remaining_count === undefined ? '' : d.remaining_count) + '" data-detail-type="dish" data-detail-id="' + d.id + '">' + '<button class="fav-btn ' + (isFavorite(d.id)?'active':'') + '" onclick="toggleFavorite(' + d.id + ');return false;" data-id="' + d.id + '">' + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>' + imageTile + '<div class="card-content">' + cat + '<div class="dish">' + d.title + '</div><div class="chef">' + chef + '</div><div class="desc">' + desc + '</div><div class="card-purchase-area"><div class="price card-purchase-info' + (discount > 0 ? ' price-discount-row' : '') + '">' + priceLabel + weight + '</div><button class="btn" id="cartBtn-' + d.id + '" data-id="' + d.id + '" data-name="' + d.title.replace(/"/g,'&quot;') + '" data-chef="' + chef.replace(/"/g,'&quot;') + '" data-price="' + salePrice + '" data-img="' + (img||'') + '" onclick="addToCartBtn(this)">В корзину</button></div></div></div>';
-            });
-            container.innerHTML = html;
-            addDishAuthorAvatars(container,data.dishes);
-        } catch(e){ console.error('Search error:', e); }
-    }
+    function filterPopularDishes(){if(homeDishesFeed)homeDishesFeed.reset();}
 })();
 </script>
 

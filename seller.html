@@ -542,6 +542,7 @@
             <!-- Мои блюда -->
             <div class="tab-content active" id="tab-dishes">
                 <div class="my-dishes-grid" id="myDishesGrid"></div>
+                <div id="myDishesSentinel" class="feed-status" role="status" aria-live="polite" style="min-height:1.5em;margin:16px auto;text-align:center;color:var(--text-muted);font-size:14px;"></div>
                 <div class="empty-msg" id="noDishesMsg" style="display:none;">У вас пока нет блюд. Добавьте первое!</div>
             </div>
 
@@ -647,6 +648,7 @@
     <script src="assets/js/main.js?v=20261122141107"></script>
     <script src="assets/js/cart.js?v=20260926044921"></script>
     <script src="assets/js/theme.js?v=20261105152159"></script>
+    <script src="assets/js/infinite-feed.js?v=20261127150100"></script>
     <script>
     function updateUI(){const u=JSON.parse(localStorage.getItem('user'));const authBtn=document.getElementById('authBtnIcon');const nameBtn=document.getElementById('userNameBtn');if(u&&u.name){if(authBtn)authBtn.style.display='none';if(nameBtn){nameBtn.classList.remove('expanded');nameBtn.style.display='flex';const letter=document.getElementById('userLetter');const marquee=document.getElementById('userMarquee');if(letter)letter.textContent=u.name.charAt(0).toUpperCase();if(marquee)marquee.textContent=u.name;setTimeout(function(){nameBtn.classList.add('expanded');},5000);}}else{if(authBtn)authBtn.style.display='flex';if(nameBtn){nameBtn.style.display='none';nameBtn.classList.remove('expanded');}}}
 
@@ -777,20 +779,27 @@
         }
     }
 
+    var myDishesFeed = null;
     async function loadMyDishes() {
-        var res = await fetch('/api/dishes.php?page=1&seller_id=0');
-        // Загружаем все блюда и фильтруем по сессии на сервере
         var profileRes = await fetch('/api/profile.php');
         var profileData = await profileRes.json();
         if(!profileData.success) return;
         var userId = profileData.user.id;
-        var dishesRes = await fetch('/api/dishes.php?page=1&seller_id='+userId);
-        var data = await dishesRes.json();
         var grid = document.getElementById('myDishesGrid');
         var empty = document.getElementById('noDishesMsg');
-        if(data.success && data.dishes.length > 0) {
-            empty.style.display = 'none';
-            grid.innerHTML = data.dishes.map(function(d){
+        if (!myDishesFeed) myDishesFeed = new InfiniteFeed({
+            grid: grid,
+            sentinel: document.getElementById('myDishesSentinel'),
+            url: '/api/dishes.php',
+            key: 'dishes',
+            loadingText: 'Загружаем ваши блюда…',
+            endText: 'Вы посмотрели все свои блюда',
+            params: function () { return {seller_id: userId}; },
+            emptyText: function () { return 'У вас пока нет блюд. Добавьте первое!'; },
+            onReset: function () { empty.style.display = 'none'; },
+            onTotal: function (total) { empty.style.display = total ? 'none' : 'block'; },
+            render: function (dishes) {
+                grid.insertAdjacentHTML('beforeend', dishes.map(function(d){
                 var imgSrc = d.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop';
                 var statusClass = d.is_available == 1 ? 'on' : 'off';
                 var statusText = d.is_available == 1 ? 'Активно' : 'Скрыто';
@@ -805,11 +814,10 @@
                             '<button class="btn-delete" onclick="deleteDish('+d.id+')">Удалить</button>' +
                         '</div>' +
                     '</div></div>';
-            }).join('');
-        } else {
-            grid.innerHTML = '';
-            empty.style.display = 'block';
-        }
+                }).join(''));
+            }
+        });
+        return myDishesFeed.reset();
     }
 
     async function toggleDish(id) {

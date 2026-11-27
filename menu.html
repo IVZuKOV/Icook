@@ -427,6 +427,7 @@ body{padding-bottom:88px;}
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
 <link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261124121839">
+<script src="assets/js/infinite-feed.js?v=20261127150100"></script>
 </head>
 <body>
     <!-- Каталог (выдвижное меню) -->
@@ -540,6 +541,7 @@ body{padding-bottom:88px;}
 
         <div class="dishes-grid-wrapper">
             <div class="dishes-grid cols-2" id="dishesGrid"></div>
+            <div id="dishesSentinel" class="feed-status" role="status" aria-live="polite" style="min-height:1.5em;margin:16px auto;text-align:center;color:var(--text-muted);font-size:14px;"></div>
         </div>
         <div class="empty-msg" id="emptyMsg" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -631,6 +633,7 @@ body{padding-bottom:88px;}
 
     // --- КАТАЛОГ БЛЮД ---
     let currentCategory = 0;
+    let menuDishFeed = null;
     const selectedChef = Math.max(0, parseInt(new URLSearchParams(location.search).get('seller_id'), 10) || 0);
     if (selectedChef) {
         fetch('/api/chefs.php?seller_id=' + selectedChef).then(function (response) { return response.json(); }).then(function (data) {
@@ -712,20 +715,32 @@ body{padding-bottom:88px;}
         loadDishes();
     }
 
-    async function loadDishes() {
-        try {
-            var search = document.getElementById('searchInput').value;
-            var url = '/api/dishes.php?page=1';
-            if (selectedChef) url += '&seller_id=' + selectedChef;
-            if (currentCategory) url += '&category_id=' + currentCategory;
-            if (search) url += '&search=' + encodeURIComponent(search);
-            var res = await fetch(url);
-            var data = await res.json();
-            var grid = document.getElementById('dishesGrid');
-            var empty = document.getElementById('emptyMsg');
-            if (data.success && data.dishes && data.dishes.length > 0) {
-                empty.style.display = 'none';
-                grid.innerHTML = data.dishes.map(function(d) {
+    function loadDishes() {
+        var grid = document.getElementById('dishesGrid');
+        var empty = document.getElementById('emptyMsg');
+        if (!menuDishFeed) menuDishFeed = new InfiniteFeed({
+            grid: grid,
+            sentinel: document.getElementById('dishesSentinel'),
+            url: '/api/dishes.php',
+            key: 'dishes',
+            loadingText: 'Загружаем блюда…',
+            endText: 'Вы посмотрели все блюда',
+            params: function () {
+                var params = {};
+                if (selectedChef) params.seller_id = selectedChef;
+                if (currentCategory) params.category_id = currentCategory;
+                var search = document.getElementById('searchInput').value.trim();
+                if (search) params.search = search;
+                return params;
+            },
+            emptyText: function () { return 'Блюда не найдены'; },
+            onReset: function () { empty.style.display = 'none'; },
+            onTotal: function (total) {
+                empty.style.display = total ? 'none' : 'block';
+            },
+            render: function (dishes) {
+                if (!dishes.length) return;
+                grid.insertAdjacentHTML('beforeend', dishes.map(function(d) {
                     var imgSrc = d.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop';
                     var weightValue = d.weight == null ? '' : String(d.weight).trim();
                     var weight = weightValue ? ' · ' + (/[a-zа-я]/i.test(weightValue) ? weightValue : weightValue + ' г') : '';
@@ -756,17 +771,16 @@ body{padding-bottom:88px;}
                             '<div class="card-purchase-area"><div class="price card-purchase-info' + (discount > 0 ? ' price-discount-row' : '') + '">' + priceLabel + weight + '</div>' +
                             btnHtml +
                         '</div></div></div>';
-                }).join('');
-                var authorNodes=grid.querySelectorAll('.card .chef');
-                data.dishes.forEach(function(dish,index){
-                    var author=authorNodes[index];
+                }).join(''));
+                var authorNodes = grid.querySelectorAll('.card .chef');
+                var start = authorNodes.length - dishes.length;
+                dishes.forEach(function(dish,index){
+                    var author=authorNodes[start + index];
                     if(author)author.insertBefore(window.IcookAuthorAvatar.create(dish.seller_name||'Продавец',dish.seller_avatar,dish.seller_avatar_version,dish.seller_avatar_crop),author.firstChild);
                 });
-            } else {
-                grid.innerHTML = '';
-                empty.style.display = 'block';
             }
-        } catch(e) { console.error('loadDishes error:', e); }
+        });
+        return menuDishFeed.reset();
     }
 
 

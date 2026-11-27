@@ -12,7 +12,7 @@ if (mb_strlen($search) > 100) {
     $search = mb_substr($search, 0, 100);
 }
 $page = max(1, (int) ($_GET['page'] ?? 1));
-$limit = $recipeIds ? min(100, count($recipeIds)) : max(1, min(50, (int) ($_GET['limit'] ?? 12)));
+$limit = $recipeIds ? min(100, count($recipeIds)) : max(1, min(10, (int) ($_GET['limit'] ?? 10)));
 $offset = ($page - 1) * $limit;
 
 // Владелец видит и скрытые свои рецепты (для управления), остальные — только опубликованные.

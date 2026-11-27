@@ -13,7 +13,7 @@ if (mb_strlen($search) > 100) {
     $search = mb_substr($search, 0, 100);
 }
 $page = max(1, (int) ($_GET['page'] ?? 1));
-$limit = $dishIds ? min(100, count($dishIds)) : 12;
+$limit = $dishIds ? min(100, count($dishIds)) : max(1, min(10, (int) ($_GET['limit'] ?? 10)));
 $offset = ($page - 1) * $limit;
 
 // Владелец видит и скрытые свои блюда (для управления), остальные — только доступные.

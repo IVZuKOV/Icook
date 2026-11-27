@@ -5,7 +5,13 @@
         var sentinel = options.sentinel;
         var page = 0, pages = Infinity, loading = false, failed = false;
         var controller = null, generation = 0, seen = new Set();
-        var observer = null;
+        var observer = null, observedTarget = null;
+        function watchTrigger() {
+            if (!observer) return;
+            if (observedTarget) observer.unobserve(observedTarget);
+            observedTarget = grid.children[Math.max(0, grid.children.length - 3)] || sentinel;
+            observer.observe(observedTarget);
+        }
 
         function message(text, retry) {
             sentinel.replaceChildren();
@@ -20,7 +26,7 @@
         async function load() {
             if (loading || page >= pages) return;
             loading = true; failed = false;
-            if (observer) observer.unobserve(sentinel);
+            if (observer && observedTarget) observer.unobserve(observedTarget);
             var currentGeneration = generation;
             var request = new AbortController(); controller = request;
             grid.setAttribute('aria-busy', 'true');
@@ -50,28 +56,33 @@
             } finally {
                 if (currentGeneration === generation) {
                     loading = false; grid.setAttribute('aria-busy', 'false');
-                    if (observer && !failed && page < pages) observer.observe(sentinel);
+                    if (observer && !failed && page < pages) watchTrigger();
                 }
             }
         }
         function reset() {
             generation += 1;
             if (controller) controller.abort();
-            if (observer) observer.unobserve(sentinel);
+            if (observer && observedTarget) observer.unobserve(observedTarget);
+            observedTarget = null;
             loading = false; failed = false; page = 0; pages = Infinity; seen.clear();
             grid.replaceChildren();
             if (options.onReset) options.onReset();
             return load();
         }
+        function checkScrollPosition() {
+            var target = grid.children[Math.max(0, grid.children.length - 3)] || sentinel;
+            if (!failed && !loading && page < pages && target.getBoundingClientRect().top < window.innerHeight) load();
+        }
         if ('IntersectionObserver' in window) {
             observer = new IntersectionObserver(function (entries) {
-                if (entries.some(function (entry) { return entry.isIntersecting; }) && !failed) load();
+                if (entries.some(function (entry) { return entry.isIntersecting; }) && !failed) {
+                    if (observedTarget) observer.unobserve(observedTarget);
+                    load();
+                }
             }, {rootMargin: '0px 0px 100px 0px'});
-        } else {
-            window.addEventListener('scroll', function () {
-                if (!failed && sentinel.getBoundingClientRect().top < window.innerHeight + 100) load();
-            }, {passive: true});
         }
+        window.addEventListener('scroll', checkScrollPosition, {passive: true});
         return {reset: reset, load: load};
     };
 })();
