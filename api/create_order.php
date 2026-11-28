@@ -109,6 +109,7 @@ try {
     }
 
     $discountPercentByCook = [];
+    $discountDishIdsByCook = [];
     $seenCodes = [];
     $promoIdByCook = [];
     $promoCodeByCook = [];
@@ -125,7 +126,7 @@ try {
         }
         $seenCodes[$code] = true;
         $promoStmt = $pdo->prepare(
-            "SELECT id, cook_id, code, discount_percent FROM promocodes
+            "SELECT id, cook_id, code, discount_percent, is_global FROM promocodes
              WHERE code = ? AND cook_id IN ($sellerPlaceholders) AND is_active = 1 FOR UPDATE"
         );
         $promoStmt->execute(array_merge([$code], $sellerIds));
@@ -141,31 +142,48 @@ try {
         if (!promocode_belongs_to_cook($promo, $cookId) || isset($discountPercentByCook[$cookId])) {
             json_out(['error' => 'Можно применить не более одного промокода одного повара'], 422);
         }
+        if ((int) $promo['is_global'] === 1) {
+            $discountDishIdsByCook[$cookId] = null;
+        } else {
+            $scopeStmt = $pdo->prepare('SELECT dish_id FROM promocode_dishes WHERE promocode_id = ?');
+            $scopeStmt->execute([(int) $promo['id']]);
+            $allowedDishIds = array_fill_keys(array_map('intval', $scopeStmt->fetchAll(PDO::FETCH_COLUMN)), true);
+            $eligibleDishIds = [];
+            foreach ($dishesById as $dishId => $dish) {
+                if ((int) $dish['seller_id'] === $cookId && isset($allowedDishIds[(int) $dishId])) {
+                    $eligibleDishIds[] = (int) $dishId;
+                }
+            }
+            if (!$eligibleDishIds) {
+                json_out(['error' => 'Промокод не подходит к блюдам в корзине.'], 422);
+            }
+            $discountDishIdsByCook[$cookId] = array_fill_keys($eligibleDishIds, true);
+        }
         $discountPercentByCook[$cookId] = (int) $promo['discount_percent'];
         $promoIdByCook[$cookId] = (int) $promo['id'];
         $promoCodeByCook[$cookId] = $code;
     }
 
     $lineTotalsByDish = [];
+    foreach ($dishesById as $dishId => $dish) {
+        $lineTotalsByDish[$dishId] = $dish['line_subtotal'];
+    }
     $discountTotal = 0.0;
-    foreach ($dishSubtotalsByCook as $cookId => $lineSubtotals) {
-        if (!isset($discountPercentByCook[$cookId])) {
-            foreach ($dishesById as $dishId => $dish) {
-                if ((int) $dish['seller_id'] === (int) $cookId) {
-                    $lineTotalsByDish[$dishId] = $dish['line_subtotal'];
-                }
-            }
-            continue;
-        }
-        $cookDishIds = [];
+    foreach ($discountPercentByCook as $cookId => $percent) {
+        $eligibleDishIds = [];
         foreach ($dishesById as $dishId => $dish) {
-            if ((int) $dish['seller_id'] === (int) $cookId) {
-                $cookDishIds[] = $dishId;
+            if ((int) $dish['seller_id'] === (int) $cookId
+                && ($discountDishIdsByCook[$cookId] === null || isset($discountDishIdsByCook[$cookId][(int) $dishId]))) {
+                $eligibleDishIds[] = (int) $dishId;
             }
         }
-        $allocation = promocode_discount_lines($lineSubtotals, $discountPercentByCook[$cookId]);
+        $lineSubtotals = array_map(
+            static fn (int $dishId): float => (float) $dishesById[$dishId]['line_subtotal'],
+            $eligibleDishIds
+        );
+        $allocation = promocode_discount_lines($lineSubtotals, $percent);
         $discountTotal += $allocation['discount'];
-        foreach ($cookDishIds as $index => $dishId) {
+        foreach ($eligibleDishIds as $index => $dishId) {
             $lineTotalsByDish[$dishId] = $allocation['line_totals'][$index];
         }
     }

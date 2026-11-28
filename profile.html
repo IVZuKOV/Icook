@@ -101,6 +101,23 @@
 .dish-promocode-delete{width:40px;height:40px;flex:0 0 40px;border:1px solid rgba(239,68,68,.3);border-radius:10px;background:rgba(239,68,68,.08);color:#ef4444;font-size:23px;line-height:1;cursor:pointer;}
 .dish-promocode-delete:hover{background:#ef4444;color:#fff;}
 .dish-promocode-fields{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(90px,.7fr);gap:8px;margin-top:8px;}
+#editDishModal .dish-promocode-scope{display:flex;align-items:center;gap:8px;margin:10px 0 4px;color:var(--text-main);font-size:12px;font-weight:700;}
+#editDishModal .dish-promocode-scope input{width:16px!important;height:16px!important;flex:none;margin:0!important;padding:0!important;accent-color:var(--neon);}
+.dish-promo-confirm-modal{position:fixed;inset:0;z-index:10030;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.58);backdrop-filter:blur(8px);}
+.dish-promo-confirm-modal.active{display:flex;}
+.dish-promo-confirm-dialog{width:min(420px,100%);padding:30px 26px 24px;border:1px solid var(--border-color);border-radius:24px;background:var(--card-bg);color:var(--text-main);text-align:center;box-shadow:0 24px 80px rgba(15,23,42,.28),0 0 28px var(--neon-glow);animation:dishPromoConfirmIn .2s ease-out;}
+.dish-promo-confirm-icon{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 16px;border-radius:19px;background:rgba(239,68,68,.1);color:#dc2626;}
+.dish-promo-confirm-icon svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.dish-promo-confirm-dialog h2{margin:0 0 10px;color:var(--text-main);font-size:22px;font-weight:800;}
+.dish-promo-confirm-dialog p{margin:0;color:var(--text-muted);font-size:15px;line-height:1.5;}
+.dish-promo-confirm-actions{display:flex;justify-content:center;gap:10px;margin-top:24px;}
+.dish-promo-confirm-actions button{min-width:132px;padding:12px 18px;border:1px solid transparent;border-radius:12px;font:inherit;font-weight:800;cursor:pointer;transition:transform .15s,background .2s,border-color .2s;}
+.dish-promo-confirm-actions button:active{transform:scale(.97);}
+.dish-promo-confirm-cancel{background:rgba(30,64,175,.08);border-color:rgba(30,64,175,.18)!important;color:var(--neon-dark);}
+.dish-promo-confirm-cancel:hover{background:rgba(30,64,175,.14);}
+.dish-promo-confirm-accept{background:#ef4444;color:#fff;box-shadow:0 5px 14px rgba(239,68,68,.24);}
+.dish-promo-confirm-accept:hover{background:#dc2626;}
+@keyframes dishPromoConfirmIn{from{opacity:0;transform:translateY(8px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
 .dish-promocode-save{width:100%;margin-top:8px;padding:9px;border:1px solid var(--border-color);border-radius:9px;background:var(--card-bg);color:var(--neon-dark);font:700 13px 'Montserrat',sans-serif;cursor:pointer;}
 .dish-promocode-help,.dish-promocode-status{margin:6px 0 0;color:var(--text-muted);font-size:11px;line-height:1.4;}
 .dish-promocode-status.error{color:#ef4444;}
@@ -135,6 +152,11 @@
 [data-theme="dark"] #editRecipeModal .edit-recipe-save-btn:focus,
 [data-theme="dark"] #editRecipeModal .edit-recipe-save-btn:focus-visible,
 [data-theme="dark"] #editRecipeModal .edit-recipe-save-btn:active{background:#1e293b!important;color:#fff!important;border:1px solid rgba(255,255,255,.45)!important;box-shadow:none!important;}
+[data-theme="dark"] #editDishModal .edit-dish-save-btn,
+[data-theme="dark"] #editDishModal .edit-dish-save-btn:hover,
+[data-theme="dark"] #editDishModal .edit-dish-save-btn:focus,
+[data-theme="dark"] #editDishModal .edit-dish-save-btn:focus-visible,
+[data-theme="dark"] #editDishModal .edit-dish-save-btn:active{background:#1e293b!important;color:#fff!important;border:1px solid rgba(255,255,255,.45)!important;box-shadow:none!important;filter:none!important;text-shadow:none!important;transform:none!important;outline:none!important;}
 
 /* --- Добавить блюдо --- */
 .add-form{background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:24px;box-shadow:0 4px 15px rgba(0,0,0,0.06);}
@@ -655,7 +677,8 @@ button, .btn, a, label {
 <script src="assets/js/site-select.js?v=20261122072403" defer></script>
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
-<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261124121839">
+<link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261126170000">
+<script src="assets/js/quantity-hold.js?v=20261126170000" defer></script>
 <style>
 .back-to-top{position:fixed;bottom:70px;right:16px;z-index:102;width:40px;height:40px;padding:0;border:0;border-radius:12px;background:transparent;color:var(--neon);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s,box-shadow .3s;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 14px var(--neon-glow)}
 .back-to-top.visible{opacity:1;pointer-events:auto}.back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow)}.back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -856,7 +879,7 @@ button, .btn, a, label {
 <div class="form-group"><label>Состав и энергетическая ценность *</label><div id="editDishIngredients" class="dish-ingredients"></div><button type="button" class="sub-add-btn" onclick="addDishIngredientRow('editDishIngredients')">＋ Ингредиент</button></div>
 </div>
 <div class="form-group dish-promocode-box">
-<label for="editDishPromoSelect">Промокоды этого повара</label>
+<label for="editDishPromoSelect">Мои промокоды</label>
 <div class="dish-promocode-picker">
 <select id="editDishPromoSelect" onchange="selectDishPromocode('edit')"><option value="">Новый промокод</option></select>
 <button type="button" class="dish-promocode-delete" aria-label="Удалить выбранный промокод" title="Удалить промокод" onclick="deleteDishPromocode('edit')">×</button>
@@ -865,8 +888,9 @@ button, .btn, a, label {
 <input id="editDishPromoCode" type="text" maxlength="40" autocomplete="off" placeholder="Название промокода">
 <input id="editDishPromoPercent" type="number" min="1" max="100" step="1" placeholder="Скидка %">
 </div>
+<label class="dish-promocode-scope"><input id="editDishPromoOnlyThisDish" type="checkbox">Только для этого блюда</label>
 <button type="button" class="dish-promocode-save" id="editDishPromoSave" onclick="saveDishPromocode('edit')">Создать промокод</button>
-<p class="dish-promocode-help">Промокод даст скидку на блюда этого повара, которые покупатель положит в корзину.</p>
+<p class="dish-promocode-help">Промокод даст скидку на ваши блюда или только на то что вы сейчас редактируете для этого установите галочку только для этого блюда</p>
 <p class="dish-promocode-status" id="editDishPromoStatus" aria-live="polite"></p>
 </div>
 <div class="form-group">
@@ -880,9 +904,20 @@ button, .btn, a, label {
 </div>
 <div style="display:flex;gap:10px;margin-top:16px;">
 <button onclick="closeEditDishModal()" style="flex:1;padding:12px;border:2px solid var(--border-color);border-radius:12px;background:transparent;color:var(--text-main);font-weight:600;cursor:pointer;">Отмена</button>
-<button class="btn" style="flex:1;padding:12px;background:var(--neon);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;" onclick="editDish(document.getElementById('editDishId').value)">Сохранить</button>
+<button class="btn edit-dish-save-btn" style="flex:1;padding:12px;background:var(--neon);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;" onclick="editDish(document.getElementById('editDishId').value)">Сохранить</button>
 </div>
 </div>
+</div>
+<div class="dish-promo-confirm-modal" id="dishPromoGlobalConfirm" role="dialog" aria-modal="true" aria-labelledby="dishPromoGlobalConfirmTitle" aria-describedby="dishPromoGlobalConfirmDescription" onclick="if(event.target===this)resolveDishPromoGlobalConfirm(false)">
+    <div class="dish-promo-confirm-dialog">
+        <div class="dish-promo-confirm-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2.8 19a1.5 1.5 0 0 0 1.3 2.2h15.8a1.5 1.5 0 0 0 1.3-2.2L12 3Z"/><path d="M12 9v5m0 3h.01"/></svg></div>
+        <h2 id="dishPromoGlobalConfirmTitle">Подтвердите действие</h2>
+        <p id="dishPromoGlobalConfirmDescription">Вы точно хотите применить промокод ко всем своим блюдам, если нет установите галочку только для этого блюда</p>
+        <div class="dish-promo-confirm-actions">
+            <button type="button" class="dish-promo-confirm-cancel" onclick="resolveDishPromoGlobalConfirm(false)">Я передумал</button>
+            <button type="button" class="dish-promo-confirm-accept" onclick="resolveDishPromoGlobalConfirm(true)">Уверен</button>
+        </div>
+    </div>
 </div>
 <!-- Модальное окно добавления рецепта -->
 <div class="info-modal-overlay" id="addRecipeModal" style="z-index:10007;">
@@ -1256,6 +1291,23 @@ function previewImage(input) {
 }
 
 var dishPromocodeLists={add:[],edit:[]};
+var dishPromoGlobalConfirmResolver=null;
+
+function confirmDishPromoGlobalScope(){
+    return new Promise(function(resolve){
+        dishPromoGlobalConfirmResolver=resolve;
+        document.getElementById('dishPromoGlobalConfirm').classList.add('active');
+    });
+}
+
+function resolveDishPromoGlobalConfirm(confirmed){
+    var modal=document.getElementById('dishPromoGlobalConfirm');
+    if(modal)modal.classList.remove('active');
+    if(!dishPromoGlobalConfirmResolver)return;
+    var resolve=dishPromoGlobalConfirmResolver;
+    dishPromoGlobalConfirmResolver=null;
+    resolve(confirmed===true);
+}
 
 function setDishPromocodeStatus(context,message,type){
     var status=document.getElementById(context==='add'?'dishPromoStatus':'editDishPromoStatus');
@@ -1267,9 +1319,11 @@ function resetDishPromocodeFields(context,clearStatus){
     var code=document.getElementById(context==='add'?'dishPromoCode':'editDishPromoCode');
     var percent=document.getElementById(context==='add'?'dishPromoPercent':'editDishPromoPercent');
     var save=document.getElementById(context==='add'?'dishPromoSave':'editDishPromoSave');
+    var onlyThisDish=document.getElementById('editDishPromoOnlyThisDish');
     if(select)select.value='';
     if(code)code.value='';
     if(percent)percent.value='';
+    if(context==='edit'&&onlyThisDish)onlyThisDish.checked=false;
     if(save)save.textContent='Создать промокод';
     if(clearStatus)setDishPromocodeStatus(context,'');
 }
@@ -1279,13 +1333,16 @@ async function loadDishPromocodes(context){
     if(!select)return;
     var selected=select.value;
     try{
-        var response=await fetch('/api/promocodes.php',{credentials:'same-origin'});
+        var dishId=context==='edit'?document.getElementById('editDishId').value:'';
+        var url='/api/promocodes.php'+(dishId?'?dish_id='+encodeURIComponent(dishId):'');
+        var response=await fetch(url,{credentials:'same-origin'});
         var data=await response.json();
         if(!response.ok||!data.success)throw new Error(data.error||'Не удалось загрузить промокоды');
         dishPromocodeLists[context]=Array.isArray(data.promocodes)?data.promocodes:[];
         select.replaceChildren(new Option('Новый промокод',''));
         dishPromocodeLists[context].forEach(function(promo){
-            select.add(new Option(promo.code+' — '+promo.discount_percent+'%',String(promo.id)));
+            var promoScope=Number(promo.is_global)===1?' · все блюда':' · '+(promo.dish_ids||[]).length+' блюд';
+            select.add(new Option(promo.code+' — '+promo.discount_percent+'%'+promoScope,String(promo.id)));
         });
         if(dishPromocodeLists[context].some(function(promo){return String(promo.id)===selected;}))select.value=selected;
         else resetDishPromocodeFields(context,false);
@@ -1299,10 +1356,15 @@ function selectDishPromocode(context){
     var code=document.getElementById(context==='add'?'dishPromoCode':'editDishPromoCode');
     var percent=document.getElementById(context==='add'?'dishPromoPercent':'editDishPromoPercent');
     var save=document.getElementById(context==='add'?'dishPromoSave':'editDishPromoSave');
+    var onlyThisDish=document.getElementById('editDishPromoOnlyThisDish');
     var promo=dishPromocodeLists[context].find(function(item){return String(item.id)===(select&&select.value);});
     if(!promo){resetDishPromocodeFields(context,true);return;}
     code.value=promo.code;
     percent.value=promo.discount_percent;
+    if(context==='edit'&&onlyThisDish){
+        var assignedDishIds=Array.isArray(promo.dish_ids)?promo.dish_ids.map(Number):[];
+        onlyThisDish.checked=Number(promo.is_global)!==1&&assignedDishIds.indexOf(Number(document.getElementById('editDishId').value))!==-1;
+    }
     save.textContent='Сохранить изменения';
     setDishPromocodeStatus(context,'Промокод выбран. Можно изменить название или процент скидки.');
 }
@@ -1313,7 +1375,17 @@ async function saveDishPromocode(context){
     var percent=document.getElementById(context==='add'?'dishPromoPercent':'editDishPromoPercent');
     var save=document.getElementById(context==='add'?'dishPromoSave':'editDishPromoSave');
     var selectedId=select&&select.value;
+    var onlyThisDish=document.getElementById('editDishPromoOnlyThisDish');
+    var restrictToCurrentDish=context==='edit'&&onlyThisDish&&onlyThisDish.checked;
+    if(context==='edit'&&!restrictToCurrentDish){
+        var confirmed=await confirmDishPromoGlobalScope();
+        if(!confirmed)return;
+    }
     var payload={action:selectedId?'update':'create',code:code.value.trim(),discount_percent:percent.value};
+    if(context==='edit'){
+        payload.only_this_dish=!!restrictToCurrentDish;
+        payload.current_dish_id=Number(document.getElementById('editDishId').value);
+    }
     if(selectedId)payload.id=Number(selectedId);
     save.disabled=true;
     setDishPromocodeStatus(context,'Сохраняем…');

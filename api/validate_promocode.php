@@ -35,18 +35,23 @@ if (!$qtyByDish) {
 
 $placeholders = implode(',', array_fill(0, count($qtyByDish), '?'));
 $dishStmt = $pdo->prepare(
-    "SELECT d.id, d.user_id AS cook_id, d.price, u.name AS cook_name
+    "SELECT d.id, d.user_id AS cook_id, d.price, d.discount_percent, u.name AS cook_name
      FROM dishes d JOIN users u ON u.id = d.user_id
      WHERE d.id IN ($placeholders) AND d.is_available = 1"
 );
 $dishStmt->execute(array_keys($qtyByDish));
 $sellerTotals = [];
-$eligibleDishIds = [];
+$cartDishesById = [];
 $sellerNames = [];
 foreach ($dishStmt->fetchAll() as $dish) {
     $cookId = (int) $dish['cook_id'];
-    $sellerTotals[$cookId] = ($sellerTotals[$cookId] ?? 0) + (float) $dish['price'] * $qtyByDish[(int) $dish['id']];
-    $eligibleDishIds[$cookId][] = (int) $dish['id'];
+    $dishId = (int) $dish['id'];
+    $salePrice = round((float) $dish['price'] * (1 - (int) $dish['discount_percent'] / 100), 2);
+    $cartDishesById[$dishId] = [
+        'cook_id' => $cookId,
+        'subtotal' => round($salePrice * $qtyByDish[$dishId], 2),
+    ];
+    $sellerTotals[$cookId] = ($sellerTotals[$cookId] ?? 0) + $cartDishesById[$dishId]['subtotal'];
     $sellerNames[$cookId] = (string) $dish['cook_name'];
 }
 if (!$sellerTotals) {
@@ -56,7 +61,7 @@ if (!$sellerTotals) {
 $sellerIds = array_keys($sellerTotals);
 $sellerPlaceholders = implode(',', array_fill(0, count($sellerIds), '?'));
 $stmt = $pdo->prepare(
-    "SELECT id, cook_id, code, discount_percent
+    "SELECT id, cook_id, code, discount_percent, is_global
      FROM promocodes
      WHERE code = ? AND cook_id IN ($sellerPlaceholders) AND is_active = 1"
 );
@@ -75,7 +80,30 @@ if (!promocode_belongs_to_cook($promo, $cookId)) {
     json_out(['success' => false, 'error' => 'Промокод не подходит к товарам в корзине'], 422);
 }
 
-$subtotal = round((float) $sellerTotals[$cookId], 2);
+$isGlobal = (int) $promo['is_global'] === 1;
+if ($isGlobal) {
+    $eligibleDishIds = array_keys(array_filter(
+        $cartDishesById,
+        static fn (array $dish): bool => $dish['cook_id'] === $cookId
+    ));
+} else {
+    $scopeStmt = $pdo->prepare('SELECT dish_id FROM promocode_dishes WHERE promocode_id = ?');
+    $scopeStmt->execute([(int) $promo['id']]);
+    $allowedDishIds = array_fill_keys(array_map('intval', $scopeStmt->fetchAll(PDO::FETCH_COLUMN)), true);
+    $eligibleDishIds = array_keys(array_filter(
+        $cartDishesById,
+        static fn (array $dish, int $dishId): bool => $dish['cook_id'] === $cookId && isset($allowedDishIds[$dishId]),
+        ARRAY_FILTER_USE_BOTH
+    ));
+    if (!$eligibleDishIds) {
+        json_out(['success' => false, 'error' => 'Промокод не подходит к блюдам в корзине.'], 422);
+    }
+}
+$subtotal = 0.0;
+foreach ($eligibleDishIds as $eligibleDishId) {
+    $subtotal += $cartDishesById[$eligibleDishId]['subtotal'];
+}
+$subtotal = round($subtotal, 2);
 $percent = (int) $promo['discount_percent'];
 json_out([
     'success' => true,
@@ -85,8 +113,9 @@ json_out([
         'cook_id' => $cookId,
         'cook_name' => $sellerNames[$cookId] ?? 'Повар',
         'discount_percent' => $percent,
+        'is_global' => $isGlobal,
         'subtotal' => $subtotal,
         'discount_amount' => promocode_discount_amount($subtotal, $percent),
-        'eligible_dish_ids' => array_values($eligibleDishIds[$cookId] ?? []),
+        'eligible_dish_ids' => array_values($eligibleDishIds),
     ],
 ]);
