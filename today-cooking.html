@@ -30,11 +30,13 @@
  .bulk-toolbar select{min-width:185px;min-height:40px;padding:8px 12px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:600 13px 'Rubik',sans-serif}
   .apply-status,.save-stock-btn{min-height:40px;padding:8px 14px;border:1px solid #1e40af;border-radius:10px;background:#1e40af;color:#fff;font:700 13px 'Rubik',sans-serif;text-shadow:0 0 5px rgba(255,255,255,.75),0 0 12px rgba(255,255,255,.4);box-shadow:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,transform .15s}
   .apply-status:hover:not(:disabled),.save-stock-btn:hover:not(:disabled){background:#1e3a8a;border-color:#1e3a8a;box-shadow:none}
-  .apply-status:active:not(:disabled),.save-stock-btn:active:not(:disabled){background:#1e40af;border-color:#1e40af;transform:translateY(2px);box-shadow:none}
- .apply-status:disabled,.save-stock-btn:disabled{opacity:1;cursor:not-allowed;box-shadow:none;filter:none}
-  [data-theme=dark] .apply-status,[data-theme=dark] .save-stock-btn{border-color:rgba(255,255,255,.34);background:#1e293b;color:#fff;text-shadow:0 0 6px rgba(255,255,255,.9),0 0 14px rgba(255,255,255,.5);box-shadow:none}
-  [data-theme=dark] .apply-status:hover:not(:disabled),[data-theme=dark] .save-stock-btn:hover:not(:disabled){border-color:rgba(255,255,255,.62);background:#334155;box-shadow:none}
-  [data-theme=dark] .apply-status:active:not(:disabled),[data-theme=dark] .save-stock-btn:active:not(:disabled){border-color:rgba(255,255,255,.34);background:#1e293b;transform:translateY(2px);box-shadow:none}
+  .apply-status:active:not(:disabled),.save-stock-btn:active:not(:disabled){background:#1e40af;border-color:#1e40af;transform:translateY(3px) scale(.98);box-shadow:none}
+  .apply-status.is-pressing,.save-stock-btn.is-pressing{transform:translateY(3px) scale(.98)}
+  .apply-status:disabled,.save-stock-btn:disabled{opacity:1;cursor:not-allowed;box-shadow:none;filter:none}
+  [data-theme=dark] .apply-status,[data-theme=dark] .save-stock-btn{border-color:#fff;background:#1e293b;color:#fff;text-shadow:0 0 6px rgba(255,255,255,.9),0 0 14px rgba(255,255,255,.5);box-shadow:0 0 7px rgba(255,255,255,.62),inset 0 0 0 1px rgba(255,255,255,.24)}
+  [data-theme=dark] .apply-status:hover:not(:disabled),[data-theme=dark] .save-stock-btn:hover:not(:disabled){border-color:#fff;background:#334155;box-shadow:0 0 11px rgba(255,255,255,.78),inset 0 0 0 1px rgba(255,255,255,.34)}
+  [data-theme=dark] .apply-status:active:not(:disabled),[data-theme=dark] .save-stock-btn:active:not(:disabled){border-color:#fff;background:#1e293b;transform:translateY(3px) scale(.98);box-shadow:0 0 6px rgba(255,255,255,.58),inset 0 0 0 1px rgba(255,255,255,.2)}
+  [data-theme=dark] .apply-status.is-pressing,[data-theme=dark] .save-stock-btn.is-pressing{border-color:#fff;background:#1e293b;transform:translateY(3px) scale(.98);box-shadow:0 0 6px rgba(255,255,255,.58),inset 0 0 0 1px rgba(255,255,255,.2)}
 .table-scroll{max-height:calc(100vh - 275px);min-height:240px;overflow:auto;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);overscroll-behavior:contain}.dishes-table{width:100%;min-width:850px;border-collapse:separate;border-spacing:0;text-align:left;font-size:13px}.dishes-table th{position:sticky;top:0;z-index:2;padding:12px 11px;background:var(--card-bg);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border-color);white-space:nowrap}.dishes-table td{padding:10px 11px;vertical-align:middle;border-bottom:1px solid var(--border-color);line-height:1.4}.dishes-table tbody tr:last-child td{border-bottom:0}.dishes-table tbody tr:hover{background:var(--neon-glow)}.dishes-table input[type=checkbox]{width:17px;height:17px;accent-color:var(--neon);cursor:pointer}
 .dish-cell{display:flex;align-items:center;gap:10px;min-width:235px}.dish-thumb{width:48px;height:48px;flex:0 0 48px;object-fit:cover;border-radius:9px;background:var(--bg)}.dish-name{font-weight:700;color:var(--text-main)}.dish-category{display:block;margin-top:3px;color:var(--text-muted);font-size:11px}.dish-price{font-weight:800;white-space:nowrap}.dish-status{display:inline-flex;padding:4px 8px;border-radius:7px;background:rgba(16,185,129,.13);color:#059669;font-size:11px;font-weight:700;white-space:nowrap}.dish-status.off{background:rgba(239,68,68,.12);color:#dc2626}
 .stock-input{width:110px;min-height:38px;padding:7px 9px;border:1px solid var(--border-color);border-radius:9px;background:var(--bg);color:var(--text-main);font:600 14px 'Rubik',sans-serif}.stock-input.dirty{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.14)}.stock-hint{display:block;margin-top:3px;color:var(--text-muted);font-size:10px}
@@ -105,7 +107,7 @@
             var priceCell=document.createElement('td');priceCell.className='dish-price';priceCell.textContent=Number(dish.price||0).toLocaleString('ru-RU')+' ₽';row.appendChild(priceCell);
             var statusCell=document.createElement('td'),status=document.createElement('span'),available=Number(dish.is_available)===1;status.className='dish-status'+(available?'':' off');status.textContent=available?'В меню':'В стоп-листе';statusCell.appendChild(status);row.appendChild(statusCell);
             var stockCell=document.createElement('td'),stock=document.createElement('input'),hint=document.createElement('span');
-            stock.type='number';stock.min='0';stock.max='1000000';stock.step='1';stock.inputMode='numeric';stock.className='stock-input';stock.dataset.dishId=String(dish.id);stock.value=dish.remaining_count===null||dish.remaining_count===undefined?'':String(dish.remaining_count);stock.placeholder='Без лимита';stock.setAttribute('aria-label','Остаток блюда '+dish.title);
+            stock.type='number';stock.min='0';stock.max='1000000';stock.step='1';stock.inputMode='numeric';stock.className='stock-input';stock.dataset.dishId=String(dish.id);stock.value=dish.remaining_count===null||dish.remaining_count===undefined?'':String(dish.remaining_count);stock.dataset.originalValue=stock.value;stock.placeholder='Без лимита';stock.setAttribute('aria-label','Остаток блюда '+dish.title);
             hint.className='stock-hint';hint.textContent='пусто — без лимита';
             var counter=document.createElement('div'),minus=document.createElement('button'),value=document.createElement('span'),plus=document.createElement('button');
             counter.className='stock-counter';minus.type=plus.type='button';minus.className=plus.className='qty-btn';minus.textContent='−';plus.textContent='+';minus.setAttribute('aria-label','Уменьшить количество на сегодня; при нуле включить безлимит');plus.setAttribute('aria-label','Увеличить количество на сегодня');value.className='stock-counter-value'+(stock.value===''?' unlimited':'');value.textContent=stock.value===''?'∞':stock.value;minus.disabled=stock.value==='';minus.addEventListener('click',function(){adjustStock(dish.id,-1,row,minus,plus)});plus.addEventListener('click',function(){adjustStock(dish.id,1,row,minus,plus)});counter.append(minus,value,plus);
@@ -169,10 +171,31 @@
     selectAll.addEventListener('change',function(){tbody.querySelectorAll('.dish-select').forEach(function(box){box.checked=selectAll.checked});updateControls()});
     document.getElementById('clearSelection').addEventListener('click',function(){tbody.querySelectorAll('.dish-select').forEach(function(box){box.checked=false});selectAll.checked=false;updateControls()});
     bulkAvailability.addEventListener('change',updateControls);
+    function bindPressEffect(button){
+        var timer;
+        function press(event){
+            if(button.disabled)return;
+            if(event.type==='keydown'&&event.key!=='Enter'&&event.key!==' ')return;
+            button.classList.add('is-pressing');
+            clearTimeout(timer);
+            timer=setTimeout(function(){button.classList.remove('is-pressing')},180);
+        }
+        button.addEventListener('pointerdown',press);
+        button.addEventListener('keydown',press);
+        button.addEventListener('pointercancel',function(){clearTimeout(timer);button.classList.remove('is-pressing')});
+    }
+    bindPressEffect(applyButton);
+    bindPressEffect(saveButton);
     applyButton.addEventListener('click',function(){setAvailability(selectedIds(),bulkAvailability.value)});
     saveButton.addEventListener('click',saveStocks);
     document.getElementById('exportDishes').addEventListener('click',exportDishes);
-    tbody.addEventListener('input',function(event){if(event.target.matches('.stock-input')){event.target.classList.add('dirty');updateControls()}});
+    function updateStockInput(event){
+        if(!event.target.matches('.stock-input'))return;
+        event.target.classList.toggle('dirty',event.target.value!==event.target.dataset.originalValue);
+        updateControls();
+    }
+    tbody.addEventListener('input',updateStockInput);
+    tbody.addEventListener('change',updateStockInput);
     loadDishes();
 })();
 </script>
