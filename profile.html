@@ -557,11 +557,11 @@ body.admin-standalone main>.tab-content:not(#tab-admin){display:none!important;}
 body.admin-standalone .bottom-bar,body.admin-standalone nav.bottom-bar{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;max-height:0!important;pointer-events:none!important;}
 body.admin-standalone main.container{width:100%;max-width:none!important;margin:0!important;padding:0!important;}
 body.admin-standalone #tab-admin{display:block!important;margin:0!important;}
-body.admin-standalone .admin-dashboard{width:auto!important;max-width:none!important;min-height:calc(100vh - 64px);margin:0!important;overflow:visible;border:0;border-radius:0;box-shadow:none;zoom:1!important;}
+body.admin-standalone .admin-dashboard{width:auto!important;max-width:none!important;min-height:100vh;margin:0!important;overflow:visible;border:0;border-radius:0;box-shadow:none;zoom:1!important;}
 body.admin-standalone .admin-dashboard-top{display:none;}
-body.admin-standalone .admin-dashboard-layout{grid-template-columns:248px minmax(0,1fr)!important;min-height:calc(100vh - 64px);}
-body.admin-standalone .admin-sidebar{position:sticky;top:0;height:calc(100vh - 64px);padding:22px 14px;overflow-y:auto;transform:none;transition:width .2s,transform .2s;z-index:2;}
-body.admin-standalone .admin-workspace{min-width:0;min-height:calc(100vh - 64px);padding:26px;overflow-x:auto;}
+body.admin-standalone .admin-dashboard-layout{grid-template-columns:248px minmax(0,1fr)!important;min-height:100vh;}
+body.admin-standalone .admin-sidebar{position:sticky;top:0;height:100vh;padding:22px 14px;overflow-y:auto;transform:none;transition:width .2s,transform .2s;z-index:2;}
+body.admin-standalone .admin-workspace{min-width:0;min-height:100vh;padding:26px;overflow-x:auto;}
 body.admin-standalone.admin-sidebar-collapsed .admin-dashboard-layout{grid-template-columns:76px minmax(0,1fr)!important;}
 body.admin-standalone.admin-sidebar-collapsed .admin-sidebar{padding:18px 8px;}
 body.admin-standalone.admin-sidebar-collapsed .admin-sidebar-caption,
@@ -571,12 +571,12 @@ body.admin-standalone.admin-sidebar-collapsed .admin-sidebar .admin-nav .tab{jus
 body.admin-standalone .admin-sidebar-backdrop{display:none;}
 @media(max-width:900px){
     body.admin-standalone .admin-dashboard-layout{grid-template-columns:220px minmax(0,1fr)!important;}
-    body.admin-standalone .admin-sidebar{height:calc(100vh - 64px);padding:18px 10px;}
+    body.admin-standalone .admin-sidebar{height:100vh;padding:18px 10px;}
     body.admin-standalone .admin-workspace{padding:22px 18px;}
     body.admin-standalone .admin-sidebar .admin-nav{flex-direction:column;overflow:visible;}
 }
 @media(max-width:760px){
-    body.admin-standalone .admin-dashboard-layout{display:block!important;min-height:calc(100vh - 64px);}
+    body.admin-standalone .admin-dashboard-layout{display:block!important;min-height:100vh;}
     body.admin-standalone .admin-sidebar{position:fixed;top:0;bottom:0;left:0;width:min(280px,84vw);height:100%;padding:20px 14px;overflow-y:auto;box-shadow:12px 0 30px rgba(0,0,0,.2);transform:translateX(-110%);transition:transform .24s ease;z-index:1001;}
     body.admin-standalone.admin-sidebar-open .admin-sidebar{transform:translateX(0);}
     body.admin-standalone.admin-sidebar-open .admin-sidebar-backdrop{position:fixed;inset:0;display:block;width:100%;height:100%;border:0;background:rgba(15,23,42,.46);z-index:1000;}
@@ -586,7 +586,7 @@ body.admin-standalone .admin-sidebar-backdrop{display:none;}
     body.admin-standalone.admin-sidebar-collapsed .admin-sidebar-divider,
     body.admin-standalone.admin-sidebar-collapsed .admin-nav button>span:last-child{display:block;}
     body.admin-standalone.admin-sidebar-collapsed .admin-sidebar .admin-nav .tab{justify-content:flex-start;padding:10px 12px;}
-    body.admin-standalone .admin-workspace{min-width:0;min-height:calc(100vh - 64px);padding:18px 14px 28px;overflow-x:clip;}
+    body.admin-standalone .admin-workspace{min-width:0;min-height:100vh;padding:18px 14px 28px;overflow-x:clip;}
     body.admin-standalone .admin-workspace-header{align-items:flex-start;}
     body.admin-standalone .admin-workspace-title{font-size:24px;}
     body.admin-standalone #adminContent .admin-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
