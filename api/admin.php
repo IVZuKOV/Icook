@@ -2,6 +2,10 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/category_path.php';
+require_once __DIR__ . '/lib/dish_ingredients.php';
+require_once __DIR__ . '/lib/ingredients.php';
+require_once __DIR__ . '/lib/promocodes.php';
 
 $admin = require_admin($pdo);
 $action = (string) ($_GET['action'] ?? $_POST['action'] ?? '');
@@ -20,7 +24,9 @@ switch ($action) {
 
     case 'dishes':
         $stmt = $pdo->query(
-            'SELECT d.id, d.title, d.description, d.price, d.weight, d.is_available, d.category_id, d.created_at,
+            'SELECT d.id, d.title, d.description, d.price, d.weight, d.discount_percent, d.is_available, d.category_id, d.created_at,
+                    (SELECT GROUP_CONCAT(CONCAT(p.code, \' (\', p.discount_percent, \'%)\') ORDER BY p.code SEPARATOR \', \')
+                     FROM promocodes p WHERE p.cook_id = d.user_id AND p.is_active = 1) AS promocodes,
                     u.name as seller_name, c.name as category_name
              FROM dishes d
              LEFT JOIN users u ON d.user_id = u.id
@@ -28,6 +34,94 @@ switch ($action) {
              ORDER BY d.id DESC'
         );
         json_out(['success' => true, 'data' => $stmt->fetchAll()]);
+
+    case 'dish_details':
+        $dishId = (int) ($_GET['id'] ?? 0);
+        $stmt = $pdo->prepare('SELECT * FROM dishes WHERE id = ?');
+        $stmt->execute([$dishId]);
+        $dish = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$dish) {
+            json_out(['success' => false, 'error' => 'Блюдо не найдено'], 404);
+        }
+        $ingredients = $pdo->prepare(
+            'SELECT ingredient_name AS name, amount_grams, energy_kj_per_100g
+             FROM dish_ingredients WHERE dish_id = ? ORDER BY position, id'
+        );
+        $ingredients->execute([$dishId]);
+        $dish['ingredients'] = $ingredients->fetchAll(PDO::FETCH_ASSOC);
+        $promocodes = $pdo->prepare(
+            'SELECT id, code, discount_percent FROM promocodes
+             WHERE cook_id = ? AND is_active = 1 ORDER BY code, id'
+        );
+        $promocodes->execute([(int) $dish['user_id']]);
+        $dish['promocodes'] = $promocodes->fetchAll(PDO::FETCH_ASSOC);
+        json_out(['success' => true, 'dish' => $dish]);
+
+    case 'dish_promocodes':
+        $data = body_json();
+        $dishId = (int) ($_GET['dish_id'] ?? $data['dish_id'] ?? 0);
+        $owner = $pdo->prepare('SELECT user_id FROM dishes WHERE id = ?');
+        $owner->execute([$dishId]);
+        $cookId = (int) $owner->fetchColumn();
+        if ($dishId <= 0 || $cookId <= 0) {
+            json_out(['success' => false, 'error' => 'Блюдо не найдено'], 404);
+        }
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+            $stmt = $pdo->prepare(
+                'SELECT id, code, discount_percent FROM promocodes
+                 WHERE cook_id = ? AND is_active = 1 ORDER BY code, id'
+            );
+            $stmt->execute([$cookId]);
+            json_out(['success' => true, 'promocodes' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+        }
+        $promoAction = (string) ($data['action'] ?? '');
+        $promoId = (int) ($data['id'] ?? 0);
+        if ($promoAction === 'delete') {
+            $stmt = $pdo->prepare('DELETE FROM promocodes WHERE id = ? AND cook_id = ?');
+            $stmt->execute([$promoId, $cookId]);
+            if ($stmt->rowCount() < 1) {
+                json_out(['success' => false, 'error' => 'Промокод не найден'], 404);
+            }
+            json_out(['success' => true]);
+        }
+        if (!in_array($promoAction, ['create', 'update'], true)) {
+            json_out(['success' => false, 'error' => 'Неизвестное действие'], 400);
+        }
+        try {
+            $code = normalize_promocode((string) ($data['code'] ?? ''));
+        } catch (InvalidArgumentException $error) {
+            json_out(['success' => false, 'error' => $error->getMessage()], 400);
+        }
+        $percent = filter_var($data['discount_percent'] ?? null, FILTER_VALIDATE_INT);
+        if ($percent === false || $percent < 1 || $percent > 100) {
+            json_out(['success' => false, 'error' => 'Скидка должна быть целым числом от 1 до 100'], 400);
+        }
+        try {
+            if ($promoAction === 'create') {
+                $stmt = $pdo->prepare('INSERT INTO promocodes (cook_id, code, discount_percent) VALUES (?, ?, ?)');
+                $stmt->execute([$cookId, $code, $percent]);
+                $promoId = (int) $pdo->lastInsertId();
+            } else {
+                $stmt = $pdo->prepare(
+                    'UPDATE promocodes SET code = ?, discount_percent = ?
+                     WHERE id = ? AND cook_id = ? AND is_active = 1'
+                );
+                $stmt->execute([$code, $percent, $promoId, $cookId]);
+                if ($stmt->rowCount() < 1) {
+                    $check = $pdo->prepare('SELECT id FROM promocodes WHERE id = ? AND cook_id = ? AND is_active = 1');
+                    $check->execute([$promoId, $cookId]);
+                    if (!$check->fetchColumn()) {
+                        json_out(['success' => false, 'error' => 'Промокод не найден'], 404);
+                    }
+                }
+            }
+        } catch (PDOException $error) {
+            if ((string) $error->getCode() === '23000') {
+                json_out(['success' => false, 'error' => 'У повара уже есть такой промокод'], 409);
+            }
+            throw $error;
+        }
+        json_out(['success' => true, 'promocode' => ['id' => $promoId, 'code' => $code, 'discount_percent' => $percent]]);
 
     case 'recipes':
         $stmt = $pdo->query(
@@ -116,6 +210,50 @@ switch ($action) {
         $id = (int) ($data['id'] ?? 0);
         if ($id <= 0) {
             json_out(['success' => false, 'error' => 'Нет ID']);
+        }
+        if (array_key_exists('ingredients', $data)) {
+            $title = trim((string) ($data['title'] ?? ''));
+            $description = trim((string) ($data['description'] ?? ''));
+            $price = (float) ($data['price'] ?? 0);
+            $weight = trim((string) ($data['weight'] ?? ''));
+            $discount = filter_var($data['discount_percent'] ?? 0, FILTER_VALIDATE_INT);
+            $categoryId = resolve_dish_category($pdo, $data);
+            try {
+                $ingredients = dish_ingredients_parse($data['ingredients']);
+            } catch (InvalidArgumentException $error) {
+                json_out(['success' => false, 'error' => $error->getMessage()], 400);
+            }
+            if ($title === '' || mb_strlen($title) > 150) {
+                json_out(['success' => false, 'error' => 'Некорректное название'], 400);
+            }
+            if (mb_strlen($description) > 3000 || mb_strlen($weight) > 50) {
+                json_out(['success' => false, 'error' => 'Слишком длинное описание или вес'], 400);
+            }
+            if ($price <= 0 || $price > 10000000) {
+                json_out(['success' => false, 'error' => 'Некорректная цена'], 400);
+            }
+            if ($categoryId === null) {
+                json_out(['success' => false, 'error' => 'Выберите категорию и подкатегорию'], 400);
+            }
+            if ($discount === false || $discount < 0 || $discount > 90) {
+                json_out(['success' => false, 'error' => 'Скидка должна быть от 0 до 90%'], 400);
+            }
+            $pdo->beginTransaction();
+            try {
+                $pdo->prepare(
+                    'UPDATE dishes SET title = ?, description = ?, price = ?, weight = ?, category_id = ?, discount_percent = ?
+                     WHERE id = ?'
+                )->execute([$title, $description, $price, $weight, $categoryId, $discount, $id]);
+                dish_ingredients_replace($pdo, $id, $ingredients);
+                dish_ingredients_catalog_sync($pdo, $ingredients);
+                $pdo->commit();
+            } catch (Throwable $error) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                throw $error;
+            }
+            json_out(['success' => true]);
         }
         $fields = [];
         $params = [];

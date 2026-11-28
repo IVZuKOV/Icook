@@ -2485,7 +2485,10 @@ async function loadAdminSection(section, btn, historyState){
         
         var html = '<div class="admin-table-wrap"><table class="admin-table' + (section === 'dishes' ? ' admin-dishes-table' : '') + '"><thead><tr>';
         var keys = Object.keys(rows[0]);
-        keys.forEach(function(k){ html += '<th scope="col" data-admin-column="' + adminEsc(k) + '"' + (k==='id'?'':' style="display:none"') + '>' + adminEsc(k) + '</th>'; });
+        keys.forEach(function(k){
+            var columnTitle=k==='promocodes'?'Промокоды':'';
+            html += '<th scope="col" data-admin-column="' + adminEsc(k) + '"' + (k==='id'?'':' style="display:none"') + '>' + adminEsc(columnTitle||k) + '</th>';
+        });
         html += section === 'users'
             ? '<th scope="col" aria-label="Действия"></th></tr></thead><tbody>'
             : section === 'dishes' ? '</tr></thead><tbody>'
@@ -2501,7 +2504,8 @@ async function loadAdminSection(section, btn, historyState){
                 if(section==='dishes'&&k==='id'){
                     html += '<td data-label="' + adminEsc(k) + '"><div class="admin-dish-id-cell"><span data-admin-column="' + adminEsc(k) + '">' + adminEsc(val) + '</span>' + adminDishActionButtons(row) + '</div></td>';
                 }else{
-                    html += '<td data-label="' + adminEsc(k) + '" data-admin-column="' + adminEsc(k) + '"' + (k==='id'?'':' style="display:none"') + '>' + adminEsc(val) + '</td>';
+                    var columnTitle=k==='promocodes'?'Промокоды':k;
+                    html += '<td data-label="' + adminEsc(columnTitle) + '" data-admin-column="' + adminEsc(k) + '"' + (k==='id'?'':' style="display:none"') + '>' + adminEsc(val) + '</td>';
                 }
             });
             html += section === 'users' ? '<td>' : section==='dishes' ? '' : '<td data-label="Действия">';
@@ -2563,11 +2567,12 @@ function buildAdminSectionToolbar(section,rows){
     var buttons=filters.map(function(filter,index){
         return '<button type="button" class="admin-user-column-toggle'+(index===0?' active':'')+'" data-admin-filter="'+adminEsc(filter.value)+'">'+adminEsc(filter.label)+'</button>';
     }).join('');
-    var columnLabels={id:'ID',title:'TI',price:'PR',weight:'WE',is_available:'AV',created_at:'DT',seller_name:'SE',category_name:'CA',author_name:'AU',status:'ST',total:'TO',buyer_name:'BY',name:'NA',parent_id:'PA',sort_order:'SO'};
+    var columnLabels={id:'ID',title:'TI',price:'PR',weight:'WE',is_available:'AV',created_at:'DT',seller_name:'SE',category_name:'CA',author_name:'AU',status:'ST',total:'TO',buyer_name:'BY',name:'NA',parent_id:'PA',sort_order:'SO',promocodes:'PC'};
     var columnButtons=Object.keys(rows[0]||{}).map(function(key){
         var label=columnLabels[key]||key.slice(0,2).toUpperCase();
         var active=key==='id';
-        return '<button type="button" class="admin-user-column-toggle'+(active?' active':'')+'" data-admin-column-toggle="'+adminEsc(key)+'" aria-pressed="'+active+'" title="'+(active?'Скрыть':'Показать')+' столбец: '+adminEsc(key)+'" aria-label="'+(active?'Скрыть':'Показать')+' столбец: '+adminEsc(key)+'">'+adminEsc(label)+'</button>';
+        var title=key==='promocodes'?'Промокоды повара':key;
+        return '<button type="button" class="admin-user-column-toggle'+(active?' active':'')+'" data-admin-column-toggle="'+adminEsc(key)+'" aria-pressed="'+active+'" title="'+(active?'Скрыть':'Показать')+' столбец: '+adminEsc(title)+'" aria-label="'+(active?'Скрыть':'Показать')+' столбец: '+adminEsc(title)+'">'+adminEsc(label)+'</button>';
     }).join('');
     return '<div class="admin-users-toolbar admin-section-toolbar" data-filter="all">'+
         '<div class="admin-search-row"><input type="search" id="adminSectionSearch" placeholder="Поиск по таблице..." aria-label="Поиск по таблице"></div>'+
@@ -2691,40 +2696,99 @@ async function confirmAdminDeleteDish(){
 }
 
 async function openAdminEditDish(id){
-    var row=adminDishesAllRows.find(function(item){return Number(item.id)===Number(id);});
-    if(!row)return;
-    var modal=document.getElementById('adminDishEditModal');
-    document.getElementById('adminDishEditId').value=row.id;
-    document.getElementById('adminDishEditTitle').value=row.title||'';
-    document.getElementById('adminDishEditDescription').value=row.description||'';
-    document.getElementById('adminDishEditPrice').value=row.price||'';
-    document.getElementById('adminDishEditWeight').value=row.weight||'';
-    var category=document.getElementById('adminDishEditCategory');
-    if(category.options.length<=1){
-        try{
-            var response=await fetch('/api/admin.php?action=categories');
-            var result=await response.json();
-            (result.data||[]).forEach(function(item){
-                var option=document.createElement('option');
-                option.value=item.id;option.textContent=item.name;category.appendChild(option);
-            });
-        }catch(e){}
-    }
-    category.value=String(row.category_id||'');
-    modal.classList.add('active');
+    try{
+        var response=await fetch('/api/admin.php?action=dish_details&id='+encodeURIComponent(id));
+        var result=await response.json();
+        if(!response.ok||!result.success)throw new Error(result.error||'Не удалось загрузить блюдо');
+        var dish=result.dish||{};
+        document.getElementById('adminDishEditId').value=dish.id;
+        document.getElementById('adminDishEditTitle').value=dish.title||'';
+        document.getElementById('adminDishEditDescription').value=dish.description||'';
+        document.getElementById('adminDishEditPrice').value=dish.price||'';
+        document.getElementById('adminDishEditWeight').value=dish.weight||'';
+        document.getElementById('adminDishEditDiscount').value=dish.discount_percent||0;
+        var picker=document.getElementById('adminDishEditCategoryPicker');
+        if(picker&&picker.setCategoryId)picker.setCategoryId(dish.category_id||'');
+        var ingredientList=document.getElementById('adminDishEditIngredients');
+        ingredientList.replaceChildren();
+        (Array.isArray(dish.ingredients)&&dish.ingredients.length?dish.ingredients:[{}]).forEach(function(item){addDishIngredientRow('adminDishEditIngredients',item);});
+        loadAdminDishPromocodes(dish.promocodes||[]);
+        document.getElementById('adminDishPromoStatus').textContent='';
+        document.getElementById('adminDishEditModal').classList.add('active');
+    }catch(error){showToast(error.message||'Ошибка загрузки блюда');}
 }
 function closeAdminEditDish(event){
     var modal=document.getElementById('adminDishEditModal');
     if(event&&event.target!==modal)return;
     if(modal)modal.classList.remove('active');
 }
+
+var adminDishPromocodes=[];
+function loadAdminDishPromocodes(promocodes){
+    adminDishPromocodes=Array.isArray(promocodes)?promocodes:[];
+    var select=document.getElementById('adminDishPromoSelect');
+    select.innerHTML='<option value="">Новый промокод</option>';
+    adminDishPromocodes.forEach(function(item){
+        var option=document.createElement('option');
+        option.value=String(item.id);option.textContent=item.code+' — '+item.discount_percent+'%';select.appendChild(option);
+    });
+    selectAdminDishPromocode();
+}
+function selectAdminDishPromocode(){
+    var id=document.getElementById('adminDishPromoSelect').value;
+    var item=adminDishPromocodes.find(function(promo){return String(promo.id)===id;});
+    document.getElementById('adminDishPromoCode').value=item?item.code:'';
+    document.getElementById('adminDishPromoPercent').value=item?item.discount_percent:'';
+    document.getElementById('adminDishPromoSave').textContent=item?'Сохранить промокод':'Создать промокод';
+}
+async function saveAdminDishPromocode(){
+    var dishId=Number(document.getElementById('adminDishEditId').value);
+    var id=document.getElementById('adminDishPromoSelect').value;
+    var payload={action:id?'update':'create',dish_id:dishId,code:document.getElementById('adminDishPromoCode').value.trim(),discount_percent:document.getElementById('adminDishPromoPercent').value};
+    if(id)payload.id=Number(id);
+    try{
+        var response=await fetch('/api/admin.php?action=dish_promocodes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        var result=await response.json();
+        if(!response.ok||!result.success)throw new Error(result.error||'Не удалось сохранить промокод');
+        var selected=result.promocode&&result.promocode.id;
+        var refresh=await fetch('/api/admin.php?action=dish_details&id='+dishId);
+        var details=await refresh.json();
+        loadAdminDishPromocodes(details.dish&&details.dish.promocodes||[]);
+        if(selected)document.getElementById('adminDishPromoSelect').value=String(selected);
+        selectAdminDishPromocode();
+        document.getElementById('adminDishPromoStatus').textContent='Промокод сохранён';
+        document.getElementById('adminDishPromoStatus').className='dish-promocode-status success';
+    }catch(error){
+        document.getElementById('adminDishPromoStatus').textContent=error.message||'Ошибка промокода';
+        document.getElementById('adminDishPromoStatus').className='dish-promocode-status error';
+    }
+}
+async function deleteAdminDishPromocode(){
+    var id=Number(document.getElementById('adminDishPromoSelect').value);
+    if(!id)return;
+    try{
+        var response=await fetch('/api/admin.php?action=dish_promocodes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',dish_id:Number(document.getElementById('adminDishEditId').value),id:id})});
+        var result=await response.json();
+        if(!response.ok||!result.success)throw new Error(result.error||'Не удалось удалить промокод');
+        var refresh=await fetch('/api/admin.php?action=dish_details&id='+Number(document.getElementById('adminDishEditId').value));
+        var details=await refresh.json();
+        loadAdminDishPromocodes(details.dish&&details.dish.promocodes||[]);
+        document.getElementById('adminDishPromoStatus').textContent='Промокод удалён';
+        document.getElementById('adminDishPromoStatus').className='dish-promocode-status success';
+    }catch(error){
+        document.getElementById('adminDishPromoStatus').textContent=error.message||'Ошибка удаления промокода';
+        document.getElementById('adminDishPromoStatus').className='dish-promocode-status error';
+    }
+}
 async function saveAdminDishEdit(event){
     if(event)event.preventDefault();
-    var id=document.getElementById('adminDishEditId').value;
-    var payload={id:Number(id),title:document.getElementById('adminDishEditTitle').value.trim(),description:document.getElementById('adminDishEditDescription').value.trim(),price:document.getElementById('adminDishEditPrice').value,weight:document.getElementById('adminDishEditWeight').value.trim()};
-    var categoryId=document.getElementById('adminDishEditCategory').value;
-    if(categoryId)payload.category_id=categoryId;
+    var id=Number(document.getElementById('adminDishEditId').value);
+    var picker=document.getElementById('adminDishEditCategoryPicker');
+    var path=picker&&picker.getPath?picker.getPath():{};
+    var ingredients=collectDishIngredients('adminDishEditIngredients');
+    var payload={id:id,title:document.getElementById('adminDishEditTitle').value.trim(),description:document.getElementById('adminDishEditDescription').value.trim(),price:document.getElementById('adminDishEditPrice').value,weight:document.getElementById('adminDishEditWeight').value.trim(),discount_percent:document.getElementById('adminDishEditDiscount').value||'0',ingredients:ingredients,main_category_id:path.main_category_id||'',subcategory_id:path.subcategory_id||'',subsubcategory_id:path.subsubcategory_id||''};
     if(!payload.title||!payload.price){showToast('Заполните название и цену блюда');return;}
+    if(!payload.main_category_id||!payload.subcategory_id){showToast('Выберите категорию и подкатегорию');return;}
     try{
         var res=await fetch('/api/admin.php?action=update_dish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
         var data=await res.json();
@@ -2937,26 +3001,56 @@ document.addEventListener('DOMContentLoaded', checkAdminRole);
 </div>
 
 <div class="info-modal-overlay" id="adminDishEditModal" onclick="closeAdminEditDish(event)">
-    <div class="info-modal-box" style="max-width:520px;text-align:left;max-height:88vh;overflow:auto;" onclick="event.stopPropagation()">
+    <div class="info-modal-box" style="max-width:480px;text-align:left;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;">
             <h2 style="margin:0;color:var(--neon-dark);font-size:20px;">Редактировать блюдо</h2>
             <button type="button" class="admin-dish-action admin-dish-action-delete" aria-label="Закрыть" onclick="closeAdminEditDish()"><svg viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12"></path></svg></button>
         </div>
         <form onsubmit="saveAdminDishEdit(event)">
             <input type="hidden" id="adminDishEditId">
-            <label style="display:block;margin:0 0 6px;color:var(--text-muted);font-size:13px;">Название</label>
-            <input id="adminDishEditTitle" required style="box-sizing:border-box;width:100%;margin:0 0 12px;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;">
-            <label style="display:block;margin:0 0 6px;color:var(--text-muted);font-size:13px;">Описание</label>
-            <textarea id="adminDishEditDescription" rows="4" style="box-sizing:border-box;width:100%;margin:0 0 12px;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;resize:vertical;"></textarea>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div><label style="display:block;margin:0 0 6px;color:var(--text-muted);font-size:13px;">Цена, ₽</label><input id="adminDishEditPrice" type="number" min="1" step="0.01" required style="box-sizing:border-box;width:100%;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;"></div>
-                <div><label style="display:block;margin:0 0 6px;color:var(--text-muted);font-size:13px;">Вес</label><input id="adminDishEditWeight" style="box-sizing:border-box;width:100%;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;"></div>
+            <div class="form-group">
+                <label>Название *</label>
+                <input type="text" id="adminDishEditTitle" placeholder="Название блюда">
             </div>
-            <label style="display:block;margin:12px 0 6px;color:var(--text-muted);font-size:13px;">Категория</label>
-            <select id="adminDishEditCategory" style="box-sizing:border-box;width:100%;margin:0 0 18px;padding:11px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;"><option value="">Не менять категорию</option></select>
-            <div style="display:flex;gap:10px;">
-                <button type="submit" class="info-modal-btn success" style="flex:1;">Сохранить</button>
+            <div class="form-group">
+                <label>Описание</label>
+                <textarea id="adminDishEditDescription" class="recipe-description-trigger dish-description-trigger" readonly onclick="openRecipeDescriptionEditor('adminDishEditDescription')" placeholder="Нажмите, чтобы написать описание..."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Цена (руб) *</label><input type="number" id="adminDishEditPrice" min="1" placeholder="350"></div>
+                <div class="form-group"><label>Вес / объём</label><input type="text" id="adminDishEditWeight" placeholder="400 г"></div>
+            </div>
+            <div class="form-group">
+                <label>Категория *</label>
+                <div class="category-picker" id="adminDishEditCategoryPicker" data-category-picker data-title-id="adminDishEditTitle" data-description-id="adminDishEditDescription">
+                    <input type="search" data-category-search placeholder="Поиск категории..." autocomplete="off">
+                    <div class="category-search-results" data-category-results hidden></div>
+                    <select data-category-main aria-label="Основная категория"></select>
+                    <select data-category-sub aria-label="Подкатегория"></select>
+                    <select data-category-subsub aria-label="Дополнительная подкатегория"></select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Скидка (%)</label><input type="number" id="adminDishEditDiscount" min="0" max="90" value="0" placeholder="0"></div>
+                <div class="form-group"><label>Состав и энергетическая ценность *</label><div id="adminDishEditIngredients" class="dish-ingredients"></div><button type="button" class="sub-add-btn" onclick="addDishIngredientRow('adminDishEditIngredients')">＋ Ингредиент</button></div>
+            </div>
+            <div class="form-group dish-promocode-box">
+                <label for="adminDishPromoSelect">Промокоды повара</label>
+                <div class="dish-promocode-picker">
+                    <select id="adminDishPromoSelect" onchange="selectAdminDishPromocode()"><option value="">Новый промокод</option></select>
+                    <button type="button" class="dish-promocode-delete" aria-label="Удалить выбранный промокод" title="Удалить промокод" onclick="deleteAdminDishPromocode()">×</button>
+                </div>
+                <div class="dish-promocode-fields">
+                    <input id="adminDishPromoCode" type="text" maxlength="40" autocomplete="off" placeholder="Название промокода">
+                    <input id="adminDishPromoPercent" type="number" min="1" max="100" step="1" placeholder="Скидка %">
+                </div>
+                <button type="button" class="dish-promocode-save" id="adminDishPromoSave" onclick="saveAdminDishPromocode()">Создать промокод</button>
+                <p class="dish-promocode-help">Промокод действует на блюда этого повара.</p>
+                <p class="dish-promocode-status" id="adminDishPromoStatus" aria-live="polite"></p>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:16px;">
                 <button type="button" class="delete-modal-cancel" onclick="closeAdminEditDish()" style="flex:1;">Отмена</button>
+                <button type="submit" class="info-modal-btn success" style="flex:1;">Сохранить</button>
             </div>
         </form>
     </div>
