@@ -465,6 +465,13 @@ body{padding-bottom:88px;}
 .admin-dish-action-delete{color:#ef4444;}
 .admin-dish-action-delete:hover{background:rgba(239,68,68,.1);}
 .admin-dish-action-pencil:hover,.admin-dish-action-eye:hover{background:var(--neon-glow);}
+#adminDishFieldModal .admin-dish-field-modal-box{width:min(100%,440px);padding:18px;}
+#adminDishFieldModal #adminDishFieldControl.dish-ingredients{padding:2px 4px 2px 0;}
+#adminDishFieldModal #adminDishFieldControl .dish-ingredient-row{grid-template-columns:minmax(0,1.25fr) minmax(52px,.7fr) minmax(76px,.9fr)!important;gap:5px;margin:4px 2px 8px 0;}
+#adminDishFieldModal #adminDishFieldControl .dish-ingredient-row>input,
+#adminDishFieldModal #adminDishFieldControl .dish-energy-field input{box-sizing:border-box;min-height:34px;height:34px;padding:6px 8px!important;border-radius:8px;font-size:12px!important;}
+#adminDishFieldModal #adminDishFieldControl .dish-energy-field input{padding-right:25px!important;}
+#adminDishFieldModal #adminDishFieldControl .dish-ingredient-remove{top:-5px;right:-5px;width:20px;height:20px;border-width:1px;font-size:13px;box-shadow:0 1px 5px rgba(239,68,68,.35);}
 [data-theme="dark"] .admin-user-icon-btn{color:#fff;}
 [data-theme="dark"] .admin-user-icon-btn:hover{border-color:#fff;background:rgba(255,255,255,.08);box-shadow:0 0 10px rgba(255,255,255,.45);}
 #adminContent .admin-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:13px;}
@@ -542,12 +549,12 @@ body{padding-bottom:88px;}
 [data-theme="dark"] .admin-workspace{background:#0b1220;}
 [data-theme="dark"] #adminContent .admin-table-wrap,[data-theme="dark"] #adminContent .admin-stat-card,[data-theme="dark"] #adminContent .admin-review-card{box-shadow:none;}
 /* Standalone admin view: full workspace with a collapsible desktop sidebar. */
-body.admin-standalone{min-height:100vh;padding:0 0 0!important;overflow-x:hidden;}
-body.admin-standalone .site-header,body.admin-standalone .bottom-bar,body.admin-standalone footer,
+body.admin-standalone{min-height:100vh;padding:0!important;overflow-x:hidden;}
+body.admin-standalone .site-header,body.admin-standalone .bottom-bar,body.admin-standalone nav.bottom-bar,body.admin-standalone footer,
 body.admin-standalone .catalog-overlay,body.admin-standalone .catalog-drawer,
 body.admin-standalone main>.profile-header,body.admin-standalone main>.tabs,
 body.admin-standalone main>.tab-content:not(#tab-admin){display:none!important;}
-body.admin-standalone .bottom-bar{display:none!important;}
+body.admin-standalone .bottom-bar,body.admin-standalone nav.bottom-bar{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;max-height:0!important;pointer-events:none!important;}
 body.admin-standalone main.container{width:100%;max-width:none!important;margin:0!important;padding:0!important;}
 body.admin-standalone #tab-admin{display:block!important;margin:0!important;}
 body.admin-standalone .admin-dashboard{width:auto!important;max-width:none!important;min-height:calc(100vh - 64px);margin:0!important;overflow:visible;border:0;border-radius:0;box-shadow:none;zoom:1!important;}
@@ -649,6 +656,10 @@ button, .btn, a, label {
 <link rel="stylesheet" href="assets/css/site-header.css?v=20261115141314">
 <script src="assets/js/site-header.js?v=20261105152159" defer></script>
 <link rel="stylesheet" href="assets/css/quantity-controls.css?v=20261124121839">
+<style>
+.back-to-top{position:fixed;bottom:70px;right:16px;z-index:102;width:40px;height:40px;padding:0;border:0;border-radius:12px;background:transparent;color:var(--neon);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s,box-shadow .3s;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--neon),0 0 14px var(--neon-glow)}
+.back-to-top.visible{opacity:1;pointer-events:auto}.back-to-top:hover{transform:scale(1.05);box-shadow:0 0 0 2px var(--neon),0 0 22px var(--neon-glow)}.back-to-top svg{width:20px;height:20px;stroke:var(--neon);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
 </head>
 <body>
 <script>if(new URLSearchParams(location.search).get('admin')==='1')document.body.classList.add('admin-standalone');</script>
@@ -1065,6 +1076,18 @@ button, .btn, a, label {
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
 &copy; 2026 Я готовлю — ты ешь!
 </footer>
+<button class="back-to-top" id="backToTop" aria-label="Наверх" title="Наверх"><svg viewBox="0 0 24 24"><g transform="rotate(90 12 12)"><polyline points="12 19 5 12 12 5"/><polyline points="5 12 19 12"/></g></svg></button>
+<script>
+(function(){
+    var backBtn=document.getElementById('backToTop');
+    if(!backBtn)return;
+    function update(){backBtn.classList.toggle('visible',window.scrollY>300)}
+    window.addEventListener('scroll',update,{passive:true});
+    window.addEventListener('scrollend',update);
+    backBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+    update();
+})();
+</script>
 
 <div class="toast" id="toast"></div>
 
@@ -2429,6 +2452,23 @@ async function checkAdminRole(){
 }
 
 var currentAdminSection = 'users';
+var adminFilterStorageKey='icook-admin-filters-v1';
+
+function readAdminFilterState(section){
+    try{
+        var saved=JSON.parse(localStorage.getItem(adminFilterStorageKey)||'{}');
+        return saved&&saved[section]&&typeof saved[section]==='object'?saved[section]:{};
+    }catch(error){return {};}
+}
+
+function writeAdminFilterState(section,patch){
+    try{
+        var saved=JSON.parse(localStorage.getItem(adminFilterStorageKey)||'{}');
+        if(!saved||typeof saved!=='object')saved={};
+        saved[section]=Object.assign({},saved[section]||{},patch);
+        localStorage.setItem(adminFilterStorageKey,JSON.stringify(saved));
+    }catch(error){}
+}
 
 function setAdminSectionHeading(title, description, badge){
     var titleNode=document.getElementById('adminSectionTitle');
@@ -2479,6 +2519,8 @@ async function loadAdminSection(section, btn, historyState){
             adminUsersCache = {}; 
             adminUsersAllRows = rows;
             rows.forEach(function(r){ adminUsersCache[r.id] = r; }); 
+            var userFilters=readAdminFilterState('users');
+            adminUserVisibleColumns=Array.isArray(userFilters.columns)?userFilters.columns.filter(function(key){return Object.prototype.hasOwnProperty.call(rows[0]||{},key);}):['id'];
         }
         if(section === 'dishes')adminDishesAllRows=rows;
         if(!rows.length){ container.innerHTML = '<p style="text-align:center;padding:30px;">Нет данных</p>'; return; }
@@ -2498,14 +2540,15 @@ async function loadAdminSection(section, btn, historyState){
             var adminFilterValue = section === 'dishes' || section === 'recipes'
                 ? (Number(row.is_available) === 1 ? 'active' : 'hidden')
                 : section === 'orders' ? String(row.status || '').trim().toLocaleLowerCase() : 'all';
-            html += '<tr data-admin-filter-value="' + adminEsc(adminFilterValue) + '">';
+            html += '<tr data-admin-filter-value="' + adminEsc(adminFilterValue) + '"' + (section==='dishes'?' data-admin-dish-id="'+adminEsc(row.id)+'"':'') + '>';
             keys.forEach(function(k){
                 var val = row[k] !== null ? row[k] : '—';
                 if(section==='dishes'&&k==='id'){
                     html += '<td data-label="' + adminEsc(k) + '"><div class="admin-dish-id-cell"><span data-admin-column="' + adminEsc(k) + '">' + adminEsc(val) + '</span>' + adminDishActionButtons(row) + '</div></td>';
                 }else{
                     var columnTitle=k==='promocodes'?'Промокоды':k;
-                    html += '<td data-label="' + adminEsc(columnTitle) + '" data-admin-column="' + adminEsc(k) + '"' + (k==='id'?'':' style="display:none"') + '>' + adminEsc(val) + '</td>';
+                    var dishField=section==='dishes'?' data-admin-dish-field="'+adminEsc(k)+'"':'';
+                    html += '<td data-label="' + adminEsc(columnTitle) + '" data-admin-column="' + adminEsc(k) + '"' + dishField + (k==='id'?'':' style="display:none"') + '>' + adminEsc(val) + '</td>';
                 }
             });
             html += section === 'users' ? '<td>' : section==='dishes' ? '' : '<td data-label="Действия">';
@@ -2526,9 +2569,9 @@ async function loadAdminSection(section, btn, historyState){
         html += '</tbody></table></div>';
         // Для users разделяем поиск и таблицу
         if(section === 'users'){
-            adminUserVisibleColumns = ['id'];
+            var savedUserFilters=readAdminFilterState('users');
             container.innerHTML = '<div class="admin-users-toolbar">' +
-                '<div class="admin-search-row"><input type="text" id="adminUserSearch" placeholder="Поиск по имени, телефону или email..." oninput="filterAdminUsers()" aria-label="Поиск пользователей"></div>' +
+                '<div class="admin-search-row"><input type="text" id="adminUserSearch" placeholder="Поиск по имени, телефону или email..." oninput="filterAdminUsers()" aria-label="Поиск пользователей" value="' + adminEsc(savedUserFilters.search||'') + '"></div>' +
                 '<div class="admin-user-column-toggles" id="adminUserColumnToggles" role="group" aria-label="Показывать поля пользователей"></div>' +
                 '<span id="adminSearchCount" class="admin-search-count" aria-live="polite"></span>' +
                 '</div>' +
@@ -2547,12 +2590,37 @@ async function loadAdminSection(section, btn, historyState){
                 '<div id="adminDataTableWrap">' + html + '</div>';
             var sectionToolbar = container.querySelector('.admin-section-toolbar');
             if(sectionToolbar){
+                restoreAdminSectionToolbar(section,sectionToolbar,rows);
                 watchAdminUsersToolbar(sectionToolbar,container.closest('.admin-workspace'));
                 bindAdminSectionToolbar(sectionToolbar);
             }
+            if(section==='dishes')bindAdminDishLongPress();
             filterAdminSectionData();
         }
     } catch(e){ container.innerHTML = '<p style="color:#ef4444;">Ошибка загрузки</p>'; }
+}
+
+function restoreAdminSectionToolbar(section,toolbar,rows){
+    var saved=readAdminFilterState(section);
+    var search=toolbar.querySelector('#adminSectionSearch');
+    if(search)search.value=saved.search||'';
+    if(saved.filter&&toolbar.querySelector('[data-admin-filter="'+CSS.escape(saved.filter)+'"]')){
+        toolbar.dataset.filter=saved.filter;
+        toolbar.querySelectorAll('[data-admin-filter]').forEach(function(button){button.classList.toggle('active',button.dataset.adminFilter===saved.filter);});
+    }
+    var available=Object.keys(rows[0]||{});
+    var columns=Array.isArray(saved.columns)?saved.columns.filter(function(key){return available.indexOf(key)!==-1;}):['id'];
+    toolbar.querySelectorAll('[data-admin-column-toggle]').forEach(function(button){
+        var visible=columns.indexOf(button.dataset.adminColumnToggle)!==-1;
+        button.setAttribute('aria-pressed',String(visible));
+        button.classList.toggle('active',visible);
+        button.title=(visible?'Скрыть столбец: ':'Показать столбец: ')+(button.dataset.adminColumnToggle==='promocodes'?'Промокоды повара':button.dataset.adminColumnToggle==='ingredients'?'Ингредиенты':button.dataset.adminColumnToggle);
+        button.setAttribute('aria-label',button.title);
+        document.querySelectorAll('#adminDataTableWrap [data-admin-column="'+CSS.escape(button.dataset.adminColumnToggle)+'"]').forEach(function(cell){
+            cell.hidden=false;
+            cell.style.display=visible?'':'none';
+        });
+    });
 }
 
 function buildAdminSectionToolbar(section,rows){
@@ -2567,11 +2635,11 @@ function buildAdminSectionToolbar(section,rows){
     var buttons=filters.map(function(filter,index){
         return '<button type="button" class="admin-user-column-toggle'+(index===0?' active':'')+'" data-admin-filter="'+adminEsc(filter.value)+'">'+adminEsc(filter.label)+'</button>';
     }).join('');
-    var columnLabels={id:'ID',title:'TI',price:'PR',weight:'WE',is_available:'AV',created_at:'DT',seller_name:'SE',category_name:'CA',author_name:'AU',status:'ST',total:'TO',buyer_name:'BY',name:'NA',parent_id:'PA',sort_order:'SO',promocodes:'PC'};
+    var columnLabels={id:'ID',title:'TI',price:'PR',weight:'WE',is_available:'AV',created_at:'DT',seller_name:'SE',category_name:'CA',author_name:'AU',status:'ST',total:'TO',buyer_name:'BY',name:'NA',parent_id:'PA',sort_order:'SO',promocodes:'PC',ingredients:'IN'};
     var columnButtons=Object.keys(rows[0]||{}).map(function(key){
         var label=columnLabels[key]||key.slice(0,2).toUpperCase();
         var active=key==='id';
-        var title=key==='promocodes'?'Промокоды повара':key;
+        var title=key==='promocodes'?'Промокоды повара':key==='ingredients'?'Ингредиенты':key;
         return '<button type="button" class="admin-user-column-toggle'+(active?' active':'')+'" data-admin-column-toggle="'+adminEsc(key)+'" aria-pressed="'+active+'" title="'+(active?'Скрыть':'Показать')+' столбец: '+adminEsc(title)+'" aria-label="'+(active?'Скрыть':'Показать')+' столбец: '+adminEsc(title)+'">'+adminEsc(label)+'</button>';
     }).join('');
     return '<div class="admin-users-toolbar admin-section-toolbar" data-filter="all">'+
@@ -2595,13 +2663,15 @@ function toggleAdminSectionColumn(button){
             cell.style.display=visible?'':'none';
         }
     });
+    var visibleColumns=Array.from(document.querySelectorAll('.admin-section-toolbar [data-admin-column-toggle][aria-pressed="true"]')).map(function(item){return item.dataset.adminColumnToggle;});
+    writeAdminFilterState(currentAdminSection,{columns:visibleColumns});
 }
 
 function bindAdminSectionToolbar(toolbar){
     if(!toolbar||toolbar.dataset.handlersBound==='1')return;
     toolbar.dataset.handlersBound='1';
     var search=toolbar.querySelector('#adminSectionSearch');
-    if(search)search.addEventListener('input',filterAdminSectionData);
+    if(search)search.addEventListener('input',function(){filterAdminSectionData();writeAdminFilterState(currentAdminSection,{search:search.value});});
     toolbar.addEventListener('click',function(event){
         var button=event.target.closest('button');
         if(!button||!toolbar.contains(button))return;
@@ -2614,6 +2684,7 @@ function setAdminSectionFilter(button){
     var toolbar=button.closest('.admin-section-toolbar');
     if(!toolbar)return;
     toolbar.dataset.filter=button.dataset.adminFilter||'all';
+    writeAdminFilterState(currentAdminSection,{filter:toolbar.dataset.filter});
     toolbar.querySelectorAll('[data-admin-filter]').forEach(function(item){item.classList.toggle('active',item===button);});
     filterAdminSectionData();
 }
@@ -2867,6 +2938,7 @@ function adminEsc(s){
 async function renderAdminReviews(status){
     var previousStatus=adminReviewStatus;
     if(status) adminReviewStatus = status;
+    if(status)writeAdminFilterState('reviews',{filter:adminReviewStatus});
     if(status&&status!==previousStatus&&new URLSearchParams(location.search).get('admin')==='1'&&window.parent!==window){
         window.parent.postMessage({type:'admin-section-change',section:'reviews',reviewStatus:adminReviewStatus},location.origin);
     }
@@ -2874,8 +2946,10 @@ async function renderAdminReviews(status){
     var c = document.getElementById('adminContent');
     if(!c) return;
     c.innerHTML = '<p style="text-align:center;padding:30px;color:var(--text-muted);">Загрузка...</p>';
+    var savedReviewFilters=readAdminFilterState('reviews');
+    if(!status&&['pending','approved','rejected'].includes(savedReviewFilters.filter))adminReviewStatus=savedReviewFilters.filter;
     var tabsHtml = '<div class="admin-users-toolbar admin-review-toolbar">'+
-        '<div class="admin-search-row"><input type="search" id="adminReviewSearch" placeholder="Поиск по отзывам..." oninput="filterAdminReviews()" aria-label="Поиск по отзывам"></div><span id="adminReviewSearchCount" class="admin-search-count" aria-live="polite"></span>'+
+        '<div class="admin-search-row"><input type="search" id="adminReviewSearch" placeholder="Поиск по отзывам..." oninput="filterAdminReviews()" aria-label="Поиск по отзывам" value="' + adminEsc(savedReviewFilters.search||'') + '"></div><span id="adminReviewSearchCount" class="admin-search-count" aria-live="polite"></span>'+
         '<div class="admin-user-column-toggles" role="group" aria-label="Фильтр отзывов">';
     [['pending','⏳ На модерации'],['approved','✅ Одобренные'],['rejected','🚫 Отклонённые']].forEach(function(s){
         var active = s[0] === adminReviewStatus;
@@ -2920,6 +2994,7 @@ function filterAdminReviews(){
     var count=document.getElementById('adminReviewSearchCount');
     if(!input||!count)return;
     var query=input.value.trim().toLocaleLowerCase();
+    writeAdminFilterState('reviews',{search:input.value,filter:adminReviewStatus});
     var cards=document.querySelectorAll('#adminContent .admin-review-card');
     var visible=0;
     cards.forEach(function(card){
@@ -3069,9 +3144,209 @@ document.addEventListener('DOMContentLoaded', checkAdminRole);
     </div>
 </div>
 
+<div id="adminDishFieldModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(4px);z-index:10004;align-items:center;justify-content:center;padding:18px;" onclick="if(event.target===this)closeAdminDishFieldEdit()">
+    <div class="admin-dish-field-modal-box" style="max-height:88vh;overflow:auto;border:1px solid var(--border-color);border-radius:18px;background:var(--card-bg);box-shadow:0 20px 60px rgba(0,0,0,.25);">
+        <h3 id="adminDishFieldTitle" style="margin:0 0 8px;color:var(--neon-dark);font-size:18px;">Изменить параметр блюда</h3>
+        <div id="adminDishFieldDescription" style="margin-bottom:16px;color:var(--text-muted);font-size:13px;"></div>
+        <label id="adminDishFieldLabel" style="display:block;margin-bottom:7px;color:var(--text-muted);font-size:13px;font-weight:700;"></label>
+        <div id="adminDishFieldControl"></div>
+        <div style="display:flex;gap:10px;margin-top:18px;">
+            <button type="button" class="btn" id="adminDishFieldSave" onclick="saveAdminDishFieldEdit()" style="flex:1;">Сохранить</button>
+            <button type="button" class="btn" onclick="closeAdminDishFieldEdit()" style="flex:1;border:1px solid var(--border-color);background:transparent;color:var(--text-main);">Отменить</button>
+        </div>
+    </div>
+</div>
+
 <script>
 var adminUsersCache = {};
 var adminUserFieldEditState = null;
+var adminDishFieldEditState = null;
+var adminDishLongPressBound = false;
+var adminDishFieldDefinitions = {
+    title:{label:'Название',type:'text'},
+    description:{label:'Описание',type:'textarea'},
+    price:{label:'Цена',type:'number'},
+    weight:{label:'Вес / объём',type:'text'},
+    discount_percent:{label:'Скидка, %',type:'number'},
+    is_available:{label:'Публикация',type:'select',options:[['1','Опубликовано'],['0','Скрыто']]},
+    category_id:{label:'Категория',type:'category'},
+    promocodes:{label:'Промокоды',type:'promocodes'},
+    ingredients:{label:'Ингредиенты',type:'ingredients'}
+};
+
+function bindAdminDishLongPress(){
+    if(adminDishLongPressBound)return;
+    adminDishLongPressBound=true;
+    var state=null;
+    function elementFromEvent(event){return event.target&&event.target.nodeType===1?event.target:event.target&&event.target.parentElement;}
+    function clear(){if(state&&state.timer)window.clearTimeout(state.timer);state=null;}
+    function targetCell(event){
+        var target=elementFromEvent(event);
+        if(!target||!target.closest)return null;
+        if(target.closest('button,a,input,select,textarea,[contenteditable="true"]'))return null;
+        var cell=target.closest('#adminDataTableWrap [data-admin-dish-field]');
+        var row=target.closest('#adminDataTableWrap tr[data-admin-dish-id]');
+        return cell&&row?{cell:cell,row:row}:null;
+    }
+    document.addEventListener('pointerdown',function(event){
+        if(!event.isPrimary||event.button!==0){clear();return;}
+        var hit=targetCell(event);
+        if(!hit||!adminDishFieldDefinitions[hit.cell.dataset.adminDishField]){clear();return;}
+        state={id:hit.row.dataset.adminDishId,field:hit.cell.dataset.adminDishField,pointerId:event.pointerId,x:event.clientX,y:event.clientY,timer:null};
+        var current=state;
+        current.timer=window.setTimeout(function(){
+            if(state!==current)return;
+            state=null;
+            openAdminDishFieldEdit(current.id,current.field);
+        },550);
+    },true);
+    document.addEventListener('pointermove',function(event){
+        if(!state||event.pointerId!==state.pointerId)return;
+        if(Math.abs(event.clientX-state.x)>12||Math.abs(event.clientY-state.y)>12)clear();
+    },true);
+    document.addEventListener('pointerup',function(event){if(state&&event.pointerId===state.pointerId)clear();},true);
+    document.addEventListener('pointercancel',function(event){if(state&&event.pointerId===state.pointerId)clear();},true);
+    document.addEventListener('contextmenu',function(event){
+        var hit=targetCell(event);
+        if(!hit)return;
+        var field=hit.cell.dataset.adminDishField;
+        if(!adminDishFieldDefinitions[field])return;
+        event.preventDefault();
+        clear();
+        openAdminDishFieldEdit(hit.row.dataset.adminDishId,field);
+    },true);
+}
+
+function adminDishFieldInput(type,value){
+    var input=type==='textarea'?document.createElement('textarea'):document.createElement('input');
+    if(type!=='textarea')input.type=type;
+    if(type==='textarea')input.rows=4;
+    if(type==='number')input.step='any';
+    input.value=value==null?'':String(value);
+    input.style.cssText='display:block;box-sizing:border-box;width:100%;min-height:42px;padding:10px 12px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;';
+    return input;
+}
+
+function appendAdminDishPromoFieldRow(list,promo){
+    promo=promo||{};
+    var row=document.createElement('div');
+    row.className='admin-dish-field-list-row';
+    row.dataset.promocodeId=promo.id?String(promo.id):'';
+    row.style.cssText='display:grid;grid-template-columns:minmax(0,1.3fr) minmax(84px,.7fr) 34px;gap:7px;align-items:center;margin:0 0 8px;';
+    var code=adminDishFieldInput('text',promo.code||'');code.placeholder='Код';code.maxLength=40;code.setAttribute('aria-label','Код промокода');
+    var percent=adminDishFieldInput('number',promo.discount_percent==null?'':promo.discount_percent);percent.min='1';percent.max='100';percent.step='1';percent.placeholder='%';percent.setAttribute('aria-label','Скидка промокода, процентов');
+    var remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.title='Убрать промокод';remove.className='dish-promocode-delete';remove.style.cssText='width:32px;height:32px;min-height:32px;flex:none;';
+    remove.addEventListener('click',function(){row.remove();});
+    row.append(code,percent,remove);list.appendChild(row);
+}
+
+async function openAdminDishFieldEdit(id,field){
+    var config=adminDishFieldDefinitions[field];
+    if(!config)return;
+    var saveButton=document.getElementById('adminDishFieldSave');
+    try{
+        var response=await fetch('/api/admin.php?action=dish_details&id='+encodeURIComponent(id));
+        var result=await response.json();
+        if(!response.ok||!result.success)throw new Error(result.error||'Не удалось загрузить блюдо');
+        var dish=result.dish;
+        adminDishFieldEditState={id:Number(id),field:field,type:config.type,dish:dish};
+        document.getElementById('adminDishFieldTitle').textContent='Изменить: '+config.label;
+        document.getElementById('adminDishFieldDescription').textContent='Блюдо #'+dish.id+' · '+(dish.title||'Без названия');
+        document.getElementById('adminDishFieldLabel').textContent=config.label;
+        var control=document.getElementById('adminDishFieldControl');
+        control.replaceChildren();
+        control.className='';
+        control.style.maxHeight='';
+        control.style.overflowY='';
+        if(config.type==='promocodes'){
+            var list=document.createElement('div');list.id='adminDishFieldPromoList';list.style.maxHeight='48vh';list.style.overflowY='auto';
+            (dish.promocodes||[]).forEach(function(promo){appendAdminDishPromoFieldRow(list,promo);});
+            var add=document.createElement('button');add.type='button';add.className='sub-add-btn';add.textContent='＋ Промокод';add.addEventListener('click',function(){appendAdminDishPromoFieldRow(list);});
+            control.append(list,add);
+        }else if(config.type==='ingredients'){
+            control.className='dish-ingredients';
+            control.style.maxHeight='44vh';control.style.overflowY='auto';
+            (Array.isArray(dish.ingredients)&&dish.ingredients.length?dish.ingredients:[{}]).forEach(function(item){addDishIngredientRow('adminDishFieldControl',item);});
+            var addIngredient=document.createElement('button');addIngredient.type='button';addIngredient.className='sub-add-btn';addIngredient.textContent='＋ Ингредиент';addIngredient.addEventListener('click',function(){addDishIngredientRow('adminDishFieldControl');});
+            control.appendChild(addIngredient);
+        }else if(config.type==='select'){
+            var select=document.createElement('select');select.style.cssText='display:block;box-sizing:border-box;width:100%;min-height:42px;padding:10px 12px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;';
+            config.options.forEach(function(option){var node=document.createElement('option');node.value=option[0];node.textContent=option[1];select.appendChild(node);});
+            select.value=String(dish[field]==null?'':dish[field]);control.appendChild(select);
+        }else if(config.type==='category'){
+            var categoriesResponse=await fetch('/api/admin.php?action=categories');
+            var categoriesData=await categoriesResponse.json();
+            var categorySelect=document.createElement('select');categorySelect.style.cssText='display:block;box-sizing:border-box;width:100%;min-height:42px;padding:10px 12px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg);color:var(--text-main);font:inherit;';
+            (categoriesData.data||[]).forEach(function(category){var option=document.createElement('option');option.value=category.id;option.textContent=category.name;categorySelect.appendChild(option);});
+            categorySelect.value=String(dish.category_id||'');control.appendChild(categorySelect);
+        }else{
+            control.appendChild(adminDishFieldInput(config.type,dish[field]));
+        }
+        saveButton.disabled=false;saveButton.textContent='Сохранить';
+        document.getElementById('adminDishFieldModal').style.display='flex';
+    }catch(error){showToast(error.message||'Ошибка загрузки параметра');}
+}
+
+function closeAdminDishFieldEdit(){
+    var modal=document.getElementById('adminDishFieldModal');
+    if(modal)modal.style.display='none';
+    adminDishFieldEditState=null;
+}
+
+async function saveAdminDishFieldEdit(){
+    if(!adminDishFieldEditState)return;
+    var state=adminDishFieldEditState;
+    var saveButton=document.getElementById('adminDishFieldSave');
+    saveButton.disabled=true;saveButton.textContent='Сохранение…';
+    try{
+        if(state.type==='promocodes'){
+            var list=document.getElementById('adminDishFieldPromoList');
+            var current=Array.from(list.querySelectorAll('.admin-dish-field-list-row'));
+            var ids=current.map(function(row){return row.dataset.promocodeId;}).filter(Boolean);
+            for(var promo of (state.dish.promocodes||[])){
+                if(ids.indexOf(String(promo.id))===-1){
+                    await adminDishPromoRequest({action:'delete',dish_id:state.id,id:Number(promo.id)});
+                }
+            }
+            for(var promoRow of current){
+                var fields=promoRow.querySelectorAll('input');
+                var code=fields[0].value.trim(),percent=fields[1].value;
+                if(!code||!percent)throw new Error('Заполните код и скидку у каждого промокода');
+                var payload={action:promoRow.dataset.promocodeId?'update':'create',dish_id:state.id,code:code,discount_percent:percent};
+                if(promoRow.dataset.promocodeId)payload.id=Number(promoRow.dataset.promocodeId);
+                await adminDishPromoRequest(payload);
+            }
+        }else if(state.type==='ingredients'){
+            var ingredients=collectDishIngredients('adminDishFieldControl');
+            var dish=state.dish;
+            var payload={id:state.id,title:dish.title,description:dish.description||'',price:dish.price,weight:dish.weight||'',discount_percent:dish.discount_percent||0,ingredients:ingredients,main_category_id:dish.main_category_id||'',subcategory_id:dish.subcategory_id||'',subsubcategory_id:dish.subsubcategory_id||''};
+            var response=await fetch('/api/admin.php?action=update_dish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+            var result=await response.json();
+            if(!response.ok||!result.success)throw new Error(result.error||'Не удалось сохранить ингредиенты');
+        }else{
+            var control=document.getElementById('adminDishFieldControl').querySelector('input,textarea,select');
+            var value=control.value;
+            if(state.type==='number')value=value===''?0:Number(value);
+            var payload={id:state.id};payload[state.field]=value;
+            var response=await fetch('/api/admin.php?action=update_dish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+            var result=await response.json();
+            if(!response.ok||!result.success)throw new Error(result.error||'Не удалось сохранить параметр');
+        }
+        closeAdminDishFieldEdit();
+        showToast('Параметр блюда сохранён');
+        loadAdminSection('dishes');
+    }catch(error){
+        showToast(error.message||'Ошибка сохранения');
+        saveButton.disabled=false;saveButton.textContent='Сохранить';
+    }
+}
+
+async function adminDishPromoRequest(payload){
+    var response=await fetch('/api/admin.php?action=dish_promocodes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    var result=await response.json();
+    if(!response.ok||!result.success)throw new Error(result.error||'Ошибка промокода');
+    return result;
+}
 
 function closeAdminUserFieldEdit(){
     var modal=document.getElementById('adminUserFieldModal');
@@ -3630,6 +3905,7 @@ function renderAdminUserColumnToggles(sampleRow){
             var index=adminUserVisibleColumns.indexOf(key);
             if(index===-1)adminUserVisibleColumns.push(key);
             else adminUserVisibleColumns.splice(index,1);
+            writeAdminFilterState('users',{columns:adminUserVisibleColumns.slice()});
             button.classList.toggle('active',index===-1);
             button.setAttribute('aria-pressed',String(index===-1));
             filterAdminUsers();
@@ -3641,6 +3917,7 @@ function filterAdminUsers(){
     var searchInput=document.getElementById('adminUserSearch');
     if(!searchInput)return;
     var q = (searchInput.value || '').toLowerCase().trim();
+    writeAdminFilterState('users',{search:searchInput.value,columns:adminUserVisibleColumns.slice()});
     var filtered = adminUsersAllRows.filter(function(r){
         if(!q) return true;
         return (r.name || '').toLowerCase().indexOf(q) !== -1 

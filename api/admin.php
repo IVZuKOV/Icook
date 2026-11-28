@@ -27,6 +27,8 @@ switch ($action) {
             'SELECT d.id, d.title, d.description, d.price, d.weight, d.discount_percent, d.is_available, d.category_id, d.created_at,
                     (SELECT GROUP_CONCAT(CONCAT(p.code, \' (\', p.discount_percent, \'%)\') ORDER BY p.code SEPARATOR \', \')
                      FROM promocodes p WHERE p.cook_id = d.user_id AND p.is_active = 1) AS promocodes,
+                    (SELECT GROUP_CONCAT(CONCAT(i.ingredient_name, \' (\', i.amount_grams, \' г; \', i.energy_kj_per_100g, \' кДж/100 г)\') ORDER BY i.position SEPARATOR \', \')
+                     FROM dish_ingredients i WHERE i.dish_id = d.id) AS ingredients,
                     u.name as seller_name, c.name as category_name
              FROM dishes d
              LEFT JOIN users u ON d.user_id = u.id
@@ -43,6 +45,21 @@ switch ($action) {
         if (!$dish) {
             json_out(['success' => false, 'error' => 'Блюдо не найдено'], 404);
         }
+        $categoryPath = [];
+        $categoryId = (int) ($dish['category_id'] ?? 0);
+        $categoryLookup = $pdo->prepare('SELECT parent_id FROM categories WHERE id = ?');
+        while ($categoryId > 0 && count($categoryPath) < 3) {
+            $categoryLookup->execute([$categoryId]);
+            $parentId = $categoryLookup->fetchColumn();
+            if ($parentId === false) {
+                break;
+            }
+            array_unshift($categoryPath, $categoryId);
+            $categoryId = $parentId === null ? 0 : (int) $parentId;
+        }
+        $dish['main_category_id'] = $categoryPath[0] ?? null;
+        $dish['subcategory_id'] = $categoryPath[1] ?? null;
+        $dish['subsubcategory_id'] = $categoryPath[2] ?? null;
         $ingredients = $pdo->prepare(
             'SELECT ingredient_name AS name, amount_grams, energy_kj_per_100g
              FROM dish_ingredients WHERE dish_id = ? ORDER BY position, id'
@@ -257,7 +274,7 @@ switch ($action) {
         }
         $fields = [];
         $params = [];
-        foreach (['title', 'description', 'price', 'weight', 'is_available', 'category_id'] as $f) {
+        foreach (['title', 'description', 'price', 'weight', 'discount_percent', 'is_available', 'category_id'] as $f) {
             if (array_key_exists($f, $data)) {
                 $fields[] = "$f = ?";
                 $params[] = $data[$f];
